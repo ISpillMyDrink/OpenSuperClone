@@ -13,9 +13,9 @@ endif
 
 CC= gcc
 ifneq (,$(findstring k,$(MAKEFLAGS)))
-CFLAGS = -Wall -W -O0 -g
+CFLAGS = -Wall -W -O0 -g -fcommon
 else
-CFLAGS = -Wall -W -Wno-deprecated-declarations
+CFLAGS = -Wall -W -Wno-deprecated-declarations -fcommon
 endif
 SSLFLAGS = -lssl -lcrypto
 USBFLAGS = -lusb
