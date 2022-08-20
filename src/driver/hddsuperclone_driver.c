@@ -13,7 +13,6 @@
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/vmalloc.h>
-#include <linux/genhd.h>
 #include <linux/blkdev.h>
 #include <linux/hdreg.h>
 #include <linux/delay.h>
@@ -22,6 +21,7 @@
 #include <linux/mm.h>
 #include <linux/proc_fs.h>
 #include <linux/blk-mq.h>
+#include <linux/bsg.h>
 #include <scsi/sg.h>
 
 //This defines are available in blkdev.h from kernel 4.17 (vanilla).
@@ -179,6 +179,7 @@ static int sg_version_num = 40000;
 static unsigned int working_queue = 0;
 static unsigned int request_queue = 0;
 static int queue_count = 0;
+static struct lock_class_key hddsc_bio_compl_lkclass;
 
 
 
@@ -1600,18 +1601,18 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
         goto out;
       }
 
-      data_device.gd = alloc_disk(16);
+      data_device.gd = __alloc_disk_node(data_queue, NUMA_NO_NODE, &hddsc_bio_compl_lkclass);
       if (!data_device.gd)
       {
         goto out_unregister;
       }
       data_device.gd->major = data_major_num;
+      data_device.gd->minors = 16;
       data_device.gd->first_minor = 0;
       data_device.gd->fops = &data_operations;
       data_device.gd->private_data = &data_device;
       strcpy(data_device.gd->disk_name, data_device.device_name);
       set_capacity(data_device.gd, (data_device.size / KERNEL_SECTOR_SIZE));
-      data_device.gd->queue = data_queue;
       add_disk(data_device.gd);
 
       data_drive_active = 0;
