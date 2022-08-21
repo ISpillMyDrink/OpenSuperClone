@@ -1,2 +1,0 @@
-ACTION=="add", SUBSYSTEM=="block", KERNEL=="[sh]d[a-z]", RUN+="/etc/init.d/hdparm hotplug"
-
