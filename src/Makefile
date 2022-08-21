@@ -31,7 +31,7 @@ hddsuperclone : hddsuperclone.c
 	xxd -i hddsuperclone$(GTKVER).glade hddsuperclone$(GTKVER)_glade.h
 	xxd -i hddsuperclone_EULA.txt hddsuperclone_EULA.h
 	xxd -i $(driverdir)hddsuperclone_driver.c hddsuperclone_driver.h
-	$(CC) $(CFLAGS) hddsuperclone.c commands.c io.c tool.c usbrelay.c smtp.c server.c common.c clone_gui$(GTKVER).c clone_gui_language.c -o $(bindir)hddsuperclone $(GTKFLAGS) $(CURLFLAGS) $(USBFLAGS) $(SSLFLAGS)
+	$(CC) $(CFLAGS) hddsuperclone.c commands.c io.c tool.c usbrelay.c common.c clone_gui$(GTKVER).c clone_gui_language.c -o $(bindir)hddsuperclone $(GTKFLAGS) $(CURLFLAGS) $(USBFLAGS) $(SSLFLAGS)
 
 hddscviewer : hddscviewer$(GTKVER).c
 	xxd -i hddscviewer$(GTKVER).glade hddscviewer$(GTKVER)_glade.h

@@ -5859,11 +5859,7 @@ void about_ccc (void)
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),temp);
 
 
-#ifdef GODMODE
-  strcpy (temp, "License type: PROPRIETARY (GOD MODE) ");
-#else
-  strcpy (temp, "License type: PROPRIETARY ");
-#endif
+  strcpy (temp, "License type: GPL2 ");
   char temp2[256];
   if (activation_type_ccc == 1)
   {
