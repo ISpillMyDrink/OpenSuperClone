@@ -40,34 +40,14 @@ hddscviewer : hddscviewer$(GTKVER).c
 clean:
 	rm -f $(bindir)hddsupertool
 	rm -f hddsupertool_help.h
-	rm -f $(bindir)hddsupertool.1
-	rm -f $(bindir)hddsupertool.info
-	rm -f $(bindir)hddsupertool.html
-	rm -f $(bindir)hddsupertool.texi
-	rm -f $(bindir)hddsupertool.txt
-	rm -f $(bindir)hddsuperclone
 	rm -f hddsuperclone_help.h
 	rm -f hddsuperclone_glade.h
 	rm -f hddsuperclone2_glade.h
 	rm -f hddsuperclone3_glade.h
 	rm -f hddsuperclone_EULA.h
 	rm -f hddsuperclone_driver.h
-	rm -f $(bindir)hddsuperclone.1
-	rm -f hddsuperclone.info
-	rm -f hddsuperclone.html
-	rm -f hddsuperclone.htm
-	rm -f hddsuperclone.pdf
-	rm -f hddsuperclone.txt
-	rm -f hddsuperclone.markdown
 	rm -f $(bindir)hddscviewer
 	rm -f hddscviewer_help.h
 	rm -f hddscviewer2_glade.h
 	rm -f hddscviewer3_glade.h
-	rm -f hddscviewer.1
-	rm -f hddscviewer.info
-	rm -f hddscviewer.html
-	rm -f hddscviewer.htm
-	rm -f hddscviewer.pdf
-	rm -f hddscviewer.txt
-	rm -f hddscviewer.markdown
 	rm -f $(bindir)create_script_help
