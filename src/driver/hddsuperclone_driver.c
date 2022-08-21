@@ -1617,7 +1617,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
         goto out_unregister;
       }
       data_device.gd->major = data_major_num;
-      #if LINUX_VERSION_CODE < KERNEL_VERSION(5,14,21)
+      #if LINUX_VERSION_CODE <= KERNEL_VERSION(5,14,21)
       data_device.gd->queue = data_queue;
       #else
       data_device.gd->minors = 16;
