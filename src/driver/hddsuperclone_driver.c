@@ -14,7 +14,7 @@
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/vmalloc.h>
-#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,14,21)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,15,0)
 #include <linux/genhd.h>
 #endif
 #include <linux/blkdev.h>
@@ -25,7 +25,7 @@
 #include <linux/mm.h>
 #include <linux/proc_fs.h>
 #include <linux/blk-mq.h>
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5,14,21)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,0)
 #include <linux/bsg.h>
 #endif
 #include <scsi/sg.h>
@@ -183,7 +183,7 @@ static int sg_version_num = 40000;
 static unsigned int working_queue = 0;
 static unsigned int request_queue = 0;
 static int queue_count = 0;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5,14,21)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,0)
 static struct lock_class_key hddsc_bio_compl_lkclass;
 #endif
 
@@ -1607,7 +1607,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
         goto out;
       }
 
-      #if LINUX_VERSION_CODE <= KERNEL_VERSION(5,14,21)
+      #if LINUX_VERSION_CODE < KERNEL_VERSION(5,15,0)
       data_device.gd = alloc_disk(16);
       #else
       data_device.gd = __alloc_disk_node(data_queue, NUMA_NO_NODE, &hddsc_bio_compl_lkclass);
@@ -1617,7 +1617,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
         goto out_unregister;
       }
       data_device.gd->major = data_major_num;
-      #if LINUX_VERSION_CODE <= KERNEL_VERSION(5,14,21)
+      #if LINUX_VERSION_CODE < KERNEL_VERSION(5,15,0)
       data_device.gd->queue = data_queue;
       #else
       data_device.gd->minors = 16;
