@@ -38,7 +38,7 @@ hddscviewer : hddscviewer$(GTKVER).c
 	$(CC) $(CFLAGS) hddscviewer$(GTKVER).c -o $(bindir)hddscviewer $(GTKFLAGS) $(CURLFLAGS)
 
 clean:
-	rm -f $(bindir)hddsupertool
+	rm -f $(bindir)hddsuperclone
 	rm -f hddsupertool_help.h
 	rm -f hddsuperclone_help.h
 	rm -f hddsuperclone_glade.h
