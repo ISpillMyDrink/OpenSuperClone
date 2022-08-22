@@ -4,8 +4,6 @@ sudo apt-get install g++ -y
 sudo apt-get install make -y
 sudo apt-get install libusb-dev -y
 sudo apt-get install libcurl4-gnutls-dev -y
-sudo apt-get install libreoffice-base -y
-sudo apt-get install libreoffice-common -y
 sudo apt-get install libssl-dev -y
 sudo apt-get install p7zip-full -y
 sudo apt-get install dh-make -y
