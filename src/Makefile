@@ -18,14 +18,12 @@ GTKFLAGS = `pkg-config --cflags --libs gtk+-$(GTKVER).0` -export-dynamic
 driverdir = driver/
 bindir = ../bin/
 
-all:  hddsuperclone hddscviewer
-clone: hddsuperclone
-viewer: hddscviewer
+default: clone viewer
 
 create_script_help : create_script_help.c
 	$(CC) $(CFLAGS) create_script_help.c -o $(bindir)create_script_help
 
-hddsuperclone : hddsuperclone.c
+clone : hddsuperclone.c
 	xxd -i hddsupertool_help.txt hddsupertool_help.h
 	xxd -i hddsuperclone_help.txt hddsuperclone_help.h
 	xxd -i hddsuperclone$(GTKVER).glade hddsuperclone$(GTKVER)_glade.h
@@ -33,7 +31,7 @@ hddsuperclone : hddsuperclone.c
 	xxd -i $(driverdir)hddsuperclone_driver.c hddsuperclone_driver.h
 	$(CC) $(CFLAGS) hddsuperclone.c commands.c io.c tool.c usbrelay.c common.c clone_gui$(GTKVER).c clone_gui_language.c -o $(bindir)hddsuperclone $(GTKFLAGS) $(CURLFLAGS) $(USBFLAGS) $(SSLFLAGS)
 
-hddscviewer : hddscviewer$(GTKVER).c
+viewer : hddscviewer$(GTKVER).c
 	xxd -i hddscviewer$(GTKVER).glade hddscviewer$(GTKVER)_glade.h
 	$(CC) $(CFLAGS) hddscviewer$(GTKVER).c -o $(bindir)hddscviewer $(GTKFLAGS) $(CURLFLAGS)
 
@@ -51,3 +49,13 @@ clean:
 	rm -f hddscviewer2_glade.h
 	rm -f hddscviewer3_glade.h
 	rm -f $(bindir)create_script_help
+
+install:
+	cp ../bin/hddsuperclone /usr/local/bin/hddsuperclone
+	cp ../bin/hddscviewer /usr/local/bin/hddscviewer
+	cp -r ../bin/hddscripts /usr/local/bin/hddscripts
+
+uninstall:
+	rm /usr/local/bin/hddsuperclone
+	rm /usr/local/bin/hddscviewer
+	rm -r /usr/local/bin/hddscripts
