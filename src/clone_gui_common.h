@@ -335,11 +335,7 @@ void invoke_hba_reset_ccc (void);
 
 void clear_domain_ccc(void);
 
-int get_and_install_license_ccc (char *private_file, int force_hardlink);
-
 int open_confirmation_dialog_ccc (char *message);
-
-int delete_license_file_ccc(void);
 
 void disable_ports_ccc (void);
 

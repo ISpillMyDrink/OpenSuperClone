@@ -2499,9 +2499,6 @@ void help(void)
   fprintf (stdout, " -v, --version              Show version and exit\n");
   fprintf (stdout, " -h, --help                 Show this help and exit\n");
   fprintf (stdout, "\n");
-  fprintf (stdout, "Report bugs to sdcomputingservice@gmail.com\n");
-  fprintf (stdout, "Please be sure to include 'hddscviewer' in the subject line. \n");
-  fprintf (stdout, "\n");
 }
 
 
@@ -2511,7 +2508,7 @@ void version(void)
 {
   fprintf (stdout, "%s %s\n", title, version_number);
   fprintf (stdout, "Copyright (C) %d Scott Dwyer.\n", copyright_year);
-  fprintf (stdout, "License type: FREEWARE\n");
+  fprintf (stdout, "GPL2\n");
   fprintf (stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
 }
 

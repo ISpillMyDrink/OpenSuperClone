@@ -19,8 +19,3 @@ The following options are for HDDSuperTool mode only
      --ata                     List drives via ata-passthrough (default)
      --scsi                    List drives via scsi-passthrough
  -Q, --quiet                   Surpress some of the output
-
-
-Report bugs to sdcomputingservice@gmail.com
-Please be sure to include "hddsuperclone" in the subject line.
-

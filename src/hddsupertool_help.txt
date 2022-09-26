@@ -27,7 +27,3 @@ OPTIONS:
      --scsi                    List drives via scsi-passthrough
  -s, --serial <serial>         Choose drive by serial number
  -Q, --quiet                   Surpress some of the output
-
-Report bugs to sdcomputingservice@gmail.com
-Please be sure to include "hddsupertool" in the subject line.
-

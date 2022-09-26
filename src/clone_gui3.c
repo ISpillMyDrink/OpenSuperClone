@@ -5821,29 +5821,14 @@ void about_ccc (void)
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),temp);
 
 
-  strcpy (temp, "License type: GPL2 ");
-  char temp2[256];
-  if (activation_type_ccc == 1)
-  {
-    sprintf (temp2, "(TEMPORARY VERSION)\n%d days remaining\n", activation_days_remaining_ccc);
-    strcat (temp, temp2);
-  }
-  else if (activation_type_ccc == 2)
-  {
-    sprintf (temp2, "(FULL VERSION)\n");
-    strcat (temp, temp2);
-  }
-  else
-  {
-    sprintf (temp2, "(FREE VERSION)\n");
-    strcat (temp, temp2);
-  }
+  strcpy (temp, "License type: GPL2\n");
+
   strcat (temp, "There is NO WARRANTY, to the extent permitted by law.");
 
 
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
-  gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), "www.sdcomputingservice.com");
+  gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), "www.github.com/ISpillMyDrink/OpenSuperClone");
 
   gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(dialog), (char*)hddsuperclone_EULA_txt);
 
@@ -5886,82 +5871,6 @@ void help_text_ccc(void)
     exit(0);
   }
 }
-
-
-
-
-
-void activate_with_file_ccc(void)
-{
-  GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new (curlang_ccc[LANGLOADACTIVATIONFILE],
-                                        GTK_WINDOW(main_window_ccc),
-                                        GTK_FILE_CHOOSER_ACTION_OPEN,
-                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                        NULL);
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename;
-    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-    fprintf (stdout, "PLEASE WAIT: Processing activation  %s\n", filename);
-    int ret2 = 0;
-    int ret = get_and_install_license_ccc(filename, 0);
-    if (ret)
-    {
-      // if it failed then try forcing hard link
-      ret2 = get_and_install_license_ccc(filename, 1);
-    }
-    if (ret2)
-    {
-      strcpy (tempmessage_ccc, curlang_ccc[LANGACTIVATIONFAILED]);
-      message_error_ccc(tempmessage_ccc);
-      sprintf (tempmessage_ccc, "\n0x%08x", ret);
-      message_error_ccc(tempmessage_ccc);
-      sprintf (tempmessage_ccc, "\n0x%08x", ret2);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-      clear_error_message_ccc();
-    }
-    else
-    {
-      strcpy (tempmessage_ccc, curlang_ccc[LANGACTIVATIONSUCCESS]);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
-      clear_error_message_ccc();
-    }
-    g_free (filename);
-  }
-  gtk_widget_destroy (dialog);
-}
-
-
-
-
-
-void remove_activation_ccc (void)
-{
-  if (open_confirmation_dialog_ccc (curlang_ccc[LANGCONFIRMREMOVEACTIVATION]))
-  {
-    if (delete_license_file_ccc())
-    {
-      strcpy (tempmessage_ccc, curlang_ccc[LANGOPERATIONFAILED]);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 1);
-      clear_error_message_ccc();
-    }
-    else
-    {
-      strcpy (tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
-      clear_error_message_ccc();
-    }
-  }
-}
-
-
-
 
 
 // open choose usb dialog window

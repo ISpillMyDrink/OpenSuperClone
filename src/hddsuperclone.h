@@ -11,19 +11,11 @@
 #define TRANSLATE 257
 #define ENABLE_REBUILD_ASSIST 258
 #define ENABLE_HBA_RESET 265
-#define RUN_SERVERP 266
-#define MANUAL_CREATE 267
-#define COMMAND_SERVERP 268
 #define REBUILD_ASSIST_TEST 269
 #define ENABLE_HBA_TEST 270
 #define DISABLE_AHCI_IDENTIFY 271
 
-#define MAKELICENSE 259
-#define LICENSETYPE 260
-#define LICENSEVERSION 261
-#define LICENSEPROCESSACTIVE 262
 #define SUPERTOOL 263
-#define LICENSETIME 264
 #define ATAMODE 512
 #define SCSIMODE 513
 #define TESTSKIP 514
@@ -525,85 +517,6 @@ bool found_exec_ccc = false;
 int license_data_size_ccc = 128;
 char *hardlink_url_ccc = "https://drive.google.com/get-your-own-direct-file-link";
 unsigned long long blacklist_flags_ccc = 0;
-
-#define EMAIL (1 << 0)
-#define IPADDRESS (1 << 1)
-#define IPADDRESS4 (1 << 2)
-#define IPADDRESS6 (1 << 3)
-#define COUNTRY (1 << 4)
-#define CITY (1 << 5)
-#define REGION (1 << 6)
-#define EMAILSTRINGSIZE 256
-#define EMAILHEADERSIZE 16
-#define EMAILDATASIZE (256*20)
-unsigned char mail_data_ccc[EMAILDATASIZE+EMAILHEADERSIZE];
-struct
-{
-  char user[EMAILSTRINGSIZE];
-  char pass[EMAILSTRINGSIZE];
-  char from[EMAILSTRINGSIZE];
-  char from_name[EMAILSTRINGSIZE];
-  char subject[EMAILSTRINGSIZE];
-  char to[EMAILSTRINGSIZE];
-  char to_name[EMAILSTRINGSIZE];
-  char server[EMAILSTRINGSIZE];
-  char port[8];
-  unsigned char security;
-  unsigned char flags;
-  unsigned char auth;
-  unsigned char processing_flags;
-  unsigned char version;
-} mail_ccc;
-struct
-{
-  char user[EMAILSTRINGSIZE];
-  char pass[EMAILSTRINGSIZE];
-  char from[EMAILSTRINGSIZE];
-  char from_name[EMAILSTRINGSIZE];
-  char subject[EMAILSTRINGSIZE];
-  char to[EMAILSTRINGSIZE];
-  char to_name[EMAILSTRINGSIZE];
-  char server[EMAILSTRINGSIZE];
-  char port[8];
-  unsigned char security;
-  unsigned char flags;
-  unsigned char auth;
-  unsigned char processing_flags;
-  unsigned char version;
-} alt_mail_ccc;
-
-int check_license_file_ccc(void);
-
-int get_mac_address_ccc(void);
-
-int encrypt_decrypt_public_data_ccc (void);
-
-int encrypt_decrypt_private_data_ccc (void);
-
-int get_private_license_data_from_file_ccc (char *private_file);
-
-int get_public_url_list_ccc (int silent, int force_hardlink);
-
-int get_public_license_data_ccc (void);
-
-int merge_license_data_ccc (void);
-
-int install_license_ccc (void);
-
-int encrypt_decrypt_data_with_mac_ccc (unsigned char *data, int size, unsigned char mac[6]);
-
-int encrypt_decrypt_data_with_id_ccc (unsigned char *data, int size);
-
-void process_blacklist_ccc (void);
-
-long long check_time_file_ccc(void);
-
-void set_time_file_ccc(void);
-
-int send_email_ccc(void);
-
-int encrypt_decrypt_data_with_header_ccc (unsigned char *data, int size, int headersize);
-
 
 
 #define LICENSEHEADERSIZE 48

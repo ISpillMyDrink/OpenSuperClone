@@ -910,20 +910,3 @@ int usb_identify_ccc(int timeout);
 int usb_read_smart_ccc(int timeout, unsigned char regs[7]);
 
 int set_dma_mode_ccc(unsigned char mode);
-
-int make_license_files_ccc (int version, int type, int days, int number);
-
-int process_active_licenses_ccc (void);
-
-
-
-
-
-
-
-
-
-
-
-
-

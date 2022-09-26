@@ -558,8 +558,6 @@ void set_driver_mode_button_status_ccc (bool active);
 
 void check_driver_null_condition_ccc (void);
 
-void remove_activation_ccc (void);
-
 void update_ports_ccc (void);
 
 void start_analyzing_ccc (void);
