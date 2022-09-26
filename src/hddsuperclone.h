@@ -503,26 +503,16 @@ char *get_smart_attribute_name_ccc(int id);
 
 
 
-unsigned char ccc_mac_address_ccc[6];
 char *install_directory_ccc = "/usr/local/bin/";
-//char *license_file_name_ccc = "/usr/local/etc/hddsuperclone.lic";
-char *license_file_name_ccc = "/usr/local/etc/dhsdpurelceno.cil";
-char *time_check_file_name_ccc = "/usr/local/etc/dhsdpurelceno.kct";
-long long blacklist_check_interval_ccc = 128000;    // 128000 seconds is about 1 1/2 day
 bool path_fail_ccc = false;
 char start_working_directory_ccc[PATH_MAX];
 char called_name_ccc[PATH_MAX];
 char full_exec_path_ccc[PATH_MAX * 2];
 bool found_exec_ccc = false;
-int license_data_size_ccc = 128;
-char *hardlink_url_ccc = "https://drive.google.com/get-your-own-direct-file-link";
-unsigned long long blacklist_flags_ccc = 0;
 
 
 #define LICENSEHEADERSIZE 48
 unsigned char license_data_ccc[1024];
-unsigned char private_license_data_ccc[1024 + LICENSEHEADERSIZE];
-unsigned char public_license_data_ccc[1024 + LICENSEHEADERSIZE];
 
 // unlock free pro version
 unsigned char master_data_ccc[1024] = {
