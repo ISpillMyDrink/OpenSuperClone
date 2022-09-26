@@ -6191,7 +6191,6 @@ void do_deactivate_primary_relay_ccc(void)
 
 void map_heads_ccc (void)
 {
-#ifdef GODMODE
   if (!connected_ccc)
   {
     strcpy (tempmessage_ccc, "you must be connected to map heads");
@@ -6209,7 +6208,6 @@ void map_heads_ccc (void)
       clear_error_message_ccc();
     }
   }
-#endif
 }
 
 

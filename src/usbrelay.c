@@ -137,12 +137,10 @@ int find_all_usb_devices_ccc(void)
         }
 
         // if it is a known usb relay then mark it
-#ifdef GODMODE
         if (dev->descriptor.idVendor == USBMICRO_U451_RELAY_VENDOR_ID && dev->descriptor.idProduct == USBMICRO_U451_RELAY_PRODUCT_ID)
         {
           usb_known_relay_ccc[usb_device_count_ccc] = 1;
         }
-#endif
 
         if (1)
         {

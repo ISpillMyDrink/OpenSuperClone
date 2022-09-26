@@ -99,7 +99,7 @@ do                                                 \
 
 #define DRIVER_VERSION "2.6_20211126"
 
-MODULE_LICENSE("Proprietary");
+MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Driver for HDDSuperClone");
 MODULE_AUTHOR("Scott Dwyer");
 MODULE_VERSION(DRIVER_VERSION);
