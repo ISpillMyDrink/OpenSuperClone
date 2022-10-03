@@ -1243,9 +1243,9 @@ void install_driver_ccc(void)
     return;
   }
   unsigned int i;
-  for (i = 0; i < driver_opensuperclone_driver_c_len; i++)
+  for (i = 0; i < opensuperclone_driver_c_len; i++)
   {
-    fprintf(writefile, "%c", driver_opensuperclone_driver_c[i]);
+    fprintf(writefile, "%c", opensuperclone_driver_c[i]);
   }
   int fp = fileno(writefile);
   fsync(fp);
