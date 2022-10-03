@@ -375,8 +375,8 @@ sudo /home/hddsupertool
 
 
 You may notice that examples did not include a drive or script. As long as the
-hddscripts folder is either in the current working directory, or has been
-copied to /usr/local/bin/hddscripts, hddsupertool will start with a menu driven
+oscscripts folder is either in the current working directory, or has been
+copied to /usr/local/bin/oscscripts, hddsupertool will start with a menu driven
 system. You can still run hddsupertool with manual options to declare which
 drive and script with a command such as the following:
 @example
@@ -527,8 +527,8 @@ with the BIOS set to IDE. You are stuck using passthrough mode in this case.
 @itemx --file @var{script}
 The script file that contains the commands to be sent to the drive. If this is
 not set, then it will look for a file named "hddmenu" first in the current
-directory, then in the sub directory "hddscripts/", and then in
-"/usr/local/bin/hddscripts/". All subscripts will be loaded from the directory
+directory, then in the sub directory "oscscripts/", and then in
+"/usr/local/bin/oscscripts/". All subscripts will be loaded from the directory
 where hddmenu was found. If no script file is found then the program will exit.
 
 @item -i @var{spaces}

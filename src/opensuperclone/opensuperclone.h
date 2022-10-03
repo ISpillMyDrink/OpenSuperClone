@@ -95,7 +95,7 @@ void cleanup_ccc(void);
 void help_ccc(void);
 void version_ccc(void);
 
-char *debugfile_ccc = "hddsuperclone_debug.log";
+char *debugfile_ccc = "opensuperclone_debug.log";
 
 char full_command_line_ccc[1024] = "";
 int log_rows_ccc = 1000;

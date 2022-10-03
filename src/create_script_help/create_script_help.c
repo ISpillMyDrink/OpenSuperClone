@@ -21,7 +21,7 @@ int main(void)
   int index = 0;
   char command[512];
 
-  n = scandir("hddscripts", &namelist, 0, alphasort);
+  n = scandir("oscscripts", &namelist, 0, alphasort);
   if (n < 0)
   {
     perror("scandir");
@@ -44,7 +44,7 @@ int main(void)
 
   strcpy(command, "cat hddsupertool-p1.texi > hddsupertool.texi");
   system(command);
-  char *newdirectory = "hddscripts";
+  char *newdirectory = "oscscripts";
   chdir(newdirectory);
   char *texifile = "../hddsupertool.texi";
   FILE *texi_file = fopen(texifile, "a");

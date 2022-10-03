@@ -1230,9 +1230,9 @@ void import_language_file_ccc(void)
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                        NULL);
-  if (access("/usr/local/share/doc/hddsuperclone/Language/English", F_OK) == 0)
+  if (access("/usr/local/share/doc/opensuperclone/Language/English", F_OK) == 0)
   {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/hddsuperclone/Language");
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/opensuperclone/Language");
     g_print("found installed languages\n");
   }
   else if (access("Language/English", F_OK) == 0)
@@ -5427,8 +5427,8 @@ void help_html_ccc(void)
   if (pid == 0)
   {
     // make sure this exits and does not return
-    system("cp -f /usr/local/share/doc/hddsuperclone/hddsuperclone.html /tmp/");
-    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/hddsuperclone.html > /dev/null 2>&1");
+    system("cp -f /usr/local/share/doc/opensuperclone/opensuperclone.html /tmp/");
+    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/opensuperclone.html > /dev/null 2>&1");
     exit(0);
   }
 }
@@ -5441,8 +5441,8 @@ void help_text_ccc(void)
   if (pid == 0)
   {
     // make sure this exits and does not return
-    system("cp -f /usr/local/share/doc/hddsuperclone/hddsuperclone.txt /tmp/");
-    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/hddsuperclone.txt > /dev/null 2>&1");
+    system("cp -f /usr/local/share/doc/opensuperclone/opensuperclone.txt /tmp/");
+    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/opensuperclone.txt > /dev/null 2>&1");
     exit(0);
   }
 }
