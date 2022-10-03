@@ -3,7 +3,7 @@
 This is a fork of the HDDSuperClone source code (http://www.hddsuperclone.com/) released under the GPL2 by Scott Dwyer.
 
 Only changes so far include removal of unnecessary license check code and cleanup of the project files.
-The CLI program HDDSuperTool has been completely removed.
+The standalone CLI program HDDSuperTool has been completely removed.
 
 
 ### Compiling
@@ -12,7 +12,7 @@ The CLI program HDDSuperTool has been completely removed.
 # Install required packages for building
 ./install-build-requirements.sh
 
-# Build HDDSuperClone and HDDSCViewer
+# Build OpenSuperClone and OSCViewer
 ./build.sh
 ```
 
@@ -24,9 +24,9 @@ Compilation has been successfully tested on Ubuntu 22.04.1.
 # Install dependencies for running
 ./install-dependencies-deb.sh
 
-# Run HDDSuperClone
-sudo ./bin/hddsuperclone
+# Run OpenSuperClone
+sudo ./bin/opensuperclone
 
-# Run HDDSCViewer
-sudo ./bin/hddscviewer
+# Run OSCViewer
+./bin/osscviewer
 ```
