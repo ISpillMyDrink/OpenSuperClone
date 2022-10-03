@@ -3256,7 +3256,7 @@ int clear_error_message(void)
 void help(void)
 {
   fprintf(stdout, "\n");
-  fprintf(stdout, "Usage: hddscviewer [options]\n");
+  fprintf(stdout, "Usage: oscviewer [options]\n");
   fprintf(stdout, "\n");
   fprintf(stdout, "OPTIONS:\n");
   fprintf(stdout, " -v, --version              Show version and exit\n");
@@ -3399,9 +3399,9 @@ void import_language_file(void)
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                        NULL);
-  if (access("/usr/local/share/doc/hddscviewer/Language/English", F_OK) == 0)
+  if (access("/usr/local/share/doc/oscviewer/Language/English", F_OK) == 0)
   {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/hddscviewer/Language");
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/oscviewer/Language");
     g_print("found installed languages\n");
   }
   else if (access("Language/English", F_OK) == 0)

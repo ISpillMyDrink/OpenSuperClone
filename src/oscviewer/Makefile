@@ -7,7 +7,6 @@ else
 CFLAGS = -Wall -W -Wno-deprecated-declarations -fcommon
 endif
 SSLFLAGS = -lssl -lcrypto
-USBFLAGS = -lusb
 CURLFLAGS = -lcurl
 GTKFLAGS = `pkg-config --cflags --libs gtk+-$(GTKVER).0` -export-dynamic
 
