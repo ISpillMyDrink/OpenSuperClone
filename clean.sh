@@ -1,12 +1,4 @@
+rm -r build
 
-cd src/opensuperclone
-
-make clean
-
-cd ../oscviewer
-
-make clean
-
-cd ../create_script_help
-
-make clean
+rm bin/opensuperclone
+rm bin/oscviewer

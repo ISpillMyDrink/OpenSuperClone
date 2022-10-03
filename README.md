@@ -30,3 +30,10 @@ sudo ./bin/opensuperclone
 # Run OSCViewer
 ./bin/osscviewer
 ```
+
+### Installing
+
+```Bash
+# Install OpenSuperClone
+./install.sh
+```

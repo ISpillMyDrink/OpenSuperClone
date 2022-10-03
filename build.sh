@@ -1,15 +1,10 @@
+mkdir -p build
 
-cd src/opensuperclone
+cd ./build
 
-make clean
+cmake ../
+
 make
 
-cd ../oscviewer
-
-make clean
-make
-
-cd ../create_script_help
-
-make clean
-make
+mv ./src/opensuperclone/opensuperclone ../bin/opensuperclone
+mv ./src/oscviewer/oscviewer ../bin/oscviewer
