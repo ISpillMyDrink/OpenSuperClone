@@ -42,11 +42,11 @@ int main(void)
   }
   free(namelist);
 
-  strcpy(command, "cat hddsupertool-p1.texi > hddsupertool.texi");
+  strcpy(command, "cat opensupertool-p1.texi > opensupertool.texi");
   system(command);
   char *newdirectory = "oscscripts";
   chdir(newdirectory);
-  char *texifile = "../hddsupertool.texi";
+  char *texifile = "../opensupertool.texi";
   FILE *texi_file = fopen(texifile, "a");
   if (texi_file == NULL)
   {
@@ -59,7 +59,7 @@ int main(void)
     // fprintf(stdout, "@example\n");
     fprintf(texi_file, "\n\n%s\n", name[index]);
     fprintf(texi_file, "@example\n");
-    strcpy(command, "../hddsuperclone --tool -Q -t /dev/zero -f ");
+    strcpy(command, "../opensuperclone --tool -Q -t /dev/zero -f ");
     strcat(command, name[index]);
     strcat(command, " help=1 printhelp=1");
     fprintf(stdout, "%s\n", command);
@@ -90,7 +90,7 @@ int main(void)
   }
   fclose(texi_file);
   chdir("..");
-  strcpy(command, "cat hddsupertool-p2.texi >> hddsupertool.texi");
+  strcpy(command, "cat opensupertool-p2.texi >> opensupertool.texi");
   system(command);
 
   return (0);

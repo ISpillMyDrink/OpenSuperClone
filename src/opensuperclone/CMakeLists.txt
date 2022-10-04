@@ -53,11 +53,26 @@ add_custom_command(
 )
 LIST(APPEND RESOURCES opensuperclone_driver.h)
 
-# Include generated header files
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-set(LIBRARIES ${LIBRARIES} ${LIBUSB_LIBRARY})
-
+# Add build target OpenSuperClone
 add_executable(opensuperclone ${SOURCES} ${RESOURCES})
-target_link_libraries(opensuperclone ${LIBRARIES})
-target_compile_options(opensuperclone PRIVATE ${GCC_OPTIONS})
+
+# Include resources
+target_include_directories(opensuperclone PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
+# Add GTK dependency
+if(GTKVER EQUAL 2)
+    target_include_directories(opensuperclone PUBLIC ${GTK2_INCLUDE_DIRS})
+    target_link_directories(opensuperclone PUBLIC ${GTK2_LIBRARY_DIRS})
+    target_compile_options(opensuperclone PRIVATE ${GTK2_CFLAGS_OTHER})
+    target_link_libraries(opensuperclone ${GTK2_LIBRARIES})
+elseif(GTKVER EQUAL 3)
+    target_include_directories(opensuperclone PUBLIC ${GTK3_INCLUDE_DIRS})
+    target_link_directories(opensuperclone PUBLIC ${GTK3_LIBRARY_DIRS})
+    target_compile_options(opensuperclone PRIVATE ${GTK3_CFLAGS_OTHER})
+    target_link_libraries(opensuperclone ${GTK3_LIBRARIES})
+endif()
+
+# Add LibUSB dependency
+target_link_libraries(opensuperclone ${LIBUSB_LIBRARY})
+
+target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})

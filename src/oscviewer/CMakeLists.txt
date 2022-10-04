@@ -3,18 +3,31 @@ set(SOURCES
     oscviewer${GTKVER}.h
 )
 
-# Generate header file from glade file
+# Generate header files from resources
 add_custom_command(
     OUTPUT oscviewer${GTKVER}_glade.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/oscviewer${GTKVER}.glade oscviewer${GTKVER}.glade
     COMMAND xxd -i oscviewer${GTKVER}.glade oscviewer${GTKVER}_glade.h
 )
+LIST(APPEND RESOURCES oscviewer${GTKVER}_glade.h)
 
-# Include generated header file
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+# Add build target OSCViewer
+add_executable(oscviewer ${SOURCES} ${RESOURCES})
 
-add_executable(oscviewer ${SOURCES} oscviewer${GTKVER}_glade.h)
+# Include resources
+target_include_directories(oscviewer PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(oscviewer ${LIBRARIES})
+# Add GTK dependency
+if(GTKVER EQUAL 2)
+    target_include_directories(oscviewer PUBLIC ${GTK2_INCLUDE_DIRS})
+    target_link_directories(oscviewer PUBLIC ${GTK2_LIBRARY_DIRS})
+    target_compile_options(oscviewer PRIVATE ${GTK2_CFLAGS_OTHER})
+    target_link_libraries(oscviewer ${GTK2_LIBRARIES})
+elseif(GTKVER EQUAL 3)
+    target_include_directories(oscviewer PUBLIC ${GTK3_INCLUDE_DIRS})
+    target_link_directories(oscviewer PUBLIC ${GTK3_LIBRARY_DIRS})
+    target_compile_options(oscviewer PRIVATE ${GTK3_CFLAGS_OTHER})
+    target_link_libraries(oscviewer ${GTK3_LIBRARIES})
+endif()
 
-target_compile_options(oscviewer PRIVATE ${GCC_OPTIONS})
+target_compile_options(oscviewer PRIVATE ${CC_OPTIONS})

@@ -1,3 +1,4 @@
+# Ignore CMake files
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -9,6 +10,8 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+# Ignore build directory and build binaries
 build
 bin/opensuperclone
 bin/oscviewer
