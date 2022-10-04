@@ -73,6 +73,6 @@ elseif(GTKVER EQUAL 3)
 endif()
 
 # Add LibUSB dependency
-target_link_libraries(opensuperclone ${LIBUSB_LIBRARY})
+target_link_libraries(opensuperclone ${LIBUSB_LIBRARIES})
 
 target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})

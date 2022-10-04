@@ -8,10 +8,7 @@ elseif(GTKVER EQUAL 3)
 endif()
 
 # Find LibUSB dependency
-find_library(LIBUSB_LIBRARY
-    NAMES usb
-    PATH_SUFFIXES "lib" "lib32" "lib64"
-)
+pkg_check_modules(LIBUSB REQUIRED libusb)
 
 add_subdirectory(opensuperclone)
 add_subdirectory(oscviewer)
