@@ -2909,7 +2909,7 @@ int get_block_information(long long position, long long size)
   long long bad = 0;
   long long finished = 0;
   long long hightime = 0;
-  char tempchar[256];
+  char tempchar[384];
   char lines[maxcount * sizeof(tempchar)];
   strcpy(lines, "");
   // process current status
@@ -3323,15 +3323,15 @@ int print_gui_error_message(char *message, char *title, int type)
   GtkDialogFlags message_type;
   if (type)
   {
-    message_type = GTK_MESSAGE_WARNING;
+    message_type = (GtkDialogFlags)GTK_MESSAGE_WARNING;
     // dialog = gtk_message_dialog_new(GTK_WINDOW(main_window), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s", message);
   }
   else
   {
-    message_type = GTK_MESSAGE_INFO;
+    message_type = (GtkDialogFlags)GTK_MESSAGE_INFO;
     // dialog = gtk_message_dialog_new(GTK_WINDOW(main_window), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "%s", message);
   }
-  dialog = gtk_message_dialog_new(GTK_WINDOW(window), GTK_DIALOG_DESTROY_WITH_PARENT, message_type, GTK_BUTTONS_OK, "%s", message);
+  dialog = gtk_message_dialog_new(GTK_WINDOW(window), GTK_DIALOG_DESTROY_WITH_PARENT, (GtkMessageType)message_type, GTK_BUTTONS_OK, "%s", message);
   gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
   gtk_dialog_run(GTK_DIALOG(dialog));

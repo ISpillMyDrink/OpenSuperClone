@@ -17,12 +17,4 @@ add_executable(oscviewer ${SOURCES} oscviewer${GTKVER}_glade.h)
 
 target_link_libraries(oscviewer ${LIBRARIES})
 
-set(GCC_OPTIONS
-    -Wall
-    -W
-    -Wno-deprecated-declarations
-    -fcommon
-    -lcurl
-)
-
 target_compile_options(oscviewer PRIVATE ${GCC_OPTIONS})
