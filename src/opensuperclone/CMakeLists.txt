@@ -53,6 +53,9 @@ add_custom_command(
 )
 LIST(APPEND RESOURCES opensuperclone_driver.h)
 
+# Generate config file for OpenSuperClone
+configure_file(config.h.in config.h)
+
 # Add build target OpenSuperClone
 add_executable(opensuperclone ${SOURCES} ${RESOURCES})
 

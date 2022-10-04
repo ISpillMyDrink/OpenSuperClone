@@ -1,9 +1,9 @@
+find_package(PkgConfig REQUIRED)
+
 # Find GTK dependency
 if(GTKVER EQUAL 2)
-    find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
 elseif(GTKVER EQUAL 3)
-    find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 endif()
 

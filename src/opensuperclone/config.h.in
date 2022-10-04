@@ -1,0 +1,2 @@
+#define OSC_VERSION "@OpenSuperClone_VERSION@"
+#define OSC_HOMEPAGE "@OpenSuperClone_HOMEPAGE_URL@"

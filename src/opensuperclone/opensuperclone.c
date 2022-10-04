@@ -3,6 +3,7 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#include "config.h"
 #include "common.h"
 #include "clone_gui_common.h"
 #include "opensuperclone.h"
@@ -34,7 +35,7 @@ char *scripts_version_number = "1.9_20190413";
 int main(int argc, char **argv)
 {
   title_ccc = "OpenSuperClone";
-  version_number_ccc = "2.3.3";
+  version_number_ccc = OSC_VERSION;
   copyright_year_ccc = "2022";
 
   // Register ctrl-c signal and signal handler

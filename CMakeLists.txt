@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
-# OpenSuperClone version 2.3.3
-project(OpenSuperClone VERSION 2.3.3)
+# OpenSuperClone version 2.4
+project(OpenSuperClone VERSION 2.4 HOMEPAGE_URL https://github.com/ISpillMyDrink/OpenSuperClone)
 
 # Set the GTK version to 2.x
 set(GTKVER 2 CACHE STRING "GTK Version")

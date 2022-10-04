@@ -3,6 +3,7 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#include "config.h"
 #include "clone_gui_common.h"
 #include "clone_gui3.h"
 #include "common.h"
@@ -5411,7 +5412,7 @@ void about_ccc(void)
 
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
-  gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), "www.github.com/ISpillMyDrink/OpenSuperClone");
+  gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
 
   gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(dialog), (char *)opensuperclone_EULA_txt);
 
