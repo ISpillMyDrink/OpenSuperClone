@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 {
   title_ccc = "OpenSuperClone";
   version_number_ccc = OSC_VERSION;
-  copyright_year_ccc = "2022";
+  copyright_year_ccc = COPYRIGHT_YEAR;
 
   // Register ctrl-c signal and signal handler
   signal(SIGINT, signal_callback_handler_ccc);

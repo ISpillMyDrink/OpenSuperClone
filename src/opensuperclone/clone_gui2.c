@@ -204,8 +204,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   displayidentifymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "displayidentifymi"));
   displayanalyzemi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "displayanalyzemi"));
   displaysmartmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "displaysmartmi"));
-  helphtmlmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "helphtmlmi"));
-  helptextmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "helptextmi"));
   primaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primaryrelaymi"));
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
@@ -265,15 +263,11 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(newdomainmi_ccc), curlang_ccc[LANGNEWDOMAINFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainmi_ccc), curlang_ccc[LANGSAVEDOMAINFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainasmi_ccc), curlang_ccc[LANGSAVEDOMAINFILEAS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(activatewithfilemi_ccc), curlang_ccc[LANGLOADACTIVATIONFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(removeactivationmi_ccc), curlang_ccc[LANGREMOVEACTIVATION]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), curlang_ccc[LANGDISABLEPORTS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreportsmi_ccc), curlang_ccc[LANGRESTOREPORTS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(displayidentifymi_ccc), curlang_ccc[LANGDISPLAYIDENTIFYRESULTS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), curlang_ccc[LANGDISPLAYANALYZERESULTS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(displaysmartmi_ccc), curlang_ccc[LANGDISPLAYSMARTRESULTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(helphtmlmi_ccc), curlang_ccc[LANGHELPHTML]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(helptextmi_ccc), curlang_ccc[LANGHELPTEXT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), curlang_ccc[LANGPRIMARYRELAY]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), curlang_ccc[LANGCHOOSEPRIMARYUSB]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), curlang_ccc[LANGDISABLEUSBMASS]);
@@ -1240,9 +1234,9 @@ void import_language_file_ccc(void)
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                        NULL);
-  if (access("/usr/local/share/doc/opensuperclone/Language/English", F_OK) == 0)
+  if (access(OSC_LANG_PATH, F_OK) == 0)
   {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/opensuperclone/Language");
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), OSC_LANG_PATH);
     g_print("found installed languages\n");
   }
   else if (access("Language/English", F_OK) == 0)
@@ -5456,34 +5450,6 @@ void about_ccc(void)
 
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
-}
-
-void help_html_ccc(void)
-{
-  // fork here to prevent locking up due to opening as root
-  pid_t pid;
-  pid = fork();
-  if (pid == 0)
-  {
-    // make sure this exits and does not return
-    system("cp -f /usr/local/share/doc/opensuperclone/opensuperclone.html /tmp/");
-    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/opensuperclone.html > /dev/null 2>&1");
-    exit(0);
-  }
-}
-
-void help_text_ccc(void)
-{
-  // fork here to prevent locking up due to opening as root
-  pid_t pid;
-  pid = fork();
-  if (pid == 0)
-  {
-    // make sure this exits and does not return
-    system("cp -f /usr/local/share/doc/opensuperclone/opensuperclone.txt /tmp/");
-    system("sudo -E -H -P -u $(who | head -1 | awk '{print $1}') xdg-open /tmp/opensuperclone.txt > /dev/null 2>&1");
-    exit(0);
-  }
 }
 
 // open choose usb dialog window

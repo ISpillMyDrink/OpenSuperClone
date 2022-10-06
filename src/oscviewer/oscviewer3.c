@@ -3,12 +3,13 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#include "config.h"
 #include "oscviewer3.h"
 #include "oscviewer3_glade.h"
 
 char *title = "OSCViewer";
-char *version_number = "0.8";
-int copyright_year = 2019;
+char *version_number = OSCVIEWER_VERSION;
+int copyright_year = COPYRIGHT_YEAR;
 
 int main(int argc, char **argv)
 {
@@ -2419,9 +2420,9 @@ void import_language_file(void)
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                        NULL);
-  if (access("/usr/local/share/doc/oscviewer/Language/English", F_OK) == 0)
+  if (access(OSCVIEWER_LANG_PATH, F_OK) == 0)
   {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/usr/local/share/doc/oscviewer/Language");
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), OSCVIEWER_LANG_PATH);
     g_print("found installed languages\n");
   }
   else if (access("Language/English", F_OK) == 0)

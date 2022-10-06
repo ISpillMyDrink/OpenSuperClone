@@ -11,6 +11,9 @@ add_custom_command(
 )
 LIST(APPEND RESOURCES oscviewer${GTKVER}_glade.h)
 
+# Generate config file for OSCViewer
+configure_file(config.h.in config.h)
+
 # Add build target OSCViewer
 add_executable(oscviewer ${SOURCES} ${RESOURCES})
 

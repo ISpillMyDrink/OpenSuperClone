@@ -154,8 +154,6 @@ GtkWidget *restoreportsmi_ccc;
 GtkWidget *displayidentifymi_ccc;
 GtkWidget *displayanalyzemi_ccc;
 GtkWidget *displaysmartmi_ccc;
-GtkWidget *helphtmlmi_ccc;
-GtkWidget *helptextmi_ccc;
 GtkWidget *primaryrelaymi_ccc;
 GtkWidget *chooseprimaryrelaymi_ccc;
 GtkWidget *disableusbmassmi_ccc;

@@ -491,7 +491,7 @@ void test_skip_ccc(int size);
 
 char *get_smart_attribute_name_ccc(int id);
 
-char *install_directory_ccc = "/usr/local/bin/";
+char *install_directory_ccc = OSC_INSTALL_PATH;
 bool path_fail_ccc = false;
 char start_working_directory_ccc[PATH_MAX];
 char called_name_ccc[PATH_MAX];

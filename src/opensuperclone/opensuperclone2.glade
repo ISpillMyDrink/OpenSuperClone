@@ -5993,23 +5993,6 @@
                         <signal name="activate" handler="about_ccc" swapped="no"/>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkMenuItem" id="helphtmlmi">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">help html</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="help_html_ccc" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="helptextmi">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">help text</property>
-                        <signal name="activate" handler="help_text_ccc" swapped="no"/>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>

@@ -1,2 +1,12 @@
 #define OSC_VERSION "@OpenSuperClone_VERSION@"
+#cmakedefine GIT_REVISION "@GIT_REVISION@"
+#cmakedefine COPYRIGHT_YEAR "@COPYRIGHT_YEAR@"
 #define OSC_HOMEPAGE "@OpenSuperClone_HOMEPAGE_URL@"
+
+
+#cmakedefine OSC_LANG_PATH "@OSC_LANG_PATH@"
+
+#cmakedefine OSC_SCRIPT_PATH "@OSC_SCRIPT_PATH@"
+#cmakedefine OSC_SCRIPT_MENU "@OSC_SCRIPT_MENU@"
+
+#cmakedefine OSC_INSTALL_PATH "@OSC_INSTALL_PATH@"

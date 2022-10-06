@@ -352,8 +352,6 @@ int setup_enlanguage_ccc(void)
   strcpy(enlang_ccc[LANGZONES], "Zones");
   strcpy(enlang_ccc[LANGDISPLAYANALYZERESULTS], "Display Analyze Results");
   strcpy(enlang_ccc[LANGSKIPRESET], "Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information.");
-  strcpy(enlang_ccc[LANGHELPHTML], "Instruction Manual HTML");
-  strcpy(enlang_ccc[LANGHELPTEXT], "Instruction Manual TEXT");
   strcpy(enlang_ccc[LANGSMARTNOTSUPPORTED], "Error: SMART not supported on this device");
   strcpy(enlang_ccc[LANGSMARTNOTENABLED], "Error: SMART not enabled on this device");
   strcpy(enlang_ccc[LANGERRORREADINGSMART], "Error: Unable to read SMART data from device");
