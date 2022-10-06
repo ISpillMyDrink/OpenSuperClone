@@ -185,6 +185,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   data_retrypasses_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "data_retrypasses"));
   cleardomainmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "cleardomainmi"));
   helpmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "helpmi"));
+  aboutmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "aboutmi"));
+  timermi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "timermi"));
   label_drivermode_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "label_drivermode"));
   data_drivermode_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "data_drivermode"));
   installdrivermi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "installdrivermi"));
@@ -205,6 +207,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
+  activate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button_main"));
+  deactivate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button_main"));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
@@ -266,6 +270,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), curlang_ccc[LANGCHOOSEPRIMARYUSB]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), curlang_ccc[LANGDISABLEUSBMASS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), curlang_ccc[LANGRESTOREUSBMASS]);
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), curlang_ccc[LANGACTIVATEMAIN]);
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), curlang_ccc[LANGDEACTIVATEMAIN]);
   // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
   // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
   // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
@@ -407,6 +413,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     gtk_widget_set_sensitive(GTK_WIDGET(disableusbmassmi_ccc), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(restoreusbmassmi_ccc), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(adddomainmi_ccc), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
   }
 
   set_mode_auto_passthrough_ccc();
@@ -2798,6 +2806,8 @@ void set_connected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), driver_only_ccc ? FALSE : TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(smart_button_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
   if (superbyte_ccc[52] == 0xf0)
   {
     gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), TRUE);
@@ -2827,6 +2837,8 @@ void set_disconnected_ccc(void)
   {
     gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
   }
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(hard_reset_button_ccc), FALSE);
@@ -5613,6 +5625,46 @@ void do_deactivate_primary_relay_ccc(void)
   primary_relay_settings_ccc.primary_relay_activation_time = primary_relay_activation_time_bak;
   primary_relay_settings_ccc.primary_relay_delay_time = primary_relay_delay_time_bak;
   update_primary_relay_settings_ccc();
+}
+
+void do_activate_primary_relay_main_ccc(void)
+{
+  if (!usbr1_chosen_ccc)
+  {
+    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    clear_error_message_ccc();
+    return;
+  }
+  g_print("activate primary relay\n");
+  if (activate_primary_relay_ccc())
+  {
+    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    clear_error_message_ccc();
+  }
+}
+
+void do_deactivate_primary_relay_main_ccc(void)
+{
+  if (!usbr1_chosen_ccc)
+  {
+    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    clear_error_message_ccc();
+    return;
+  }
+  g_print("deactivate primary relay\n");
+  if (deactivate_primary_relay_ccc())
+  {
+    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    clear_error_message_ccc();
+  }
 }
 
 void map_heads_ccc(void)

@@ -748,6 +748,38 @@ analyze</property>
                         <child>
                           <placeholder/>
                         </child>
+                                                <child>
+                          <object class="GtkButton" id="activate_primary_relay_button_main">
+                            <property name="label" translatable="yes">power
+off</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="do_activate_primary_relay_main_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">19</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="deactivate_primary_relay_button_main">
+                            <property name="label" translatable="yes">power
+on</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="do_deactivate_primary_relay_main_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">20</property>
+                          </packing>
+                        </child>
                         <child>
                           <object class="GtkButton" id="hard_reset_button">
                             <property name="label" translatable="yes">hard

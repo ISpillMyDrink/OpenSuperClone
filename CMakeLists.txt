@@ -22,8 +22,8 @@ set(OSCVIEWER_LANG_PATH "/usr/local/share/doc/oscviewer/Language" CACHE STRING "
 # Copyright year 2022
 set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
-# Set the GTK version to 2.x
-set(GTKVER 2 CACHE STRING "GTK Version")
+# Set the GTK version to 3.x
+set(GTKVER 3 CACHE STRING "GTK Version")
 
 # If Git is installed, save the current revision number
 find_package(Git)

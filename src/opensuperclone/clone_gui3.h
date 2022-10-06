@@ -355,6 +355,8 @@ GtkWidget *primary_relay_delay_time_spinbutton_ccc;
 GtkWidget *test_primary_relay_button_ccc;
 GtkWidget *activate_primary_relay_button_ccc;
 GtkWidget *deactivate_primary_relay_button_ccc;
+GtkWidget *activate_primary_relay_button_main_ccc;
+GtkWidget *deactivate_primary_relay_button_main_ccc;
 
 GtkWidget *label_project_ccc;
 GtkWidget *data_project_ccc;
