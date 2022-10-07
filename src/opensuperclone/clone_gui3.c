@@ -430,6 +430,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
+  gtk_window_set_default_size(main_window_ccc, 1075, 775);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -5404,9 +5405,13 @@ void do_repair_log_ccc(void)
 void about_ccc(void)
 {
   GtkWidget *dialog = gtk_about_dialog_new();
-  gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title_ccc);
-  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), version_number_ccc);
   char temp[1024];
+
+  gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title_ccc);
+
+  sprintf(temp, "%s %s", version_number_ccc, GIT_REVISION);
+  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
+
   sprintf(temp, "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors", copyright_year_ccc);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
@@ -5416,6 +5421,7 @@ void about_ccc(void)
 
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
+  gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
   gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
 
   gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(dialog), (char *)opensuperclone_EULA_txt);

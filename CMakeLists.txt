@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
+# Disallow in-source building
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR “In-source builds not allowed! Create a build directory and run CMake from there.”)
+endif()
+
 # OpenSuperClone version 2.4
 project(OpenSuperClone
         VERSION 2.4
@@ -23,7 +28,7 @@ set(OSCVIEWER_LANG_PATH "/usr/local/share/doc/oscviewer/Language" CACHE STRING "
 set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
 # Set the GTK version to 3.x
-set(GTKVER 3 CACHE STRING "GTK Version")
+set(GTKVER 2 CACHE STRING "GTK Version")
 
 # If Git is installed, save the current revision number
 find_package(Git)
