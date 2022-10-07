@@ -81,9 +81,11 @@
 #define LANG4M 56
 #define LANG8M 57
 #define LANG16M 58
+#define LANGSHOWTIMING 59
+#define LANGTIMING 60
 
 // TODO MAKE SURE TO UPDATE COUNT EVERY TIME! it should be one more than last defined
-#define LANGCOUNT 59
+#define LANGCOUNT 61
 #define MAXLANGLENGTH 256
 char enlang[LANGCOUNT][MAXLANGLENGTH];
 char curlang[LANGCOUNT][MAXLANGLENGTH];
@@ -278,6 +280,22 @@ GSList *mainresgroup = NULL;
 GSList *mainsizegroup = NULL;
 GSList *autoupgroup = NULL;
 GtkWidget *showgoodcheck;
+GtkWidget *showtimemi;
+GtkWidget *showtimingbuttonoff;
+GtkWidget *showtimingbutton1;
+GtkWidget *showtimingbutton2;
+GtkWidget *showtimingbutton3;
+GtkWidget *showtimingbutton4;
+GtkWidget *showtimingbutton5;
+GtkWidget *showtimingbutton7;
+GtkWidget *showtimingbutton10;
+GtkWidget *showtimingbutton15;
+GtkWidget *showtimingbutton20;
+GtkWidget *showtimingbutton25;
+GtkWidget *showtimingbutton30;
+GtkWidget *showtimingbutton40;
+GtkWidget *showtimingbutton50;
+GtkWidget *showtimingbutton60;
 
 int debug = 0;
 int translate = 0;
@@ -315,11 +333,13 @@ int current_color_outer = YELLOW;
 int current_color_inner = YELLOW;
 int bad_head_color = PURPLE;
 int selected_color = WHITE;
+int time_color = WHITE;
 int main_grid_size = MAINGRIDSIZE;
 gint timeout_tag = 0;
 int autotimer_on = 0;
 int show_bad_head = 0;
 int show_good_data = 0;
+int show_timing = 0;
 int mouse_x = 0;
 int mouse_y = 0;
 int mouse_x_old = 0;
@@ -406,6 +426,8 @@ void toggle_showbad(GtkWidget *w, gpointer data);
 
 void toggle_showgood(GtkWidget *w, gpointer data);
 
+void set_show_timing(GtkWidget *w, gpointer data);
+
 int check_log(void);
 
 void select_file(void);
@@ -415,6 +437,8 @@ void get_rgb_color(int color);
 int get_color_from_status(int status_bits);
 
 int get_block_status(long long position, long long size);
+
+int get_block_timing(long long position, long long size);
 
 int find_block(long long position);
 

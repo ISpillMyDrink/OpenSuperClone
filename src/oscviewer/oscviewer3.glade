@@ -438,6 +438,170 @@
                         <property name="use_underline">True</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkMenuItem" id="showtimemi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">show timing</property>
+                        <property name="use_underline">True</property>
+                        <child type="submenu">
+                          <object class="GtkMenu" id="menu1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbuttonoff">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">off</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_as_radio">True</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">1</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">2</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton3">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">3</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton4">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">4</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton5">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">5</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton7">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">7</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton10">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">10</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton15">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">15</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton20">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">20</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton25">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">25</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton30">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">30</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton40">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">40</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton50">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">50</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkRadioMenuItem" id="showtimingbutton60">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">60</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_as_radio">True</property>
+                                <property name="group">showtimingbuttonoff</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

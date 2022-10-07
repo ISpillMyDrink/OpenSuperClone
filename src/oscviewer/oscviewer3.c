@@ -383,6 +383,24 @@ int main(int argc, char **argv)
   showbadcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showbadcheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showbadcheck), curlang[LANGSHOWBADHEAD]);
 
+  showtimemi = GTK_WIDGET(gtk_builder_get_object(builder, "showtimemi"));
+  showtimingbuttonoff = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbuttonoff"));
+  showtimingbutton1 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton1"));
+  showtimingbutton2 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton2"));
+  showtimingbutton3 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton3"));
+  showtimingbutton4 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton4"));
+  showtimingbutton5 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton5"));
+  showtimingbutton7 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton7"));
+  showtimingbutton10 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton10"));
+  showtimingbutton15 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton15"));
+  showtimingbutton20 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton20"));
+  showtimingbutton25 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton25"));
+  showtimingbutton30 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton30"));
+  showtimingbutton40 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton40"));
+  showtimingbutton50 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton50"));
+  showtimingbutton60 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton60"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showtimemi), curlang[LANGSHOWTIMING]);
+
   // gtk_menu_item_set_submenu(GTK_MENU_ITEM(optionsmi), optionsmenu);
   // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), leftresolutionmi);
   // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), mainresolutionmi);
@@ -440,6 +458,22 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showgoodcheck), "activate", G_CALLBACK(toggle_showgood), NULL);
 
   g_signal_connect(G_OBJECT(showbadcheck), "activate", G_CALLBACK(toggle_showbad), NULL);
+
+  g_signal_connect(G_OBJECT(showtimingbuttonoff), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(0));
+  g_signal_connect(G_OBJECT(showtimingbutton1), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(1));
+  g_signal_connect(G_OBJECT(showtimingbutton2), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(2));
+  g_signal_connect(G_OBJECT(showtimingbutton3), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(3));
+  g_signal_connect(G_OBJECT(showtimingbutton4), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(4));
+  g_signal_connect(G_OBJECT(showtimingbutton5), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(5));
+  g_signal_connect(G_OBJECT(showtimingbutton7), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(7));
+  g_signal_connect(G_OBJECT(showtimingbutton10), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(10));
+  g_signal_connect(G_OBJECT(showtimingbutton15), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(15));
+  g_signal_connect(G_OBJECT(showtimingbutton20), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(20));
+  g_signal_connect(G_OBJECT(showtimingbutton25), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(25));
+  g_signal_connect(G_OBJECT(showtimingbutton30), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(30));
+  g_signal_connect(G_OBJECT(showtimingbutton40), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(40));
+  g_signal_connect(G_OBJECT(showtimingbutton50), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(50));
+  g_signal_connect(G_OBJECT(showtimingbutton60), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(60));
 
   // main hbox
   // main_hbox = gtk_hbox_new (FALSE, 0);
@@ -1164,6 +1198,13 @@ void toggle_showgood(GtkWidget *w, gpointer data)
   data = data;
 }
 
+void set_show_timing(GtkWidget *w, gpointer data)
+{
+  show_timing = GPOINTER_TO_INT(data);
+  gtk_widget_queue_draw(main_window);
+  w = w;
+}
+
 void redraw_top_drawing_area(void)
 {
   cairo_t *cr;
@@ -1324,6 +1365,24 @@ void redraw_top_drawing_area(void)
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 12, y + 6);
     cairo_show_text(cr, curlang[LANGBADHEAD]);
+  }
+
+  if (show_timing)
+  {
+    get_rgb_color(time_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 53;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGTIMING]);
   }
 
   cairo_destroy(cr);
@@ -1531,6 +1590,7 @@ void redraw_main_drawing_area(void)
         int good_data = 0;
         long long position = count * blocks_per_square;
         int status_bits = get_block_status(position, blocks_per_square);
+        int time_bits = get_block_timing(position, blocks_per_square);
         if (status_bits & NONTRIMMED_BIT)
         {
           color = nontrimmed_color;
@@ -1600,7 +1660,21 @@ void redraw_main_drawing_area(void)
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
           cairo_fill(cr);
         }
+
+        if ((time_bits >= show_timing) && show_timing)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(time_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+        }
       }
+
       count++;
       if (count > squares)
       {
@@ -2190,6 +2264,58 @@ int get_block_status(long long position, long long size)
   }
 
   return status;
+}
+
+int get_block_timing(long long position, long long size)
+{
+  long long new_size = size;
+  long long time = 0;
+  int high_time = 0;
+  int line = find_block(position);
+  if (line == -1)
+  {
+    // sprintf (tempmessage, "Error: Position 0x%llx not found in progress log file\n", position);
+    // message_now(tempmessage);
+    return -1;
+  }
+  // process current time
+  time = (lstatus[line] >> 32) & 0xff;
+  if (time > high_time)
+  {
+    high_time = time;
+  }
+  // check if the chunk fits in the block and if not then get next block
+  // but only get the status of up to 255 more chunks before moving on
+  // otherwise it can take a long time with a large log file
+  long long block_end = lposition[line] + lsize[line];
+  new_size -= lposition[line] - position;
+  int chunk_count = 255;
+  while (chunk_count > 0)
+  {
+    chunk_count--;
+    if (lposition[line] + new_size > block_end || lposition[line] > block_end)
+    {
+      new_size -= lsize[line];
+      line++;
+      if (line > total_lines - 1)
+      {
+        break;
+      }
+      block_end = lposition[line] + lsize[line];
+      time = (lstatus[line] >> 32) & 0xff;
+      if (time > high_time)
+      {
+        high_time = time;
+      }
+    }
+    else
+    {
+      break;
+    }
+    // break;
+  }
+
+  return high_time;
 }
 
 int process_status(int line)
@@ -3167,6 +3293,8 @@ int setup_enlanguage(void)
   strcpy(enlang[LANG4M], "4M");
   strcpy(enlang[LANG8M], "8M");
   strcpy(enlang[LANG16M], "16M");
+  strcpy(enlang[LANGSHOWTIMING], "Show high time");
+  strcpy(enlang[LANGTIMING], "Timing");
   // strcpy (enlang[], "");
 
   return 0;
