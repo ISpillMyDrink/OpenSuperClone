@@ -1,12 +1,20 @@
 # OpenSuperClone
 
-This is a fork of the HDDSuperClone source code (http://www.hddsuperclone.com/) released under the GPL2 by Scott Dwyer.
+This is a fork of the HDDSuperClone source code (<http://www.hddsuperclone.com/>) released under the GPL2 by Scott Dwyer.
 
-Only changes so far include removal of unnecessary license check code and cleanup of the project files.
-The standalone CLI program HDDSuperTool has been completely removed.
+## Changes (since version 2.3.3_20220430 of HDDSuperClone)
 
+- Cleanup of project files
+- Implemented CMake as build system
+- Removal of licensing related functions
+- Switched from GTK2 to GTK3
+- Updated kernel driver to work on 5.15
 
-### Compiling
+## Known Issues
+
+- OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 instead
+
+## Compiling
 
 ```Bash
 # Install required packages for building
@@ -18,7 +26,7 @@ The standalone CLI program HDDSuperTool has been completely removed.
 
 Compilation has been successfully tested on Ubuntu 22.04.1.
 
-### Running
+## Running
 
 ```Bash
 # Install dependencies for running
@@ -31,7 +39,10 @@ sudo ./bin/opensuperclone
 ./bin/osscviewer
 ```
 
-### Installing
+## Installing
+
+Installation will copy the OpenSuperClone and OSCViewer executables and associated scripts to /usr/local/bin,
+and copy translation files to /usr/local/share/doc.
 
 ```Bash
 # Install OpenSuperClone
