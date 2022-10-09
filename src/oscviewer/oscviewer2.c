@@ -3269,7 +3269,7 @@ void help(void)
 void version(void)
 {
   fprintf(stdout, "%s %s\n", title, version_number);
-  fprintf(stdout, "Copyright (C) %d Scott Dwyer.\n", copyright_year);
+  fprintf(stdout, "Copyright (C) %d Scott Dwyer and OpenSuperClone contributors.\n", copyright_year);
   fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
 }
