@@ -1403,7 +1403,7 @@ void version_ccc(void)
     printf("%s %s\n", tool_title, tool_version_number);
     fprintf(stdout, "%s %s\n", scripts_title, scripts_version_number);
   }
-  fprintf(stdout, "Copyright (C) %s Scott Dwyer.\n", copyright_year_ccc);
+  fprintf(stdout, "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors.\n", copyright_year_ccc);
   fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
 }

@@ -1,4 +1,3 @@
 rm -r build
-
-rm bin/opensuperclone
-rm bin/oscviewer
+rm -r debug
+rm -r release

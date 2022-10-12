@@ -34,3 +34,11 @@ elseif(GTKVER EQUAL 3)
 endif()
 
 target_compile_options(oscviewer PRIVATE ${CC_OPTIONS})
+
+# Install executable
+install(TARGETS oscviewer)
+
+# Install language files
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscviewer
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc
+)

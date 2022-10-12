@@ -17,12 +17,11 @@ project(OpenSuperClone
 set(OSCVIEWER_VERSION 1.0 CACHE STRING "OSCViewer Version")
 
 # Path variables for language and script files
-# TODO: Remove the need for most of these
-set(OSC_INSTALL_PATH "/usr/local/bin/" CACHE STRING "OpenSuperClone Installation Directory")
-set(OSC_SCRIPT_PATH "/usr/local/bin/oscscripts/" CACHE STRING "OpenSuperClone Script Directory")
-set(OSC_SCRIPT_MENU "/usr/local/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
-set(OSC_LANG_PATH "/usr/local/share/doc/opensuperclone/Language" CACHE STRING "OpenSuperClone Language Directory")
-set(OSCVIEWER_LANG_PATH "/usr/local/share/doc/oscviewer/Language" CACHE STRING "OSCViewer Language Directory")
+set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
+set(OSC_SCRIPT_PATH "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/" CACHE STRING "OpenSuperClone Script Directory")
+set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
+set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/opensuperclone/Language" CACHE STRING "OpenSuperClone Language Directory")
+set(OSCVIEWER_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/oscviewer/Language" CACHE STRING "OSCViewer Language Directory")
 
 # Copyright year 2022
 set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")

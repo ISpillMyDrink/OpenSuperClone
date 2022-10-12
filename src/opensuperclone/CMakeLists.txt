@@ -79,3 +79,16 @@ endif()
 target_link_libraries(opensuperclone ${LIBUSB_LIBRARIES})
 
 target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})
+
+# Install executable
+install(TARGETS opensuperclone)
+
+# Install script files
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
+
+# Install language files
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc
+)

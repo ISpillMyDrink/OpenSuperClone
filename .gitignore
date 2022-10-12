@@ -13,5 +13,5 @@ _deps
 
 # Ignore build directory and build binaries
 build
-bin/opensuperclone
-bin/oscviewer
+debug
+release

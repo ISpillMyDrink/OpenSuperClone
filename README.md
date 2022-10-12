@@ -33,18 +33,8 @@ Compilation has been successfully tested on Ubuntu 22.04.1.
 ./install-dependencies-deb.sh
 
 # Run OpenSuperClone
-sudo ./bin/opensuperclone
+sudo ./release/bin/opensuperclone
 
 # Run OSCViewer
-./bin/osscviewer
-```
-
-## Installing
-
-Installation will copy the OpenSuperClone and OSCViewer executables and associated scripts to /usr/local/bin,
-and copy translation files to /usr/local/share/doc.
-
-```Bash
-# Install OpenSuperClone
-./install.sh
+./release/bin/osscviewer
 ```
