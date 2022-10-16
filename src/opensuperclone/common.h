@@ -223,8 +223,6 @@
 
 time_t start_time_ccc, end_time_ccc;
 struct timeval tvBegin_ccc, tvEnd_ccc, tvDiff_ccc, tvCurrent_ccc;
-int timeval_subtract_ccc(struct timeval *result, struct timeval *t2, struct timeval *t1);
-void timeval_print_ccc(struct timeval *tv);
 
 bool check_only_ccc;
 bool do_indentation_ccc;
@@ -291,15 +289,6 @@ long long *number_variable_buffer_ccc;
 char **string_variable_pointer_ccc;
 char current_date_ccc[40];
 char current_time_ccc[40];
-uint8_t rotl8_ccc(uint8_t value, int shift);
-uint8_t rotr8_ccc(uint8_t value, int shift);
-uint16_t rotl16_ccc(uint16_t value, int shift);
-uint16_t rotr16_ccc(uint16_t value, int shift);
-uint32_t rotl32_ccc(uint32_t value, int shift);
-uint32_t rotr32_ccc(uint32_t value, int shift);
-uint64_t rotl64_ccc(uint64_t value, int shift);
-uint64_t rotr64_ccc(uint64_t value, int shift);
-int get_random_value_ccc(int speed);
 unsigned char random_data_ccc[2048];
 // char *driver_buffer_ccc;
 
@@ -697,8 +686,6 @@ int do_ata28_cmd_ccc(int disk_fd);
 int do_ata48_cmd_ccc(int disk_fd);
 
 int get_the_time_ccc(void);
-
-char *get_future_date_ccc(long long days);
 
 long long get_elapsed_usec_ccc(void);
 

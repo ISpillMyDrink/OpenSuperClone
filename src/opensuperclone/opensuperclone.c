@@ -16,7 +16,6 @@ void signal_callback_handler_ccc(int signum)
 {
   if (!critical_process_ccc)
   {
-    signum = signum;
     sprintf(tempmessage_ccc, "Terminated by user\n");
     message_exit_ccc(tempmessage_ccc);
     forced_exit_ccc = true;
@@ -27,10 +26,10 @@ void signal_callback_handler_ccc(int signum)
   pending_exit_ccc = true;
 }
 
-char *tool_title = "HDDSuperTool";
-char *tool_version_number = "1.10_20170129";
+char *tool_title = "OpenSuperTool";
+char *tool_version_number = "1.10";
 char *scripts_title = "Scripts";
-char *scripts_version_number = "1.9_20190413";
+char *scripts_version_number = "1.9";
 
 int main(int argc, char **argv)
 {
@@ -502,7 +501,7 @@ int main(int argc, char **argv)
   else if (command_line_ccc)
   {
     arguments_required = 0;
-    if ((argc - optind) < arguments_required)
+    if ((argc - optind) != arguments_required)
     {
       command_line_error = true;
       if ((argc - optind) < arguments_required)
@@ -607,18 +606,6 @@ int main(int argc, char **argv)
     message_now_ccc(tempmessage_ccc);
     debugversion_ccc = true;
 #endif
-  }
-
-  // create random data for later use
-  memset(random_data_ccc, 0, sizeof(random_data_ccc));
-  int i;
-  for (i = 0; i < 1024; i += 4)
-  {
-    int n = get_random_value_ccc(100);
-    random_data_ccc[i] = n;
-    random_data_ccc[i + 1] = n >> 8;
-    random_data_ccc[i + 2] = n >> 16;
-    random_data_ccc[i + 3] = n >> 24;
   }
 
   memset(superbyte_ccc, 0, sizeof(superbyte_ccc));
@@ -758,27 +745,6 @@ int main(int argc, char **argv)
 }
 // end of main
 //******************************************************
-
-// time functions
-/* Return 1 if the difference is negative, otherwise 0.  */
-int timeval_subtract_ccc(struct timeval *result, struct timeval *t2, struct timeval *t1)
-{
-  long long diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
-  result->tv_sec = diff / 1000000;
-  result->tv_usec = diff % 1000000;
-
-  return (diff < 0);
-}
-void timeval_print_ccc(struct timeval *tv)
-{
-  char buffer[30];
-  time_t curtime;
-
-  // printf("%ld.%06ld", tv->tv_sec, tv->tv_usec);
-  curtime = tv->tv_sec;
-  strftime(buffer, 30, "%Y-%m-%d  %T", localtime(&curtime));
-  printf("%s.%06ld\n", buffer, tv->tv_usec);
-}
 
 // function to cleanup and exit
 void cleanup_ccc(void)
@@ -1555,9 +1521,9 @@ int initialize_memory_ccc(void)
         }
       }
 
-      // initialize the command list buffer
       if (ahci_mode_ccc)
       {
+        // initialize the command list buffer
         return_value_ccc = set_command_list_buffer_ccc();
         if (return_value_ccc != 0)
         {
@@ -1571,11 +1537,8 @@ int initialize_memory_ccc(void)
           clear_error_message_ccc();
           return GENERAL_ERROR_RETURN_CODE;
         }
-      }
 
-      // initialize the FIS buffer
-      if (ahci_mode_ccc)
-      {
+        // initialize the FIS buffer
         return_value_ccc = set_fis_buffer_ccc();
         if (return_value_ccc != 0)
         {
@@ -3640,7 +3603,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
     }
 
     get_the_time_ccc();
-    fprintf(writefile, "# Disk progress log file created by HDDSuperClone version %s\n", version_number_ccc);
+    fprintf(writefile, "# Disk progress log file created by OpenSuperClone version %s\n", version_number_ccc);
     fprintf(writefile, "# %s\n", current_date_ccc);
     fprintf(writefile, "# command= %s\n", full_command_line_ccc);
     fprintf(writefile, "#\n");
@@ -3932,7 +3895,7 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     }
 
     get_the_time_ccc();
-    fprintf(writefile, "# Domain file created by HDDSuperClone version %s\n", version_number_ccc);
+    fprintf(writefile, "# Domain file created by OpenSuperClone version %s\n", version_number_ccc);
     fprintf(writefile, "# %s\n", current_date_ccc);
     fprintf(writefile, "#\n");
 
@@ -4011,7 +3974,7 @@ int write_ddrescue_logfile_ccc(char *log_file)
   }
 
   get_the_time_ccc();
-  fprintf(writefile, "# Disk progress log file created by HDDSuperClone version %s\n", version_number_ccc);
+  fprintf(writefile, "# Disk progress log file created by OpenSuperClone version %s\n", version_number_ccc);
   fprintf(writefile, "# ddrescue export\n");
   fprintf(writefile, "# %s\n", current_date_ccc);
   fprintf(writefile, "# current_pos  current_status\n");
@@ -12454,80 +12417,6 @@ long long get_elapsed_usec_ccc(void)
   long long elapsed_usec = ((long long)tvCurrent_ccc.tv_usec + 1000000 * (long long)tvCurrent_ccc.tv_sec) - ((long long)tvBegin_ccc.tv_usec + 1000000 * (long long)tvBegin_ccc.tv_sec);
 
   return (elapsed_usec);
-}
-
-// return future date
-char *get_future_date_ccc(long long days)
-{
-  gettimeofday(&tvCurrent_ccc, NULL);
-  char tempbuffer[30];
-  time_t curtime;
-  curtime = tvCurrent_ccc.tv_sec + (days * 86400);
-  strftime(tempbuffer, 30, "%Y-%m-%d", localtime(&curtime));
-  char *futuredate = malloc(sizeof(char) * 30);
-  strcpy(futuredate, tempbuffer);
-  return futuredate;
-}
-
-// rotate funtions
-uint8_t rotl8_ccc(uint8_t value, int shift)
-{
-  return (value << shift) | (value >> (sizeof(value) * 8 - shift));
-}
-uint8_t rotr8_ccc(uint8_t value, int shift)
-{
-  return (value >> shift) | (value << (sizeof(value) * 8 - shift));
-}
-
-uint16_t rotl16_ccc(uint16_t value, int shift)
-{
-  return (value << shift) | (value >> (sizeof(value) * 8 - shift));
-}
-uint16_t rotr16_ccc(uint16_t value, int shift)
-{
-  return (value >> shift) | (value << (sizeof(value) * 8 - shift));
-}
-
-uint32_t rotl32_ccc(uint32_t value, int shift)
-{
-  return (value << shift) | (value >> (sizeof(value) * 8 - shift));
-}
-uint32_t rotr32_ccc(uint32_t value, int shift)
-{
-  return (value >> shift) | (value << (sizeof(value) * 8 - shift));
-}
-
-uint64_t rotl64_ccc(uint64_t value, int shift)
-{
-  return (value << shift) | (value >> (sizeof(value) * 8 - shift));
-}
-uint64_t rotr64_ccc(uint64_t value, int shift)
-{
-  return (value >> shift) | (value << (sizeof(value) * 8 - shift));
-}
-
-// function to get random value
-int get_random_value_ccc(int speed)
-{
-  struct timeval tvstart;
-  gettimeofday(&tvstart, NULL);
-  // printf("%ld.%06ld\n", tvstart.tv_sec, tvstart.tv_usec);
-  int random_value;
-  int i;
-  for (i = 0; i < speed; i++)
-  {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    // printf("%ld.%06ld\n", tv.tv_sec, tv.tv_usec);
-    srand((tv.tv_usec + 1000000 * tv.tv_sec));
-    random_value = rand();
-    // fprintf (stdout, "random=%d\n", random_value);
-  }
-  struct timeval tvend;
-  gettimeofday(&tvend, NULL);
-  // printf("%ld.%06ld\n", tvend.tv_sec, tvend.tv_usec);
-
-  return (random_value);
 }
 
 int do_nanosleep_ccc(unsigned long long time)
