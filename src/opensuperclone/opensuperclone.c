@@ -15440,6 +15440,7 @@ void disable_ports_ccc(void)
     print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error opening /etc/default/grub_tmp (%s)\n", strerror(errno));
+    fclose(readfile);
     return;
   }
 
@@ -16292,6 +16293,7 @@ int rebuild_assist_map_heads_ccc(void)
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
       clear_error_message_ccc();
+      fclose(headmap_debug_file);
       return -1;
     }
   }
@@ -16304,6 +16306,7 @@ int rebuild_assist_map_heads_ccc(void)
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
     clear_error_message_ccc();
+    fclose(headmap_debug_file);
     return -1;
   }
   int highest_head = rebuild_assist_get_highest_head_ccc();
@@ -16315,6 +16318,7 @@ int rebuild_assist_map_heads_ccc(void)
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
     clear_error_message_ccc();
+    fclose(headmap_debug_file);
     return -1;
   }
   unsigned char pattern_head[REBUILD_ASSIST_FIELD_LENGTH * HEAD_PATTERN_CHECK_COUNT];

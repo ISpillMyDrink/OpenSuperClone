@@ -755,8 +755,7 @@ int translate_language_ccc(char *fromlang, char *translang, char *language, char
     strcat(lang_data, temp_data);
     sprintf(temp_data, "%s", curlang_ccc[i]);
     strcat(lang_data, temp_data);
-    int linebyline = 0;
-    if (strlen(lang_data) > 3000 || i == LANGCOUNT - 1 || linebyline)
+    if (strlen(lang_data) > 3000 || i == LANGCOUNT - 1)
     {
       int n;
       int len = strlen(lang_data);
@@ -2850,10 +2849,7 @@ void set_disconnected_ccc(void)
 void clear_source_ccc(void)
 {
   source_chosen_ccc = 0;
-  if (disk_1_ccc != NULL)
-  {
-    disk_1_ccc = NULL;
-  }
+  disk_1_ccc = NULL;
   strcpy(current_source_model_ccc, "");
   strcpy(current_source_serial_ccc, "");
   source_total_size_ccc = 0;
@@ -2862,10 +2858,7 @@ void clear_source_ccc(void)
 void clear_destination_ccc(void)
 {
   destination_chosen_ccc = 0;
-  if (disk_2_ccc != NULL)
-  {
-    disk_2_ccc = NULL;
-  }
+  disk_2_ccc = NULL;
   strcpy(current_destination_model_ccc, "");
   strcpy(current_destination_serial_ccc, "");
 }

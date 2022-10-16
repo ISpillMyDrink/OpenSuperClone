@@ -289,7 +289,18 @@ int set_table_buffer_ccc(void)
     unsigned int align = pagesize_ccc;
     if (tries != 0)
     {
-      padding_buffer_ccc = realloc(padding_buffer_ccc, table_size_ccc * tries);
+      void *temp = realloc(padding_buffer_ccc, table_size_ccc * tries);
+      if (temp == NULL)
+      {
+        free(padding_buffer_ccc);
+        sprintf(tempmessage_ccc, "realloc failed");
+        message_now_ccc(tempmessage_ccc);
+        return -1;
+      }
+      else
+      {
+        padding_buffer_ccc = temp;
+      }
       // memset (padding_buffer_ccc, 0, table_size_ccc*tries);   //debug
     }
     if (driver_memory_mapped_ccc)
@@ -426,7 +437,18 @@ int set_command_list_buffer_ccc(void)
     unsigned int align = pagesize_ccc;
     if (tries != 0)
     {
-      padding_buffer_ccc = realloc(padding_buffer_ccc, command_list_size_ccc * tries);
+      void *temp = realloc(padding_buffer_ccc, command_list_size_ccc * tries);
+      if (temp == NULL)
+      {
+        free(padding_buffer_ccc);
+        sprintf(tempmessage_ccc, "realloc failed");
+        message_now_ccc(tempmessage_ccc);
+        return -1;
+      }
+      else
+      {
+        padding_buffer_ccc = temp;
+      }
       // memset (padding_buffer_ccc, 0, command_list_size_ccc*tries);
     }
     if (driver_memory_mapped_ccc)
@@ -558,7 +580,18 @@ int set_fis_buffer_ccc(void)
     unsigned int align = pagesize_ccc;
     if (tries != 0)
     {
-      padding_buffer_ccc = realloc(padding_buffer_ccc, fis_size_ccc * tries);
+      void *temp = realloc(padding_buffer_ccc, fis_size_ccc * tries);
+      if (temp == NULL)
+      {
+        free(padding_buffer_ccc);
+        sprintf(tempmessage_ccc, "realloc failed");
+        message_now_ccc(tempmessage_ccc);
+        return -1;
+      }
+      else
+      {
+        padding_buffer_ccc = temp;
+      }
       // memset (padding_buffer_ccc, 0, command_list_size_ccc*tries);
     }
     if (driver_memory_mapped_ccc)
@@ -689,7 +722,18 @@ int get_buffer_physical_memory_locations_ccc(void)
     }
     if (tries != 0)
     {
-      padding_buffer_ccc = realloc(padding_buffer_ccc, real_buffer_size_ccc * tries);
+      void *temp = realloc(padding_buffer_ccc, real_buffer_size_ccc * tries);
+      if (temp == NULL)
+      {
+        free(padding_buffer_ccc);
+        sprintf(tempmessage_ccc, "realloc failed");
+        message_now_ccc(tempmessage_ccc);
+        return -1;
+      }
+      else
+      {
+        padding_buffer_ccc = temp;
+      }
     }
 
     if (driver_memory_mapped_ccc)
