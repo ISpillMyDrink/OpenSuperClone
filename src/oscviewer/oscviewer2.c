@@ -81,7 +81,7 @@ int main(int argc, char **argv)
   }
 
   arguments_required = 0;
-  if ((argc - optind) < arguments_required)
+  if ((argc - optind) != arguments_required)
   {
     command_line_error = true;
     if ((argc - optind) < arguments_required)
@@ -600,19 +600,12 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
       gtk_widget_queue_draw(main_window);
     }
   }
-  widget = widget;
-  edge = edge;
   return TRUE;
 }
 
 static gboolean top_drawing_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
   redraw_top_drawing_area();
-
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  event = event;
-  data = data;
 
   return 0;
 }
@@ -621,22 +614,12 @@ static gboolean main_drawing_expose_event(GtkWidget *widget, GdkEventExpose *eve
 {
   redraw_main_drawing_area();
 
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  event = event;
-  data = data;
-
   return 0;
 }
 
 static gboolean left_vbox_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
   redraw_left_vbox();
-
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  event = event;
-  data = data;
 
   return 0;
 }
@@ -647,9 +630,6 @@ void getsize_main_window(GtkWidget *widget, GtkAllocation *allocation, void *dat
   message_debug(tempmessage, 0);
   main_window_width = allocation->width;
   main_window_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_main_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -658,9 +638,6 @@ void getsize_main_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   main_vbox_width = allocation->width;
   main_vbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_main_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -669,9 +646,6 @@ void getsize_main_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   main_hbox_width = allocation->width;
   main_hbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_left_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -680,9 +654,6 @@ void getsize_left_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   left_vbox_width = allocation->width;
   left_vbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_right_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -691,9 +662,6 @@ void getsize_right_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data
   message_debug(tempmessage, 0);
   right_vbox_width = allocation->width;
   right_vbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_top_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -702,9 +670,6 @@ void getsize_top_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   top_hbox_width = allocation->width;
   top_hbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_top_info_box(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -713,9 +678,6 @@ void getsize_top_info_box(GtkWidget *widget, GtkAllocation *allocation, void *da
   message_debug(tempmessage, 0);
   top_info_width = allocation->width;
   top_info_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -724,9 +686,6 @@ void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void
   message_debug(tempmessage, 0);
   top_drawing_area_width = allocation->width;
   top_drawing_area_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -735,9 +694,6 @@ void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   main_drawing_area_width = allocation->width;
   main_drawing_area_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -746,9 +702,6 @@ void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   main_drawing_vbox_width = allocation->width;
   main_drawing_vbox_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -757,9 +710,6 @@ void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, 
   message_debug(tempmessage, 0);
   main_scrolled_window_width = allocation->width;
   main_scrolled_window_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -768,9 +718,6 @@ void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   left_drawing_area_width = allocation->width;
   left_drawing_area_height = allocation->height;
-  // make the compiler happy and not complain about unused paramaters
-  widget = widget;
-  data = data;
 }
 
 void select_file(void)
@@ -799,7 +746,6 @@ static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs)
   sprintf(log_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
   printf("%s\n", log_file);
   gtk_widget_destroy(filew);
-  w = w;
   total_size = 0;
   int ret = read_log_file(log_file);
   if (ret != 0)
@@ -852,7 +798,6 @@ static void domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
   printf("%s\n", domain_file);
   gtk_widget_destroy(domainw);
-  w = w;
   regular_domain = 1;
   int ret = read_domain_file(domain_file);
   if (ret != 0)
@@ -896,7 +841,6 @@ static void dmde_domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
   printf("%s\n", domain_file);
   gtk_widget_destroy(domainw);
-  w = w;
   regular_domain = 0;
   int ret = read_domain_dmde_file(domain_file);
   if (ret != 0)
@@ -966,7 +910,6 @@ void set_autoupdate_timer(GtkWidget *w, gpointer data)
     timeout_tag = g_timeout_add(time, (GSourceFunc)reload_file, NULL);
     autotimer_on = 1;
   }
-  w = w;
 }
 
 void toggle_showbad(GtkWidget *w, gpointer data)
@@ -1005,7 +948,6 @@ void set_show_timing(GtkWidget *w, gpointer data)
 {
   show_timing = GPOINTER_TO_INT(data);
   gtk_widget_queue_draw(main_window);
-  w = w;
 }
 
 void toggle_showdomain(GtkWidget *w, gpointer data)
@@ -1230,7 +1172,6 @@ void change_left_resolution(GtkWidget *w, gpointer data)
   g_print("%d\n", GPOINTER_TO_INT(data));
   left_square_size = GPOINTER_TO_INT(data);
   redraw_left_vbox();
-  w = w;
 }
 
 void redraw_left_vbox(void)
@@ -1355,7 +1296,6 @@ void change_main_resolution(GtkWidget *w, gpointer data)
   message_debug(tempmessage, 0);
   main_square_size = GPOINTER_TO_INT(data);
   redraw_main_drawing_area();
-  w = w;
 }
 
 void change_main_grid_size(GtkWidget *w, gpointer data)
@@ -1364,7 +1304,6 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
   message_debug(tempmessage, 0);
   main_grid_size = GPOINTER_TO_INT(data);
   redraw_main_drawing_area();
-  w = w;
 }
 
 void redraw_main_drawing_area(void)
@@ -3368,7 +3307,6 @@ static void file_export_sel(GtkWidget *w, GtkFileSelection *fs)
   sprintf(export_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
   printf("%s\n", export_file);
   gtk_widget_destroy(filelangex);
-  w = w;
 
   FILE *writefile;
   writefile = fopen(export_file, "w");
@@ -3549,7 +3487,7 @@ int translate_all(void)
     unsigned int n;
     for (i = 0; i < LANGCOUNT; i++)
     {
-      fprintf(writefile, "\n|_|%d|_|\n", i);
+      fprintf(writefile, "\n|_|%u|_|\n", i);
       fprintf(writefile, "%s", enlang[i]);
     }
     fclose(writefile);
@@ -3568,7 +3506,7 @@ int translate_all(void)
     }
     for (i = 0; i < total_language_items; i += 3)
     {
-      fprintf(stdout, "translating %d\n", i / 3);
+      fprintf(stdout, "translating %u\n", i / 3);
       char *translang = languages[i + 1];
       char *language = languages[i];
       char *native = languages[i + 2];
@@ -3913,7 +3851,7 @@ char *get_translated_data(char *url_data)
   }
   else
   {
-    fprintf(stdout, "%lu bytes retrieved\n", (long)chunk.size);
+    fprintf(stdout, "%ld bytes retrieved\n", (long)chunk.size);
     // printf("%s\n", chunk.memory);
   }
 
