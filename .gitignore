@@ -11,7 +11,10 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-# Ignore build directory and build binaries
+# Ignore build directories
 build
 debug
 release
+
+# Ignore IDE artifacts
+# .vscode
