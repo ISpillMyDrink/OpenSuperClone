@@ -12,9 +12,16 @@ OpenSuperClone/HDDSuperClone is a powerful disk cloning utility for Linux akin t
 - Switched from GTK2 to GTK3
 - Updated kernel driver to work on 5.15
 
+## Planned Changes
+
+- Refactoring of codebase (get rid of -fcommon flag)
+- Implement DKMS for driver (un-)installation
+- Remove requirement for running as root
+- Get completely rid of GTK2 code
+
 ## Known Issues
 
-- OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 instead
+- OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
 
 ## Compiling
 
