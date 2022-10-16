@@ -2221,11 +2221,6 @@ int ahci_rw_ccc(int command_type, int write_bit)
       return 0;
     }
   }
-  else
-  {
-    command_type = command_type;
-    write_bit = write_bit;
-  }
   return 0;
 }
 
@@ -2375,7 +2370,6 @@ int do_ata_dma_read_ccc(int command_type)
   }
   else
   {
-    command_type = command_type;
     sprintf(tempmessage_ccc, "ERROR: DMA not allowed in free version.\n");
     if (superclone_ccc)
     {
@@ -2709,7 +2703,6 @@ int do_ata_dma_write_ccc(int command_type)
   }
   else
   {
-    command_type = command_type;
     sprintf(tempmessage_ccc, "ERROR: DMA not allowed in free version.\n");
     if (superclone_ccc)
     {
@@ -7966,10 +7959,6 @@ int identify_device_ahci_ccc(int count)
 
     memset(ccc_buffer_ccc, 0, ccc_main_buffer_size_ccc);
   }
-  else
-  {
-    count = count;
-  }
   return (0);
 }
 
@@ -10224,7 +10213,6 @@ int disable_fis_ccc(unsigned long long time)
   }
   else
   {
-    time = time;
     timeout = 0;
   }
   return (timeout);
@@ -10263,7 +10251,6 @@ int enable_fis_ccc(unsigned long long time)
   }
   else
   {
-    time = time;
     timeout = 0;
   }
   return (timeout);
@@ -10302,7 +10289,6 @@ int disable_start_ccc(unsigned long long time)
   }
   else
   {
-    time = time;
     timeout = 0;
   }
   return (timeout);
@@ -10341,7 +10327,6 @@ int enable_start_ccc(unsigned long long time)
   }
   else
   {
-    time = time;
     timeout = 0;
   }
   return (timeout);
@@ -10379,7 +10364,6 @@ int enable_command_issue_ccc(unsigned long long time)
   }
   else
   {
-    time = time;
     timeout = 0;
   }
   return (timeout);

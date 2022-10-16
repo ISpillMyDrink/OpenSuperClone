@@ -2298,7 +2298,6 @@ void get_source_from_button_ccc(GtkWidget *w, gpointer data)
 {
   new_source_ccc = GPOINTER_TO_INT(data);
   g_print("selection=%d  \n", new_source_ccc);
-  w = w;
 }
 
 void choose_destination_drive_ccc(void)
@@ -2449,7 +2448,6 @@ void get_destination_from_button_ccc(GtkWidget *w, gpointer data)
 {
   new_destination_ccc = GPOINTER_TO_INT(data);
   g_print("selection=%d  \n", new_destination_ccc);
-  w = w;
 }
 
 void choose_image_ccc(void)
@@ -5523,7 +5521,6 @@ void get_usb_from_button_ccc(GtkWidget *w, gpointer data)
 {
   new_usb_ccc = GPOINTER_TO_INT(data);
   g_print("selection=%d  \n", new_usb_ccc);
-  w = w;
 }
 
 void clear_usbr1_ccc(void)

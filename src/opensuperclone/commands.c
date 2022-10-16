@@ -7292,8 +7292,6 @@ int send_usb_control_msg_ccc(bool perform_check, unsigned int line_number, char 
 
 int usb_raw_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
-  line_number = line_number;
-  rest_of_line = rest_of_line;
   if (!perform_check)
   {
     return_value_ccc = do_usb_raw_read_ccc(usb_timeout_ccc);
@@ -7304,8 +7302,6 @@ int usb_raw_read_ccc(bool perform_check, unsigned int line_number, char *rest_of
 
 int usb_raw_write_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
-  line_number = line_number;
-  rest_of_line = rest_of_line;
   if (!perform_check)
   {
     return_value_ccc = do_usb_raw_write_ccc(usb_timeout_ccc);
@@ -7316,8 +7312,6 @@ int usb_raw_write_ccc(bool perform_check, unsigned int line_number, char *rest_o
 
 int usb_reset_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
-  line_number = line_number;
-  rest_of_line = rest_of_line;
   if (!perform_check)
   {
     return_value_ccc = do_usb_reset_ccc();

@@ -4844,7 +4844,7 @@ int do_fill_ccc(int status, long long mask)
         {
           write_size = destination_sectors - current_position_ccc;
         }
-        int ret = ret = write_chunk_ccc(current_position_ccc, write_size);
+        int ret = write_chunk_ccc(current_position_ccc, write_size);
         if (ret)
         {
           // write error
@@ -13327,7 +13327,6 @@ int process_source_ccc(void)
     if (!data_read_from_log_ccc)
     {
       sector_size_ccc = bytes_per_sector_ccc;
-      sector_offset = sector_offset;
       if (superbyte_ccc[23] == 0x5b)
       {
         block_size_ccc = logical_sectors_per_physical;
@@ -13673,7 +13672,6 @@ int process_source_ccc(void)
     if (!data_read_from_log_ccc)
     {
       sector_size_ccc = blocksize;
-      sector_offset = sector_offset;
       if (superbyte_ccc[23] == 0x5b)
       {
         block_size_ccc = logical_sectors_per_physical;
@@ -13767,7 +13765,6 @@ int process_source_ccc(void)
     if (!data_read_from_log_ccc)
     {
       sector_size_ccc = bytes_per_log_sec;
-      sector_offset = sector_offset;
       if (superbyte_ccc[23] == 0x5b)
       {
         block_size_ccc = blocksize;
