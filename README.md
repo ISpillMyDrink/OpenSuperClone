@@ -2,6 +2,8 @@
 
 This is a fork of the HDDSuperClone source code (<http://www.hddsuperclone.com/>) released under the GPL2 by Scott Dwyer.
 
+OpenSuperClone/HDDSuperClone is a powerful disk cloning utility for Linux akin to ddrescue with many advanced features.
+
 ## Changes (since version 2.3.3_20220430 of HDDSuperClone)
 
 - Cleanup of project files
@@ -20,7 +22,7 @@ This is a fork of the HDDSuperClone source code (<http://www.hddsuperclone.com/>
 # Install required packages for building
 ./install-build-requirements.sh
 
-# Build OpenSuperClone and OSCViewer
+# Build OpenSuperClone and OSCViewer for Debug and install to ./debug
 ./build.sh
 ```
 
@@ -37,4 +39,14 @@ sudo ./release/bin/opensuperclone
 
 # Run OSCViewer
 ./release/bin/osscviewer
+```
+
+## Installation
+
+Installation will build OpenSuperClone for Release and install binaries, scripts,
+and translation files to /usr/local
+
+```Bash
+# Build OpenSuperClone and OSCViewer for Release and install to /usr/local
+./install.sh
 ```
