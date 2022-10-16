@@ -20,11 +20,8 @@ int supertooltool_ccc(void)
       fprintf(stdout, "A) ATA Passthrough\n");
       fprintf(stdout, "S) SCSI Passthrough\n");
       fprintf(stdout, "D) Direct IDE\n");
-      if (superbyte_ccc[27] == 0x1e)
-      {
-        fprintf(stdout, "H) Direct AHCI\n");
-        fprintf(stdout, "U) USB\n");
-      }
+      fprintf(stdout, "H) Direct AHCI\n");
+      fprintf(stdout, "U) USB\n");
       fprintf(stdout, "Choose which mode > ");
       fflush(stdout);
       if (fgets(input_text, sizeof input_text, stdin) != NULL)
@@ -74,29 +71,11 @@ int supertooltool_ccc(void)
       }
     }
   }
-  if (superbyte_ccc[27] == 0x1e)
+
+  max_dma_size_ccc = (pagesize_ccc / 8) * pagesize_ccc;
+  if (ahci_mode_ccc)
   {
-    max_dma_size_ccc = (pagesize_ccc / 8) * pagesize_ccc;
-    if (ahci_mode_ccc)
-    {
-      max_dma_size_ccc = ((pagesize_ccc - 128) / 16) * pagesize_ccc;
-    }
-  }
-  else
-  {
-    if (direct_mode_ccc)
-    {
-      if (ahci_mode_ccc)
-      {
-        fprintf(stdout, "Direct AHCI mode is not allowed without a valid license.\n");
-        exit(0);
-      }
-    }
-    if (usb_mode_ccc)
-    {
-      fprintf(stdout, "USB mode is not allowed without a valid license.\n");
-      exit(0);
-    }
+    max_dma_size_ccc = ((pagesize_ccc - 128) / 16) * pagesize_ccc;
   }
 
   return_value_ccc = initialize_tool_memory_ccc();
@@ -668,11 +647,11 @@ int process_arguments_ccc(void)
   {
     if (verbose_ccc & DEBUG1)
     {
-      fprintf(stdout, "argument%d= %s\n", c + 1, argument_ccc[c]);
+      fprintf(stdout, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
     if (debug_ccc & DEBUG1)
     {
-      fprintf(debug_file_ccc, "argument%d= %s\n", c + 1, argument_ccc[c]);
+      fprintf(debug_file_ccc, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
     char current_argument[MAX_VARIABLE_LENGTH];
     char var_name[MAX_VARIABLE_NAME_LENGTH];
@@ -922,7 +901,7 @@ int read_script_file_ccc(char *script_file_ccc)
     }
     if (line_too_long)
     {
-      fprintf(stderr, "ERROR! Line %d of %s is too long.\n", i - 1, script_file_ccc);
+      fprintf(stderr, "ERROR! Line %u of %s is too long.\n", i - 1, script_file_ccc);
       exit(1);
     }
 
@@ -962,7 +941,7 @@ int read_script_file_ccc(char *script_file_ccc)
     unsigned int n;
     for (n = 2; n < total_script_lines_ccc; n++)
     {
-      fprintf(stdout, "line%d= %s", n - 1, script_line_pointer_ccc[n]);
+      fprintf(stdout, "line%u= %s", n - 1, script_line_pointer_ccc[n]);
     }
   }
   if (debug_ccc & DEBUG3)
@@ -970,7 +949,7 @@ int read_script_file_ccc(char *script_file_ccc)
     unsigned int n;
     for (n = 2; n < total_script_lines_ccc; n++)
     {
-      fprintf(debug_file_ccc, "line%d= %s", n - 1, script_line_pointer_ccc[n]);
+      fprintf(debug_file_ccc, "line%u= %s", n - 1, script_line_pointer_ccc[n]);
     }
   }
   // fprintf (stdout, "\n");
@@ -1036,11 +1015,11 @@ int process_lines_ccc(void)
     {
       if (verbose_ccc & DEBUG3)
       {
-        fprintf(stdout, "command%d=%s  arguments=%s\n", line_number - 1, command, rest_of_line);
+        fprintf(stdout, "command%u=%s  arguments=%s\n", line_number - 1, command, rest_of_line);
       }
       if (debug_ccc & DEBUG3)
       {
-        fprintf(debug_file_ccc, "command%d=%s  arguments=%s\n", line_number - 1, command, rest_of_line);
+        fprintf(debug_file_ccc, "command%u=%s  arguments=%s\n", line_number - 1, command, rest_of_line);
       }
 
       // cleanup indentation
@@ -1064,59 +1043,45 @@ int process_lines_ccc(void)
         {
           ccc_indent_ccc++;
         }
-
         else if ((strcmp(command, "done") == 0) || (strcmp(command, "DONE") == 0))
         {
           ccc_indent_ccc--;
           recess = true;
         }
-
         else if ((strcmp(command, "if") == 0) || (strcmp(command, "IF") == 0))
         {
           ccc_indent_ccc++;
         }
-
         else if ((strcmp(command, "endif") == 0) || (strcmp(command, "ENDIF") == 0))
         {
           ccc_indent_ccc--;
           recess = true;
         }
-
         else if ((strcmp(command, "else") == 0) || (strcmp(command, "ELSE") == 0))
         {
           recess = true;
         }
-
         else if ((strcmp(command, "elseif") == 0) || (strcmp(command, "ELSEIF") == 0))
         {
           recess = true;
         }
-
         else if ((strcmp(command, "setbuffer") == 0) || (strcmp(command, "SETBUFFER") == 0))
         {
           ccc_indent_ccc++;
         }
-
         else if ((strcmp(command, "endbuffer") == 0) || (strcmp(command, "ENDBUFFER") == 0))
         {
           ccc_indent_ccc--;
           recess = true;
         }
-
         else if ((strcmp(command, "setscratchpad") == 0) || (strcmp(command, "SETSCRATCHPAD") == 0))
         {
           ccc_indent_ccc++;
         }
-
         else if ((strcmp(command, "endscratchpad") == 0) || (strcmp(command, "ENDSCRATCHPAD") == 0))
         {
           ccc_indent_ccc--;
           recess = true;
-        }
-
-        else
-        {
-          ccc_indent_ccc = ccc_indent_ccc;
         }
 
         if (recess)
@@ -1132,7 +1097,7 @@ int process_lines_ccc(void)
           {
             if (i + n >= MAX_LINE_LENGTH)
             {
-              fprintf(stderr, "Indentation exceeded maximum line length on line %d. Exiting without saving...\n", line_number + 1);
+              fprintf(stderr, "Indentation exceeded maximum line length on line %u. Exiting without saving...\n", line_number + 1);
               supertool_cleanup_ccc();
               exit(1);
             }
@@ -1141,7 +1106,7 @@ int process_lines_ccc(void)
         }
         if (strlen(command) + strlen(rest_of_line) + strlen(new_line) + 2 >= MAX_LINE_LENGTH)
         {
-          fprintf(stderr, "Line %d is too long with new indentation. Exiting without saving...\n", line_number + 1);
+          fprintf(stderr, "Line %u is too long with new indentation. Exiting without saving...\n", line_number + 1);
           supertool_cleanup_ccc();
           exit(1);
         }
@@ -1245,11 +1210,11 @@ int process_lines_ccc(void)
       {
         if (verbose_ccc & DEBUG3)
         {
-          fprintf(stdout, "command%d= %s\n", line_number - 1, command);
+          fprintf(stdout, "command%u= %s\n", line_number - 1, command);
         }
         if (debug_ccc & DEBUG3)
         {
-          fprintf(debug_file_ccc, "command%d= %s\n", line_number - 1, command);
+          fprintf(debug_file_ccc, "command%u= %s\n", line_number - 1, command);
         }
 
         return_value_ccc = execute_line_ccc(perform_check, line_number, command, rest_of_line);
@@ -1266,7 +1231,7 @@ int process_lines_ccc(void)
           {
             if (!quiet_ccc)
             {
-              fprintf(stdout, "Script reached PREVIOUSSCRIPT command at line %d, exiting normally...\n", line_number - 1);
+              fprintf(stdout, "Script reached PREVIOUSSCRIPT command at line %u, exiting normally...\n", line_number - 1);
             }
             return (0);
           }
@@ -1275,7 +1240,7 @@ int process_lines_ccc(void)
           {
             if (!quiet_ccc)
             {
-              fprintf(stdout, "Script reached EXIT command at line %d, exiting normally...\n", line_number - 1);
+              fprintf(stdout, "Script reached EXIT command at line %u, exiting normally...\n", line_number - 1);
             }
             return (0);
           }
@@ -1283,7 +1248,7 @@ int process_lines_ccc(void)
           {
             if (!quiet_ccc)
             {
-              fprintf(stdout, "Script reached END command at line %d, exiting normally...\n", line_number - 1);
+              fprintf(stdout, "Script reached END command at line %u, exiting normally...\n", line_number - 1);
             }
             return (0);
           }
@@ -1436,11 +1401,11 @@ int check_arguments_ccc(char *var_name)
     {
       if (verbose_ccc & DEBUG1)
       {
-        fprintf(stdout, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(stdout, "argument%u= %s\n", c + 1, argument_ccc[c]);
       }
       if (debug_ccc & DEBUG1)
       {
-        fprintf(debug_file_ccc, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(debug_file_ccc, "argument%u= %s\n", c + 1, argument_ccc[c]);
       }
       char current_argument[MAX_VARIABLE_LENGTH];
       char name[MAX_VARIABLE_NAME_LENGTH];
@@ -1683,30 +1648,31 @@ int compare_ccc(bool perform_check, char *rest_of_line)
   }
 
   // set the operator, 0 not set, 1 equal, 2 not equal, 3 greater than, 4 less than, 5 greater or equal, 6 less or equal
-  int operator= 0;
+  int oprtr = 0;
+
   if (strcmp(condition, "=") == 0)
   {
-    operator= 1;
+    oprtr = 1;
   }
   else if (strcmp(condition, "!=") == 0)
   {
-    operator= 2;
+    oprtr = 2;
   }
   else if (strcmp(condition, ">") == 0)
   {
-    operator= 3;
+    oprtr = 3;
   }
   else if (strcmp(condition, "<") == 0)
   {
-    operator= 4;
+    oprtr = 4;
   }
   else if (strcmp(condition, ">=") == 0)
   {
-    operator= 5;
+    oprtr = 5;
   }
   else if (strcmp(condition, "<=") == 0)
   {
-    operator= 6;
+    oprtr = 6;
   }
   else
   {
@@ -1825,7 +1791,7 @@ int compare_ccc(bool perform_check, char *rest_of_line)
     }
   }
 
-  if (string_check && (operator!= 1 && operator!= 2))
+  if (string_check && (oprtr != 1 && oprtr != 2))
   {
     fprintf(stderr, "\nError: Improper operator '%s' for comparing strings,\n", condition);
     fprintf(stderr, "Only '=' or '!=' are allowed when comparing strings,\n");
@@ -1835,7 +1801,7 @@ int compare_ccc(bool perform_check, char *rest_of_line)
   if (!perform_check)
   {
     bool statement = false;
-    if (string_check && operator== 1)
+    if (string_check && oprtr == 1)
     {
       // fprintf (stdout, "string1=%s  string2=%s\n", string_variable1, string_variable2);
       if (strcmp(string_variable1, string_variable2) == 0)
@@ -1843,7 +1809,7 @@ int compare_ccc(bool perform_check, char *rest_of_line)
         statement = true;
       }
     }
-    else if (string_check && operator== 2)
+    else if (string_check && oprtr == 2)
     {
       // fprintf (stdout, "string1=%s  string2=%s\n", string_variable1, string_variable2);
       if (strcmp(string_variable1, string_variable2) != 0)
@@ -1853,7 +1819,7 @@ int compare_ccc(bool perform_check, char *rest_of_line)
     }
     else
     {
-      switch (operator)
+      switch (oprtr)
       {
       case 1:
         if (variable1 == variable2)

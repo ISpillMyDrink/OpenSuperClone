@@ -531,20 +531,20 @@ int main(int argc, char **argv)
     {
       unsigned int c;
       for (c = 0; c < argument_count_ccc; c++)
-        fprintf(stdout, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(stdout, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
     if (debug_ccc & DEBUG1)
     {
       unsigned int c;
       for (c = 0; c < argument_count_ccc; c++)
-        fprintf(debug_file_ccc, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(debug_file_ccc, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
   }
 
   else
   {
     arguments_required = 0;
-    if ((argc - optind) < arguments_required)
+    if ((argc - optind) != arguments_required)
     {
       command_line_error = true;
       if ((argc - optind) < arguments_required)
@@ -574,13 +574,13 @@ int main(int argc, char **argv)
     {
       unsigned int c;
       for (c = 0; c < argument_count_ccc; c++)
-        fprintf(stdout, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(stdout, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
     if (debug_ccc & DEBUG1)
     {
       unsigned int c;
       for (c = 0; c < argument_count_ccc; c++)
-        fprintf(debug_file_ccc, "argument%d= %s\n", c + 1, argument_ccc[c]);
+        fprintf(debug_file_ccc, "argument%u= %s\n", c + 1, argument_ccc[c]);
     }
   }
 
@@ -1488,18 +1488,15 @@ int initialize_memory_ccc(void)
         install_driver_ccc();
       }
 
-      if (superbyte_ccc[27] == 0x1e)
+      int multiplier = 1;
+      if (driver_installed_ccc && driver_memory_mapped_ccc)
       {
-        int multiplier = 1;
-        if (driver_installed_ccc && driver_memory_mapped_ccc)
-        {
-          multiplier = 4;
-        }
-        max_dma_size_ccc = ((pagesize_ccc * multiplier) / 16) * pagesize_ccc;
-        if (ahci_mode_ccc)
-        {
-          max_dma_size_ccc = (((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
-        }
+        multiplier = 4;
+      }
+      max_dma_size_ccc = ((pagesize_ccc * multiplier) / 16) * pagesize_ccc;
+      if (ahci_mode_ccc)
+      {
+        max_dma_size_ccc = (((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
       }
 
       padding_buffer_ccc = malloc(pagesize_ccc);
@@ -3647,20 +3644,20 @@ int write_logfile_ccc(char *log_file, int time_sec)
     // fprintf (writefile, "# hbaaddr  \t0x%llx\n", hba_base_address_ccc);
     // fprintf (writefile, "# portnum  \t%d\n", port_number_base_ccc);
     // fprintf (writefile, "# portaddr  \t0x%llx\n", port_base_address_ccc);
-    fprintf(writefile, "# softtimer  \t%lld\n", soft_reset_time_ccc);
-    fprintf(writefile, "# hardtimer  \t%lld\n", hard_reset_time_ccc);
-    fprintf(writefile, "# busytimer  \t%lld\n", busy_wait_time_ccc);
-    fprintf(writefile, "# initbusytimer  \t%lld\n", initial_busy_wait_time_ccc);
-    fprintf(writefile, "# resettimer  \t%lld\n", reset_wait_time_ccc); // this is also power timer
-    fprintf(writefile, "# generaltimer  \t%lld\n", general_timeout_ccc);
+    fprintf(writefile, "# softtimer  \t%llu\n", soft_reset_time_ccc);
+    fprintf(writefile, "# hardtimer  \t%llu\n", hard_reset_time_ccc);
+    fprintf(writefile, "# busytimer  \t%llu\n", busy_wait_time_ccc);
+    fprintf(writefile, "# initbusytimer  \t%llu\n", initial_busy_wait_time_ccc);
+    fprintf(writefile, "# resettimer  \t%llu\n", reset_wait_time_ccc); // this is also power timer
+    fprintf(writefile, "# generaltimer  \t%llu\n", general_timeout_ccc);
     fprintf(writefile, "# phasetimers  \t%d\n", phase_timers_ccc);
-    fprintf(writefile, "# p12softtimer  \t%lld\n", p12_soft_reset_time_ccc);
-    fprintf(writefile, "# p3softtimer  \t%lld\n", p3_soft_reset_time_ccc);
-    fprintf(writefile, "# p4softtimer  \t%lld\n", p4_soft_reset_time_ccc);
-    fprintf(writefile, "# tdsofttimer  \t%lld\n", td_soft_reset_time_ccc);
-    fprintf(writefile, "# d2softtimer  \t%lld\n", d2_soft_reset_time_ccc);
-    fprintf(writefile, "# scsofttimer  \t%lld\n", sc_soft_reset_time_ccc);
-    fprintf(writefile, "# rtsofttimer  \t%lld\n", rt_soft_reset_time_ccc);
+    fprintf(writefile, "# p12softtimer  \t%llu\n", p12_soft_reset_time_ccc);
+    fprintf(writefile, "# p3softtimer  \t%llu\n", p3_soft_reset_time_ccc);
+    fprintf(writefile, "# p4softtimer  \t%llu\n", p4_soft_reset_time_ccc);
+    fprintf(writefile, "# tdsofttimer  \t%llu\n", td_soft_reset_time_ccc);
+    fprintf(writefile, "# d2softtimer  \t%llu\n", d2_soft_reset_time_ccc);
+    fprintf(writefile, "# scsofttimer  \t%llu\n", sc_soft_reset_time_ccc);
+    fprintf(writefile, "# rtsofttimer  \t%llu\n", rt_soft_reset_time_ccc);
     fprintf(writefile, "# alwayswaitresettime  \t%d\n", always_wait_for_reset_timers_ccc);
     fprintf(writefile, "# usbbulkreset  \t%d\n", usb_bulk_reset_enabled_ccc);
     fprintf(writefile, "# usbsoftreset  \t%d\n", usb_soft_reset_enabled_ccc);
@@ -3740,8 +3737,8 @@ int write_logfile_ccc(char *log_file, int time_sec)
     fprintf(writefile, "# ioscsionly  \t%d\n", driver_io_scsi_only_ccc);
     fprintf(writefile, "# usephysicalsectorsize  \t%d\n", use_physical_sector_size_for_virtual_ccc);
     fprintf(writefile, "# colorstatusbar  \t%d\n", color_statusbar_ccc);
-    fprintf(writefile, "# primerelayactivatetime  \t%lld\n", primary_relay_activation_time_ccc);
-    fprintf(writefile, "# primerelaydelaytime  \t%lld\n", primary_relay_delay_time_ccc);
+    fprintf(writefile, "# primerelayactivatetime  \t%llu\n", primary_relay_activation_time_ccc);
+    fprintf(writefile, "# primerelaydelaytime  \t%llu\n", primary_relay_delay_time_ccc);
     fprintf(writefile, "# primerelaysettings  \t0x%04x\n", get_primary_relay_settings_ccc());
     fprintf(writefile, "# endconfig\n");
     fprintf(writefile, "################ END CONFIGURATION DATA ################\n");
@@ -12065,7 +12062,7 @@ int check_buffer_limit_ccc(void)
     max_size = max_dma_size_ccc / sector_size_ccc;
     if (cluster_size_ccc * sector_size_ccc > (long long)max_dma_size_ccc)
     {
-      sprintf(tempmessage_ccc, "Warning: The cluster limit is %lld and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
+      sprintf(tempmessage_ccc, "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
       message_now_ccc(tempmessage_ccc);
       cluster_size_ccc = max_dma_size_ccc / sector_size_ccc;
       sprintf(tempmessage_ccc, "Using a new cluster size of %d\n", cluster_size_ccc);
@@ -12209,7 +12206,7 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now, if not try reconnecting
     if (check_device_ccc())
     {
-      fprintf(stdout, "disconnecting and reconnecting with wait of %lldms\n", reset_wait_time_ccc / 1000);
+      fprintf(stdout, "disconnecting and reconnecting with wait of %llums\n", reset_wait_time_ccc / 1000);
       release_devices_ccc();
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
@@ -12262,7 +12259,7 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now, if not try reconnecting
     if (check_device_ccc() && enable_retry_connecting_ccc)
     {
-      fprintf(stdout, "disconnecting and reconnecting with wait of %lldms\n", reset_wait_time_ccc / 1000);
+      fprintf(stdout, "disconnecting and reconnecting with wait of %llums\n", reset_wait_time_ccc / 1000);
       release_devices_ccc();
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
@@ -14331,12 +14328,12 @@ int extract_smart_data_ccc(void)
       strcat(smart_data_text_ccc, temp);
       if (id == 5 && raw > 0)
       {
-        sprintf(temp, "\n# *** WARNING *** Reallocated Sectors Count = %lld", (unsigned long long)raw);
+        sprintf(temp, "\n# *** WARNING *** Reallocated Sectors Count = %llu", (unsigned long long)raw);
         strcat(smart_data_text_ccc, temp);
       }
       else if (id == 197 && raw > 0)
       {
-        sprintf(temp, "\n# *** WARNING *** Current Pending Sectors = %lld", (unsigned long long)raw);
+        sprintf(temp, "\n# *** WARNING *** Current Pending Sectors = %llu", (unsigned long long)raw);
         strcat(smart_data_text_ccc, temp);
       }
     }

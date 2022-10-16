@@ -711,7 +711,7 @@ int do_usb_read_sense_ccc(int timeout)
 
     if (debug_ccc & DEBUG19)
     {
-      fprintf(stdout, "endpointin=%x size=%lld timeout=%d\n", usbd1_bulk_in_endpoint_ccc, sensebuffer_size_ccc, timeout);
+      fprintf(stdout, "endpointin=%x size=%llu timeout=%d\n", usbd1_bulk_in_endpoint_ccc, sensebuffer_size_ccc, timeout);
       int i;
       int size = sensebuffer_size_ccc;
       for (i = 0; i < size; i += 16)
@@ -762,7 +762,7 @@ int do_usb_raw_read_ccc(int timeout)
 
     if (debug_ccc & DEBUG19)
     {
-      fprintf(stdout, "endpointin=%x size=%lld timeout=%d\n", usbd1_bulk_in_endpoint_ccc, ccc_main_usbbuffer_size_ccc, timeout);
+      fprintf(stdout, "endpointin=%x size=%llu timeout=%d\n", usbd1_bulk_in_endpoint_ccc, ccc_main_usbbuffer_size_ccc, timeout);
       int i;
       int size = ccc_main_usbbuffer_size_ccc;
       for (i = 0; i < size; i += 16)
@@ -814,7 +814,7 @@ int do_usb_raw_write_ccc(int timeout)
 
     if (debug_ccc & DEBUG19)
     {
-      fprintf(stdout, "endpointout=%x size=%lld timeout=%d\n", usbd1_bulk_out_endpoint_ccc, ccc_main_usbbuffer_size_ccc, timeout);
+      fprintf(stdout, "endpointout=%x size=%llu timeout=%d\n", usbd1_bulk_out_endpoint_ccc, ccc_main_usbbuffer_size_ccc, timeout);
       int i;
       int size = ccc_main_usbbuffer_size_ccc;
       for (i = 0; i < size; i += 16)
@@ -871,7 +871,7 @@ int usb_read_data_ccc(int timeout)
 
     if (debug_ccc & DEBUG19)
     {
-      fprintf(stdout, "endpointin=%x size=%lld timeout=%d\n", usbd1_bulk_in_endpoint_ccc, ccc_main_buffer_size_ccc, timeout);
+      fprintf(stdout, "endpointin=%x size=%llu timeout=%d\n", usbd1_bulk_in_endpoint_ccc, ccc_main_buffer_size_ccc, timeout);
       int i;
       int size = ccc_main_buffer_size_ccc;
       for (i = 0; i < size; i += 16)
@@ -917,7 +917,7 @@ int usb_write_data_ccc(int timeout)
 
     if (debug_ccc & DEBUG19)
     {
-      fprintf(stdout, "endpointout=%x size=%lld timeout=%d\n", usbd1_bulk_out_endpoint_ccc, ccc_main_buffer_size_ccc, timeout);
+      fprintf(stdout, "endpointout=%x size=%llu timeout=%d\n", usbd1_bulk_out_endpoint_ccc, ccc_main_buffer_size_ccc, timeout);
       int i;
       int size = ccc_main_buffer_size_ccc;
       for (i = 0; i < size; i += 16)

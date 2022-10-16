@@ -608,7 +608,7 @@ int translate_all_ccc(void)
     unsigned int n;
     for (i = 0; i < LANGCOUNT; i++)
     {
-      fprintf(writefile, "\n|__|%04d|__|\n", i);
+      fprintf(writefile, "\n|__|%04u|__|\n", i);
       fprintf(writefile, "%s", enlang_ccc[i]);
     }
     fclose(writefile);
@@ -627,7 +627,7 @@ int translate_all_ccc(void)
     }
     for (i = 0; i < total_language_items; i += 3)
     {
-      fprintf(stdout, "translating %d of %d\n", i / 3, total_language_items / 3);
+      fprintf(stdout, "translating %u of %u\n", i / 3, total_language_items / 3);
       char *translang = languages_ccc[i + 1];
       char *language = languages_ccc[i];
       char *native = languages_ccc[i + 2];
@@ -987,7 +987,7 @@ char *get_translated_data_ccc(char *url_data)
   }
   else
   {
-    fprintf(stdout, "%lu bytes retrieved\n", (long)chunk.size);
+    fprintf(stdout, "%ld bytes retrieved\n", (long)chunk.size);
     // printf("%s\n", chunk.memory);
   }
 
@@ -4377,11 +4377,11 @@ void update_ports_ccc(void)
     char temp[256];
     if (first)
     {
-      sprintf(temp, "%d:disable", port);
+      sprintf(temp, "%u:disable", port);
     }
     else
     {
-      sprintf(temp, ",%d:disable", port);
+      sprintf(temp, ",%u:disable", port);
     }
     strcat(new_ports_ccc, temp);
     first = 0;

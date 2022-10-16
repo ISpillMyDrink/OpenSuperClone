@@ -112,7 +112,7 @@ int set_main_buffer_ccc(void)
   {
     if (ahci_mode_ccc && ccc_main_buffer_size_ccc > max_dma_size_ccc)
     {
-      sprintf(tempmessage_ccc, "ERROR: Maximum AHCI buffer size (%lld) exceeded.\n", max_dma_size_ccc);
+      sprintf(tempmessage_ccc, "ERROR: Maximum AHCI buffer size (%llu) exceeded.\n", max_dma_size_ccc);
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
