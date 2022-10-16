@@ -36,7 +36,6 @@ if(Git_FOUND)
     execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
                     OUTPUT_VARIABLE GIT_REVISION
                     OUTPUT_STRIP_TRAILING_WHITESPACE
-                    COMMAND_ERROR_IS_FATAL ANY
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endif()
