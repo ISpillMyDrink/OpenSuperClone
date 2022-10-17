@@ -23,21 +23,15 @@ OpenSuperClone/HDDSuperClone is a powerful disk cloning utility for Linux akin t
 
 - OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
 
-## Compiling
+## Compiling and Running Locally
 
 ```Bash
 # Install required packages for building
 ./install-build-requirements.sh
 
-# Build OpenSuperClone and OSCViewer for Debug and install to ./debug
+# Build OpenSuperClone and OSCViewer for Release and install to ./release
 ./build.sh
-```
 
-Compilation has been successfully tested on Ubuntu 22.04.1.
-
-## Running
-
-```Bash
 # Install dependencies for running
 ./install-dependencies-deb.sh
 
@@ -48,12 +42,19 @@ sudo ./release/bin/opensuperclone
 ./release/bin/osscviewer
 ```
 
-## Installation
+## Installing Globally
 
 Installation will build OpenSuperClone for Release and install binaries, scripts,
-and translation files to /usr/local
+and translation files to /usr/local. Installation of the build requirements is necessary.
 
 ```Bash
 # Build OpenSuperClone and OSCViewer for Release and install to /usr/local
+# (installation prefix can be changed by editing install.sh)
 ./install.sh
+
+# Run OpenSuperClone
+sudo opensuperclone
+
+# Run OSCViewer
+oscviewer
 ```
