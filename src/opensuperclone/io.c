@@ -767,7 +767,7 @@ int do_usb_cmd_ccc(void)
     memcpy(&usb_csw_residue_ccc, usbcswbuffer_ccc + 8, 4);
     if (usb_csw_residue_ccc != 0)
     {
-      fprintf(stdout, "USB command CSW data residue %d\n", usb_csw_residue_ccc);
+      fprintf(stdout, "USB command CSW data residue %u\n", usb_csw_residue_ccc);
     }
     memcpy(&usb_csw_status_ccc, usbcswbuffer_ccc + 12, 1);
     if (usb_csw_status_ccc != 0)
@@ -894,7 +894,7 @@ int usb_get_sense_ccc(void)
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB sense CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB sense CSW data residue %u\n", csw_residue);
   }
   memcpy(&csw_status, usbcswbuffer_ccc + 12, 1);
   if (csw_status != 0)
@@ -1096,7 +1096,7 @@ int usb_soft_hard_reset_ccc(unsigned char reset_type, int timeout)
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB soft/hard reset CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB soft/hard reset CSW data residue %u\n", csw_residue);
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
   memcpy(&csw_status, usbcswbuffer_ccc + 12, 1);
@@ -1206,7 +1206,7 @@ int usb_inquiry_ccc(int timeout)
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB inquiry CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB inquiry CSW data residue %u\n", csw_residue);
     if (csw_residue > 8) // asking for 44 but might only get 36
     {
       return INPUT_DEVICE_ERROR_RETURN_CODE;
@@ -1321,7 +1321,7 @@ int usb_identify_ccc(int timeout)
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB identify CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB identify CSW data residue %u\n", csw_residue);
     if (csw_residue > 8) // asking for 44 but might only get 36
     {
       return INPUT_DEVICE_ERROR_RETURN_CODE;
@@ -1446,7 +1446,7 @@ int usb_read_smart_ccc(int timeout, unsigned char reg[7])
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB identify CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB identify CSW data residue %u\n", csw_residue);
     if (csw_residue > 8) // asking for 44 but might only get 36
     {
       return INPUT_DEVICE_ERROR_RETURN_CODE;
@@ -1587,7 +1587,7 @@ int usb_check_capacity_ccc(int timeout)
   memcpy(&csw_residue, usbcswbuffer_ccc + 8, 4);
   if (csw_residue != 0)
   {
-    fprintf(stdout, "USB readcapacity CSW data residue %d\n", csw_residue);
+    fprintf(stdout, "USB readcapacity CSW data residue %u\n", csw_residue);
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
   memcpy(&csw_status, usbcswbuffer_ccc + 12, 1);
@@ -2226,155 +2226,13 @@ int ahci_rw_ccc(int command_type, int write_bit)
 
 int do_ata_dma_read_ccc(int command_type)
 {
-  if (superbyte_ccc[31] == 0x9c)
+  if (ccc_main_buffer_size_ccc > max_dma_size_ccc)
   {
-    if (ccc_main_buffer_size_ccc > max_dma_size_ccc)
-    {
-      sprintf(tempmessage_ccc, "ERROR: Maximum DMA buffer size (%lld) exceeded.\n", max_dma_size_ccc);
-      if (superclone_ccc)
-      {
-        message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 0);
-        clear_error_message_ccc();
-      }
-      else
-      {
-        message_now_ccc(tempmessage_ccc);
-      }
-      return (-1);
-    }
-    // ahci
-    if (ahci_mode_ccc)
-    {
-      return_value_ccc = ahci_rw_ccc(command_type, 0);
-      return (return_value_ccc);
-    }
-
-    // direct
-    else
-    {
-      set_number_variable_value_ccc("$data_transferred", 0);
-      int fail_level = 0x0;
-      int success = 1;
-      unsigned char c;
-
-      // set device, this is important to do first to make sure the proper drive is selected
-      set_device_ccc(reg_base_address_ccc, device_select_base_ccc);
-      // tell device not to send interrupts
-      outb(2, control_base_address_ccc);
-
-      // wait for drive to be ready
-      return_value_ccc = wait_not_busy_or_drq_ccc(initial_busy_wait_time_ccc, 0);
-      if (stop_signal_ccc)
-      {
-        return STOP_SIGNAL_RETURN_CODE;
-      }
-      if (return_value_ccc != 0)
-      {
-        return_value_ccc = soft_reset_ccc(0);
-      }
-      if (return_value_ccc != 0)
-      {
-        success = 0;
-        fail_level = 0x20 + return_value_ccc;
-      }
-      // do this again in case there was a reset event
-      // set device, this is important to do first to make sure the proper drive is selected
-      set_device_ccc(reg_base_address_ccc, device_select_base_ccc);
-      // tell device not to send interrupts
-      outb(2, control_base_address_ccc);
-
-      if (success)
-      {
-        // put table address into controler
-        set_table_address_ccc();
-
-        // Clear the Interrupt bit and Error bit in the Status register.
-        c = superbyte_ccc[1]; // potential superbyte
-        outb(c, bus_base_address_ccc + 2);
-
-        // set the read/write bit to 1 (read)
-        c = superbyte_ccc[2]; // potential superbyte
-        outb(c, bus_base_address_ccc);
-
-        set_and_send_regs_ccc(command_type);
-
-        // set the start/stop bit
-        c = superbyte_ccc[3]; // potential superbyte
-        outb(c, bus_base_address_ccc);
-
-        // wait while busy or drq, if timeout do soft reset
-        return_value_ccc = wait_not_busy_or_drq_ccc(soft_reset_time_ccc + first_read_time_ccc, 0);
-        first_read_time_ccc = 0;
-        if (stop_signal_ccc)
-        {
-          return STOP_SIGNAL_RETURN_CODE;
-        }
-        if (return_value_ccc != 0)
-        {
-          success = 0;
-          // only do reset if soft reset time exceeded, but not if general timeout or fault
-          if (return_value_ccc == 1)
-          {
-            fail_level = 0x30 + return_value_ccc;
-            return_value_ccc = soft_reset_ccc(0);
-            if (return_value_ccc != 0)
-            {
-              fail_level = 0x40 + return_value_ccc;
-            }
-          }
-          else
-          {
-            fail_level = 0x50 + return_value_ccc;
-          }
-        }
-
-        // clear the start/stop bit
-        c = superbyte_ccc[2]; // potential superbyte
-        outb(c, bus_base_address_ccc);
-
-        // read the bus master status byte to flush cache and finalize transfer
-        io_byte_ccc[8] = inb(bus_base_address_ccc + 2);
-
-        // Clear the Interrupt bit and Error bit in the Status register.
-        c = superbyte_ccc[1]; // potential superbyte
-        outb(c, bus_base_address_ccc + 2);
-
-        // fprintf (stdout, "%02x\n", io_byte_ccc[8]);
-        set_number_variable_value_ccc("$bus_master_status", io_byte_ccc[8]);
-      }
-
-      if (success)
-      {
-        set_number_variable_value_ccc("$data_transferred", ccc_main_buffer_size_ccc);
-      }
-
-      return_value_ccc = post_direct_ccc(command_type);
-      // if success then check if still correct device
-      if (return_value_ccc && success)
-      {
-        fail_level = 0x70 + return_value_ccc;
-        success = 0;
-      }
-
-      set_number_variable_value_ccc("$command_status", fail_level);
-      if (superclone_ccc)
-      {
-        return (fail_level);
-      }
-      else
-      {
-        return 0;
-      }
-    }
-  }
-  else
-  {
-    sprintf(tempmessage_ccc, "ERROR: DMA not allowed in free version.\n");
+    sprintf(tempmessage_ccc, "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
     if (superclone_ccc)
     {
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 0);
       clear_error_message_ccc();
     }
     else
@@ -2383,6 +2241,131 @@ int do_ata_dma_read_ccc(int command_type)
     }
     return (-1);
   }
+
+  // ahci
+  if (ahci_mode_ccc)
+  {
+    return_value_ccc = ahci_rw_ccc(command_type, 0);
+    return (return_value_ccc);
+  }
+  // direct
+  else
+  {
+    set_number_variable_value_ccc("$data_transferred", 0);
+    int fail_level = 0x0;
+    int success = 1;
+    unsigned char c;
+
+    // set device, this is important to do first to make sure the proper drive is selected
+    set_device_ccc(reg_base_address_ccc, device_select_base_ccc);
+    // tell device not to send interrupts
+    outb(2, control_base_address_ccc);
+
+    // wait for drive to be ready
+    return_value_ccc = wait_not_busy_or_drq_ccc(initial_busy_wait_time_ccc, 0);
+    if (stop_signal_ccc)
+    {
+      return STOP_SIGNAL_RETURN_CODE;
+    }
+    if (return_value_ccc != 0)
+    {
+      return_value_ccc = soft_reset_ccc(0);
+    }
+    if (return_value_ccc != 0)
+    {
+      success = 0;
+      fail_level = 0x20 + return_value_ccc;
+    }
+    // do this again in case there was a reset event
+    // set device, this is important to do first to make sure the proper drive is selected
+    set_device_ccc(reg_base_address_ccc, device_select_base_ccc);
+    // tell device not to send interrupts
+    outb(2, control_base_address_ccc);
+
+    if (success)
+    {
+      // put table address into controler
+      set_table_address_ccc();
+
+      // Clear the Interrupt bit and Error bit in the Status register.
+      c = superbyte_ccc[1]; // potential superbyte
+      outb(c, bus_base_address_ccc + 2);
+
+      // set the read/write bit to 1 (read)
+      c = superbyte_ccc[2]; // potential superbyte
+      outb(c, bus_base_address_ccc);
+
+      set_and_send_regs_ccc(command_type);
+
+      // set the start/stop bit
+      c = superbyte_ccc[3]; // potential superbyte
+      outb(c, bus_base_address_ccc);
+
+      // wait while busy or drq, if timeout do soft reset
+      return_value_ccc = wait_not_busy_or_drq_ccc(soft_reset_time_ccc + first_read_time_ccc, 0);
+      first_read_time_ccc = 0;
+      if (stop_signal_ccc)
+      {
+        return STOP_SIGNAL_RETURN_CODE;
+      }
+      if (return_value_ccc != 0)
+      {
+        success = 0;
+        // only do reset if soft reset time exceeded, but not if general timeout or fault
+        if (return_value_ccc == 1)
+        {
+          fail_level = 0x30 + return_value_ccc;
+          return_value_ccc = soft_reset_ccc(0);
+          if (return_value_ccc != 0)
+          {
+            fail_level = 0x40 + return_value_ccc;
+          }
+        }
+        else
+        {
+          fail_level = 0x50 + return_value_ccc;
+        }
+      }
+
+      // clear the start/stop bit
+      c = superbyte_ccc[2]; // potential superbyte
+      outb(c, bus_base_address_ccc);
+
+      // read the bus master status byte to flush cache and finalize transfer
+      io_byte_ccc[8] = inb(bus_base_address_ccc + 2);
+
+      // Clear the Interrupt bit and Error bit in the Status register.
+      c = superbyte_ccc[1]; // potential superbyte
+      outb(c, bus_base_address_ccc + 2);
+
+      // fprintf (stdout, "%02x\n", io_byte_ccc[8]);
+      set_number_variable_value_ccc("$bus_master_status", io_byte_ccc[8]);
+    }
+
+    if (success)
+    {
+      set_number_variable_value_ccc("$data_transferred", ccc_main_buffer_size_ccc);
+    }
+
+    return_value_ccc = post_direct_ccc(command_type);
+    // if success then check if still correct device
+    if (return_value_ccc && success)
+    {
+      fail_level = 0x70 + return_value_ccc;
+      success = 0;
+    }
+
+    set_number_variable_value_ccc("$command_status", fail_level);
+    if (superclone_ccc)
+    {
+      return (fail_level);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   return (0);
 }
 
@@ -2563,7 +2546,7 @@ int do_ata_dma_write_ccc(int command_type)
   {
     if (ccc_main_buffer_size_ccc > max_dma_size_ccc)
     {
-      sprintf(tempmessage_ccc, "ERROR: Maximum DMA buffer size (%lld) exceeded.\n", max_dma_size_ccc);
+      sprintf(tempmessage_ccc, "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -3581,6 +3564,7 @@ int hba_reset_ccc(void)
         if (hba_mem_dev_ccc == -1)
         {
           fprintf(stderr, "unable to open /dev/mem\n");
+          fclose(hba_debug_reset_file);
           return (-1);
         }
         const uint32_t hba_mem_address = hba_reset_address_ccc;
@@ -3600,6 +3584,7 @@ int hba_reset_ccc(void)
         if (hba_mem_pointer_ccc == MAP_FAILED)
         {
           fprintf(stderr, "HBA mem map failed\n");
+          fclose(hba_debug_reset_file);
           return (-1);
         }
         hba_virt_addr_ccc = (hba_mem_pointer_ccc + (hba_mem_address & page_mask));

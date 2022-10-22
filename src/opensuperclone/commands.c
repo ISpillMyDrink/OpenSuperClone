@@ -15,22 +15,22 @@ int execute_line_ccc(bool perform_check, unsigned int line_number, char *command
   {
     if (perform_check)
     {
-      fprintf(stdout, "checking line %d\n", line_number - 1);
+      fprintf(stdout, "checking line %u\n", line_number - 1);
     }
     else
     {
-      fprintf(stdout, "executing line %d\n", line_number - 1);
+      fprintf(stdout, "executing line %u\n", line_number - 1);
     }
   }
   if (debug_ccc & DEBUG3)
   {
     if (perform_check)
     {
-      fprintf(debug_file_ccc, "checking line %d\n", line_number - 1);
+      fprintf(debug_file_ccc, "checking line %u\n", line_number - 1);
     }
     else
     {
-      fprintf(debug_file_ccc, "executing line %d\n", line_number - 1);
+      fprintf(debug_file_ccc, "executing line %u\n", line_number - 1);
     }
   }
   return_value_ccc = -1;
@@ -527,7 +527,7 @@ int execute_line_ccc(bool perform_check, unsigned int line_number, char *command
   {
     if (!setting_buffer_ccc && !setting_scratchpad_ccc && !setting_usbbuffer_ccc)
     {
-      fprintf(stdout, "ERROR! Command \'%s\' on line \'%d\' not a valid command.\n", command, line_number - 1);
+      fprintf(stdout, "ERROR! Command \'%s\' on line \'%u\' not a valid command.\n", command, line_number - 1);
       return (-1);
     }
     else
@@ -560,7 +560,7 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
         if (scanline != 1)
         {
           fprintf(stderr, "\nError processing variable,\n");
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
         // fprintf (stdout, "\nvar_name= %s\n", var_name);
@@ -568,7 +568,7 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
         if (return_value_ccc < 1)
         {
           fprintf(stderr, "\nError: Variable \'%s\' not found,\n", var_name);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-2);
         }
 
@@ -627,7 +627,7 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       else
       {
         fprintf(stderr, "\nError: Unknown characters outside of quotes,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-2);
       }
     }
@@ -666,7 +666,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   if (scanline < 2)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -688,7 +688,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -713,7 +713,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       else
       {
         fprintf(stderr, "\nError: Invalid type,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -723,7 +723,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -734,14 +734,14 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && offset + value_type - 1 >= ccc_main_buffer_size_ccc)
     {
       fprintf(stderr, "\nError: Buffer offset %s higher than current buffer size,\n", value);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -772,7 +772,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     else
     {
       fprintf(stderr, "\nInternal Error! (invlaid value type),\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -795,7 +795,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -820,7 +820,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       else
       {
         fprintf(stderr, "\nError: Invalid type,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -830,7 +830,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -841,14 +841,14 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && offset + value_type - 1 >= ccc_main_scratchpad_size_ccc)
     {
       fprintf(stderr, "\nError: USBbuffer offset %s higher than current usbbuffer size,\n", value);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -879,7 +879,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     else
     {
       fprintf(stderr, "\nInternal Error! (invlaid value type),\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -902,7 +902,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -927,7 +927,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       else
       {
         fprintf(stderr, "\nError: Invalid type,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -937,7 +937,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -948,14 +948,14 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && offset + value_type - 1 >= ccc_main_scratchpad_size_ccc)
     {
       fprintf(stderr, "\nError: Scratchpad offset %s higher than current scratchpad size,\n", value);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -986,7 +986,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     else
     {
       fprintf(stderr, "\nInternal Error! (invlaid value type),\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1006,7 +1006,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1015,7 +1015,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1026,14 +1026,14 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && offset >= sensebuffer_size_ccc)
     {
       fprintf(stderr, "\nError: Sensebuffer offset %s higher than current sensebuffer size,\n", value);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1044,14 +1044,14 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   if (var_name[0] != '$')
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   scanline = sscanf(var_name + 1, "%s", var_name);
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1061,13 +1061,13 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (return_value_ccc == -1)
     {
       fprintf(stderr, "Error: Variable \'%s\' has been declared more than once,\n", var_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (return_value_ccc != 1)
     {
       fprintf(stderr, "Error: Variable \'%s\' has been declared previously as a different type,\n", var_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1079,7 +1079,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (return_value_ccc == -1)
     {
       fprintf(stderr, "Error! Variable \'%s\' value \'%s\' was unable to be completely processed,\n", var_name, value);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1100,21 +1100,21 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   if (scanline != 2)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (var_name[0] != '$')
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   scanline = sscanf(var_name + 1, "%s", var_name);
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1124,13 +1124,13 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (return_value_ccc == -1)
     {
       fprintf(stderr, "Error: Variable \'%s\' has been declared more than once,\n", var_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (return_value_ccc != 2)
     {
       fprintf(stderr, "Error: Variable \'%s\' has been declared previously as a different type,\n", var_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1153,7 +1153,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1162,7 +1162,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1173,7 +1173,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1182,7 +1182,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       size = get_number_variable_value_ccc(raw_size);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1193,21 +1193,21 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && size + offset > ccc_main_buffer_size_ccc)
     {
       fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
     if (size > MAX_VARIABLE_LENGTH - 2)
     {
       fprintf(stderr, "ERROR: Size is bigger than max variable length,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1235,7 +1235,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       {
         fprintf(stderr, "\nError: Too many arguments,\n");
       }
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1244,7 +1244,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       offset = get_number_variable_value_ccc(raw_offset);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1255,7 +1255,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1264,7 +1264,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       size = get_number_variable_value_ccc(raw_size);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -1275,21 +1275,21 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (*endptr)
       {
         fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
     if (!perform_check && size + offset > ccc_main_scratchpad_size_ccc)
     {
       fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
     if (size > MAX_VARIABLE_LENGTH - 2)
     {
       fprintf(stderr, "ERROR: Size is bigger than max variable length,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -1317,7 +1317,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
           if (scanline != 1)
           {
             fprintf(stderr, "\nError processing variable,\n");
-            fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+            fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
             return (-1);
           }
           // fprintf (stdout, "\nvar_name= %s\n", var_name);
@@ -1325,7 +1325,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
           if (return_value_ccc < 1)
           {
             fprintf(stderr, "\nError: Variable \'%s\' not found,\n", var_name);
-            fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+            fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
             return (-2);
           }
 
@@ -1386,7 +1386,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
         else
         {
           fprintf(stderr, "\nError: Unknown characters outside of quotes,\n");
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-2);
         }
       }
@@ -1412,7 +1412,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       if (total_length > MAX_VARIABLE_LENGTH - 1)
       {
         fprintf(stderr, "\nError: String variable too long,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-2);
       }
     }
@@ -1447,7 +1447,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -1455,7 +1455,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1466,7 +1466,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1475,7 +1475,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1486,14 +1486,14 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (!perform_check && size + offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to print past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1535,7 +1535,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing offset argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -1543,7 +1543,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1553,7 +1553,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1565,13 +1565,13 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (find_next_endbuf < 1)
     {
       fprintf(stderr, "\nError, SETBUFFER without ENDBUFFER,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     if (find_next_setbuf > 1 && find_next_setbuf < find_next_endbuf)
     {
       fprintf(stderr, "\nError: Next SETBUFFER found before ENDBUFFER on line %d,\n", find_next_setbuf + 1);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1636,7 +1636,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
       if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_buffer_size_ccc)
       {
         fprintf(stderr, "Error! End of buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       unsigned long long value;
@@ -1645,7 +1645,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         value = get_number_variable_value_ccc(raw_byte);
         if (return_value_ccc < 0)
         {
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
@@ -1656,14 +1656,14 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         if (*endptr)
         {
           fprintf(stderr, "Error! Byte \'%s\' on line %d could not be processed.\n", raw_byte, current_line + 1);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
       if (value > 255)
       {
         fprintf(stderr, "Error! Byte \'%s\' on line %d is too big (>255).\n", raw_byte, current_line + 1);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       if (!perform_check)
@@ -1690,14 +1690,14 @@ int endmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (!setting_buffer_ccc)
     {
       fprintf(stderr, "\nError, ENDBUFFER without SETBUFFER,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     int length = strlen(rest_of_line);
     if (length > 0)
     {
       fprintf(stderr, "\nError, there should be no arguments after the ENDBUFFER command,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     setting_buffer_ccc = false;
@@ -1718,7 +1718,7 @@ int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, ch
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing size argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_size[0] == '$')
@@ -1727,7 +1727,7 @@ int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, ch
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1737,7 +1737,7 @@ int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, ch
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1757,7 +1757,7 @@ int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, ch
   return_value_ccc = set_main_buffer_ccc();
   if (return_value_ccc != 0)
   {
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
   }
   return (return_value_ccc);
 }
@@ -1783,7 +1783,7 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -1791,7 +1791,7 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1802,7 +1802,7 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1811,7 +1811,7 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1822,14 +1822,14 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (size + offset > sensebuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to print past end of sensebuffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1879,7 +1879,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1888,7 +1888,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1900,7 +1900,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -1909,7 +1909,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1919,7 +1919,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1929,7 +1929,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1939,7 +1939,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1949,7 +1949,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1959,7 +1959,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -1967,7 +1967,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2024,7 +2024,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2033,7 +2033,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2045,7 +2045,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2054,7 +2054,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2064,7 +2064,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2074,7 +2074,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2084,7 +2084,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2094,7 +2094,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2104,7 +2104,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2112,7 +2112,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2133,7 +2133,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (size + buffer_offset > file_size)
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       fclose(readfile);
       return (-1);
     }
@@ -2173,7 +2173,7 @@ int set_direction_ccc(bool perform_check, unsigned int line_number, char *rest_o
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2220,7 +2220,7 @@ int set_direction_ccc(bool perform_check, unsigned int line_number, char *rest_o
   else
   {
     fprintf(stderr, "\nError: \'%s\' is not a valid direction,\n", raw_data);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2247,7 +2247,7 @@ int scsi_6_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2259,7 +2259,7 @@ int scsi_6_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2270,7 +2270,7 @@ int scsi_6_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2307,7 +2307,7 @@ int scsi_10_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2319,7 +2319,7 @@ int scsi_10_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2330,7 +2330,7 @@ int scsi_10_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2367,7 +2367,7 @@ int scsi_12_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2379,7 +2379,7 @@ int scsi_12_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2390,7 +2390,7 @@ int scsi_12_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2427,7 +2427,7 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2439,7 +2439,7 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2450,7 +2450,7 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.scsi_cmd[i] = temp;
@@ -2485,7 +2485,7 @@ int set_protocol_ccc(bool perform_check, unsigned int line_number, char *rest_of
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2596,7 +2596,7 @@ int set_protocol_ccc(bool perform_check, unsigned int line_number, char *rest_of
   else
   {
     fprintf(stderr, "\nError: \'%s\' is not a valid protocol,\n", raw_data);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2621,7 +2621,7 @@ int set_tlength_field_ccc(bool perform_check, unsigned int line_number, char *re
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2660,7 +2660,7 @@ int set_tlength_field_ccc(bool perform_check, unsigned int line_number, char *re
   else
   {
     fprintf(stderr, "\nError: \'%s\' is not a valid field,\n", raw_data);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2685,7 +2685,7 @@ int set_byte_block_ccc(bool perform_check, unsigned int line_number, char *rest_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2708,7 +2708,7 @@ int set_byte_block_ccc(bool perform_check, unsigned int line_number, char *rest_
   else
   {
     fprintf(stderr, "\nError: \'%s\' is not a valid unit,\n", raw_data);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2733,7 +2733,7 @@ int set_check_condition_ccc(bool perform_check, unsigned int line_number, char *
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2756,7 +2756,7 @@ int set_check_condition_ccc(bool perform_check, unsigned int line_number, char *
   else
   {
     fprintf(stderr, "\nError: \'%s\' is not a valid option,\n", raw_data);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2783,7 +2783,7 @@ int ata_28_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2795,7 +2795,7 @@ int ata_28_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.ata_cmd[i] = temp;
@@ -2806,7 +2806,7 @@ int ata_28_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       passthrough_ccc.ata_cmd[i] = temp;
@@ -2843,7 +2843,7 @@ int ata_48_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2856,7 +2856,7 @@ int ata_48_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       ata_word[i] = temp;
@@ -2867,7 +2867,7 @@ int ata_48_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       if (*endptr)
       {
         fprintf(stderr, "Error! Register \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       ata_word[i] = temp;
@@ -2921,7 +2921,7 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2930,7 +2930,7 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -2942,21 +2942,21 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (raw_variable_name[0] != '$')
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   scanline = sscanf(raw_variable_name + 1, "%s", var_name);
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2964,14 +2964,14 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
   if (return_value_ccc < 1)
   {
     fprintf(stderr, "\nError: Variable \'%s\' not found,\n", var_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   else if (return_value_ccc != 2)
   {
     fprintf(stderr, "\nError: Expecting string variable but found \'%s\' to be wrong type,\n", raw_variable_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -2980,7 +2980,7 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
     char *value = get_string_variable_value_ccc(raw_variable_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -2994,6 +2994,7 @@ int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
     if (fprintf(writefile, "%s\n", value) < 0)
     {
       fprintf(stderr, "Error writing to %s (%s).\nAborting...\n", file_name, strerror(errno));
+      fclose(writefile);
       return (-1);
     }
 
@@ -3012,7 +3013,7 @@ int get_time_ccc(bool perform_check, unsigned int line_number, char *rest_of_lin
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3021,7 +3022,7 @@ int get_time_ccc(bool perform_check, unsigned int line_number, char *rest_of_lin
     return_value_ccc = get_the_time_ccc();
     if (return_value_ccc != 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3041,7 +3042,7 @@ int exit_with_code_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing exitcode argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_exitcode[0] == '$')
@@ -3049,7 +3050,7 @@ int exit_with_code_ccc(bool perform_check, unsigned int line_number, char *rest_
     tempcode = get_number_variable_value_ccc(raw_exitcode);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3059,7 +3060,7 @@ int exit_with_code_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (*endptr)
     {
       fprintf(stderr, "Error! Exitcode \'%s\' was unable to be completely processed.\n", raw_exitcode);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3096,7 +3097,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3105,7 +3106,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3115,7 +3116,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3125,7 +3126,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3135,7 +3136,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3148,13 +3149,13 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     if (return_value_ccc < 1)
     {
       fprintf(stderr, "\nError: Variable \'%s\' not found,\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (return_value_ccc != 2)
     {
       fprintf(stderr, "\nError: Variable \'%s\' is wrong type (expecting string variable),\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else
@@ -3168,14 +3169,14 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
     fprintf(stderr, "Error processing \'%s\'\n", raw_variable_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to write past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3200,7 +3201,7 @@ int setup_pio_read_ccc(bool perform_check, unsigned int line_number, char *rest_
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3236,7 +3237,7 @@ int setup_dma_read_ccc(bool perform_check, unsigned int line_number, char *rest_
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3261,7 +3262,7 @@ int setup_pio_write_ccc(bool perform_check, unsigned int line_number, char *rest
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3297,7 +3298,7 @@ int setup_dma_write_ccc(bool perform_check, unsigned int line_number, char *rest
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3322,7 +3323,7 @@ int get_status_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3341,7 +3342,7 @@ int perform_soft_reset_ccc(bool perform_check, unsigned int line_number, char *r
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3360,7 +3361,7 @@ int perform_hard_reset_ccc(bool perform_check, unsigned int line_number, char *r
   {
     fprintf(stderr, "rest_of_line= %s\n", rest_of_line);
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3383,7 +3384,7 @@ int u_sleep_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3391,7 +3392,7 @@ int u_sleep_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3401,7 +3402,7 @@ int u_sleep_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3427,7 +3428,7 @@ int busytimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3435,7 +3436,7 @@ int busytimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3445,7 +3446,7 @@ int busytimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3470,7 +3471,7 @@ int resettimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3478,7 +3479,7 @@ int resettimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3488,7 +3489,7 @@ int resettimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3513,7 +3514,7 @@ int softtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3521,7 +3522,7 @@ int softtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3531,7 +3532,7 @@ int softtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3556,7 +3557,7 @@ int hardtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3564,7 +3565,7 @@ int hardtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3574,7 +3575,7 @@ int hardtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3599,7 +3600,7 @@ int generaltimeout_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -3607,7 +3608,7 @@ int generaltimeout_ccc(bool perform_check, unsigned int line_number, char *rest_
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3617,7 +3618,7 @@ int generaltimeout_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3647,7 +3648,7 @@ int load_script_file_ccc(bool perform_check, unsigned int line_number, char *res
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3663,7 +3664,7 @@ int load_script_file_ccc(bool perform_check, unsigned int line_number, char *res
     else
     {
       fprintf(stderr, "\nError: Script level exceeded maximum (%d),\n", MAX_SCRIPT_DEPTH);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -3698,7 +3699,7 @@ int previous_script_file_ccc(bool perform_check, unsigned int line_number, char 
   if (length > 0)
   {
     fprintf(stderr, "\nError: Too many arguments,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3754,7 +3755,7 @@ int include_script_ccc(bool perform_check, unsigned int line_number, char *rest_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3791,7 +3792,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3800,7 +3801,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     scratchpad_offset = get_number_variable_value_ccc(raw_scratchpad_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3810,7 +3811,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_scratchpad_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3820,7 +3821,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3830,7 +3831,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3843,13 +3844,13 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     if (return_value_ccc < 1)
     {
       fprintf(stderr, "\nError: Variable \'%s\' not found,\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (return_value_ccc != 2)
     {
       fprintf(stderr, "\nError: Variable \'%s\' is wrong type (expecting string variable),\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else
@@ -3863,14 +3864,14 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
     fprintf(stderr, "Error processing \'%s\'\n", raw_variable_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (size + scratchpad_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to write past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3907,7 +3908,7 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -3915,7 +3916,7 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3926,7 +3927,7 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3935,7 +3936,7 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -3946,14 +3947,14 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (size + offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -3994,7 +3995,7 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -4002,7 +4003,7 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4013,7 +4014,7 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4022,7 +4023,7 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4033,14 +4034,14 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (size + offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4080,7 +4081,7 @@ int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_o
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4089,7 +4090,7 @@ int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_o
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4101,7 +4102,7 @@ int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_o
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4111,7 +4112,7 @@ int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (var_num < 0)
     {
       fprintf(stderr, "\nError: Unable to locate internal variable \'error_level\',\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -4165,7 +4166,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4174,7 +4175,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4186,7 +4187,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4195,7 +4196,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4205,7 +4206,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4215,7 +4216,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4225,7 +4226,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4235,7 +4236,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4245,7 +4246,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4253,7 +4254,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
   if (!perform_check && size + buffer_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4310,7 +4311,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4319,7 +4320,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4331,7 +4332,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4340,7 +4341,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4350,7 +4351,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4360,7 +4361,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4370,7 +4371,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4380,7 +4381,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4390,7 +4391,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4398,7 +4399,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check && size + buffer_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4419,7 +4420,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (size + buffer_offset > file_size)
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       fclose(readfile);
       return (-1);
     }
@@ -4460,7 +4461,7 @@ int delete_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4469,7 +4470,7 @@ int delete_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4481,7 +4482,7 @@ int delete_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4512,7 +4513,7 @@ int call_command_ccc(bool perform_check, unsigned int line_number, char *rest_of
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4521,7 +4522,7 @@ int call_command_ccc(bool perform_check, unsigned int line_number, char *rest_of
     command = get_string_variable_value_ccc(raw_command);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4533,7 +4534,7 @@ int call_command_ccc(bool perform_check, unsigned int line_number, char *rest_of
   if (var_num < 0)
   {
     fprintf(stderr, "\nError: Unable to locate internal variable \'error_level\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (!perform_check)
@@ -4562,7 +4563,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4574,13 +4575,13 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
       if (return_value_ccc == -1)
       {
         fprintf(stderr, "Error: Variable \'%s\' has been declared more than once,\n", raw_variable_name);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       else if (return_value_ccc != 2)
       {
         fprintf(stderr, "Error: Variable \'%s\' has been declared previously as a different type,\n", raw_variable_name);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -4589,7 +4590,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     if (return_value_ccc < 0)
     {
       fprintf(stderr, "Error: Variable \'%s\' not found,\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     if (!perform_check)
@@ -4613,7 +4614,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   else
   {
     fprintf(stderr, "\nError: Expecting string variable but found \'%s\',\n", raw_variable_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4632,7 +4633,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing offset argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -4640,7 +4641,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4650,7 +4651,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4662,13 +4663,13 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     if (find_next_endscratch < 1)
     {
       fprintf(stderr, "\nError, SETSCRATCHPAD without ENDSCRATCHPAD,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     if (find_next_setscratch > 1 && find_next_setscratch < find_next_endscratch)
     {
       fprintf(stderr, "\nError: Next SETSCRATCHPAD found before ENDSCRATCHPAD on line %d,\n", find_next_setscratch + 1);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4733,7 +4734,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
       if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_scratchpad_size_ccc)
       {
         fprintf(stderr, "Error! End of scratchpad reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       unsigned long long value;
@@ -4742,7 +4743,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
         value = get_number_variable_value_ccc(raw_byte);
         if (return_value_ccc < 0)
         {
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
@@ -4753,7 +4754,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
         if (*endptr)
         {
           fprintf(stderr, "Error! Byte \'%s\' on line %d could not be processed.\n", raw_byte, current_line + 1);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
@@ -4763,7 +4764,7 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
         if (byte_count + 8 + byte_offset + offset > ccc_main_scratchpad_size_ccc)
         {
           fprintf(stderr, "Error! End of scratchpad reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
         high_value = 1;
@@ -4800,14 +4801,14 @@ int endmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     if (!setting_scratchpad_ccc)
     {
       fprintf(stderr, "\nError, ENDSCRATCHPAD without SETSCRATCHPAD,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     int length = strlen(rest_of_line);
     if (length > 0)
     {
       fprintf(stderr, "\nError, there should be no arguments after the ENDSCRATCHPAD command,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     setting_scratchpad_ccc = false;
@@ -4829,7 +4830,7 @@ int change_main_scratchpad_size_ccc(bool perform_check, unsigned int line_number
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing size argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_size[0] == '$')
@@ -4838,7 +4839,7 @@ int change_main_scratchpad_size_ccc(bool perform_check, unsigned int line_number
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4848,7 +4849,7 @@ int change_main_scratchpad_size_ccc(bool perform_check, unsigned int line_number
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4889,7 +4890,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4898,7 +4899,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4908,7 +4909,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4918,7 +4919,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     scratch_offset = get_number_variable_value_ccc(raw_scratch_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4928,7 +4929,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Scratch offset \'%s\' was unable to be completely processed.\n", raw_scratch_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4938,7 +4939,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4948,7 +4949,7 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -4956,13 +4957,13 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -4997,7 +4998,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5006,7 +5007,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     scratch_offset = get_number_variable_value_ccc(raw_scratch_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5016,7 +5017,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Scratch offset \'%s\' was unable to be completely processed.\n", raw_scratch_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5026,7 +5027,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5036,7 +5037,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5046,7 +5047,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5056,7 +5057,7 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5064,14 +5065,14 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
   if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5094,21 +5095,21 @@ int variable_check_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (var_name[0] != '$')
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   scanline = sscanf(var_name + 1, "%s", var_name);
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing variable,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   int value = check_variable_ccc(var_name);
@@ -5118,7 +5119,7 @@ int variable_check_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (var_num < 0)
   {
     fprintf(stderr, "\nError: Unable to locate internal variable \'error_level\',\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (!perform_check)
@@ -5149,7 +5150,7 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -5157,7 +5158,7 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5168,7 +5169,7 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5177,7 +5178,7 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5188,14 +5189,14 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (!perform_check && size + offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to print past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5232,7 +5233,7 @@ int gosub_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   int scanline = sscanf(rest_of_line, "%s[^\n]", subroutine);
   if (scanline != 1)
   {
-    fprintf(stderr, "\nError processing argument of GOSUB command on line %d.\n", line_number - 1);
+    fprintf(stderr, "\nError processing argument of GOSUB command on line %u.\n", line_number - 1);
     return (-1);
   }
 
@@ -5241,13 +5242,13 @@ int gosub_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   if (new_line < 0)
   {
     fprintf(stderr, "\nError: Subroutine \'%s\' not found,\n", subroutine);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   else if (new_line == 0)
   {
     fprintf(stderr, "\nError: Subroutine \'%s\' is on line 1 which is not allowed,\n", subroutine);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5258,7 +5259,7 @@ int gosub_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (double_check > 0)
     {
       fprintf(stderr, "\nError: Subroutine \'%s\' declared more than once,\n", subroutine);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5273,7 +5274,7 @@ int gosub_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (subroutine_stack_counter_ccc > MAX_SUB_LEVEL)
     {
       fprintf(stderr, "\nError: Subroutine level exceeded maximum of %d,\n", MAX_SUB_LEVEL);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     return (new_line);
@@ -5291,14 +5292,14 @@ int ccc_subroutine_ccc(bool perform_check, unsigned int line_number)
     if (subroutine_count_ccc != return_count_ccc + 1)
     {
       fprintf(stderr, "\nError: SUBROUTINE count does not match ENDSUBROUTINE count,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     int new_line = find_command_ccc("endsubroutine", line_number + 1);
     if (new_line < 0)
     {
       fprintf(stderr, "\nError: SUBROUTINE without ENDSUBROUTINE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5310,7 +5311,7 @@ int ccc_subroutine_ccc(bool perform_check, unsigned int line_number)
     if (new_line < 0)
     {
       fprintf(stderr, "\nError: SUBROUTINE without ENDSUBROUTINE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else
@@ -5328,7 +5329,7 @@ int endsubroutine_ccc(bool perform_check, unsigned int line_number)
     if (return_count_ccc != subroutine_count_ccc)
     {
       fprintf(stderr, "\nError: ENDSUBROUTINE count does not match SUBROUTINE count,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5336,17 +5337,15 @@ int endsubroutine_ccc(bool perform_check, unsigned int line_number)
   if (!perform_check)
   {
     int new_line;
-    if (!perform_check)
+    subroutine_stack_counter_ccc--;
+    if (subroutine_stack_counter_ccc < 0)
     {
-      subroutine_stack_counter_ccc--;
-      if (subroutine_stack_counter_ccc < 0)
-      {
-        fprintf(stderr, "\nError: ENDSUBROUTINE without SUBROUTINE,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
-        return (-1);
-      }
-      new_line = ccc_subroutine_stack_ccc[subroutine_stack_counter_ccc];
+      fprintf(stderr, "\nError: ENDSUBROUTINE without SUBROUTINE,\n");
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
     }
+    new_line = ccc_subroutine_stack_ccc[subroutine_stack_counter_ccc];
+
     return (new_line);
   }
   return (0);
@@ -5360,7 +5359,7 @@ int returnsub_ccc(bool perform_check, unsigned int line_number)
     if (subroutine_count_ccc < 1)
     {
       fprintf(stderr, "\nError: RETURNSUB without SUBROUTINE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5374,7 +5373,7 @@ int returnsub_ccc(bool perform_check, unsigned int line_number)
       if (subroutine_stack_counter_ccc < 0)
       {
         fprintf(stderr, "\nError: RETURNSUB without SUBROUTINE,\n");
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       new_line = ccc_subroutine_stack_ccc[subroutine_stack_counter_ccc];
@@ -5413,7 +5412,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (find_next_endif < 1)
     {
       fprintf(stderr, "\nError: IF without ENDIF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5422,7 +5421,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
       if ((find_next_else < find_next_if || find_next_if < 1) && find_next_else < find_next_endif)
       {
         fprintf(stderr, "\nError: Too many ELSE for IF on lines %d and %d,\n", matching_else + 1, find_next_else + 1);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
     }
@@ -5437,7 +5436,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
           if ((find_duplicate < find_next_if || find_next_if < 1) && find_duplicate < find_next_endif)
           {
             fprintf(stderr, "\nError: Too many ELSE for IF on lines %d and %d,\n", matching_else + 1, find_duplicate + 1);
-            fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+            fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
             return (-1);
           }
         }
@@ -5466,7 +5465,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (level < 0)
     {
       fprintf(stderr, "\nError: ENDIF without IF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5482,7 +5481,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
   if (matching_else > 1 && matching_elseif > 1 && matching_else < matching_elseif)
   {
     fprintf(stderr, "\nError: ELSE before ELSEIF on lines %d and %d,\n", matching_else + 1, matching_elseif + 1);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5507,7 +5506,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
   int statement = compare_ccc(perform_check, rest_of_line);
   if (statement < 0)
   {
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5520,7 +5519,7 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (endif_stack_counter_ccc > MAX_ENDIF_LEVEL)
     {
       fprintf(stderr, "\nError: IF statement level exceeded maximum of %d,\n", MAX_ENDIF_LEVEL);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5547,7 +5546,7 @@ int ccc_endif_ccc(bool perform_check, unsigned int line_number)
     if (if_statement_level_ccc < 0)
     {
       fprintf(stderr, "\nError: ENDIF without IF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5558,7 +5557,7 @@ int ccc_endif_ccc(bool perform_check, unsigned int line_number)
     if (endif_stack_counter_ccc < 0)
     {
       fprintf(stderr, "\nError: ENDIF without IF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5576,20 +5575,20 @@ int elsestate_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
   if (scanline > 0)
   {
     fprintf(stderr, "\nUnknown data following statement,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (perform_check && if_statement_level_ccc < 1)
   {
     fprintf(stderr, "\nError: ELSE without IF,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (!perform_check && endif_stack_counter_ccc < 1)
   {
     fprintf(stderr, "\nError: ELSE without IF,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5607,14 +5606,14 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   if (perform_check && if_statement_level_ccc < 1)
   {
     fprintf(stderr, "\nError: ELSEIF without IF,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (!perform_check && endif_stack_counter_ccc < 1)
   {
     fprintf(stderr, "\nError: ELSEIF without IF,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5647,7 +5646,7 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     if (find_next_endif < 1)
     {
       fprintf(stderr, "\nError: IF without ENDIF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5681,7 +5680,7 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     if (level < 0)
     {
       fprintf(stderr, "\nError: ENDIF without IF,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5697,7 +5696,7 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   if (matching_else > 1 && matching_elseif > 1 && matching_else < matching_elseif)
   {
     fprintf(stderr, "\nError: ELSE before ELSEIF on lines %d and %d,\n", matching_else + 1, matching_elseif + 1);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5717,7 +5716,7 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   int statement = compare_ccc(perform_check, rest_of_line);
   if (statement < 0)
   {
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5748,7 +5747,7 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     int statement = compare_ccc(perform_check, rest_of_line);
     if (statement < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (statement == 0)
@@ -5777,7 +5776,7 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (find_next_done < 1)
     {
       fprintf(stderr, "\nError: WHILE without DONE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5795,7 +5794,7 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (level < 0)
     {
       fprintf(stderr, "\nError: DONE without WHILE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5814,7 +5813,7 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
   int statement = compare_ccc(perform_check, rest_of_line);
   if (statement < 0)
   {
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5831,7 +5830,7 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
     if (while_stack_counter_ccc > MAX_WHILE_LEVEL)
     {
       fprintf(stderr, "\nError: WHILE statement level exceeded maximum of %d,\n", MAX_WHILE_LEVEL);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
 
@@ -5858,7 +5857,7 @@ int ccc_done_ccc(bool perform_check, unsigned int line_number)
     if (while_statement_level_ccc < 0)
     {
       fprintf(stderr, "\nError: DONE without WHILE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5876,7 +5875,7 @@ int ccc_done_ccc(bool perform_check, unsigned int line_number)
     if (while_stack_counter_ccc < 0)
     {
       fprintf(stderr, "\nError: DONE without WHILE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5892,7 +5891,7 @@ int dobreak_ccc(bool perform_check, unsigned int line_number)
     if (while_statement_level_ccc < 1)
     {
       fprintf(stderr, "\nError: BREAK without WHILE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5903,7 +5902,7 @@ int dobreak_ccc(bool perform_check, unsigned int line_number)
     if (while_stack_counter_ccc < 0)
     {
       fprintf(stderr, "\nError: BREAK without WHILE,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else
@@ -5940,7 +5939,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -5949,7 +5948,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     usbbuffer_offset = get_number_variable_value_ccc(raw_usbbuffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5959,7 +5958,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_usbbuffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5969,7 +5968,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5979,7 +5978,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -5992,13 +5991,13 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     if (return_value_ccc < 1)
     {
       fprintf(stderr, "\nError: Variable \'%s\' not found,\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else if (return_value_ccc != 2)
     {
       fprintf(stderr, "\nError: Variable \'%s\' is wrong type (expecting string variable),\n", raw_variable_name);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     else
@@ -6012,14 +6011,14 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
   {
     fprintf(stderr, "\nError: Variable name must start with \'$\',\n");
     fprintf(stderr, "Error processing \'%s\'\n", raw_variable_name);
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (size + usbbuffer_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to write past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6055,7 +6054,7 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -6063,7 +6062,7 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6074,7 +6073,7 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6083,7 +6082,7 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6094,14 +6093,14 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (size + offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6146,7 +6145,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6155,7 +6154,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6167,7 +6166,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6176,7 +6175,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6186,7 +6185,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6196,7 +6195,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6206,7 +6205,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6216,7 +6215,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6226,7 +6225,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6234,7 +6233,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check && size + buffer_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6289,7 +6288,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6298,7 +6297,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     file_name = get_string_variable_value_ccc(raw_file_name);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6310,7 +6309,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (!perform_check && strlen(file_name) == 0)
   {
     fprintf(stderr, "\nError: File name is blank,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6319,7 +6318,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6329,7 +6328,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6339,7 +6338,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     file_offset = get_number_variable_value_ccc(raw_file_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6349,7 +6348,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (*endptr)
     {
       fprintf(stderr, "Error! File offset \'%s\' was unable to be completely processed.\n", raw_file_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6359,7 +6358,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6369,7 +6368,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6377,7 +6376,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
   if (!perform_check && size + buffer_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6398,7 +6397,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     if (size + buffer_offset > file_size)
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       fclose(readfile);
       return (-1);
     }
@@ -6439,7 +6438,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -6447,7 +6446,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6458,7 +6457,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6467,7 +6466,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6478,14 +6477,14 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
   if (!perform_check && size + offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to print past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6525,7 +6524,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing offset argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_offset[0] == '$')
@@ -6533,7 +6532,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     offset = get_number_variable_value_ccc(raw_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6543,7 +6542,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (*endptr)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6555,13 +6554,13 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (find_next_endusb < 1)
     {
       fprintf(stderr, "\nError, SETUSBBUFFER without ENDUSBBUFFER,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     if (find_next_setusb > 1 && find_next_setusb < find_next_endusb)
     {
       fprintf(stderr, "\nError: Next SETUSBBUFFER found before ENDUSBBUFFER on line %d,\n", find_next_setusb + 1);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6626,7 +6625,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
       if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_usbbuffer_size_ccc)
       {
         fprintf(stderr, "Error! End of usb buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       unsigned long long value;
@@ -6635,7 +6634,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         value = get_number_variable_value_ccc(raw_byte);
         if (return_value_ccc < 0)
         {
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
@@ -6646,7 +6645,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         if (*endptr)
         {
           fprintf(stderr, "Error! Byte \'%s\' on line %d could not be processed.\n", raw_byte, current_line + 1);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
       }
@@ -6656,7 +6655,7 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         if (byte_count + 8 + byte_offset + offset > ccc_main_usbbuffer_size_ccc)
         {
           fprintf(stderr, "Error! End of usb buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
-          fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+          fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
           return (-1);
         }
         high_value = 1;
@@ -6693,14 +6692,14 @@ int end_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (!setting_usbbuffer_ccc)
     {
       fprintf(stderr, "\nError, ENDUSBBUFFER without SETUSBBUFFER,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     int length = strlen(rest_of_line);
     if (length > 0)
     {
       fprintf(stderr, "\nError, there should be no arguments after the ENDUSBBUFFER command,\n");
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
     setting_usbbuffer_ccc = false;
@@ -6721,7 +6720,7 @@ int change_usbbuffer_size_ccc(bool perform_check, unsigned int line_number, char
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing size argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_size[0] == '$')
@@ -6730,7 +6729,7 @@ int change_usbbuffer_size_ccc(bool perform_check, unsigned int line_number, char
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6740,7 +6739,7 @@ int change_usbbuffer_size_ccc(bool perform_check, unsigned int line_number, char
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6781,7 +6780,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6790,7 +6789,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     usb_offset = get_number_variable_value_ccc(raw_usb_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6800,7 +6799,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! USB offset \'%s\' was unable to be completely processed.\n", raw_usb_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6810,7 +6809,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6820,7 +6819,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6830,7 +6829,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6840,7 +6839,7 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6848,14 +6847,14 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
   if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6889,7 +6888,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6898,7 +6897,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     buffer_offset = get_number_variable_value_ccc(raw_buffer_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6908,7 +6907,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! Buffer offset \'%s\' was unable to be completely processed.\n", raw_buffer_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6918,7 +6917,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     usb_offset = get_number_variable_value_ccc(raw_usb_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6928,7 +6927,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! USB offset \'%s\' was unable to be completely processed.\n", raw_usb_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6938,7 +6937,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6948,7 +6947,7 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -6956,13 +6955,13 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
   if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -6996,7 +6995,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -7005,7 +7004,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     usb_offset = get_number_variable_value_ccc(raw_usb_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7015,7 +7014,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! USB offset \'%s\' was unable to be completely processed.\n", raw_usb_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7025,7 +7024,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     scratch_offset = get_number_variable_value_ccc(raw_scratch_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7035,7 +7034,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! Scratch offset \'%s\' was unable to be completely processed.\n", raw_scratch_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7045,7 +7044,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7055,7 +7054,7 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7063,13 +7062,13 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
   if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -7103,7 +7102,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -7112,7 +7111,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     scratch_offset = get_number_variable_value_ccc(raw_scratch_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7122,7 +7121,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! Scratch offset \'%s\' was unable to be completely processed.\n", raw_scratch_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7132,7 +7131,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     usb_offset = get_number_variable_value_ccc(raw_usb_offset);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7142,7 +7141,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! USB offset \'%s\' was unable to be completely processed.\n", raw_usb_offset);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7152,7 +7151,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     size = get_number_variable_value_ccc(raw_size);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7162,7 +7161,7 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     if (*endptr)
     {
       fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7170,14 +7169,14 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
   if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
   if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -7200,7 +7199,7 @@ int usbtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
   if (scanline != 1)
   {
     fprintf(stderr, "\nError processing time argument,\n");
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
   if (raw_time[0] == '$')
@@ -7208,7 +7207,7 @@ int usbtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     time = get_number_variable_value_ccc(raw_time);
     if (return_value_ccc < 0)
     {
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7218,7 +7217,7 @@ int usbtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     if (*endptr)
     {
       fprintf(stderr, "Error! Time \'%s\' was unable to be completely processed.\n", raw_time);
-      fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
   }
@@ -7250,7 +7249,7 @@ int send_usb_control_msg_ccc(bool perform_check, unsigned int line_number, char 
     {
       fprintf(stderr, "\nError: Too many arguments,\n");
     }
-    fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
@@ -7263,7 +7262,7 @@ int send_usb_control_msg_ccc(bool perform_check, unsigned int line_number, char 
       unsigned long long temp = get_number_variable_value_ccc(raw_b[i]);
       if (return_value_ccc < 0)
       {
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       value[i] = temp;
@@ -7274,7 +7273,7 @@ int send_usb_control_msg_ccc(bool perform_check, unsigned int line_number, char 
       if (*endptr)
       {
         fprintf(stderr, "Error! Value \'%s\' was unable to be completely processed.\n", raw_b[i]);
-        fprintf(stderr, "%s %d.\n", error_string, line_number - 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
         return (-1);
       }
       value[i] = temp;

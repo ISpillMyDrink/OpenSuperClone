@@ -2,6 +2,7 @@
     "cmake.configureOnEdit": true,
     "cmake.configureOnOpen": true,
 
+    "cmake.sourceDirectory": "${workspaceFolder}",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.installPrefix": "${workspaceFolder}/debug",
 
