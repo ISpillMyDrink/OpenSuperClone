@@ -292,17 +292,6 @@ char current_time_ccc[40];
 unsigned char random_data_ccc[2048];
 // char *driver_buffer_ccc;
 
-unsigned char sbyte_ccc[16];
-unsigned char superbyte_ccc[1024];
-int license_type_ccc;
-int license_version_ccc;
-int license_time_ccc;
-int activation_type_ccc;
-int activation_days_remaining_ccc;
-int check_command_ccc;
-int check_read_ccc;
-int check_write_ccc;
-
 int disk1_fd_ccc;
 int disk2_fd_ccc;
 int current_disk_ccc;

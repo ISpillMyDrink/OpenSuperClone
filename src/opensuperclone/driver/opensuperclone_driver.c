@@ -98,7 +98,7 @@
     }                                                       \
   } while (0)
 
-#define DRIVER_VERSION "2.6_20211126"
+#define DRIVER_VERSION "2.6.1"
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Driver for OpenSuperClone");

@@ -252,22 +252,22 @@ void supertool_cleanup_ccc(void)
   if (ahci_address_changed_ccc)
   {
     // restore addresses
-    memcpy(port_virt_addr_ccc + superbyte_ccc[11], &command_list_address_backup_ccc, 8);
-    memcpy(port_virt_addr_ccc + superbyte_ccc[12], &fis_address_backup_ccc, 8);
+    memcpy(port_virt_addr_ccc + 0x00, &command_list_address_backup_ccc, 8);
+    memcpy(port_virt_addr_ccc + 0x08, &fis_address_backup_ccc, 8);
   }
 
   if (ahci_interrupt_changed_ccc)
   {
     // restore the interrupt settings
-    memcpy(port_virt_addr_ccc + superbyte_ccc[13], &interrupt_backup_ccc, 4);
+    memcpy(port_virt_addr_ccc + 0x14, &interrupt_backup_ccc, 4);
   }
 
   if (table_address_changed_ccc)
   {
-    outb(table_address_backup_ccc[0], bus_base_address_ccc + 0 + superbyte_ccc[10]);
-    outb(table_address_backup_ccc[1], bus_base_address_ccc + 1 + superbyte_ccc[10]);
-    outb(table_address_backup_ccc[2], bus_base_address_ccc + 2 + superbyte_ccc[10]);
-    outb(table_address_backup_ccc[3], bus_base_address_ccc + 3 + superbyte_ccc[10]);
+    outb(table_address_backup_ccc[0], bus_base_address_ccc + 0 + 0x18);
+    outb(table_address_backup_ccc[1], bus_base_address_ccc + 1 + 0x18);
+    outb(table_address_backup_ccc[2], bus_base_address_ccc + 2 + 0x18);
+    outb(table_address_backup_ccc[3], bus_base_address_ccc + 3 + 0x18);
   }
 
   if (memory_mapped_ccc)
