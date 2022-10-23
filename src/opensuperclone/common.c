@@ -108,18 +108,15 @@ int set_main_buffer_ccc(void)
     message_now_ccc(tempmessage_ccc);
     return (-1);
   }
-  if (superbyte_ccc[29] == 0x60)
+  if (ahci_mode_ccc && ccc_main_buffer_size_ccc > max_dma_size_ccc)
   {
-    if (ahci_mode_ccc && ccc_main_buffer_size_ccc > max_dma_size_ccc)
-    {
-      sprintf(tempmessage_ccc, "ERROR: Maximum AHCI buffer size (%llu) exceeded.\n", max_dma_size_ccc);
-      message_now_ccc(tempmessage_ccc);
-      return (-1);
-    }
-    if (direct_mode_ccc)
-    {
-      create_dma_table_ccc();
-    }
+    sprintf(tempmessage_ccc, "ERROR: Maximum AHCI buffer size (%llu) exceeded.\n", max_dma_size_ccc);
+    message_now_ccc(tempmessage_ccc);
+    return (-1);
+  }
+  if (direct_mode_ccc)
+  {
+    create_dma_table_ccc();
   }
   return (0);
 }

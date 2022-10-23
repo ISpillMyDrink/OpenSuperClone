@@ -1468,8 +1468,6 @@ int initialize_memory_ccc(void)
   real_buffer_size_ccc = MAX_BUFFER_SIZE;
   memory_failed_ccc = true;
   int attempt = 0;
-  if (superbyte_ccc[20] == 0x29)
-  {
     if (usb_mode_ccc && !driver_memory_mapped_ccc)
     {
       real_buffer_size_ccc = MAX_USB_BUFFER_SIZE;
@@ -1596,23 +1594,6 @@ int initialize_memory_ccc(void)
       }
       attempt++;
     }
-  }
-  else
-  {
-    unsigned int align = pagesize_ccc;
-    free(ccc_buffer_ccc);
-    if (posix_memalign(&ccc_buffer_ccc, align, real_buffer_size_ccc))
-    {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGPOSIXMEMFAIL]);
-      message_error_ccc(tempmessage_ccc);
-      sprintf(tempmessage_ccc, " (%s)", strerror(errno));
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-      clear_error_message_ccc();
-      return GENERAL_ERROR_RETURN_CODE;
-    }
-    memset(ccc_buffer_ccc, 0, real_buffer_size_ccc);
-  }
 
   // exit (0);
 
@@ -2586,25 +2567,6 @@ int read_log_file_ccc(char *log_file)
   if (found_error)
   {
     total_lines_ccc = 0;
-  }
-
-  if (superbyte_ccc[56] != 0x6b)
-  {
-    // prevent pro settings from being set in config data
-    skip_fast_ccc = false;
-    mark_bad_head_ccc = false;
-    read_bad_head_ccc = true;
-    block_size_ccc = DEFAULT_BLOCK_SIZE;
-    // sector_size_ccc = DEFAULT_SECTOR_SIZE;
-    block_offset_ccc = 0;
-    max_read_rate_ccc = 0;
-    enable_process_chunk_ccc = false;
-    enable_read_twice_ccc = false;
-    enable_retry_connecting_ccc = false;
-    enable_scsi_write_ccc = false;
-    output_sector_size_adjustment_ccc = 0;
-    use_physical_sector_size_for_virtual_ccc = false;
-    use_rebuild_assist_ccc = false;
   }
 
   fclose(readfile);
@@ -4447,10 +4409,7 @@ int set_initial_data_from_log_ccc(int newproject)
     rate_count_ccc = 0;
     output_sector_size_adjustment_ccc = 0;
     min_skip_size_ccc = original_min_skip_size_ccc;
-    if (superbyte_ccc[56] == 0x6b)
-    {
-      enable_process_chunk_ccc = true;
-    }
+    enable_process_chunk_ccc = true;
   }
 
   if (read_size_ccc == -1 || read_size_ccc > (source_total_size_ccc - input_offset_ccc))
@@ -14875,18 +14834,15 @@ void set_mode_ahci_ccc(void)
 {
   if (!ahci_mode_ccc)
   {
-    if (superbyte_ccc[25] == 0x71)
+    clear_mode_ccc();
+    direct_mode_ccc = true;
+    ahci_mode_ccc = true;
+    clear_source_ccc();
+    update_mode_ccc();
+    // re-initialize memory after mode change
+    if (initialize_memory_ccc())
     {
-      clear_mode_ccc();
-      direct_mode_ccc = true;
-      ahci_mode_ccc = true;
-      clear_source_ccc();
-      update_mode_ccc();
-      // re-initialize memory after mode change
-      if (initialize_memory_ccc())
-      {
-        // set_mode_auto_passthrough_ccc();
-      }
+      // set_mode_auto_passthrough_ccc();
     }
   }
 }
@@ -14895,16 +14851,13 @@ void set_mode_usb_ccc(void)
 {
   if (!usb_mode_ccc || usb_allow_ata_ccc)
   {
-    if (superbyte_ccc[25] == 0x71)
-    {
-      clear_mode_ccc();
-      usb_mode_ccc = true;
-      usb_allow_ata_ccc = false;
-      clear_source_ccc();
-      update_mode_ccc();
-      // re-initialize memory after mode change
-      initialize_memory_ccc();
-    }
+    clear_mode_ccc();
+    usb_mode_ccc = true;
+    usb_allow_ata_ccc = false;
+    clear_source_ccc();
+    update_mode_ccc();
+    // re-initialize memory after mode change
+    initialize_memory_ccc();
   }
 }
 
@@ -14912,16 +14865,13 @@ void set_mode_usb_ata_ccc(void)
 {
   if (!usb_mode_ccc || !usb_allow_ata_ccc)
   {
-    if (superbyte_ccc[25] == 0x71)
-    {
-      clear_mode_ccc();
-      usb_mode_ccc = true;
-      usb_allow_ata_ccc = true;
-      clear_source_ccc();
-      update_mode_ccc();
-      // re-initialize memory after mode change
-      initialize_memory_ccc();
-    }
+    clear_mode_ccc();
+    usb_mode_ccc = true;
+    usb_allow_ata_ccc = true;
+    clear_source_ccc();
+    update_mode_ccc();
+    // re-initialize memory after mode change
+    initialize_memory_ccc();
   }
 }
 
