@@ -1,61 +1,97 @@
-# OpenSuperClone
+<h1 align="center">
+  <br>
+  OpenSuperClone
+  <br>
+</h1>
 
-This is a fork of the HDDSuperClone source code (<http://www.hddsuperclone.com/>) released under the GPL2 by Scott Dwyer.
+<h4 align="center">
+  A powerful disk cloning utility for Linux with many advanced features based on <a href="https://www.hddsuperclone.com/">Scott Dwyer's HDDSuperClone</a>.
+</h4>
 
-OpenSuperClone/HDDSuperClone is a powerful disk cloning utility for Linux akin to ddrescue with many advanced features.
+<p align="center">
+  <a href="#-features-">✨ Features</a> •
+  <a href="#-installation-">💾 Installation</a> •
+  <a href="#-changelog-">🎛️ Changelog</a> •
+  <a href="#-credits-">🤹 Credits</a> •
+  <a href="#-license-">📄 License</a>
+</p>
 
-## Changes (since version 2.3.3_20220430 of HDDSuperClone)
+<p align="center">
+  <img src="./doc/opensuperclone.png" alt="Size Limit CLI" width="738">
+</p>
 
-- Cleanup of project files
-- Implemented CMake as build system
-- Removal of licensing related functions
-- Switched from GTK2 to GTK3
-- Updated kernel driver to work on 5.15
+## ✨ Features
 
-## Planned Changes
+* Advanced drive cloning capability akin to that of ddrescue
+* Virtual driver mode for targeted data extraction
+* USB Relay control for automatic drive powercycling
 
-- Refactoring of codebase (get rid of -fcommon flag)
-- Implement DKMS for driver (un-)installation
-- Remove requirement for running as root
-- Get completely rid of GTK2 code
-- Configuration files and presets for settings
+### Planned Features
 
-## Known Issues
+* Refactoring of codebase (get rid of -fcommon flag)
+* Implement DKMS for driver (un-)installation
+* Remove requirement for running as root
+* Get completely rid of GTK2 code
+* Add configuration files and presets for settings
 
-- OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
+### Known Issues
 
-## Compiling and Running Locally
+* OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
+
+<h1 align="center">
+  <br>
+</h1>
+
+## 💾 Installation
+
+Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
+
+### Compiling from Source
+
+OpenSuperClone requires the following packages to be installed for a successful project build:
+
+- `gcc`
+- `cmake`
+- `pkgconf`
+- `libusb-dev`
+- `libgtk-3-dev` (or `libgtk2.0-dev` if building for GTK2)
 
 ```Bash
-# Install required packages for building
-./install-build-requirements.sh
-
 # Build OpenSuperClone and OSCViewer for Release and install to ./release
-./build.sh
-
-# Install dependencies for running
-./install-dependencies-deb.sh
+$ ./build.sh
 
 # Run OpenSuperClone
-sudo ./release/bin/opensuperclone
+$ sudo ./release/bin/opensuperclone
 
 # Run OSCViewer
-./release/bin/osscviewer
+$ ./release/bin/osscviewer
 ```
 
-## Installing Globally
+<h1 align="center">
+  <br>
+</h1>
 
-Installation will build OpenSuperClone for Release and install binaries, scripts,
-and translation files to /usr/local. Installation of the build requirements is necessary.
+## 🎛️ Changelog
 
-```Bash
-# Build OpenSuperClone and OSCViewer for Release and install to /usr/local
-# (installation prefix can be changed by editing install.sh)
-./install.sh
+### OpenSuperClone 2.4 [Pre-Release]
 
-# Run OpenSuperClone
-sudo opensuperclone
+* Cleanup of project files, removal of licensing related code
+* Implemented CMake as build system
+* Switched from GTK2 to GTK3
+* Updated kernel driver to work on 5.15
 
-# Run OSCViewer
-oscviewer
-```
+<h1 align="center">
+  <br>
+</h1>
+
+## 🤹 Credits
+
+All credit belongs to Scott Dwyer with his work on HDDSuperClone.
+
+<h1 align="center">
+  <br>
+</h1>
+
+## 📄 License
+
+This software is licensed under the [GPLv2](LICENSE).
