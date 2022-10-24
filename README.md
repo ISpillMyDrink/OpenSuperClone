@@ -6,9 +6,10 @@
 
 <div align="center">
 
-  [![Platform](https://badgen.net/badge/platform/linux/green)](#)
-  [![Release](https://badgen.net/badge/release/2.4-RC2/purple)](https://github.com/ISpillMyDrink/OpenSuperClone/releases/tag/OpenSuperClone-2.4-RC2)
-  [![License](https://badgen.net/badge/license/GPLv2/blue)](https://opensource.org/licenses/gpl-2.0)
+  [![Commits](https://badgen.net/github/commits/ispillmydrink/opensuperclone/main)](https://github.com/ISpillMyDrink/OpenSuperClone/commits/main)
+  [![Last Commit](https://badgen.net/github/last-commit/ispillmydrink/opensuperclone/main)](https://github.com/ISpillMyDrink/OpenSuperClone/commits/main)
+  [![Release](https://badgen.net/github/release/ispillmydrink/opensuperclone)](https://github.com/ISpillMyDrink/OpenSuperClone/releases)
+  [![License](https://badgen.net/github/license/ispillmydrink/opensuperclone)](https://github.com/ISpillMyDrink/OpenSuperClone/blob/main/LICENSE)
   
 </div>
 
