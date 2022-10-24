@@ -18,6 +18,7 @@ OpenSuperClone/HDDSuperClone is a powerful disk cloning utility for Linux akin t
 - Implement DKMS for driver (un-)installation
 - Remove requirement for running as root
 - Get completely rid of GTK2 code
+- Configuration files and presets for settings
 
 ## Known Issues
 

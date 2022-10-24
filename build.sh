@@ -1,3 +1,4 @@
+rm -r build
 mkdir build
 
 # Build for Release and install locally

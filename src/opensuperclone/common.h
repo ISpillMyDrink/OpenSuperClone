@@ -289,7 +289,6 @@ long long *number_variable_buffer_ccc;
 char **string_variable_pointer_ccc;
 char current_date_ccc[40];
 char current_time_ccc[40];
-unsigned char random_data_ccc[2048];
 // char *driver_buffer_ccc;
 
 int disk1_fd_ccc;

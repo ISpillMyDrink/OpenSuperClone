@@ -5872,8 +5872,8 @@ int post_direct_ccc(int command_type)
       }
     }
 #endif
-  }
 
+  }
   else
   {
     // ide
@@ -5952,7 +5952,6 @@ int post_direct_ccc(int command_type)
       ata_lba_ccc = lba;
       ata_count_ccc = count;
     }
-
     else
     {
       sprintf(tempmessage_ccc, "\n\nInternal error, post direct command type not valid\n\n");
@@ -6036,7 +6035,6 @@ int refresh_status_ccc(int disk_fd)
       memcpy(&ata_error_ccc, &io_byte_ccc[2], 1);
       memcpy(&ata_status_ccc, &io_byte_ccc[1], 1);
     }
-
     else
     {
       // ide

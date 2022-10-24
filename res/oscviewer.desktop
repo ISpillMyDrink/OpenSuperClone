@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=OSCViewer
+Comment=Advanced disk utility
+Exec=oscviewer
+Terminal=false
+Type=Application
+Categories=Utility;

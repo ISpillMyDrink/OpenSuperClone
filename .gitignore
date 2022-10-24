@@ -15,6 +15,7 @@ _deps
 build
 debug
 release
+package
 
 # Ignore IDE artifacts
 # .vscode

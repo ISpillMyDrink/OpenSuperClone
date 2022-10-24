@@ -42,3 +42,8 @@ install(TARGETS oscviewer)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscviewer
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc
 )
+
+# Install desktop file
+install(FILES ${CMAKE_SOURCE_DIR}/res/oscviewer.desktop
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
+)

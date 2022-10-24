@@ -92,3 +92,8 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc
 )
+
+# Install desktop file
+install(FILES ${CMAKE_SOURCE_DIR}/res/opensuperclone.desktop
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
+)
