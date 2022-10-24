@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="./doc/opensuperclone.png" alt="Size Limit CLI" width="738">
+  <img src="./doc/opensuperclone.gif" alt="Size Limit CLI" width="738">
 </p>
 
 ## ✨ Features
