@@ -4,6 +4,14 @@
   <br>
 </h1>
 
+<div align="center">
+
+  [![Platform](https://badgen.net/badge/platform/linux/green)](#)
+  [![Release](https://badgen.net/badge/release/2.4-RC2/purple)](https://github.com/ISpillMyDrink/OpenSuperClone/releases/tag/OpenSuperClone-2.4-RC2)
+  [![License](https://badgen.net/badge/license/GPLv2/blue)](https://opensource.org/licenses/gpl-2.0)
+  
+</div>
+
 <h4 align="center">
   A powerful disk cloning utility for Linux with many advanced features based on <a href="https://www.hddsuperclone.com/">Scott Dwyer's HDDSuperClone</a>.
 </h4>
@@ -27,7 +35,7 @@
 * Direct AHCI and IDE capability to circumvent OS drivers completely
 * USB Relay control for automatic drive power-cycling
 
-#### Planned Features
+#### 📋 Planned Features
 
 * Refactoring of codebase (get rid of -fcommon flag)
 * Implement DKMS for driver (un-)installation
@@ -35,7 +43,7 @@
 * Get completely rid of GTK2 code
 * Add configuration files and presets for settings
 
-#### Known Issues
+#### 💣 Known Issues
 
 * OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
 
@@ -45,7 +53,7 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 
 #### Compiling from Source
 
-OpenSuperClone requires the following packages to be installed for a successful project build:
+💡 OpenSuperClone requires the following packages to be installed for a successful project build:
 
 - `gcc`
 - `cmake`
