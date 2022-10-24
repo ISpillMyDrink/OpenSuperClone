@@ -24,7 +24,8 @@
 
 * Advanced drive cloning capability akin to that of ddrescue
 * Virtual driver mode for targeted data extraction
-* USB Relay control for automatic drive powercycling
+* Direct AHCI and IDE capability to circumvent OS drivers completely
+* USB Relay control for automatic drive power-cycling
 
 ### Planned Features
 
