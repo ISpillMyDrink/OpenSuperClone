@@ -2,6 +2,6 @@
 Name=OpenSuperClone
 Comment=Advanced disk utility
 Exec=sudo opensuperclone
-Terminal=false
+Terminal=true
 Type=Application
 Categories=Utility;

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=OSCViewer
-Comment=Advanced disk utility
+Comment=Viewer for OpenSuperClone logfiles
 Exec=oscviewer
 Terminal=false
 Type=Application
