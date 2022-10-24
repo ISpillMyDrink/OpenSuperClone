@@ -9,11 +9,11 @@
 </h4>
 
 <p align="center">
-  <a href="#-features-">✨ Features</a> •
-  <a href="#-installation-">💾 Installation</a> •
-  <a href="#-changelog-">🎛️ Changelog</a> •
-  <a href="#-credits-">🤹 Credits</a> •
-  <a href="#-license-">📄 License</a>
+  <a href="#-features">✨ Features</a> •
+  <a href="#-installation">💾 Installation</a> •
+  <a href="#-changelog">🎛️ Changelog</a> •
+  <a href="#-credits">🤹 Credits</a> •
+  <a href="#-license">📄 License</a>
 </p>
 
 <p align="center">
