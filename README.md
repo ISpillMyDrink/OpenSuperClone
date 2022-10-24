@@ -41,7 +41,7 @@
 
 ## 💾 Installation
 
-Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
+Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page. The current pre-release is OpenSuperClone 2.4 RC2 and may be unstable, use at your own risk.
 
 #### Compiling from Source
 
