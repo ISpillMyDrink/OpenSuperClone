@@ -27,7 +27,7 @@
 * Direct AHCI and IDE capability to circumvent OS drivers completely
 * USB Relay control for automatic drive power-cycling
 
-### Planned Features
+#### Planned Features
 
 * Refactoring of codebase (get rid of -fcommon flag)
 * Implement DKMS for driver (un-)installation
@@ -35,7 +35,7 @@
 * Get completely rid of GTK2 code
 * Add configuration files and presets for settings
 
-### Known Issues
+#### Known Issues
 
 * OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
 
@@ -43,7 +43,7 @@
 
 Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
 
-### Compiling from Source
+#### Compiling from Source
 
 OpenSuperClone requires the following packages to be installed for a successful project build:
 
@@ -66,7 +66,7 @@ $ ./release/bin/osscviewer
 
 ## ✏️ Changelog
 
-### OpenSuperClone 2.4 [Pre-Release]
+#### OpenSuperClone 2.4 [Pre-Release]
 
 * Cleanup of project files, removal of licensing related code
 * Implemented CMake as build system
