@@ -5,10 +5,16 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR “In-source builds not allowed! Create a build directory and run CMake from there.”)
 endif()
 
+# Force a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to Release as none was specified.")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
+endif()
+
 # OpenSuperClone version 2.4
 project(OpenSuperClone
         VERSION 2.4
-        DESCRIPTION "Advanced disk utility"
+        DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C
 )

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=OpenSuperClone
-Comment=Advanced disk utility
+Comment=Advanced disk cloning utility
 Exec=sudo opensuperclone
 Terminal=true
 Type=Application
