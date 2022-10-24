@@ -11,7 +11,7 @@
 <p align="center">
   <a href="#-features">✨ Features</a> •
   <a href="#-installation">💾 Installation</a> •
-  <a href="#-changelog">✏️ Changelog</a> •
+  <a href="#%EF%B8%8F-changelog">✏️ Changelog</a> •
   <a href="#-credits">💵 Credits</a> •
   <a href="#-license">📄 License</a>
 </p>
@@ -38,10 +38,6 @@
 
 * OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
 
-<h1 align="center">
-  <br>
-</h1>
-
 ## 💾 Installation
 
 Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
@@ -67,10 +63,6 @@ $ sudo ./release/bin/opensuperclone
 $ ./release/bin/osscviewer
 ```
 
-<h1 align="center">
-  <br>
-</h1>
-
 ## ✏️ Changelog
 
 ### OpenSuperClone 2.4 [Pre-Release]
@@ -80,17 +72,9 @@ $ ./release/bin/osscviewer
 * Switched from GTK2 to GTK3
 * Updated kernel driver to work on 5.15
 
-<h1 align="center">
-  <br>
-</h1>
-
 ## 💵 Credits
 
 All credit belongs to Scott Dwyer with his work on HDDSuperClone.
-
-<h1 align="center">
-  <br>
-</h1>
 
 ## 📄 License
 
