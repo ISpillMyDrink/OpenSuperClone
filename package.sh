@@ -1,4 +1,3 @@
-rm -r build
 mkdir build
 
 # Build for Release and create Debian package with CPack

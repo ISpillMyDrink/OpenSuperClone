@@ -93,7 +93,11 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone
         DESTINATION share/doc
 )
 
-# Install desktop file
+# Install desktop files
 install(FILES ${CMAKE_SOURCE_DIR}/res/opensuperclone.desktop
+        DESTINATION share/applications
+)
+
+install(FILES ${CMAKE_SOURCE_DIR}/res/opensupertool.desktop
         DESTINATION share/applications
 )

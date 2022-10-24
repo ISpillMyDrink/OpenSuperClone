@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=OpenSuperTool
+Comment=CLI for OpenSuperClone
+Exec=sudo opensuperclone --tool
+Terminal=true
+Type=Application
+Categories=Utility;
