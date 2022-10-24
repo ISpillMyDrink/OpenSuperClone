@@ -85,15 +85,15 @@ install(TARGETS opensuperclone)
 
 # Install script files
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+        DESTINATION bin
 )
 
 # Install language files
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc
+        DESTINATION share/doc
 )
 
 # Install desktop file
 install(FILES ${CMAKE_SOURCE_DIR}/res/opensuperclone.desktop
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
+        DESTINATION share/applications
 )
