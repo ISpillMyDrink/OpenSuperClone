@@ -11,8 +11,8 @@
 <p align="center">
   <a href="#-features">✨ Features</a> •
   <a href="#-installation">💾 Installation</a> •
-  <a href="#-changelog">🎛️ Changelog</a> •
-  <a href="#-credits">🤹 Credits</a> •
+  <a href="#-changelog">✏️ Changelog</a> •
+  <a href="#-credits">💵 Credits</a> •
   <a href="#-license">📄 License</a>
 </p>
 
@@ -71,7 +71,7 @@ $ ./release/bin/osscviewer
   <br>
 </h1>
 
-## 🎛️ Changelog
+## ✏️ Changelog
 
 ### OpenSuperClone 2.4 [Pre-Release]
 
@@ -84,7 +84,7 @@ $ ./release/bin/osscviewer
   <br>
 </h1>
 
-## 🤹 Credits
+## 💵 Credits
 
 All credit belongs to Scott Dwyer with his work on HDDSuperClone.
 
