@@ -66,6 +66,8 @@
 #define BUTTONID_IOSCSIONLY 27
 #define BUTTONID_ENABLEREBUILDASSIST 28
 #define BUTTONID_REBUILDASSIST 29
+#define BUTTONID_ENABLERETRYCONNECTING 30
+#define BUTTONID_DONTIDENTIFY 31
 
 GtkWidget *language_window_ccc;
 GtkWidget *main_label;
@@ -142,6 +144,7 @@ GtkWidget *aboutmi_ccc;
 GtkWidget *timermi_ccc;
 GtkWidget *installdrivermi_ccc;
 GtkWidget *uninstalldrivermi_ccc;
+GtkWidget *fixdrivermemorymi_ccc;
 GtkWidget *driveronlymi_ccc;
 GtkWidget *adddomainmi_ccc;
 GtkWidget *newdomainmi_ccc;
@@ -289,9 +292,12 @@ GtkWidget *sectorsize_button_label_ccc;
 GtkWidget *sectorsize_spinbutton_ccc;
 GtkWidget *alignment_button_label_ccc;
 GtkWidget *alignment_spinbutton_ccc;
+GtkWidget *maxreadrate_button_label_ccc;
+GtkWidget *maxreadrate_spinbutton_ccc;
 GtkWidget *enable_rebuild_assist_checkbutton_ccc;
 GtkWidget *enable_process_chunk_checkbutton_ccc;
 GtkWidget *enable_read_twice_checkbutton_ccc;
+GtkWidget *enable_retry_connecting_checkbutton_ccc;
 GtkWidget *enable_phase_log_checkbutton_ccc;
 GtkWidget *confirmation_box_label_ccc;
 GtkWidget *disable_ports_label_ccc;
@@ -357,6 +363,7 @@ GtkWidget *activate_primary_relay_button_ccc;
 GtkWidget *deactivate_primary_relay_button_ccc;
 GtkWidget *activate_primary_relay_button_main_ccc;
 GtkWidget *deactivate_primary_relay_button_main_ccc;
+GtkWidget *disable_identify_checkbutton_ccc;
 
 GtkWidget *label_project_ccc;
 GtkWidget *data_project_ccc;

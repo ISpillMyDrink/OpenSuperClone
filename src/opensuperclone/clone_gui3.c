@@ -191,6 +191,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   data_drivermode_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "data_drivermode"));
   installdrivermi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "installdrivermi"));
   uninstalldrivermi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "uninstalldrivermi"));
+  fixdrivermemorymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "fixdrivermemorymi"));
   driveronlymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driveronlymi"));
   adddomainmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "adddomainmi"));
   newdomainmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "newdomainmi"));
@@ -256,6 +257,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(timermi_ccc), curlang_ccc[LANGTIMERS]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(installdrivermi_ccc), curlang_ccc[LANGINSTALLDRIVER]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(uninstalldrivermi_ccc), curlang_ccc[LANGUNINSTALLDRIVER]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(fixdrivermemorymi_ccc), curlang_ccc[LANGFIXDRIVERMEMORYERROR]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(driveronlymi_ccc), curlang_ccc[LANGDRIVERONLYMI]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(adddomainmi_ccc), curlang_ccc[LANGADDDOMAINFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(newdomainmi_ccc), curlang_ccc[LANGNEWDOMAINFILE]);
@@ -2966,7 +2968,7 @@ void set_driver_mode_button_status_ccc(bool active)
     {
       set_driver_mode4_ccc();
       gtk_widget_set_sensitive(GTK_WIDGET(driver_mode4_button_ccc), active);
-      gtk_widget_set_sensitive(GTK_WIDGET(agressive_driver_checkbutton_ccc), FALSE);
+      gtk_widget_set_sensitive(GTK_WIDGET(agressive_driver_checkbutton_ccc), active);
       gtk_widget_set_sensitive(GTK_WIDGET(driver_mode1_button_ccc), FALSE);
       gtk_widget_set_sensitive(GTK_WIDGET(driver_mode2_button_ccc), FALSE);
       gtk_widget_set_sensitive(GTK_WIDGET(driver_mode3_button_ccc), FALSE);
@@ -3490,6 +3492,10 @@ void open_clone_settings_dialog_ccc(void)
   sectorsize_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "sectorsize_spinbutton"));
   alignment_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "alignment_button_label"));
   alignment_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "alignment_spinbutton"));
+  maxreadrate_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "maxreadrate_button_label"));
+  maxreadrate_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "maxreadrate_spinbutton"));
+  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
+  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
@@ -3523,6 +3529,7 @@ void open_clone_settings_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(exitonslowtime_button_label_ccc), curlang_ccc[LANGEXITONSLOWTIME]);
   gtk_label_set_text(GTK_LABEL(sectorsize_button_label_ccc), curlang_ccc[LANGSECTORSIZE]);
   gtk_label_set_text(GTK_LABEL(alignment_button_label_ccc), curlang_ccc[LANGBLOCKALIGNMENT]);
+  gtk_label_set_text(GTK_LABEL(maxreadrate_button_label_ccc), curlang_ccc[LANGMAXREADRATE]);
   // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
   // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
@@ -3559,6 +3566,7 @@ void open_clone_settings_dialog_ccc(void)
     clone_settings_ccc.exit_slow_time = gtk_spin_button_get_value(GTK_SPIN_BUTTON(exitonslowtime_spin_button_ccc)) * 1000;
     clone_settings_ccc.sector_size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(sectorsize_spinbutton_ccc));
     clone_settings_ccc.block_offset = gtk_spin_button_get_value(GTK_SPIN_BUTTON(alignment_spinbutton_ccc));
+    clone_settings_ccc.max_read_rate = gtk_spin_button_get_value(GTK_SPIN_BUTTON(maxreadrate_spinbutton_ccc)) * 1000;
     // clone_settings_ccc. = gtk_spin_button_get_value(GTK_SPIN_BUTTON());
     update_clone_settings_ccc();
     logfile_changed_ccc = true;
@@ -3595,10 +3603,12 @@ void open_advanced_settings_dialog_ccc(void)
   write_buffer_disable_radio_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "write_buffer_disable_radio_button"));
   write_buffer_enable_radio_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "write_buffer_enable_radio_button"));
   write_buffer_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "write_buffer_label"));
+  disable_identify_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disable_identify_checkbutton"));
   pio_mode_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "pio_mode_checkbutton"));
   enable_rebuild_assist_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_rebuild_assist_checkbutton"));
   enable_process_chunk_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_process_chunk_checkbutton"));
   enable_read_twice_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_read_twice_checkbutton"));
+  enable_retry_connecting_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_retry_connecting_checkbutton"));
   enable_scsi_write_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_scsi_write_checkbutton"));
   enable_phase_log_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_phase_log_checkbutton"));
   enable_output_sector_size_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_output_sector_size_checkbutton"));
@@ -3635,10 +3645,12 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_button_set_label(GTK_BUTTON(write_buffer_disable_radio_button_ccc), curlang_ccc[LANGWRITEBUFFERDISABLE]);
   gtk_button_set_label(GTK_BUTTON(write_buffer_enable_radio_button_ccc), curlang_ccc[LANGWRITEBUFFERENABLE]);
   gtk_label_set_text(GTK_LABEL(write_buffer_label_ccc), curlang_ccc[LANGWRITEBUFFERLABEL]);
+  gtk_button_set_label(GTK_BUTTON(disable_identify_checkbutton_ccc), curlang_ccc[LANGDONTIDENTIFY]);
   gtk_button_set_label(GTK_BUTTON(pio_mode_checkbutton_ccc), curlang_ccc[LANGPIOMODE]);
   gtk_button_set_label(GTK_BUTTON(enable_rebuild_assist_checkbutton_ccc), curlang_ccc[LANGENABLEREBUILDASSIST]);
   gtk_button_set_label(GTK_BUTTON(enable_process_chunk_checkbutton_ccc), curlang_ccc[LANGENABLEPROCESSCHUNK]);
   gtk_button_set_label(GTK_BUTTON(enable_read_twice_checkbutton_ccc), curlang_ccc[LANGENABLEREADTWICE]);
+  gtk_button_set_label(GTK_BUTTON(enable_retry_connecting_checkbutton_ccc), curlang_ccc[LANGENABLERETRYCONNECTING]);
   gtk_button_set_label(GTK_BUTTON(enable_scsi_write_checkbutton_ccc), curlang_ccc[LANGENABLESCSIWRITE]);
   gtk_button_set_label(GTK_BUTTON(enable_phase_log_checkbutton_ccc), curlang_ccc[LANGENABLEPHASELOG]);
   gtk_button_set_label(GTK_BUTTON(enable_output_sector_size_checkbutton_ccc), curlang_ccc[LANGENABLEOUTPUTSECTORSIZE]);
@@ -3676,10 +3688,12 @@ void open_advanced_settings_dialog_ccc(void)
   g_signal_connect(G_OBJECT(force_dangerous_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_FORCEDANGEROUS));
   g_signal_connect(G_OBJECT(enable_output_offset_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_OFFSET));
   g_signal_connect(G_OBJECT(enable_current_position_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_POSITION));
+  g_signal_connect(G_OBJECT(disable_identify_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_DONTIDENTIFY));
   g_signal_connect(G_OBJECT(pio_mode_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PIOMODE));
   g_signal_connect(G_OBJECT(enable_rebuild_assist_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEREBUILDASSIST));
   g_signal_connect(G_OBJECT(enable_process_chunk_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEPROCESSCHUNK));
   g_signal_connect(G_OBJECT(enable_read_twice_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEREADTWICE));
+  g_signal_connect(G_OBJECT(enable_retry_connecting_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLERETRYCONNECTING));
   g_signal_connect(G_OBJECT(enable_scsi_write_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLESCSIWRITE));
   g_signal_connect(G_OBJECT(enable_phase_log_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEPHASELOGS));
   g_signal_connect(G_OBJECT(enable_output_sector_size_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEOUTPUTSECTOR));
@@ -3696,10 +3710,12 @@ void open_advanced_settings_dialog_ccc(void)
 
   if (direct_mode_ccc)
   {
+    gtk_widget_set_sensitive(GTK_WIDGET(disable_identify_checkbutton_ccc), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(pio_mode_checkbutton_ccc), TRUE);
   }
   else
   {
+    gtk_widget_set_sensitive(GTK_WIDGET(disable_identify_checkbutton_ccc), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(pio_mode_checkbutton_ccc), FALSE);
   }
 
@@ -4717,7 +4733,7 @@ void update_status_buttons_ccc(void)
 
 void update_mode_ccc(void)
 {
-  if (generic_mode_ccc || scsi_passthrough_ccc || fill_mode_ccc)
+  if (generic_mode_ccc || scsi_passthrough_ccc || nvme_passthrough_ccc || fill_mode_ccc)
   {
     deactivate_status_buttons_ccc();
   }
@@ -4817,6 +4833,10 @@ void update_clone_button_settings_ccc(void)
   gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(alignment_spinbutton_ccc), gtk_adjustment_ccc);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(alignment_spinbutton_ccc), clone_settings_ccc.block_offset);
 
+  gtk_adjustment_ccc = (GtkAdjustment *)gtk_adjustment_new(0, 0, 10000000, 100, 1000, 0);
+  gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(maxreadrate_spinbutton_ccc), gtk_adjustment_ccc);
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(maxreadrate_spinbutton_ccc), clone_settings_ccc.max_read_rate / 1000);
+
   // gtk_adjustment_ccc = (GtkAdjustment *) gtk_adjustment_new (0, 1, 1, 1, 1, 0);
   // gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(), gtk_adjustment_ccc);
   // gtk_spin_button_set_value(GTK_SPIN_BUTTON(), clone_settings_ccc.);
@@ -4837,10 +4857,12 @@ void update_advanced_button_settings_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(driver_return_error_radio_button_ccc), advanced_settings_ccc.driver_return_error);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(driver_return_zeros_radio_button_ccc), advanced_settings_ccc.driver_return_zeros);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(driver_return_marked_radio_button_ccc), advanced_settings_ccc.driver_return_marked);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_identify_checkbutton_ccc), advanced_settings_ccc.disable_identify);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pio_mode_checkbutton_ccc), advanced_settings_ccc.pio_mode);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_rebuild_assist_checkbutton_ccc), advanced_settings_ccc.enable_rebuild_assist);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_process_chunk_checkbutton_ccc), advanced_settings_ccc.enable_process_chunk);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_read_twice_checkbutton_ccc), advanced_settings_ccc.enable_read_twice);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_retry_connecting_checkbutton_ccc), advanced_settings_ccc.enable_retry_connecting);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_scsi_write_checkbutton_ccc), advanced_settings_ccc.enable_scsi_write);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_phase_log_checkbutton_ccc), advanced_settings_ccc.enable_phase_log);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_output_sector_size_checkbutton_ccc), advanced_settings_ccc.enable_output_sector_size);
@@ -5100,6 +5122,10 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.force_dangerous = button_status;
     break;
 
+  case BUTTONID_DONTIDENTIFY:
+    advanced_settings_ccc.disable_identify = button_status;
+    break;
+
   case BUTTONID_PIOMODE:
     advanced_settings_ccc.pio_mode = button_status;
     break;
@@ -5114,6 +5140,10 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
 
   case BUTTONID_ENABLEREADTWICE:
     advanced_settings_ccc.enable_read_twice = button_status;
+    break;
+
+  case BUTTONID_ENABLERETRYCONNECTING:
+    advanced_settings_ccc.enable_retry_connecting = button_status;
     break;
 
   case BUTTONID_ENABLESCSIWRITE:
@@ -5329,9 +5359,7 @@ void about_ccc(void)
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
   strcpy(temp, "License type: GPL2\n");
-
   strcat(temp, "There is NO WARRANTY, to the extent permitted by law.");
-
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
