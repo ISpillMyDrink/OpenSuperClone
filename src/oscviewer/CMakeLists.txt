@@ -36,7 +36,7 @@ endif()
 target_compile_options(oscviewer PRIVATE ${CC_OPTIONS})
 
 # Install executable
-install(TARGETS oscviewer)
+install(TARGETS oscviewer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install language files
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscviewer

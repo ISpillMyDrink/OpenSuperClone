@@ -81,7 +81,7 @@ target_link_libraries(opensuperclone ${LIBUSB_LIBRARIES})
 target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})
 
 # Install executable
-install(TARGETS opensuperclone)
+install(TARGETS opensuperclone RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install script files
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
