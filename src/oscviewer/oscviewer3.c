@@ -577,6 +577,9 @@ int main(int argc, char **argv)
   // g_signal_connect(main_window, "draw", G_CALLBACK(main_drawing_expose_event), NULL);
   g_signal_connect(G_OBJECT(main_drawing_area), "button-press-event", G_CALLBACK(on_button_press), NULL);
 
+  gtk_widget_set_double_buffered(main_drawing_area, FALSE);
+  gtk_widget_set_double_buffered(top_drawing_area, FALSE);
+
   g_object_unref(builder);
 
   gtk_widget_show_all(main_window);
