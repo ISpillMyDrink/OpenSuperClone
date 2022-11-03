@@ -70,7 +70,7 @@ $ ./build.sh
 $ sudo ./release/bin/opensuperclone
 
 # Run OSCViewer
-$ ./release/bin/osscviewer
+$ ./release/bin/oscviewer
 ```
 
 ## ✏️ Changelog

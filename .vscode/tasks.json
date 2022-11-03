@@ -1,0 +1,62 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            //  Build Release.
+            "label": "🔧 Build Release",
+            "type": "shell",
+            "linux": {
+                "command": "./build.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Package Release.
+            "label": "✉️ Package Release",
+            "type": "shell",
+            "linux": {
+                "command": "./package.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Cleanup.
+            "label": "💣 Cleanup",
+            "type": "shell",
+            "linux": {
+                "command": "./clean.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Install.
+            "label": "📐 Install",
+            "type": "shell",
+            "linux": {
+                "command": "./install.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Uninstall.
+            "label": "❌ Uninstall",
+            "type": "shell",
+            "linux": {
+                "command": "./install.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+    ]
+}

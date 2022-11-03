@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/build/src/opensuperclone/**",
+                "${workspaceFolder}/build/src/oscviewer/**"
+            ],
+            "forcedInclude": [
+                "${workspaceFolder}/build/src/opensuperclone/config.h",
+                "${workspaceFolder}/build/src/oscviewer/config.h"
+            ],
+            "cStandard": "c11"
+        }
+    ],
+    "version": 4
+}

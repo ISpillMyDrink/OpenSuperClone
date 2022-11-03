@@ -1,4 +1,4 @@
-rm -r build
-rm -r debug
-rm -r release
-rm -r package
+rm -r build > /dev/null 2>&1
+rm -r debug > /dev/null 2>&1
+rm -r release > /dev/null 2>&1
+rm -r package > /dev/null 2>&1
