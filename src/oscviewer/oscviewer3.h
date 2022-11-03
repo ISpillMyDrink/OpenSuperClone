@@ -458,12 +458,6 @@ void select_domain(void);
 
 void select_dmde_domain(void);
 
-// static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs);
-
-// static void domain_ok_sel(GtkWidget *w, GtkFileSelection *fs);
-
-// static void dmde_domain_ok_sel(GtkWidget *w, GtkFileSelection *fs);
-
 void get_rgb_color(int color);
 
 int get_color_from_status(int status_bits);

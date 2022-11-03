@@ -760,124 +760,76 @@ void select_file(void)
   gtk_widget_destroy(dialog);
 }
 
-// /* Get the selected filename and load it */
-// static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs)
-// {
-//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
-//   sprintf(log_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
-//   printf("%s\n", log_file);
-//   gtk_widget_destroy(filew);
-//   total_size = 0;
-//   int ret = read_log_file(log_file);
-//   if (ret != 0)
-//   {
-//     sprintf(tempmessage, "error processing log file\n");
-//     message_now(tempmessage);
-//   }
-//   else
-//   {
-//     ret = check_log();
-//     if (ret != 0)
-//     {
-//       sprintf(tempmessage, "there were errors found in the log file\n");
-//       message_now(tempmessage);
-//     }
-//   }
-//   char tempchar[1048];
-//   strcpy(tempchar, "Log= ");
-//   strcat(tempchar, log_file);
-//   gtk_label_set_text(GTK_LABEL(progress_log_label), tempchar);
-//   // redraw_left_vbox();
-//   // redraw_main_drawing_area();
-//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
-//   gtk_widget_queue_draw(main_window);
-// }
-
 void select_domain(void)
 {
-  // /* Create a new file selection widget */
-  // domainw = gtk_file_selection_new("File selection");
-  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(domainw));
-
-  // /* Connect the ok_button to file_ok_sel function */
-  // g_signal_connect(GTK_FILE_SELECTION(domainw)->ok_button, "clicked", G_CALLBACK(domain_ok_sel), (gpointer)domainw);
-
-  // /* Connect the cancel_button to destroy the widget */
-  // g_signal_connect_swapped(GTK_FILE_SELECTION(domainw)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), domainw);
-
-  // /* Lets set the filename, as if this were a save dialog, and we are giving
-  //  *     a default filename */
-  // gtk_file_selection_set_filename(GTK_FILE_SELECTION(domainw), "domain.log");
-
-  // gtk_widget_show(domainw);
+  GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new("File selection",
+                                       GTK_WINDOW(main_window),
+                                       GTK_FILE_CHOOSER_ACTION_OPEN,
+                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                       NULL);
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    sprintf(domain_file, "%s", filename);
+    printf("%s\n", domain_file);
+    g_free(filename);
+    regular_domain = 1;
+    int ret = read_domain_file(domain_file);
+    if (ret != 0)
+    {
+      sprintf(tempmessage, "error processing domain file\n");
+      message_now(tempmessage);
+    }
+    // else
+    // {
+    //   ret = check_domain();
+    //   if (ret != 0)
+    //   {
+    //     sprintf(tempmessage, "there were errors found in the domain file\n");
+    //     message_now(tempmessage);
+    //   }
+    // }
+    // redraw_left_vbox();
+    // redraw_main_drawing_area();
+    //  this seems to be needed sometimes after changing the settings and then reloading the log file
+    gtk_widget_queue_draw(main_window);
+  }
+  gtk_widget_destroy(dialog);
 }
-
-// /* Get the selected filename and load it */
-// static void domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
-// {
-//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
-//   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
-//   printf("%s\n", domain_file);
-//   gtk_widget_destroy(domainw);
-//   regular_domain = 1;
-//   int ret = read_domain_file(domain_file);
-//   if (ret != 0)
-//   {
-//     sprintf(tempmessage, "error processing domain file\n");
-//     message_now(tempmessage);
-//   }
-//   char tempchar[1048];
-//   strcpy(tempchar, "Domain= ");
-//   strcat(tempchar, domain_file);
-//   gtk_label_set_text(GTK_LABEL(domain_log_label), tempchar);
-//   // redraw_left_vbox();
-//   // redraw_main_drawing_area();
-//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
-//   gtk_widget_queue_draw(main_window);
-// }
 
 void select_dmde_domain(void)
 {
-  // /* Create a new file selection widget */
-  // domainw = gtk_file_selection_new("File selection");
-  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(domainw));
-
-  // /* Connect the ok_button to file_ok_sel function */
-  // g_signal_connect(GTK_FILE_SELECTION(domainw)->ok_button, "clicked", G_CALLBACK(dmde_domain_ok_sel), (gpointer)domainw);
-
-  // /* Connect the cancel_button to destroy the widget */
-  // g_signal_connect_swapped(GTK_FILE_SELECTION(domainw)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), domainw);
-
-  // /* Lets set the filename, as if this were a save dialog, and we are giving
-  //  *     a default filename */
-  // gtk_file_selection_set_filename(GTK_FILE_SELECTION(domainw), "domain.log");
-
-  // gtk_widget_show(domainw);
+  GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new("File selection",
+                                       GTK_WINDOW(main_window),
+                                       GTK_FILE_CHOOSER_ACTION_OPEN,
+                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                       NULL);
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    sprintf(domain_file, "%s", filename);
+    printf("%s\n", domain_file);
+    g_free(filename);
+    regular_domain = 0;
+    int ret = read_domain_dmde_file(domain_file);
+    if (ret != 0)
+    {
+      sprintf(tempmessage, "error processing domain file\n");
+      message_now(tempmessage);
+    }
+    // redraw_left_vbox();
+    // redraw_main_drawing_area();
+    //  this seems to be needed sometimes after changing the settings and then reloading the log file
+    gtk_widget_queue_draw(main_window);
+  }
+  gtk_widget_destroy(dialog);
 }
-
-// /* Get the selected filename and load it */
-// static void dmde_domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
-// {
-//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
-//   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
-//   printf("%s\n", domain_file);
-//   gtk_widget_destroy(domainw);
-//   regular_domain = 0;
-//   int ret = read_domain_dmde_file(domain_file);
-//   if (ret != 0)
-//   {
-//     sprintf(tempmessage, "error processing domain file\n");
-//     message_now(tempmessage);
-//   }
-//   char tempchar[1048];
-//   strcpy(tempchar, "Domain= ");
-//   strcat(tempchar, domain_file);
-//   gtk_label_set_text(GTK_LABEL(domain_log_label), tempchar);
-//   // redraw_left_vbox();
-//   // redraw_main_drawing_area();
-//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
-//   gtk_widget_queue_draw(main_window);
-// }
 
 gint reload_file(void)
 {
