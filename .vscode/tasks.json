@@ -74,7 +74,7 @@
             "label": "❌ Uninstall",
             "type": "shell",
             "linux": {
-                "command": "./install.sh",
+                "command": "./uninstall.sh",
             },
             "presentation": {
                 "clear": true
