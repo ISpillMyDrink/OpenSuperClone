@@ -83,9 +83,15 @@
 #define LANG16M 58
 #define LANGSHOWTIMING 59
 #define LANGTIMING 60
+#define LANGDOMAIN 61
+#define LANGSHOWDOMAIN 62
+#define LANGDOMAINBLOCKNOTFOUND 63
+#define LANGDMDEDOMAIN 64
+#define LANGAREAS 65
+#define LANGDUMMY 66 // always put at bottom of language list
 
 // TODO MAKE SURE TO UPDATE COUNT EVERY TIME! it should be one more than last defined
-#define LANGCOUNT 61
+#define LANGCOUNT 67
 #define MAXLANGLENGTH 256
 char enlang[LANGCOUNT][MAXLANGLENGTH];
 char curlang[LANGCOUNT][MAXLANGLENGTH];
@@ -131,6 +137,9 @@ int copy_newlanguage(void);
 #define BAD 0x40
 #define BAD_HEAD 0x80
 #define FINISHED 0x7f
+#define STATUS_MASK 0xff
+#define INFO_MASK 0xffffff00
+#define BAD_HEAD_MASK 0xffffffffffffff7f
 
 #define NONTRIED_BIT 0x0001
 #define NONTRIMMED_BIT 0x0002
@@ -166,8 +175,8 @@ gint right_vbox_width;
 gint right_vbox_height;
 gint top_hbox_width;
 gint top_hbox_height;
-gint top_info_box_width;
-gint top_info_box_height;
+gint top_info_width;
+gint top_info_height;
 gint top_drawing_area_width;
 gint top_drawing_area_height;
 gint main_drawing_area_width;
@@ -178,33 +187,6 @@ gint main_scrolled_window_width;
 gint main_scrolled_window_height;
 gint main_drawing_vbox_width;
 gint main_drawing_vbox_height;
-gdouble scroll_position;
-
-gint last_main_window_width = 0;
-gint last_main_window_height = 0;
-gint last_main_vbox_width = 0;
-gint last_main_vbox_height = 0;
-gint last_main_hbox_width = 0;
-gint last_main_hbox_height = 0;
-gint last_left_vbox_width = 0;
-gint last_left_vbox_height = 0;
-gint last_right_vbox_width = 0;
-gint last_right_vbox_height = 0;
-gint last_top_hbox_width = 0;
-gint last_top_hbox_height = 0;
-gint last_top_info_box_width = 0;
-gint last_top_info_box_height = 0;
-gint last_top_drawing_area_width = 0;
-gint last_top_drawing_area_height = 0;
-gint last_main_drawing_area_width = 0;
-gint last_main_drawing_area_height = 0;
-gint last_left_drawing_area_width = 0;
-gint last_left_drawing_area_height = 0;
-gint last_main_scrolled_window_width = 0;
-gint last_main_scrolled_window_height = 0;
-gint last_main_drawing_vbox_width = 0;
-gint last_main_drawing_vbox_height = 0;
-gdouble last_scroll_position = 0;
 
 GtkWidget *language_window;
 GtkWidget *main_window;
@@ -221,6 +203,11 @@ GtkWidget *main_scrolled_window;
 GtkWidget *main_drawing_vbox;
 GtkWidget *frame;
 
+GtkWidget *progress_log_label;
+GtkWidget *domain_log_label;
+
+GtkWidget *block_information_label;
+
 // menu items
 GtkWidget *menubar;
 GtkWidget *menuvbox;
@@ -230,7 +217,10 @@ GtkWidget *filemenu;
 GtkWidget *filemi;
 GtkWidget *quitmi;
 GtkWidget *openmi;
+GtkWidget *domainmi;
+GtkWidget *dmdedomainmi;
 GtkWidget *filew;
+GtkWidget *domainw;
 // options menu
 GtkWidget *optionsmenu;
 GtkWidget *optionsmi;
@@ -274,6 +264,7 @@ GtkWidget *autoupdatebutton1m;
 GtkWidget *autoupdatebutton2m;
 GtkWidget *autoupdatebutton5m;
 GtkWidget *showbadcheck;
+GtkWidget *showdomaincheck;
 GtkWidget *optionsw;
 GSList *leftresgroup = NULL;
 GSList *mainresgroup = NULL;
@@ -305,17 +296,37 @@ char tempmessage[TEMP_MESSAGE_SIZE];
 char debug_message[DEBUG_MESSAGE_SIZE];
 char error_message[ERROR_MESSAGE_SIZE];
 char log_file[1024];
+char domain_file[1024];
 int log_rows = 1000;
+int domain_rows = 1000;
 int total_lines = 0;
+int domain_lines = 0;
+int regular_domain = 0;
 long long *lposition;
 long long *lsize;
 long long *lstatus;
 long long *temp_lposition;
 long long *temp_lsize;
 long long *temp_lstatus;
+long long *dposition;
+long long *dsize;
+long long *dstatus;
+long long *temp_dposition;
+long long *temp_dsize;
+long long *temp_dstatus;
 long long current_position = 0;
 long long current_status = 0;
 long long total_size = 0;
+int sector_size = 512;
+long long temp_nontried = 0;
+long long temp_nontrimmed = 0;
+long long temp_nondivided = 0;
+long long temp_nonscraped = 0;
+long long temp_bad = 0;
+long long temp_finished = 0;
+long long temp_hightime = 0;
+int ddrescue_log = 0;
+char ddrstatus = ' ';
 double rcolor = 0;
 double gcolor = 0;
 double bcolor = 0;
@@ -334,27 +345,22 @@ int current_color_inner = YELLOW;
 int bad_head_color = PURPLE;
 int selected_color = WHITE;
 int time_color = WHITE;
+int domain_color = YELLOW;
 int main_grid_size = MAINGRIDSIZE;
 gint timeout_tag = 0;
 int autotimer_on = 0;
 int show_bad_head = 0;
 int show_good_data = 0;
 int show_timing = 0;
+int show_domain = 0;
 int mouse_x = 0;
 int mouse_y = 0;
 int mouse_x_old = 0;
 int mouse_y_old = 0;
-int redraw_count = 0;
 
 void help(void);
 
 void version(void);
-
-gint update_action(gpointer data);
-
-void update_size_variables(void);
-
-void compare_size_variables(void);
 
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge);
 
@@ -404,6 +410,8 @@ int initialize_memory(void);
 
 int increase_log_memory(int new_lines);
 
+int increase_domain_memory(int new_lines);
+
 int message_exit(char *message);
 
 int message_display(char *message);
@@ -418,6 +426,18 @@ int clear_error_message(void);
 
 int read_log_file(char *log_file);
 
+int read_domain_file(char *domain_file);
+
+int read_domain_dmde_file(char *dmde_file);
+
+int add_to_domain(long long position, long long size);
+
+int insert_domain_line(int line, long long position, long long size, long long status);
+
+int find_domain_block(long long position);
+
+int delete_domain_line(int line);
+
 gint reload_file(void);
 
 void set_autoupdate_timer(GtkWidget *w, gpointer data);
@@ -428,9 +448,21 @@ void toggle_showgood(GtkWidget *w, gpointer data);
 
 void set_show_timing(GtkWidget *w, gpointer data);
 
+void toggle_showdomain(GtkWidget *w, gpointer data);
+
 int check_log(void);
 
 void select_file(void);
+
+void select_domain(void);
+
+void select_dmde_domain(void);
+
+// static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs);
+
+// static void domain_ok_sel(GtkWidget *w, GtkFileSelection *fs);
+
+// static void dmde_domain_ok_sel(GtkWidget *w, GtkFileSelection *fs);
 
 void get_rgb_color(int color);
 
@@ -440,15 +472,25 @@ int get_block_status(long long position, long long size);
 
 int get_block_timing(long long position, long long size);
 
+int get_block_information(long long position, long long size);
+
+int process_domain(long long position, int size, int status, int status_mask);
+
 int find_block(long long position);
 
 int process_status(int line);
+
+long long process_information(long long position, long long size, int line);
 
 int do_nanosleep(unsigned long long time);
 
 int set_language(void);
 
 int print_gui_error_message(char *message, char *title, int type);
+
+void export_language_file(void);
+
+// static void file_export_sel(GtkWidget *w, GtkFileSelection *fs);
 
 void import_language_file(void);
 

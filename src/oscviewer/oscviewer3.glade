@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+  <!-- interface-requires gtk+ 3.10 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="border_width">2</property>
     <child>
-      <object class="GtkBox" id="main_vbox">
+      <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar" id="menubar">
+          <object class="GtkMenuBar" id="menubar1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -21,16 +20,15 @@
                 <property name="label" translatable="yes">file</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="filemenu">
+                  <object class="GtkMenu" id="menu4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="openmi">
-                        <property name="label">gtk-open</property>
+                      <object class="GtkMenuItem" id="openmi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">open</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
@@ -40,12 +38,33 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="quitmi">
-                        <property name="label">gtk-quit</property>
+                      <object class="GtkMenuItem" id="domainmi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">domain</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="dmdedomainmi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">dmde domain</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="quitmi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">quit</property>
+                        <property name="use_underline">True</property>
                       </object>
                     </child>
                   </object>
@@ -59,7 +78,7 @@
                 <property name="label" translatable="yes">options</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="optionsmenu">
+                  <object class="GtkMenu" id="menu5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -69,7 +88,7 @@
                         <property name="label" translatable="yes">left panel resolution</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="leftresmenu">
+                          <object class="GtkMenu" id="menu6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -123,7 +142,7 @@
                         <property name="label" translatable="yes">main panel resolution</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="mainresmenu">
+                          <object class="GtkMenu" id="menu7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -207,7 +226,7 @@
                         <property name="label" translatable="yes">main grid size</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="mainsizemenu">
+                          <object class="GtkMenu" id="menu8">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -351,7 +370,7 @@
                         <property name="label" translatable="yes">auto update</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="autoupdatemenu">
+                          <object class="GtkMenu" id="menu9">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
@@ -371,6 +390,7 @@
                                 <property name="label" translatable="yes">5s</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                             <child>
@@ -380,6 +400,7 @@
                                 <property name="label" translatable="yes">10s</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                             <child>
@@ -389,6 +410,7 @@
                                 <property name="label" translatable="yes">30s</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                             <child>
@@ -398,6 +420,7 @@
                                 <property name="label" translatable="yes">1m</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                             <child>
@@ -407,6 +430,7 @@
                                 <property name="label" translatable="yes">2m</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                             <child>
@@ -416,6 +440,7 @@
                                 <property name="label" translatable="yes">5m</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_as_radio">True</property>
+                                <property name="group">autoupdatebuttonoff</property>
                               </object>
                             </child>
                           </object>
@@ -602,6 +627,14 @@
                         </child>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="showdomaincheck">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">show domain</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -614,16 +647,39 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="main_hbox">
+          <object class="GtkLabel" id="progress_log_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="domain_log_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="main_hbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkBox" id="left_vbox">
+              <object class="GtkVBox" id="left_vbox">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="border_width">2</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkDrawingArea" id="left_drawing_area">
                     <property name="visible">True</property>
@@ -643,24 +699,67 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="right_vbox">
+              <object class="GtkVBox" id="right_vbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="border_width">2</property>
-                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="top_hbox">
+                  <object class="GtkHBox" id="top_hbox">
                     <property name="height_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">2</property>
                     <child>
-                      <object class="GtkBox" id="top_info_box">
+                      <object class="GtkHBox" id="top_info_box">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">2</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkScrolledWindow" id="scrolledwindow1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">automatic</property>
+                            <child>
+                              <object class="GtkViewport" id="viewport2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkFixed" id="fixed1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkVBox" id="vbox2">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkLabel" id="block_information_label">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="xalign">0</property>
+                                            <property name="yalign">0</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="x">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
@@ -689,18 +788,17 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="main_drawing_vbox">
+                  <object class="GtkVBox" id="main_drawing_vbox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="border_width">2</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkScrolledWindow" id="main_scrolled_window">
                         <property name="width_request">400</property>
                         <property name="height_request">300</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="shadow_type">in</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
                         <child>
                           <object class="GtkViewport" id="viewport1">
                             <property name="visible">True</property>
@@ -740,7 +838,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

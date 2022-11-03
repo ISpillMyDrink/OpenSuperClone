@@ -166,9 +166,18 @@ int main(int argc, char **argv)
   filemi = GTK_WIDGET(gtk_builder_get_object(builder, "filemi"));
   quitmi = GTK_WIDGET(gtk_builder_get_object(builder, "quitmi"));
   openmi = GTK_WIDGET(gtk_builder_get_object(builder, "openmi"));
+  domainmi = GTK_WIDGET(gtk_builder_get_object(builder, "domainmi"));
+  dmdedomainmi = GTK_WIDGET(gtk_builder_get_object(builder, "dmdedomainmi"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi), curlang[LANGFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi), curlang[LANGQUIT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi), curlang[LANGOPEN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), curlang[LANGDOMAIN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(dmdedomainmi), curlang[LANGDMDEDOMAIN]);
+
+  progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
+  domain_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_log_label"));
+
+  block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
   // options menu
   // optionsmenu = gtk_menu_new();
@@ -401,6 +410,9 @@ int main(int argc, char **argv)
   showtimingbutton60 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton60"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showtimemi), curlang[LANGSHOWTIMING]);
 
+  showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), curlang[LANGSHOWDOMAIN]);
+
   // gtk_menu_item_set_submenu(GTK_MENU_ITEM(optionsmi), optionsmenu);
   // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), leftresolutionmi);
   // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), mainresolutionmi);
@@ -419,6 +431,12 @@ int main(int argc, char **argv)
 
   // set it to open a file if the open item is selected
   g_signal_connect(G_OBJECT(openmi), "activate", G_CALLBACK(select_file), NULL);
+
+  // set it to open a file if the domain item is selected
+  g_signal_connect(G_OBJECT(domainmi), "activate", G_CALLBACK(select_domain), NULL);
+
+  // set it to open a file if the dmde domain item is selected
+  g_signal_connect(G_OBJECT(dmdedomainmi), "activate", G_CALLBACK(select_dmde_domain), NULL);
 
   g_signal_connect(G_OBJECT(leftresbutton1), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(1));
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
@@ -458,6 +476,8 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showgoodcheck), "activate", G_CALLBACK(toggle_showgood), NULL);
 
   g_signal_connect(G_OBJECT(showbadcheck), "activate", G_CALLBACK(toggle_showbad), NULL);
+
+  g_signal_connect(G_OBJECT(showdomaincheck), "activate", G_CALLBACK(toggle_showdomain), NULL);
 
   g_signal_connect(G_OBJECT(showtimingbuttonoff), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(0));
   g_signal_connect(G_OBJECT(showtimingbutton1), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(1));
@@ -557,9 +577,6 @@ int main(int argc, char **argv)
   // g_signal_connect(main_window, "draw", G_CALLBACK(main_drawing_expose_event), NULL);
   g_signal_connect(G_OBJECT(main_drawing_area), "button-press-event", G_CALLBACK(on_button_press), NULL);
 
-  // update_size_variables();
-  // gdk_threads_add_timeout (500, update_action, NULL);
-
   g_object_unref(builder);
 
   gtk_widget_show_all(main_window);
@@ -567,296 +584,6 @@ int main(int argc, char **argv)
   gtk_main();
 
   return 0;
-}
-
-gint update_action(gpointer data)
-{
-  update_size_variables();
-  compare_size_variables();
-  data = data;
-  return 1;
-}
-
-void update_size_variables(void)
-{
-  main_window_width = gtk_widget_get_allocated_width(main_window);
-  main_window_height = gtk_widget_get_allocated_height(main_window);
-  main_vbox_width = gtk_widget_get_allocated_width(main_vbox);
-  main_vbox_height = gtk_widget_get_allocated_height(main_vbox);
-  main_hbox_width = gtk_widget_get_allocated_width(main_hbox);
-  main_hbox_height = gtk_widget_get_allocated_height(main_hbox);
-  left_vbox_width = gtk_widget_get_allocated_width(left_vbox);
-  left_vbox_height = gtk_widget_get_allocated_height(left_vbox);
-  right_vbox_width = gtk_widget_get_allocated_width(right_vbox);
-  right_vbox_height = gtk_widget_get_allocated_height(right_vbox);
-  top_hbox_width = gtk_widget_get_allocated_width(top_hbox);
-  top_hbox_height = gtk_widget_get_allocated_height(top_hbox);
-  top_info_box_width = gtk_widget_get_allocated_width(top_info_box);
-  top_info_box_height = gtk_widget_get_allocated_height(top_info_box);
-  top_drawing_area_width = gtk_widget_get_allocated_width(top_drawing_area);
-  top_drawing_area_height = gtk_widget_get_allocated_height(top_drawing_area);
-  main_drawing_area_width = gtk_widget_get_allocated_width(main_drawing_area);
-  main_drawing_area_height = gtk_widget_get_allocated_height(main_drawing_area);
-  left_drawing_area_width = gtk_widget_get_allocated_width(left_drawing_area);
-  left_drawing_area_height = gtk_widget_get_allocated_height(left_drawing_area);
-  main_scrolled_window_width = gtk_widget_get_allocated_width(main_scrolled_window);
-  main_scrolled_window_height = gtk_widget_get_allocated_height(main_scrolled_window);
-  main_drawing_vbox_width = gtk_widget_get_allocated_width(main_drawing_vbox);
-  main_drawing_vbox_height = gtk_widget_get_allocated_height(main_drawing_vbox);
-  scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
-}
-
-void compare_size_variables(void)
-{
-  int main_changed = 0;
-  int top_changed = 0;
-  int left_changed = 0;
-  if (last_main_window_width != main_window_width)
-  {
-    sprintf(tempmessage, "main_window width = %d\n", main_window_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_window_height != main_window_height)
-  {
-    sprintf(tempmessage, "main_window height = %d\n", main_window_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_vbox_width != main_vbox_width)
-  {
-    sprintf(tempmessage, "main_vbox width = %d\n", main_vbox_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_vbox_height != main_vbox_height)
-  {
-    sprintf(tempmessage, "main_vbox height = %d\n", main_vbox_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_hbox_width != main_hbox_width)
-  {
-    sprintf(tempmessage, "main_hbox width = %d\n", main_hbox_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_hbox_height != main_hbox_height)
-  {
-    sprintf(tempmessage, "main_hbox height = %d\n", main_hbox_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_left_vbox_width != left_vbox_width)
-  {
-    sprintf(tempmessage, "left_vbox width = %d\n", left_vbox_width);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    // top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_left_vbox_height != left_vbox_height)
-  {
-    sprintf(tempmessage, "left_vbox height = %d\n", left_vbox_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_right_vbox_width != right_vbox_width)
-  {
-    sprintf(tempmessage, "right_vbox width = %d\n", right_vbox_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_right_vbox_height != right_vbox_height)
-  {
-    sprintf(tempmessage, "right_vbox height = %d\n", right_vbox_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_top_hbox_width != top_hbox_width)
-  {
-    sprintf(tempmessage, "top_hbox width = %d\n", top_hbox_width);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_top_hbox_height != top_hbox_height)
-  {
-    sprintf(tempmessage, "top_hbox height = %d\n", top_hbox_height);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_top_info_box_width != top_info_box_width)
-  {
-    sprintf(tempmessage, "top_info_box width = %d\n", top_info_box_width);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_top_info_box_height != top_info_box_height)
-  {
-    sprintf(tempmessage, "top_info_box height = %d\n", top_info_box_height);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_top_drawing_area_width != top_drawing_area_width)
-  {
-    sprintf(tempmessage, "top_drawing_area width = %d\n", top_drawing_area_width);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_top_drawing_area_height != top_drawing_area_height)
-  {
-    sprintf(tempmessage, "top_drawing_area height = %d\n", top_drawing_area_height);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_main_drawing_area_width != main_drawing_area_width)
-  {
-    sprintf(tempmessage, "main_drawing_area width = %d\n", main_drawing_area_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_main_drawing_area_height != main_drawing_area_height)
-  {
-    sprintf(tempmessage, "main_drawing_area height = %d\n", main_drawing_area_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_left_drawing_area_width != left_drawing_area_width)
-  {
-    sprintf(tempmessage, "left_drawing_area width = %d\n", left_drawing_area_width);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    // top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_left_drawing_area_height != left_drawing_area_height)
-  {
-    sprintf(tempmessage, "left_drawing_area height = %d\n", left_drawing_area_height);
-    message_debug(tempmessage, 0);
-    // main_changed = 1;
-    // top_changed = 1;
-    left_changed = 1;
-  }
-  if (last_main_scrolled_window_width != main_scrolled_window_width)
-  {
-    sprintf(tempmessage, "main_scrolled_window width = %d\n", main_scrolled_window_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_main_scrolled_window_height != main_scrolled_window_height)
-  {
-    sprintf(tempmessage, "main_scrolled_window height = %d\n", main_scrolled_window_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_main_drawing_vbox_width != main_drawing_vbox_width)
-  {
-    sprintf(tempmessage, "main_drawing_vbox width = %d\n", main_drawing_vbox_width);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_main_drawing_vbox_height != main_drawing_vbox_height)
-  {
-    sprintf(tempmessage, "main_drawing_vbox height = %d\n", main_drawing_vbox_height);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-  if (last_scroll_position != scroll_position)
-  {
-    sprintf(tempmessage, "scroll position = %f\n", scroll_position);
-    message_debug(tempmessage, 0);
-    main_changed = 1;
-    // top_changed = 1;
-    // left_changed = 1;
-  }
-
-  last_main_window_width = main_window_width;
-  last_main_window_height = main_window_height;
-  last_main_vbox_width = main_vbox_width;
-  last_main_vbox_height = main_vbox_height;
-  last_main_hbox_width = main_hbox_width;
-  last_main_hbox_height = main_hbox_height;
-  last_left_vbox_width = left_vbox_width;
-  last_left_vbox_height = left_vbox_height;
-  last_right_vbox_width = right_vbox_width;
-  last_right_vbox_height = right_vbox_height;
-  last_top_hbox_width = top_hbox_width;
-  last_top_hbox_height = top_hbox_height;
-  last_top_info_box_width = top_info_box_width;
-  last_top_info_box_height = top_info_box_height;
-  last_top_drawing_area_width = top_drawing_area_width;
-  last_top_drawing_area_height = top_drawing_area_height;
-  last_main_drawing_area_width = main_drawing_area_width;
-  last_main_drawing_area_height = main_drawing_area_height;
-  last_left_drawing_area_width = left_drawing_area_width;
-  last_left_drawing_area_height = left_drawing_area_height;
-  last_main_scrolled_window_width = main_scrolled_window_width;
-  last_main_scrolled_window_height = main_scrolled_window_height;
-  last_main_drawing_vbox_width = main_drawing_vbox_width;
-  last_main_drawing_vbox_height = main_drawing_vbox_height;
-  last_scroll_position = scroll_position;
-
-  if (main_changed)
-  {
-    redraw_count = 1;
-  }
-  if (top_changed)
-  {
-    gtk_widget_queue_draw(top_drawing_area);
-  }
-  if (left_changed)
-  {
-    gtk_widget_queue_draw(left_drawing_area);
-  }
-  if (redraw_count > 0)
-  {
-    sprintf(tempmessage, "redraw count = %d\n", redraw_count);
-    message_debug(tempmessage, 0);
-    gtk_widget_queue_draw(main_drawing_area);
-    redraw_count--;
-  }
 }
 
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge)
@@ -870,11 +597,9 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
       sprintf(tempmessage, "x=%d y=%d\n", mouse_x, mouse_y);
       message_debug(tempmessage, 0);
       // redraw_main_drawing_area();
-      gtk_widget_queue_draw(main_drawing_area);
-      // gtk_widget_queue_draw(main_window);
+      gtk_widget_queue_draw(main_window);
     }
   }
-
   return TRUE;
 }
 
@@ -905,9 +630,6 @@ void getsize_main_window(GtkWidget *widget, GtkAllocation *allocation, void *dat
   message_debug(tempmessage, 0);
   main_window_width = allocation->width;
   main_window_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_main_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -916,9 +638,6 @@ void getsize_main_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   main_vbox_width = allocation->width;
   main_vbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_main_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -927,9 +646,6 @@ void getsize_main_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   main_hbox_width = allocation->width;
   main_hbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_left_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -938,9 +654,6 @@ void getsize_left_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   left_vbox_width = allocation->width;
   left_vbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_right_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -949,9 +662,6 @@ void getsize_right_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data
   message_debug(tempmessage, 0);
   right_vbox_width = allocation->width;
   right_vbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_top_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -960,20 +670,14 @@ void getsize_top_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
   message_debug(tempmessage, 0);
   top_hbox_width = allocation->width;
   top_hbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_top_info_box(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
   sprintf(tempmessage, "top_hbox width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
-  top_info_box_width = allocation->width;
-  top_info_box_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
+  top_info_width = allocation->width;
+  top_info_height = allocation->height;
 }
 
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -982,9 +686,6 @@ void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void
   message_debug(tempmessage, 0);
   top_drawing_area_width = allocation->width;
   top_drawing_area_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -993,9 +694,6 @@ void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   main_drawing_area_width = allocation->width;
   main_drawing_area_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -1004,9 +702,6 @@ void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   main_drawing_vbox_width = allocation->width;
   main_drawing_vbox_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -1015,9 +710,6 @@ void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, 
   message_debug(tempmessage, 0);
   main_scrolled_window_width = allocation->width;
   main_scrolled_window_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
@@ -1026,9 +718,6 @@ void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
   message_debug(tempmessage, 0);
   left_drawing_area_width = allocation->width;
   left_drawing_area_height = allocation->height;
-  gtk_widget_queue_draw(top_drawing_area);
-  gtk_widget_queue_draw(main_drawing_area);
-  gtk_widget_queue_draw(left_drawing_area);
 }
 
 void select_file(void)
@@ -1071,6 +760,125 @@ void select_file(void)
   gtk_widget_destroy(dialog);
 }
 
+// /* Get the selected filename and load it */
+// static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs)
+// {
+//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
+//   sprintf(log_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
+//   printf("%s\n", log_file);
+//   gtk_widget_destroy(filew);
+//   total_size = 0;
+//   int ret = read_log_file(log_file);
+//   if (ret != 0)
+//   {
+//     sprintf(tempmessage, "error processing log file\n");
+//     message_now(tempmessage);
+//   }
+//   else
+//   {
+//     ret = check_log();
+//     if (ret != 0)
+//     {
+//       sprintf(tempmessage, "there were errors found in the log file\n");
+//       message_now(tempmessage);
+//     }
+//   }
+//   char tempchar[1048];
+//   strcpy(tempchar, "Log= ");
+//   strcat(tempchar, log_file);
+//   gtk_label_set_text(GTK_LABEL(progress_log_label), tempchar);
+//   // redraw_left_vbox();
+//   // redraw_main_drawing_area();
+//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
+//   gtk_widget_queue_draw(main_window);
+// }
+
+void select_domain(void)
+{
+  // /* Create a new file selection widget */
+  // domainw = gtk_file_selection_new("File selection");
+  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(domainw));
+
+  // /* Connect the ok_button to file_ok_sel function */
+  // g_signal_connect(GTK_FILE_SELECTION(domainw)->ok_button, "clicked", G_CALLBACK(domain_ok_sel), (gpointer)domainw);
+
+  // /* Connect the cancel_button to destroy the widget */
+  // g_signal_connect_swapped(GTK_FILE_SELECTION(domainw)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), domainw);
+
+  // /* Lets set the filename, as if this were a save dialog, and we are giving
+  //  *     a default filename */
+  // gtk_file_selection_set_filename(GTK_FILE_SELECTION(domainw), "domain.log");
+
+  // gtk_widget_show(domainw);
+}
+
+// /* Get the selected filename and load it */
+// static void domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
+// {
+//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
+//   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
+//   printf("%s\n", domain_file);
+//   gtk_widget_destroy(domainw);
+//   regular_domain = 1;
+//   int ret = read_domain_file(domain_file);
+//   if (ret != 0)
+//   {
+//     sprintf(tempmessage, "error processing domain file\n");
+//     message_now(tempmessage);
+//   }
+//   char tempchar[1048];
+//   strcpy(tempchar, "Domain= ");
+//   strcat(tempchar, domain_file);
+//   gtk_label_set_text(GTK_LABEL(domain_log_label), tempchar);
+//   // redraw_left_vbox();
+//   // redraw_main_drawing_area();
+//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
+//   gtk_widget_queue_draw(main_window);
+// }
+
+void select_dmde_domain(void)
+{
+  // /* Create a new file selection widget */
+  // domainw = gtk_file_selection_new("File selection");
+  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(domainw));
+
+  // /* Connect the ok_button to file_ok_sel function */
+  // g_signal_connect(GTK_FILE_SELECTION(domainw)->ok_button, "clicked", G_CALLBACK(dmde_domain_ok_sel), (gpointer)domainw);
+
+  // /* Connect the cancel_button to destroy the widget */
+  // g_signal_connect_swapped(GTK_FILE_SELECTION(domainw)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), domainw);
+
+  // /* Lets set the filename, as if this were a save dialog, and we are giving
+  //  *     a default filename */
+  // gtk_file_selection_set_filename(GTK_FILE_SELECTION(domainw), "domain.log");
+
+  // gtk_widget_show(domainw);
+}
+
+// /* Get the selected filename and load it */
+// static void dmde_domain_ok_sel(GtkWidget *w, GtkFileSelection *fs)
+// {
+//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
+//   sprintf(domain_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
+//   printf("%s\n", domain_file);
+//   gtk_widget_destroy(domainw);
+//   regular_domain = 0;
+//   int ret = read_domain_dmde_file(domain_file);
+//   if (ret != 0)
+//   {
+//     sprintf(tempmessage, "error processing domain file\n");
+//     message_now(tempmessage);
+//   }
+//   char tempchar[1048];
+//   strcpy(tempchar, "Domain= ");
+//   strcat(tempchar, domain_file);
+//   gtk_label_set_text(GTK_LABEL(domain_log_label), tempchar);
+//   // redraw_left_vbox();
+//   // redraw_main_drawing_area();
+//   //  this seems to be needed sometimes after changing the settings and then reloading the log file
+//   gtk_widget_queue_draw(main_window);
+// }
+
 gint reload_file(void)
 {
   printf("%s\n", log_file);
@@ -1090,6 +898,18 @@ gint reload_file(void)
       message_now(tempmessage);
     }
   }
+  if (regular_domain)
+  {
+    printf("%s\n", domain_file);
+    domain_lines = 0;
+    int ret = read_domain_file(domain_file);
+    if (ret != 0)
+    {
+      sprintf(tempmessage, "error processing domain file\n");
+      message_now(tempmessage);
+    }
+  }
+
   // redraw_left_vbox();
   // redraw_main_drawing_area();
   //  this seems to be needed sometimes after changing the settings and then reloading the log file
@@ -1147,6 +967,22 @@ void set_show_timing(GtkWidget *w, gpointer data)
 {
   show_timing = GPOINTER_TO_INT(data);
   gtk_widget_queue_draw(main_window);
+}
+
+void toggle_showdomain(GtkWidget *w, gpointer data)
+{
+  if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
+  {
+    show_domain = 1;
+  }
+  else
+  {
+    show_domain = 0;
+  }
+  // redraw_top_drawing_area();
+  // redraw_main_drawing_area();
+  gtk_widget_queue_draw(main_window);
+  data = data;
 }
 
 void redraw_top_drawing_area(void)
@@ -1329,6 +1165,24 @@ void redraw_top_drawing_area(void)
     cairo_show_text(cr, curlang[LANGTIMING]);
   }
 
+  if (show_domain)
+  {
+    get_rgb_color(domain_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 68;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGDOMAIN]);
+  }
+
   cairo_destroy(cr);
 }
 
@@ -1499,9 +1353,11 @@ void redraw_main_drawing_area(void)
 
   if (total_size > 0)
   {
-    sprintf(tempmessage, "redrawing main width = %d, height = %d, scroll = %f\n", main_drawing_area_width, main_drawing_area_height, scroll_position);
+    sprintf(tempmessage, "redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
     message_debug(tempmessage, 0);
-    scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
+    gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
+    sprintf(tempmessage, "scroll = %f\n", scroll_position);
+    message_debug(tempmessage, 0);
     int scroll_row_start = scroll_position / main_square_size;
     int scroll_row_end = scroll_row_start + (main_drawing_vbox_height / main_square_size);
     int columns = main_drawing_area_width / main_square_size;
@@ -1532,6 +1388,7 @@ void redraw_main_drawing_area(void)
         long long position = count * blocks_per_square;
         int status_bits = get_block_status(position, blocks_per_square);
         int time_bits = get_block_timing(position, blocks_per_square);
+        int in_domain = process_domain(position, blocks_per_square, FINISHED, FINISHED);
         if (status_bits & NONTRIMMED_BIT)
         {
           color = nontrimmed_color;
@@ -1614,8 +1471,20 @@ void redraw_main_drawing_area(void)
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
           cairo_fill(cr);
         }
-      }
 
+        if ((in_domain) && show_domain)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(domain_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+      }
+      }
       count++;
       if (count > squares)
       {
@@ -1664,10 +1533,14 @@ void redraw_main_drawing_area(void)
           cairo_fill(cr);
         }
 
-        int xl = (n * main_square_size) + 1 + square_adjust;
-        int yl = (i * main_square_size) + 1 + square_adjust;
-        int xh = xl + main_square_size - 1 - (square_adjust * 2);
-        int yh = yl + main_square_size - 1 - (square_adjust * 2);
+        // int xl = (n * main_square_size) + 1 + square_adjust;
+        // int yl = (i * main_square_size) + 1 + square_adjust;
+        // int xh = xl + main_square_size - 1 - (square_adjust * 2);
+        // int yh = yl + main_square_size - 1 - (square_adjust * 2);
+        int xl = (n * main_square_size) + square_adjust;
+        int yl = (i * main_square_size) + square_adjust;
+        int xh = xl + main_square_size - (square_adjust * 2);
+        int yh = yl + main_square_size - (square_adjust * 2);
         if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
         {
           int spot_size = (main_square_size / 4) + 1;
@@ -1679,7 +1552,7 @@ void redraw_main_drawing_area(void)
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
           cairo_fill(cr);
-          fprintf(stdout, "0x%llx - 0x%llx\n", blocks_per_square * count, (blocks_per_square * (count + 1)) - 1);
+          get_block_information(blocks_per_square * count, blocks_per_square);
           mouse_x_old = mouse_x;
           mouse_y_old = mouse_y;
         }
@@ -1804,6 +1677,30 @@ int initialize_memory(void)
     message_now(tempmessage);
     return (-1);
   }
+
+  // assign memory for domain
+  dposition = malloc(sizeof(*dposition) * domain_rows);
+  if (dposition == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    return (-1);
+  }
+  dsize = malloc(sizeof(*dsize) * domain_rows);
+  if (dsize == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    return (-1);
+  }
+  dstatus = malloc(sizeof(*dstatus) * domain_rows);
+  if (dstatus == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    return (-1);
+  }
+
   return 0;
 }
 
@@ -1840,6 +1737,39 @@ int increase_log_memory(int new_lines)
   return found_error;
 }
 
+int increase_domain_memory(int new_lines)
+{
+  int found_error = 0;
+  domain_rows += new_lines;
+  temp_dposition = realloc(dposition, domain_rows * sizeof(*dposition));
+  if (temp_dposition == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    found_error = -2;
+  }
+  dposition = temp_dposition;
+
+  temp_dsize = realloc(dsize, domain_rows * sizeof(*dsize));
+  if (temp_dsize == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    found_error = -2;
+  }
+  dsize = temp_dsize;
+
+  temp_dstatus = realloc(dstatus, domain_rows * sizeof(*dstatus));
+  if (temp_dstatus == NULL)
+  {
+    sprintf(tempmessage, "Error allocating domain memory (%s)\n", strerror(errno));
+    message_now(tempmessage);
+    found_error = -2;
+  }
+  dstatus = temp_dstatus;
+  return found_error;
+}
+
 // function to read the log file into memory
 int read_log_file(char *log_file)
 {
@@ -1864,6 +1794,7 @@ int read_log_file(char *log_file)
   int real_line_number = 0;
   int found_current = 0;
   int found_error = 0;
+  ddrescue_log = 0;
   while (fgets(line, sizeof line, readfile))
   {
     real_line_number++;
@@ -2076,6 +2007,10 @@ int read_log_file(char *log_file)
               message_now(tempmessage);
               found_error = -1;
             }
+            if (!found_error)
+            {
+              ddrescue_log = 1;
+            }
           }
 
           // fprintf (stdout, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition[i], lsize[i], lstatus[i]);    //debug
@@ -2089,6 +2024,15 @@ int read_log_file(char *log_file)
           sprintf(tempmessage, "line%d= %s", real_line_number, line);
           message_now(tempmessage);
           found_error = 1;
+        }
+      }
+      // line starts with # so check if sector size
+      else
+      {
+        if (strcmp(raw_size, "sectorsize") == 0)
+        {
+          sector_size = strtoll(raw_status, NULL, 0);
+          // fprintf (stdout, "found sector size of %d\n", sector_size);
         }
       }
     }
@@ -2108,6 +2052,633 @@ int read_log_file(char *log_file)
 
   fclose(readfile);
   return (found_error);
+}
+
+// function to read the domain file into memory
+int read_domain_file(char *domain_file)
+{
+  if (domain_file == NULL)
+  {
+    sprintf(tempmessage, "Error: No domain file specified.\n");
+    message_now(tempmessage);
+    return (1);
+  }
+
+  FILE *readfile;
+  readfile = fopen(domain_file, "r");
+  if (readfile == NULL)
+  {
+    sprintf(tempmessage, "Cannot open %s for reading (%s).\n", domain_file, strerror(errno));
+    message_now(tempmessage);
+    return (1);
+  }
+
+  char line[MAX_LINE_LENGTH];
+  int i = 0;
+  int real_line_number = 0;
+  int found_current = 0;
+  int found_error = 0;
+  while (fgets(line, sizeof line, readfile))
+  {
+    found_error = 0;
+    real_line_number++;
+    // process the line here
+    // fprintf (stdout, "line%d= %s", real_line_number, line);    //debug
+
+    int scanline;
+    long long temp_position = 0;
+    long long temp_size = 0;
+    unsigned char temp_status = 0;
+    char raw_position[MAX_LINE_LENGTH];
+    char raw_size[MAX_LINE_LENGTH];
+    char raw_status[MAX_LINE_LENGTH];
+    char raw_info[MAX_LINE_LENGTH];
+    char raw_errstat[MAX_LINE_LENGTH];
+    char rest_of_line[MAX_LINE_LENGTH];
+    strcpy(raw_position, "");
+    strcpy(raw_size, "");
+    strcpy(raw_status, "");
+    strcpy(rest_of_line, "");
+    scanline = sscanf(line, "%s %s %s %s %s %[^\n]", raw_position, raw_size, raw_status, raw_info, raw_errstat, rest_of_line);
+    // ignore blank lines
+    if (scanline > 0)
+    {
+      // if the line doesn't start with a comment then process it
+      if (raw_position[0] != '#')
+      {
+        // the first line should be the current position and status
+        // new ddrescue format has copy pass added to first line
+        if ((!found_current && scanline == 2) || (!found_current && scanline == 3))
+        {
+          found_current = 1;
+        }
+
+        // hddclone progress file format
+        else if (scanline == 5)
+        {
+          char *endptr;
+          dposition[i] = strtoull(raw_position, &endptr, 0);
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain position on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          dsize[i] = strtoull(raw_size, &endptr, 0);
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain size on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          dstatus[i] = strtoll(raw_status, &endptr, 0);
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain status on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          dstatus[i] += (strtoll(raw_info, &endptr, 0)) << 8;
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain info on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          dstatus[i] += (strtoll(raw_errstat, &endptr, 0)) << 32;
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain err/stat on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          // fprintf (stdout, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition[i], lsize[i], lstatus[i]);    //debug
+          i++;
+        }
+
+        // ddrescue log format
+        else if (scanline == 3)
+        {
+          char *endptr;
+          temp_position = strtoull(raw_position, &endptr, 0);
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain position on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          temp_size = strtoull(raw_size, &endptr, 0);
+          if (*endptr)
+          {
+            sprintf(tempmessage, "error processing domain size on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          scanline = sscanf(raw_status, "%c %[^\n]", &temp_status, rest_of_line);
+          if (scanline != 1)
+          {
+            sprintf(tempmessage, "error processing domain status on line %d\n", real_line_number);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+
+          if (!found_error)
+          {
+            dposition[i] = temp_position;
+            dsize[i] = temp_size;
+
+            if (temp_status == '?')
+            {
+              dstatus[i] = NONTRIED;
+            }
+            else if (temp_status == '+')
+            {
+              dstatus[i] = FINISHED;
+            }
+            else if (temp_status == '*')
+            {
+              dstatus[i] = NONTRIMMED;
+            }
+            else if (temp_status == '/')
+            {
+              dstatus[i] = NONSCRAPED;
+            }
+            else if (temp_status == '-')
+            {
+              dstatus[i] = BAD;
+            }
+            else
+            {
+              sprintf(tempmessage, "error processing line %d, domain status not recognized\n", real_line_number);
+              message_now(tempmessage);
+              sprintf(tempmessage, "line%d= %s", real_line_number, line);
+              message_now(tempmessage);
+              found_error = -1;
+            }
+
+            // if position did not align then increase position and also decrease size if it is not 0
+            if ((found_error & 1))
+            {
+              dposition[i]++;
+              if (dsize[i] > 0)
+              {
+                dsize[i]--;
+              }
+            }
+            // if only size did not align then do nothing as it was already cut by the divide
+          }
+
+          // fprintf (stdout, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition[i], lsize[i], lstatus[i]);    //debug
+          i++;
+        }
+
+        else
+        {
+          sprintf(tempmessage, "error processing domain file line %d\n", real_line_number);
+          message_now(tempmessage);
+          sprintf(tempmessage, "line%d= %s", real_line_number, line);
+          message_now(tempmessage);
+          found_error = -1;
+        }
+        found_current = 1;
+      }
+    }
+
+    // if used up allocated memory then increase it
+    if (i >= domain_rows)
+    {
+      increase_domain_memory(1000);
+    }
+
+    if (found_error < 0)
+    {
+      break;
+    }
+  }
+  domain_lines = i;
+  if (found_error < 0)
+  {
+    domain_lines = 0;
+  }
+
+  fclose(readfile);
+  return (found_error);
+}
+
+// function to read a dmde file as domain
+int read_domain_dmde_file(char *dmde_file)
+{
+  if (dmde_file == NULL)
+  {
+    sprintf(tempmessage, "Error: No file specified.\n");
+    message_error(tempmessage);
+    return (1);
+  }
+  // sprintf (tempmessage, "Reading %s into memory...\n", dmde_file);    //debug
+
+  FILE *readfile;
+  readfile = fopen(dmde_file, "r");
+  if (readfile == NULL)
+  {
+    sprintf(tempmessage, "Cannot open %s for reading (%s).\n", dmde_file, strerror(errno));
+    message_error(tempmessage);
+    return (1);
+  }
+
+  domain_lines = 1;
+  dposition[0] = 0;
+  dsize[0] = total_size;
+  dstatus[0] = 0;
+
+  char line[MAX_LINE_LENGTH];
+  int real_line_number = 0;
+  int found_error = 0;
+  while (fgets(line, sizeof line, readfile))
+  {
+    found_error = 0;
+    real_line_number++;
+    // process the line here
+    // sprintf (tempmessage, "line%d= %s", real_line_number, line);    //debug
+    int scanline;
+    long long temp_position = 0;
+    long long temp_size = 0;
+    char raw_position[MAX_LINE_LENGTH];
+    char raw_size[MAX_LINE_LENGTH];
+    char rest_of_line[MAX_LINE_LENGTH];
+    strcpy(raw_position, "");
+    strcpy(raw_size, "");
+    strcpy(rest_of_line, "");
+    scanline = sscanf(line, "%s %s %[^\n]", raw_position, raw_size, rest_of_line);
+    // ignore blank lines
+    if (scanline > 0)
+    {
+      if (scanline == 2)
+      {
+        int good = 1;
+        char *endptr;
+        temp_position = strtoull(raw_position, &endptr, 0);
+        if (*endptr)
+        {
+          sprintf(tempmessage, "error processing position on line %d\n", real_line_number);
+          message_now(tempmessage);
+          sprintf(tempmessage, "line%d= %s", real_line_number, line);
+          message_now(tempmessage);
+          found_error = -1;
+          good = 0;
+        }
+        temp_size = strtoull(raw_size, &endptr, 0);
+        if (*endptr)
+        {
+          sprintf(tempmessage, "error processing size on line %d\n", real_line_number);
+          message_now(tempmessage);
+          sprintf(tempmessage, "line%d= %s", real_line_number, line);
+          message_now(tempmessage);
+          found_error = -1;
+          good = 0;
+        }
+        if (good)
+        {
+          long long position = temp_position / sector_size;
+          if (temp_position % sector_size)
+          {
+            position = position + 1;
+          }
+          long long size = temp_size / sector_size;
+          if (temp_size % sector_size)
+          {
+            size = size + 1;
+          }
+          if (position + size > total_size)
+          {
+            sprintf(tempmessage, "end position greater than source size on line %d\n", real_line_number);
+            message_now(tempmessage);
+            sprintf(tempmessage, "line%d= %s", real_line_number, line);
+            message_now(tempmessage);
+            found_error = -1;
+          }
+          else if (position > 0 && size > 0)
+          {
+            int ret = add_to_domain(position, size);
+            if (ret)
+            {
+              sprintf(tempmessage, "error adding to domain from line %d\n", real_line_number);
+              message_now(tempmessage);
+              sprintf(tempmessage, "line%d= %s", real_line_number, line);
+              message_now(tempmessage);
+              found_error = -1;
+            }
+          }
+        }
+      }
+      else
+      {
+        sprintf(tempmessage, "format error on line %d\n", real_line_number);
+        message_now(tempmessage);
+        sprintf(tempmessage, "line%d= %s", real_line_number, line);
+        message_now(tempmessage);
+        found_error = -1;
+      }
+    }
+  }
+
+  fclose(readfile);
+  return (found_error);
+}
+
+int add_to_domain(long long position, long long size)
+{
+  // fprintf (debug_file, "change_domain_chunk_status 0x%06llx  0x%06llx\n", position, size);    //debug
+  int line_number;
+  // fprintf (debug_file,"before\n");
+  for (line_number = 0; line_number < domain_lines; line_number++)
+  {
+    // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+  }
+
+  int block;
+  while (1)
+  {
+    // fprintf (debug_file,"while start position=%06llx  size=0x%06llx\n", position, size);
+    block = find_domain_block(position);
+    if (block == -1)
+    {
+      strcpy(tempmessage, curlang[LANGDOMAINBLOCKNOTFOUND]);
+      message_error(tempmessage);
+      sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
+      message_error(tempmessage);
+      print_gui_error_message(error_message, curlang[LANGERROR], 1);
+      clear_error_message();
+
+      // fprintf (debug_file,"error1 position=%06llx  size=0x%06llx\n", position, size);
+      for (line_number = 0; line_number < domain_lines; line_number++)
+      {
+        // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+      }
+
+      return -1;
+    }
+    // see if chunk fits within the block
+    if (position >= dposition[block] && (position + size) <= (dposition[block] + dsize[block]))
+    {
+      // check if already finished status, if so then nothing to do
+      // we are using status mask in case of imported domain file, but extra status will not be kept
+      if ((dstatus[block] & STATUS_MASK) == (FINISHED & STATUS_MASK))
+      {
+        return 0;
+      }
+      // it fits so break to allow that processing below
+      else
+      {
+        break;
+      }
+    }
+    else
+    {
+      // chunk is bigger than block, need to process
+      // check if position matches
+      if (position == dposition[block])
+      {
+        // fprintf (debug_file,"while1\n");
+        //  if position matches then we can mark the block, then move position forward to next block reduce size and process
+        dstatus[block] = FINISHED;
+        position += dsize[block];
+        size -= dsize[block];
+        for (line_number = 0; line_number < 6; line_number++)
+        {
+          // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+        }
+
+        // check for same status on next block and merge if needed
+        if (block < domain_lines - 1)
+        {
+          // fprintf (debug_file,"while2\n");
+          if ((dstatus[block] & STATUS_MASK) == (dstatus[block + 1] & STATUS_MASK))
+          {
+            // fprintf (debug_file,"while3\n");
+            dposition[block + 1] -= dsize[block];
+            dsize[block + 1] += dsize[block];
+            delete_domain_line(block);
+            for (line_number = 0; line_number < 6; line_number++)
+            {
+              // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+            }
+          }
+        }
+        // check for same status on previous block and merge if needed
+        if (block > 0 && (FINISHED & STATUS_MASK) == (dstatus[block - 1] & STATUS_MASK))
+        {
+          // fprintf (debug_file,"while4\n");
+          dsize[block - 1] += dsize[block];
+          delete_domain_line(block);
+          for (line_number = 0; line_number < 6; line_number++)
+          {
+            // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+          }
+        }
+      }
+      // check if position is in middle of the block
+      else if (position > dposition[block])
+      {
+        // fprintf (debug_file,"while5\n");
+        //  check for same status on next block and merge if needed
+        if (block < domain_lines - 1)
+        {
+          // fprintf (debug_file,"while6\n");
+          if ((FINISHED & STATUS_MASK) == (dstatus[block + 1] & STATUS_MASK))
+          {
+            // fprintf (debug_file,"while7\n");
+            dsize[block + 1] += dposition[block + 1] - position;
+            dposition[block + 1] = position;
+          }
+        }
+        // move position ahead reduce size and shorten size
+        long long diff = (dposition[block] + dsize[block]) - position;
+        // dsize[block] -= diff;
+        position += diff;
+        size -= diff;
+        for (line_number = 0; line_number < 6; line_number++)
+        {
+          // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+        }
+      }
+      // the position is before the block which should not be possible
+      else
+      {
+        strcpy(tempmessage, curlang[LANGDOMAINBLOCKNOTFOUND]);
+        message_error(tempmessage);
+        sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
+        message_error(tempmessage);
+        print_gui_error_message(error_message, curlang[LANGERROR], 1);
+        clear_error_message();
+
+        // fprintf (debug_file,"error2 position=%06llx  size=0x%06llx\n", position, size);
+        for (line_number = 0; line_number < domain_lines; line_number++)
+        {
+          // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+        }
+
+        return -1;
+      }
+    }
+    // fprintf (debug_file,"while end position=%06llx  size=0x%06llx\n", position, size);
+  }
+
+  // the chunk fits in the block
+  // if postion and size match the block then only need to change status
+  if (position == dposition[block] && size == dsize[block])
+  {
+    dstatus[block] = FINISHED;
+    if (block < domain_lines - 1)
+    {
+      if ((dstatus[block] & STATUS_MASK) == (dstatus[block + 1] & STATUS_MASK))
+      {
+        dposition[block + 1] -= size;
+        dsize[block + 1] += size;
+        delete_domain_line(block);
+      }
+    }
+    if (block > 0)
+    {
+      if ((dstatus[block] & STATUS_MASK) == (dstatus[block - 1] & STATUS_MASK))
+      {
+        dsize[block - 1] += dsize[block];
+        delete_domain_line(block);
+      }
+    }
+    // return 0;
+  }
+  // if position matches then check line above and merge or insert new line
+  else if (position == dposition[block])
+  {
+    if (block > 0 && (FINISHED & STATUS_MASK) == (dstatus[block - 1] & STATUS_MASK))
+    {
+      dsize[block - 1] += size;
+      dposition[block] += size;
+      dsize[block] -= size;
+      // return 0;
+    }
+    else
+    {
+      insert_domain_line(block + 1, position + size, dsize[block] - size, dstatus[block]);
+      dposition[block] = position;
+      dsize[block] = size;
+      dstatus[block] = FINISHED;
+      // return 0;
+    }
+  }
+  // if end position matches then check line below and merge or insert new line
+  else if (position + size == dposition[block] + dsize[block])
+  {
+    if (block < domain_lines - 1 && (FINISHED & STATUS_MASK) == (dstatus[block + 1] & STATUS_MASK))
+    {
+      dposition[block + 1] -= size;
+      dsize[block + 1] += size;
+      dsize[block] -= size;
+      // return 0;
+    }
+    else
+    {
+      insert_domain_line(block, dposition[block], dsize[block] - size, dstatus[block]);
+      dposition[block + 1] = dposition[block] + dsize[block];
+      dsize[block + 1] = size;
+      dstatus[block + 1] = FINISHED;
+      // return 0;
+    }
+  }
+  // if chunk is in the middle of the block then insert 2 lines and adjust
+  else
+  {
+    long long block_end = dposition[block] + dsize[block];
+    insert_domain_line(block + 1, position + size, block_end - (position + size), dstatus[block]);
+    insert_domain_line(block, dposition[block], position - dposition[block], dstatus[block]);
+    dposition[block + 1] = position;
+    dsize[block + 1] = size;
+    dstatus[block + 1] = FINISHED;
+  }
+
+  // fprintf (debug_file,"after\n");
+  for (line_number = 0; line_number < domain_lines; line_number++)
+  {
+    // fprintf (debug_file, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition[line_number], dsize[line_number], (dstatus[line_number] & STATUS_MASK), ((dstatus[line_number] & INFO_MASK) >> 8), (dstatus[line_number] >> 32) );
+  }
+
+  return 0;
+}
+
+int insert_domain_line(int line, long long position, long long size, long long status)
+{
+  if (domain_lines + 1 >= domain_rows)
+  {
+    int ret = increase_domain_memory(1000);
+    if (ret)
+    {
+      return ret;
+    }
+  }
+  int i;
+  for (i = domain_lines; i > line; i--)
+  {
+    dposition[i] = dposition[i - 1];
+    dsize[i] = dsize[i - 1];
+    dstatus[i] = dstatus[i - 1];
+  }
+  dposition[i] = position;
+  dsize[i] = size;
+  dstatus[i] = status;
+  domain_lines++;
+  return (0);
+}
+
+int find_domain_block(long long position)
+{
+  int first = 0;
+  int last = domain_lines - 1;
+  int middle = (first + last) / 2;
+  while (first <= last)
+  {
+    // fprintf (stdout, "pos=0x%llx\n", position);
+    if (position >= dposition[middle] && position < dposition[middle] + dsize[middle])
+    {
+      return (middle);
+    }
+    else if (position > dposition[middle])
+    {
+      first = middle + 1;
+    }
+    else
+    {
+      last = middle - 1;
+    }
+    middle = (first + last) / 2;
+  }
+  return (-1);
+}
+
+int delete_domain_line(int line)
+{
+  int i;
+  for (i = line; i < domain_lines; i++)
+  {
+    dposition[i] = dposition[i + 1];
+    dsize[i] = dsize[i + 1];
+    dstatus[i] = dstatus[i + 1];
+  }
+  domain_lines--;
+  return (0);
 }
 
 int check_log(void)
@@ -2162,6 +2733,25 @@ int check_log(void)
   sprintf(tempmessage, "total size = %lld\n", total_size);
   message_now(tempmessage);
 
+  return fail;
+}
+
+int check_domain(void)
+{
+  sprintf(tempmessage, "Checking domain file...\n");
+  message_now(tempmessage);
+  int i;
+  int fail = 0;
+  for (i = 0; i < domain_lines - 1; i++)
+  {
+    // check if there is an overlap
+    if ((dposition[i] + dsize[i]) > dposition[i + 1])
+    {
+      sprintf(tempmessage, "Overlap found on domain line %d\n", i + 1);
+      message_now(tempmessage);
+      fail = 2;
+    }
+  }
   return fail;
 }
 
@@ -2259,6 +2849,171 @@ int get_block_timing(long long position, long long size)
   return high_time;
 }
 
+int get_block_information(long long position, long long size)
+{
+  long long new_size = size;
+  long long ret = 0;
+  int line = find_block(position);
+  if (line == -1)
+  {
+    // sprintf (tempmessage, "Error: Position 0x%llx not found in progress log file\n", position);
+    // message_now(tempmessage);
+    return -1;
+  }
+  int maxcount = 4096;
+  long long nontried = 0;
+  long long nontrimmed = 0;
+  long long nondivided = 0;
+  long long nonscraped = 0;
+  long long bad = 0;
+  long long finished = 0;
+  long long hightime = 0;
+  char tempchar[384];
+  char lines[maxcount * sizeof(tempchar)];
+  strcpy(lines, "");
+  // process current status
+  // fprintf (stdout, "1 pos=%lld siz=%lld nsiz=%lld lin=%d lpos=%lld lsiz=%lld\n", position, size, new_size, line, lposition[line], lsize[line]);    //debug
+  ret = process_information(position, size, line);
+  if (ret > 0)
+  {
+    nontried = nontried + temp_nontried;
+    nontrimmed = nontrimmed + temp_nontrimmed;
+    nondivided = nondivided + temp_nondivided;
+    nonscraped = nonscraped + temp_nonscraped;
+    bad = bad + temp_bad;
+    finished = finished + temp_finished;
+    if (temp_hightime > hightime)
+    {
+      hightime = temp_hightime;
+    }
+    if (ddrescue_log)
+    {
+      sprintf(tempchar, "0x%06llx \t0x%06llx \t%c\n", lposition[line], lsize[line], ddrstatus);
+    }
+    else
+    {
+      sprintf(tempchar, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line], (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
+    }
+    strcat(lines, tempchar);
+  }
+  // check if the chunk fits in the block and if not then get next block
+  long long block_end = lposition[line] + lsize[line];
+  new_size -= lposition[line] - position;
+  int chunk_count = maxcount;
+  while (chunk_count > 0)
+  {
+    // fprintf (stdout, "2 pos=%lld siz=%lld nsiz=%lld lin=%d lpos=%lld lsiz=%lld\n", position, size, new_size, line, lposition[line], lsize[line]);    //debug
+    chunk_count--;
+    if (lposition[line] + new_size > block_end || lposition[line] > block_end)
+    {
+      new_size -= lsize[line];
+      line++;
+      if (line > total_lines - 1)
+      {
+        break;
+      }
+      block_end = lposition[line] + lsize[line];
+      // fprintf (stdout, "3 pos=%lld siz=%lld nsiz=%lld lin=%d lpos=%lld lsiz=%lld end=%lld\n", position, size, new_size, line, lposition[line], lsize[line], block_end);    //debug
+      ret = process_information(position, size, line);
+      if (ret > 0)
+      {
+        nontried = nontried + temp_nontried;
+        nontrimmed = nontrimmed + temp_nontrimmed;
+        nondivided = nondivided + temp_nondivided;
+        nonscraped = nonscraped + temp_nonscraped;
+        bad = bad + temp_bad;
+        finished = finished + temp_finished;
+        if (temp_hightime > hightime)
+        {
+          hightime = temp_hightime;
+        }
+        if (ddrescue_log)
+        {
+          sprintf(tempchar, "0x%06llx \t0x%06llx \t%c\n", lposition[line], lsize[line], ddrstatus);
+        }
+        else
+        {
+          sprintf(tempchar, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line], (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
+        }
+        strcat(lines, tempchar);
+      }
+    }
+    else
+    {
+      break;
+    }
+    // break;
+  }
+
+  if (chunk_count == 0)
+  {
+    fprintf(stdout, "block line count exceeded\n");
+  }
+  long long total = nontried + nontrimmed + nondivided + nonscraped + bad + finished;
+  if (total != size)
+  {
+    fprintf(stdout, "block sum %lld does not equal block total %lld\n", total, size);
+  }
+
+  char label[8092 + (maxcount * sizeof(tempchar))];
+  strcpy(label, "");
+  sprintf(tempchar, "0x%llx-0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld  ", curlang[LANGFINISHED], finished);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld\n", curlang[LANGBAD], bad);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld  ", curlang[LANGNONTRIED], nontried);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld\n", curlang[LANGNONTRIMMED], nontrimmed);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld  ", curlang[LANGNONDIVIDED], nondivided);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld\n", curlang[LANGNONSCRAPED], nonscraped);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%d  ", curlang[LANGAREAS], maxcount - chunk_count);
+  strcat(label, tempchar);
+  sprintf(tempchar, "%s=%lld\n", curlang[LANGTIMING], hightime);
+  strcat(label, tempchar);
+  strcat(label, lines);
+  // fprintf (stdout, "%s", label);
+  // fprintf (stdout, "count=%d\n", maxcount - chunk_count);
+  gtk_label_set_text(GTK_LABEL(block_information_label), label);
+
+  return 0;
+}
+
+int process_domain(long long position, int size, int status, int status_mask)
+{
+  if (show_domain)
+  {
+    int first = 0;
+    int last = domain_lines - 1;
+    int middle = (first + last) / 2;
+    while (first <= last)
+    {
+      // fprintf (stdout, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition[middle], dsize[middle]);    //debug
+      // fprintf (stdout, "first=%d middle=%d end=%d\n", first, middle, last);    //debug
+      //  check if any part of the chunk is in the domain
+      if (((position >= dposition[middle] && position < dposition[middle] + dsize[middle]) || (dposition[middle] >= position && dposition[middle] < position + size)) && ((dstatus[middle] & status_mask) == status))
+      {
+        // found a matching block
+        return 1;
+      }
+      else if (position > dposition[middle])
+      {
+        first = middle + 1;
+      }
+      else
+      {
+        last = middle - 1;
+      }
+      middle = (first + last) / 2;
+    }
+  }
+  return 0;
+}
+
 int process_status(int line)
 {
   int status = 0;
@@ -2296,6 +3051,72 @@ int process_status(int line)
     status = status | BAD_HEAD_BIT;
   }
   return status;
+}
+
+long long process_information(long long position, long long size, int line)
+{
+  temp_nontried = 0;
+  temp_nontrimmed = 0;
+  temp_nondivided = 0;
+  temp_nonscraped = 0;
+  temp_bad = 0;
+  temp_finished = 0;
+  temp_hightime = 0;
+  long long start = position;
+  if (lposition[line] > position)
+  {
+    start = lposition[line];
+  }
+  long long end = (position + size);
+  if ((lposition[line] + lsize[line]) < end)
+  {
+    end = (lposition[line] + lsize[line]);
+  }
+  long long total = end - start;
+  if (total < 0)
+  {
+    total = 0;
+  }
+  ddrstatus = ' ';
+  int mask = 0x7f;
+  if ((lstatus[line] & mask) == (NONTRIED & mask))
+  {
+    temp_nontried = total;
+    ddrstatus = '?';
+    // fprintf (stdout, "temp_nontried=%lld\n", total);    // debug
+  }
+  else if ((lstatus[line] & mask) == (NONTRIMMED & mask))
+  {
+    temp_nontrimmed = total;
+    ddrstatus = '*';
+    // fprintf (stdout, "temp_nontrimmed=%lld\n", total);    // debug
+  }
+  else if ((lstatus[line] & mask) == (NONDIVIDED & mask))
+  {
+    temp_nondivided = total;
+    ddrstatus = '*';
+    // fprintf (stdout, "temp_nondivided=%lld\n", total);    // debug
+  }
+  else if ((lstatus[line] & mask) == (NONSCRAPED & mask))
+  {
+    temp_nonscraped = total;
+    ddrstatus = '/';
+    // fprintf (stdout, "temp_nonscraped=%lld\n", total);    // debug
+  }
+  else if ((lstatus[line] & mask) == (BAD & mask))
+  {
+    temp_bad = total;
+    ddrstatus = '-';
+    // fprintf (stdout, "temp_bad=%lld\n", total);    // debug
+  }
+  else if ((lstatus[line] & mask) == (FINISHED & mask))
+  {
+    temp_finished = total;
+    ddrstatus = '+';
+    // fprintf (stdout, "temp_finished=%lld\n", total);    // debug
+  }
+  temp_hightime = (lstatus[line] >> 32) & 0xff;
+  return total;
 }
 
 int find_block(long long position)
@@ -2407,7 +3228,7 @@ void version(void)
 {
   fprintf(stdout, "%s %s\n", title, version_number);
   fprintf(stdout, "Copyright (C) %d Scott Dwyer and OpenSuperClone contributors.\n", copyright_year);
-  fprintf(stdout, "GPL2\n");
+  fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
@@ -2439,6 +3260,7 @@ int set_language(void)
   gtk_box_pack_start(GTK_BOX(box), imbutton, TRUE, TRUE, 0);
 
   gint handler_id2 = g_signal_connect(enbutton, "clicked", G_CALLBACK(gtk_main_quit), NULL);
+  // gint handler_id3 = g_signal_connect (exbutton, "clicked", G_CALLBACK (export_language_file), NULL);
   gint handler_id4 = g_signal_connect(imbutton, "clicked", G_CALLBACK(import_language_file), NULL);
 
   gtk_widget_show_all(window);
@@ -2477,6 +3299,54 @@ int print_gui_error_message(char *message, char *title, int type)
 
   return 0;
 }
+
+void export_language_file(void)
+{
+  // /* Create a new file selection widget */
+  // filelangex = gtk_file_selection_new(curlang[LANGEXPORTLANG]);
+  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(filelangex));
+
+  // /* Connect the ok_button to file_ok_sel function */
+  // g_signal_connect(GTK_FILE_SELECTION(filelangex)->ok_button, "clicked", G_CALLBACK(file_export_sel), (gpointer)filelangex);
+
+  // /* Connect the cancel_button to destroy the widget */
+  // g_signal_connect_swapped(GTK_FILE_SELECTION(filelangex)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), filelangex);
+
+  // // set default file name
+  // // gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "progress.log");
+
+  // gtk_widget_show(filelangex);
+}
+
+// // get the export filename and load it
+// static void file_export_sel(GtkWidget *w, GtkFileSelection *fs)
+// {
+//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
+//   char export_file[1024] = "";
+//   sprintf(export_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
+//   printf("%s\n", export_file);
+//   gtk_widget_destroy(filelangex);
+
+//   FILE *writefile;
+//   writefile = fopen(export_file, "w");
+//   if (writefile == NULL)
+//   {
+//     sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], export_file, strerror(errno));
+//     message_error(tempmessage);
+//     print_gui_error_message(error_message, curlang[LANGERROR], 1);
+//     clear_error_message();
+//   }
+
+//   fprintf(writefile, "%s", program_title);
+//   int i;
+//   for (i = 0; i < LANGCOUNT; i++)
+//   {
+//     fprintf(writefile, "\n|_|%d|_|\n", i);
+//     fprintf(writefile, "%s", enlang[i]);
+//   }
+
+//   fclose(writefile);
+// }
 
 void import_language_file(void)
 {
@@ -2760,19 +3630,19 @@ int translate_all(void)
 int translate_language(char *fromlang, char *translang, char *language, char *native)
 {
   int failure = 0;
-  char return_data[100000];
-  char new_lang_data[50000];
-  char url_data[25000];
-  char lang_data[25000];
-  char new_data[25000];
-  char temp_data[10000];
+  char return_data[1000000];
+  char new_lang_data[500000];
+  char url_data[250000];
+  char lang_data[250000];
+  char new_data[250000];
+  char temp_data[100000];
   strcpy(lang_data, "");
   strcpy(new_data, "");
   strcpy(return_data, "");
   int i;
   for (i = 0; i < LANGCOUNT; i++)
   {
-    sprintf(temp_data, "\n|_|%d|_|\n", i);
+    sprintf(temp_data, "\n|_|%04d|_|\n", i);
     strcat(lang_data, temp_data);
     sprintf(temp_data, "%s", curlang[i]);
     strcat(lang_data, temp_data);
@@ -2950,7 +3820,7 @@ int translate_language(char *fromlang, char *translang, char *language, char *na
   fprintf(writefile, "%s", program_title);
   for (i = 0; i < LANGCOUNT; i++)
   {
-    fprintf(writefile, "\n|_|%d|_|\n", i);
+    fprintf(writefile, "\n|_|%04d|_|\n", i);
     fprintf(writefile, "%s", newlang[i]);
   }
 
@@ -3236,6 +4106,12 @@ int setup_enlanguage(void)
   strcpy(enlang[LANG16M], "16M");
   strcpy(enlang[LANGSHOWTIMING], "Show high time");
   strcpy(enlang[LANGTIMING], "Timing");
+  strcpy(enlang[LANGDOMAIN], "Domain");
+  strcpy(enlang[LANGSHOWDOMAIN], "Show domain");
+  strcpy(enlang[LANGDOMAINBLOCKNOTFOUND], "Domain block not found");
+  strcpy(enlang[LANGDMDEDOMAIN], "Domain from DMDE bytes file");
+  strcpy(enlang[LANGAREAS], "Areas");
+  strcpy(enlang[LANGDUMMY], "dummy always put at bottom of language list");
   // strcpy (enlang[], "");
 
   return 0;

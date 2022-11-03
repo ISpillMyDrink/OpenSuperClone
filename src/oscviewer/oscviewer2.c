@@ -925,7 +925,6 @@ void toggle_showbad(GtkWidget *w, gpointer data)
   // redraw_top_drawing_area();
   // redraw_main_drawing_area();
   gtk_widget_queue_draw(main_window);
-  data = data;
 }
 
 void toggle_showgood(GtkWidget *w, gpointer data)
@@ -941,7 +940,6 @@ void toggle_showgood(GtkWidget *w, gpointer data)
   // redraw_top_drawing_area();
   // redraw_main_drawing_area();
   gtk_widget_queue_draw(main_window);
-  data = data;
 }
 
 void set_show_timing(GtkWidget *w, gpointer data)
@@ -3343,7 +3341,7 @@ void import_language_file(void)
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), OSCVIEWER_LANG_PATH);
     g_print("found installed languages\n");
   }
-  else if (access("Language", F_OK) == 0)
+  else if (access("Language/English", F_OK) == 0)
   {
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "Language");
     g_print("found languages locally\n");
