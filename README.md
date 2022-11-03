@@ -63,14 +63,14 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 - `libgtk-3-dev` (or `libgtk2.0-dev` if building for GTK2)
 
 ```Bash
-# Build OpenSuperClone and OSCViewer for Release and install to ./release
+# Build OpenSuperClone and OSCViewer for Release and install to ./Release
 $ ./build.sh
 
 # Run OpenSuperClone
-$ sudo ./release/bin/opensuperclone
+$ sudo ./Release/bin/opensuperclone
 
 # Run OSCViewer
-$ ./release/bin/oscviewer
+$ ./Release/bin/oscviewer
 ```
 
 ## ✏️ Changelog
