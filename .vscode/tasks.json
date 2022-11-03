@@ -15,6 +15,28 @@
             }
         },
         {
+            //  Run OpenSuperClone.
+            "label": "▶️ Run OpenSuperClone",
+            "type": "shell",
+            "linux": {
+                "command": "sudo ./release/bin/opensuperclone",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Run OSCViewer.
+            "label": "▶️ Run OSCViewer",
+            "type": "shell",
+            "linux": {
+                "command": "./release/bin/oscviewer",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             //  Package Release.
             "label": "✉️ Package Release",
             "type": "shell",
