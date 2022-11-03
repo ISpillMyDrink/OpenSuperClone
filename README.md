@@ -46,7 +46,7 @@
 
 #### 💣 Known Issues
 
-* OSCViewer is extremely buggy in GTK3 and missing functionality from its GTK2 counterpart, it is recommended to build it with GTK2 for the time being
+* OSCViewer is extremely buggy in GTK3, it is recommended to build it with GTK2 for the time being
 
 ## 💾 Installation
 

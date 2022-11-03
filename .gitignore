@@ -13,8 +13,8 @@ _deps
 
 # Ignore build directories
 build
-debug
-release
+Debug
+Release
 package
 
 # Ignore IDE artifacts
