@@ -143,26 +143,11 @@ int main(int argc, char **argv)
   // set it to exit if closed
   g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  // gtk_container_set_border_width (GTK_CONTAINER (main_window), 2);
-
-  // main_vbox = gtk_vbox_new (FALSE, 0);
-  // gtk_container_add (GTK_CONTAINER (main_window), main_vbox);
   main_vbox = GTK_WIDGET(gtk_builder_get_object(builder, "main_vbox"));
 
   // start of menu
-  // menubar = gtk_menu_bar_new();
-  // menuseparater = gtk_separator_menu_item_new();
 
   // file menu
-  // filemenu = gtk_menu_new();
-  // filemi = gtk_menu_item_new_with_label(curlang[LANGFILE]);
-  // quitmi = gtk_menu_item_new_with_label(curlang[LANGQUIT]);
-  // openmi = gtk_menu_item_new_with_label(curlang[LANGOPEN]);
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(filemi), filemenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(filemenu), openmi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(filemenu), menuseparater);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(filemenu), quitmi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(menubar), filemi);
   filemi = GTK_WIDGET(gtk_builder_get_object(builder, "filemi"));
   quitmi = GTK_WIDGET(gtk_builder_get_object(builder, "quitmi"));
   openmi = GTK_WIDGET(gtk_builder_get_object(builder, "openmi"));
@@ -180,22 +165,10 @@ int main(int argc, char **argv)
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
   // options menu
-  // optionsmenu = gtk_menu_new();
-  // optionsmi = gtk_menu_item_new_with_label(curlang[LANGOPTIONS]);
   optionsmi = GTK_WIDGET(gtk_builder_get_object(builder, "optionsmi"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(optionsmi), curlang[LANGOPTIONS]);
 
   // left res menu
-  // leftresmenu = gtk_menu_new();
-  // leftresolutionmi = gtk_menu_item_new_with_label(curlang[LANGLEFTRES]);
-  // leftresbutton1 = gtk_radio_menu_item_new_with_label (leftresgroup, curlang[LANG1PT]);
-  // leftresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (leftresbutton1));
-  // leftresbutton2 = gtk_radio_menu_item_new_with_label (leftresgroup, curlang[LANG2PT]);
-  // leftresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (leftresbutton2));
-  // leftresbutton3 = gtk_radio_menu_item_new_with_label (leftresgroup, curlang[LANG3PT]);
-  // leftresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (leftresbutton3));
-  // leftresbutton4 = gtk_radio_menu_item_new_with_label (leftresgroup, curlang[LANG4PT]);
-  // leftresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (leftresbutton4));
   leftresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "leftresolutionmi"));
   leftresbutton1 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton1"));
   leftresbutton2 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton2"));
@@ -207,31 +180,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton3), curlang[LANG3PT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton4), curlang[LANG4PT]);
 
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (leftresbutton2), TRUE);
-
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(leftresolutionmi), leftresmenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(leftresmenu), leftresbutton1);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(leftresmenu), leftresbutton2);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(leftresmenu), leftresbutton3);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(leftresmenu), leftresbutton4);
-
   // main res menu
-  // mainresmenu = gtk_menu_new();
-  // mainresolutionmi = gtk_menu_item_new_with_label(curlang[LANGMAINRES]);
-  // mainresbutton4 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG4PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton4));
-  // mainresbutton6 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG6PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton6));
-  // mainresbutton8 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG8PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton8));
-  // mainresbutton10 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG10PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton10));
-  // mainresbutton12 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG12PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton12));
-  // mainresbutton14 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG14PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton14));
-  // mainresbutton16 = gtk_radio_menu_item_new_with_label (mainresgroup, curlang[LANG16PT]);
-  // mainresgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainresbutton16));
   mainresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "mainresolutionmi"));
   mainresbutton4 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton4"));
   mainresbutton6 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton6"));
@@ -249,46 +198,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton14), curlang[LANG14PT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton16), curlang[LANG16PT]);
 
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (mainresbutton8), TRUE);
-
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(mainresolutionmi), mainresmenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton4);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton6);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton8);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton10);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton12);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton14);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainresmenu), mainresbutton16);
-
   // main size menu
-  // mainsizemenu = gtk_menu_new();
-  // maingridsizemi = gtk_menu_item_new_with_label(curlang[LANGMAINSIZE]);
-  // mainsizebutton4k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG4K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton4k));
-  // mainsizebutton8k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG8K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton8k));
-  // mainsizebutton16k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG16K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton16k));
-  // mainsizebutton32k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG32K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton32k));
-  // mainsizebutton64k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG64K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton64k));
-  // mainsizebutton128k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG128K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton128k));
-  // mainsizebutton256k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG256K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton256k));
-  // mainsizebutton512k = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG512K]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton512k));
-  // mainsizebutton1m = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG1M]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton1m));
-  // mainsizebutton2m = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG2M]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton2m));
-  // mainsizebutton4m = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG4M]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton4m));
-  // mainsizebutton8m = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG8M]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton8m));
-  // mainsizebutton16m = gtk_radio_menu_item_new_with_label (mainsizegroup, curlang[LANG16M]);
-  // mainsizegroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (mainsizebutton16m));
   maingridsizemi = GTK_WIDGET(gtk_builder_get_object(builder, "maingridsizemi"));
   mainsizebutton4k = GTK_WIDGET(gtk_builder_get_object(builder, "mainsizebutton4k"));
   mainsizebutton8k = GTK_WIDGET(gtk_builder_get_object(builder, "mainsizebutton8k"));
@@ -318,40 +228,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8m), curlang[LANG8M]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16m), curlang[LANG16M]);
 
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (mainsizebutton64k), TRUE);
-
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(maingridsizemi), mainsizemenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton4k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton8k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton16k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton32k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton64k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton128k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton256k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton512k);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton1m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton2m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton4m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton8m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(mainsizemenu), mainsizebutton16m);
-
   // auto update menu
-  // autoupdatemenu = gtk_menu_new();
-  // autoupdatemi = gtk_menu_item_new_with_label(curlang[LANGAUTOUPDATE]);
-  // autoupdatebuttonoff = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANGOFF]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebuttonoff));
-  // autoupdatebutton5s = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG5SEC]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton5s));
-  // autoupdatebutton10s = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG10SEC]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton10s));
-  // autoupdatebutton30s = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG30SEC]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton30s));
-  // autoupdatebutton1m = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG1MIN]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton1m));
-  // autoupdatebutton2m = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG2MIN]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton2m));
-  // autoupdatebutton5m = gtk_radio_menu_item_new_with_label (autoupgroup, curlang[LANG5MIN]);
-  // autoupgroup = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoupdatebutton5m));
   autoupdatemi = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatemi"));
   autoupdatebuttonoff = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatebuttonoff"));
   autoupdatebutton5s = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatebutton5s"));
@@ -369,26 +246,11 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton2m), curlang[LANG2MIN]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5m), curlang[LANG5MIN]);
 
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoupdatebuttonoff), TRUE);
-
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(autoupdatemi), autoupdatemenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebuttonoff);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton5s);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton10s);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton30s);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton1m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton2m);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(autoupdatemenu), autoupdatebutton5m);
-
   // show good data item
-  // showgoodcheck = gtk_check_menu_item_new_with_label(curlang[LANGSHOWGOODDATA]);
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (showgoodcheck), FALSE);
   showgoodcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showgoodcheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showgoodcheck), curlang[LANGSHOWGOODDATA]);
 
   // show bad head item
-  // showbadcheck = gtk_check_menu_item_new_with_label(curlang[LANGSHOWBADHEAD]);
-  // gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (showbadcheck), FALSE);
   showbadcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showbadcheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showbadcheck), curlang[LANGSHOWBADHEAD]);
 
@@ -412,19 +274,6 @@ int main(int argc, char **argv)
 
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), curlang[LANGSHOWDOMAIN]);
-
-  // gtk_menu_item_set_submenu(GTK_MENU_ITEM(optionsmi), optionsmenu);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), leftresolutionmi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), mainresolutionmi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), maingridsizemi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), autoupdatemi);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), showgoodcheck);
-  // gtk_menu_shell_append(GTK_MENU_SHELL(optionsmenu), showbadcheck);
-
-  // gtk_menu_shell_append(GTK_MENU_SHELL(menubar), optionsmi);
-
-  // pack the menu in the box
-  // gtk_box_pack_start(GTK_BOX(main_vbox), menubar, FALSE, FALSE, 0);
 
   // set it to exit if the quit item is selected
   g_signal_connect(G_OBJECT(quitmi), "activate", G_CALLBACK(gtk_main_quit), NULL);
@@ -496,89 +345,51 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showtimingbutton60), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(60));
 
   // main hbox
-  // main_hbox = gtk_hbox_new (FALSE, 0);
   main_hbox = GTK_WIDGET(gtk_builder_get_object(builder, "main_hbox"));
   g_signal_connect(main_hbox, "size-allocate", G_CALLBACK(getsize_main_hbox), NULL);
-  // gtk_box_pack_start (GTK_BOX (main_vbox), main_hbox, TRUE, TRUE, 0);
 
   // left vbox
-  // left_vbox = gtk_vbox_new (FALSE, 0);
   left_vbox = GTK_WIDGET(gtk_builder_get_object(builder, "left_vbox"));
   g_signal_connect(left_vbox, "size-allocate", G_CALLBACK(getsize_left_vbox), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (left_vbox), 100, -1);
-  // gtk_container_set_border_width (GTK_CONTAINER (left_vbox), 2);
-  // gtk_box_pack_start (GTK_BOX (main_hbox), left_vbox, FALSE, FALSE, 0);
 
-  // left_drawing_area = gtk_drawing_area_new();
+  // left drawing area
   left_drawing_area = GTK_WIDGET(gtk_builder_get_object(builder, "left_drawing_area"));
   g_signal_connect(left_drawing_area, "size-allocate", G_CALLBACK(getsize_left_drawing_area), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (left_drawing_area), 100, -1);
-  // gtk_box_pack_start (GTK_BOX (left_vbox), left_drawing_area, TRUE, TRUE, 0);
-
   g_signal_connect(left_drawing_area, "draw", G_CALLBACK(left_vbox_expose_event), NULL);
 
   // right vbox
-  // right_vbox = gtk_vbox_new (FALSE, 0);
   right_vbox = GTK_WIDGET(gtk_builder_get_object(builder, "right_vbox"));
   g_signal_connect(right_vbox, "size-allocate", G_CALLBACK(getsize_right_vbox), NULL);
-  // gtk_container_set_border_width (GTK_CONTAINER (right_vbox), 2);
-  // gtk_box_pack_start (GTK_BOX (main_hbox), right_vbox, TRUE, TRUE, 0);
 
   // top hbox
-  // top_hbox = gtk_hbox_new (FALSE, 0);
   top_hbox = GTK_WIDGET(gtk_builder_get_object(builder, "top_hbox"));
   g_signal_connect(top_hbox, "size-allocate", G_CALLBACK(getsize_top_hbox), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (top_hbox), -1, 100);
-  // gtk_container_set_border_width (GTK_CONTAINER (top_hbox), 2);
-  // gtk_box_pack_start (GTK_BOX (right_vbox), top_hbox, FALSE, FALSE, 0);
 
-  // top_info_box = gtk_vbox_new (FALSE, 0);
+  // top info box
   top_info_box = GTK_WIDGET(gtk_builder_get_object(builder, "top_info_box"));
   g_signal_connect(top_info_box, "size-allocate", G_CALLBACK(getsize_top_info_box), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (top_info_box), -1, 100);
-  // gtk_container_set_border_width (GTK_CONTAINER (top_info_box), 2);
-  // gtk_box_pack_start (GTK_BOX (top_hbox), top_info_box, TRUE, TRUE, 0);
-  // frame = gtk_frame_new (NULL);
-  // gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-  // gtk_container_add (GTK_CONTAINER (top_info_box), frame);
 
-  // top_drawing_area = gtk_drawing_area_new();
+  // top drawing area
   top_drawing_area = GTK_WIDGET(gtk_builder_get_object(builder, "top_drawing_area"));
   g_signal_connect(top_drawing_area, "size-allocate", G_CALLBACK(getsize_top_drawing_area), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (top_drawing_area), 400, -1);
-  // gtk_box_pack_start (GTK_BOX (top_hbox), top_drawing_area, FALSE, FALSE, 0);
-
   g_signal_connect(top_drawing_area, "draw", G_CALLBACK(top_drawing_expose_event), NULL);
+  gtk_widget_set_double_buffered(top_drawing_area, FALSE);
 
   // main drawing vbox
-  // main_drawing_vbox = gtk_vbox_new (FALSE, 0);
   main_drawing_vbox = GTK_WIDGET(gtk_builder_get_object(builder, "main_drawing_vbox"));
   g_signal_connect(main_drawing_vbox, "size-allocate", G_CALLBACK(getsize_main_drawing_vbox), NULL);
-  // gtk_container_set_border_width (GTK_CONTAINER (main_drawing_vbox), 2);
-  // gtk_box_pack_start (GTK_BOX (right_vbox), main_drawing_vbox, TRUE, TRUE, 0);
 
   // main drawing scrolled window
-  // main_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   main_scrolled_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_scrolled_window"));
   g_signal_connect(main_scrolled_window, "size-allocate", G_CALLBACK(getsize_main_scrolled_window), NULL);
-  // gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (main_scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-  // gtk_widget_set_size_request(main_scrolled_window, 400, 300);
-  // gtk_box_pack_start (GTK_BOX (main_drawing_vbox), main_scrolled_window, TRUE, TRUE, 0);
-  // gtk_container_add (GTK_CONTAINER (main_drawing_vbox), main_scrolled_window);
 
-  // main_drawing_area = gtk_drawing_area_new();
+  // main drawing area
   main_drawing_area = GTK_WIDGET(gtk_builder_get_object(builder, "main_drawing_area"));
-  // gtk_container_add(GTK_CONTAINER(main_scrolled_window), main_drawing_area);
   g_signal_connect(main_drawing_area, "size-allocate", G_CALLBACK(getsize_main_drawing_area), NULL);
-  // gtk_widget_set_size_request (GTK_WIDGET (main_drawing_area), 200, 200);
-  gtk_widget_add_events(main_drawing_area, GDK_BUTTON_PRESS_MASK);
-
   g_signal_connect(main_drawing_area, "draw", G_CALLBACK(main_drawing_expose_event), NULL);
-  // g_signal_connect(main_window, "draw", G_CALLBACK(main_drawing_expose_event), NULL);
+  gtk_widget_add_events(main_drawing_area, GDK_BUTTON_PRESS_MASK);
   g_signal_connect(G_OBJECT(main_drawing_area), "button-press-event", G_CALLBACK(on_button_press), NULL);
-
   gtk_widget_set_double_buffered(main_drawing_area, FALSE);
-  gtk_widget_set_double_buffered(top_drawing_area, FALSE);
 
   g_object_unref(builder);
 
@@ -599,7 +410,6 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
       mouse_y = event->y;
       sprintf(tempmessage, "x=%d y=%d\n", mouse_x, mouse_y);
       message_debug(tempmessage, 0);
-      // redraw_main_drawing_area();
       gtk_widget_queue_draw(main_window);
     }
   }
@@ -755,9 +565,7 @@ void select_file(void)
         message_now(tempmessage);
       }
     }
-    // redraw_left_vbox();
-    // redraw_main_drawing_area();
-    //  this seems to be needed sometimes after changing the settings and then reloading the log file
+
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -795,9 +603,7 @@ void select_domain(void)
     //     message_now(tempmessage);
     //   }
     // }
-    // redraw_left_vbox();
-    // redraw_main_drawing_area();
-    //  this seems to be needed sometimes after changing the settings and then reloading the log file
+
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -826,9 +632,7 @@ void select_dmde_domain(void)
       sprintf(tempmessage, "error processing domain file\n");
       message_now(tempmessage);
     }
-    // redraw_left_vbox();
-    // redraw_main_drawing_area();
-    //  this seems to be needed sometimes after changing the settings and then reloading the log file
+
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -865,9 +669,6 @@ gint reload_file(void)
     }
   }
 
-  // redraw_left_vbox();
-  // redraw_main_drawing_area();
-  //  this seems to be needed sometimes after changing the settings and then reloading the log file
   gtk_widget_queue_draw(main_window);
 
   return 1;
@@ -898,8 +699,7 @@ void toggle_showbad(GtkWidget *w, gpointer data)
   {
     show_bad_head = 0;
   }
-  // redraw_top_drawing_area();
-  // redraw_main_drawing_area();
+
   gtk_widget_queue_draw(main_window);
 }
 
@@ -913,14 +713,14 @@ void toggle_showgood(GtkWidget *w, gpointer data)
   {
     show_good_data = 0;
   }
-  // redraw_top_drawing_area();
-  // redraw_main_drawing_area();
+
   gtk_widget_queue_draw(main_window);
 }
 
 void set_show_timing(GtkWidget *w, gpointer data)
 {
   show_timing = GPOINTER_TO_INT(data);
+
   gtk_widget_queue_draw(main_window);
 }
 
@@ -934,10 +734,8 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
   {
     show_domain = 0;
   }
-  // redraw_top_drawing_area();
-  // redraw_main_drawing_area();
+
   gtk_widget_queue_draw(main_window);
-  data = data;
 }
 
 void redraw_top_drawing_area(void)
@@ -1145,7 +943,8 @@ void change_left_resolution(GtkWidget *w, gpointer data)
 {
   g_print("%d\n", GPOINTER_TO_INT(data));
   left_square_size = GPOINTER_TO_INT(data);
-  redraw_left_vbox();
+
+  gtk_widget_queue_draw(main_window);
 }
 
 void redraw_left_vbox(void)
@@ -1269,7 +1068,8 @@ void change_main_resolution(GtkWidget *w, gpointer data)
   sprintf(tempmessage, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_square_size = GPOINTER_TO_INT(data);
-  redraw_main_drawing_area();
+
+  gtk_widget_queue_draw(main_window);
 }
 
 void change_main_grid_size(GtkWidget *w, gpointer data)
@@ -1277,7 +1077,8 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
   sprintf(tempmessage, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_grid_size = GPOINTER_TO_INT(data);
-  redraw_main_drawing_area();
+  
+  gtk_widget_queue_draw(main_window);
 }
 
 void redraw_main_drawing_area(void)
@@ -2912,23 +2713,23 @@ int get_block_information(long long position, long long size)
 
   char label[8092 + (maxcount * sizeof(tempchar))];
   strcpy(label, "");
-  sprintf(tempchar, "0x%llx-0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
+  sprintf(tempchar, "0x%llx - 0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld  ", curlang[LANGFINISHED], finished);
+  sprintf(tempchar, "%s: %lld,   ", curlang[LANGFINISHED], finished);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld\n", curlang[LANGBAD], bad);
+  sprintf(tempchar, "%s: %lld,\n", curlang[LANGBAD], bad);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld  ", curlang[LANGNONTRIED], nontried);
+  sprintf(tempchar, "%s: %lld,   ", curlang[LANGNONTRIED], nontried);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld\n", curlang[LANGNONTRIMMED], nontrimmed);
+  sprintf(tempchar, "%s: %lld,\n", curlang[LANGNONTRIMMED], nontrimmed);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld  ", curlang[LANGNONDIVIDED], nondivided);
+  sprintf(tempchar, "%s: %lld,   ", curlang[LANGNONDIVIDED], nondivided);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld\n", curlang[LANGNONSCRAPED], nonscraped);
+  sprintf(tempchar, "%s: %lld,\n", curlang[LANGNONSCRAPED], nonscraped);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%d  ", curlang[LANGAREAS], maxcount - chunk_count);
+  sprintf(tempchar, "%s: %d,   ", curlang[LANGAREAS], maxcount - chunk_count);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s=%lld\n", curlang[LANGTIMING], hightime);
+  sprintf(tempchar, "%s: %lld\n", curlang[LANGTIMING], hightime);
   strcat(label, tempchar);
   strcat(label, lines);
   // fprintf (stdout, "%s", label);
