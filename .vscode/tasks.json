@@ -19,7 +19,7 @@
             "label": "▶️ Run OpenSuperClone",
             "type": "shell",
             "linux": {
-                "command": "sudo ./release/bin/opensuperclone",
+                "command": "sudo ./Release/bin/opensuperclone",
             },
             "presentation": {
                 "clear": true
@@ -30,7 +30,7 @@
             "label": "▶️ Run OSCViewer",
             "type": "shell",
             "linux": {
-                "command": "./release/bin/oscviewer",
+                "command": "./Release/bin/oscviewer",
             },
             "presentation": {
                 "clear": true
@@ -74,7 +74,7 @@
             "label": "❌ Uninstall",
             "type": "shell",
             "linux": {
-                "command": "./install.sh",
+                "command": "./uninstall.sh",
             },
             "presentation": {
                 "clear": true
