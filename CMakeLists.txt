@@ -32,9 +32,6 @@ set(OSCVIEWER_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/oscviewer/Language" C
 # Copyright year 2022
 set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
-# Set the GTK version to 3.x
-set(GTKVER 3 CACHE STRING "GTK Version")
-
 # If Git is installed, save the current revision number
 find_package(Git)
 

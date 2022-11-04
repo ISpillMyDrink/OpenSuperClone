@@ -4,8 +4,8 @@
 // This software is distributed WITHOUT ANY WARRANTY.
 
 #include "config.h"
-#include "oscviewer3.h"
-#include "oscviewer3_glade.h"
+#include "oscviewer.h"
+#include "oscviewer_glade.h"
 
 char *title = "OSCViewer";
 char *version_number = OSCVIEWER_VERSION;
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 
   GtkBuilder *builder = gtk_builder_new();
   GError *err = NULL; // It is mandatory to initialize to NULL
-  if (0 == gtk_builder_add_from_string(builder, (const gchar *)oscviewer3_glade, oscviewer3_glade_len, &err))
+  if (0 == gtk_builder_add_from_string(builder, (const gchar *)oscviewer_glade, oscviewer_glade_len, &err))
   {
     fprintf(stderr, "Error adding build from file. Error: %s\n", err->message);
   }

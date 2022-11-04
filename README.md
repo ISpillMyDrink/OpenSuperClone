@@ -41,12 +41,7 @@
 * Refactoring of codebase (get rid of -fcommon flag)
 * Implement DKMS for driver (un-)installation
 * Remove requirement for running as root
-* Get completely rid of GTK2 code
 * Add configuration files and presets for settings
-
-#### 💣 Known Issues
-
-* OSCViewer is extremely buggy in GTK3, it is recommended to build it with GTK2 for the time being
 
 ## 💾 Installation
 
@@ -60,7 +55,7 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 - `cmake`
 - `pkgconf`
 - `libusb-dev`
-- `libgtk-3-dev` (or `libgtk2.0-dev` if building for GTK2)
+- `libgtk-3-dev`
 
 ```Bash
 # Build OpenSuperClone and OSCViewer for Release and install to ./Release

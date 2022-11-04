@@ -11,8 +11,8 @@ set(SOURCES
     usbrelay.h
     common.c
     common.h
-    clone_gui${GTKVER}.c
-    clone_gui${GTKVER}.h
+    clone_gui.c
+    clone_gui.h
     clone_gui_language.c
     clone_gui_language.h
 )
@@ -33,11 +33,11 @@ add_custom_command(
 LIST(APPEND RESOURCES opensuperclone_help.h)
 
 add_custom_command(
-    OUTPUT opensuperclone${GTKVER}_glade.h
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone${GTKVER}.glade opensuperclone${GTKVER}.glade
-    COMMAND xxd -i opensuperclone${GTKVER}.glade opensuperclone${GTKVER}_glade.h
+    OUTPUT opensuperclone_glade.h
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone.glade opensuperclone.glade
+    COMMAND xxd -i opensuperclone.glade opensuperclone_glade.h
 )
-LIST(APPEND RESOURCES opensuperclone${GTKVER}_glade.h)
+LIST(APPEND RESOURCES opensuperclone_glade.h)
 
 add_custom_command(
     OUTPUT opensupertool_help.h
@@ -63,17 +63,10 @@ add_executable(opensuperclone ${SOURCES} ${RESOURCES})
 target_include_directories(opensuperclone PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 # Add GTK dependency
-if(GTKVER EQUAL 2)
-    target_include_directories(opensuperclone PRIVATE ${GTK2_INCLUDE_DIRS})
-    target_link_directories(opensuperclone PRIVATE ${GTK2_LIBRARY_DIRS})
-    target_compile_options(opensuperclone PRIVATE ${GTK2_CFLAGS_OTHER})
-    target_link_libraries(opensuperclone ${GTK2_LIBRARIES})
-elseif(GTKVER EQUAL 3)
-    target_include_directories(opensuperclone PRIVATE ${GTK3_INCLUDE_DIRS})
-    target_link_directories(opensuperclone PRIVATE ${GTK3_LIBRARY_DIRS})
-    target_compile_options(opensuperclone PRIVATE ${GTK3_CFLAGS_OTHER})
-    target_link_libraries(opensuperclone ${GTK3_LIBRARIES})
-endif()
+target_include_directories(opensuperclone PRIVATE ${GTK3_INCLUDE_DIRS})
+target_link_directories(opensuperclone PRIVATE ${GTK3_LIBRARY_DIRS})
+target_compile_options(opensuperclone PRIVATE ${GTK3_CFLAGS_OTHER})
+target_link_libraries(opensuperclone ${GTK3_LIBRARIES})
 
 # Add LibUSB dependency
 target_link_libraries(opensuperclone ${LIBUSB_LIBRARIES})
