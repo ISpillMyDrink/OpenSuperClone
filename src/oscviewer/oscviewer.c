@@ -180,6 +180,23 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton3), curlang[LANG3PT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton4), curlang[LANG4PT]);
 
+  if (left_square_size == 1)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(leftresbutton1), TRUE);
+  }
+  else if (left_square_size == 2)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(leftresbutton2), TRUE);
+  }
+  else if (left_square_size == 3)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(leftresbutton3), TRUE);
+  }
+  else if (left_square_size == 4)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(leftresbutton4), TRUE);
+  }
+
   // main res menu
   mainresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "mainresolutionmi"));
   mainresbutton4 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton4"));
@@ -197,6 +214,35 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton12), curlang[LANG12PT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton14), curlang[LANG14PT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton16), curlang[LANG16PT]);
+
+  if (main_square_size == 4)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton4), TRUE);
+  }
+  else if (main_square_size == 6)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton6), TRUE);
+  }
+  else if (main_square_size == 8)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton8), TRUE);
+  }
+  else if (main_square_size == 10)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton10), TRUE);
+  }
+  else if (main_square_size == 12)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton12), TRUE);
+  }
+  else if (main_square_size == 14)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton14), TRUE);
+  }
+  else if (main_square_size == 16)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainresbutton16), TRUE);
+  }
 
   // main size menu
   maingridsizemi = GTK_WIDGET(gtk_builder_get_object(builder, "maingridsizemi"));
@@ -227,6 +273,59 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton4m), curlang[LANG4M]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8m), curlang[LANG8M]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16m), curlang[LANG16M]);
+
+  if (main_grid_size == 4096)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton4k), TRUE);
+  }
+  else if (main_grid_size == 8192)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton8k), TRUE);
+  }
+  else if (main_grid_size == 16384)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton16k), TRUE);
+  }
+  else if (main_grid_size == 32768)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton32k), TRUE);
+  }
+  else if (main_grid_size == 65536)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton64k), TRUE);
+  }
+  else if (main_grid_size == 131072)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton128k), TRUE);
+  }
+  else if (main_grid_size == 262144)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton256k), TRUE);
+  }
+  else if (main_grid_size == 524288)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton512k), TRUE);
+  }
+  else if (main_grid_size == 1048576)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton1m), TRUE);
+  }
+  else if (main_grid_size == 2097152)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton2m), TRUE);
+  }
+  else if (main_grid_size == 4194304)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton4m), TRUE);
+  }
+  else if (main_grid_size == 8388608)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton8m), TRUE);
+  }
+  else if (main_grid_size == 16777216)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mainsizebutton16m), TRUE);
+  }
 
   // auto update menu
   autoupdatemi = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatemi"));
@@ -416,7 +515,7 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
   return TRUE;
 }
 
-static gboolean top_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
+static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
   double x, y, w, l, r, g, b;
 
@@ -615,7 +714,7 @@ static gboolean top_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer 
   return 0;
 }
 
-static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
+static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
   double total_squares = main_grid_size;
   double pixels = total_squares * main_square_size * main_square_size;
@@ -626,8 +725,6 @@ static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer
   gtk_widget_set_size_request(GTK_WIDGET(main_drawing_area), max_width, adjusted_height + 1);
 
   // printf("redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
-  //cairo_t *cr;
-  //cr = gdk_cairo_create(gtk_widget_get_window(main_drawing_area));
 
   get_rgb_color(WHITE);
   r = rcolor;
@@ -773,7 +870,7 @@ static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
           cairo_fill(cr);
-      }
+        }
       }
       count++;
       if (count > squares)
@@ -855,7 +952,7 @@ static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer
   return 0;
 }
 
-static gboolean left_vbox_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
+static gboolean left_vbox_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
   double x, y, w, l, r, g, b;
 
@@ -1293,7 +1390,7 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
   sprintf(tempmessage, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_grid_size = GPOINTER_TO_INT(data);
-  
+
   gtk_widget_queue_draw(main_window);
 }
 

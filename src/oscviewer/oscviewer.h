@@ -364,11 +364,11 @@ void version(void);
 
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge);
 
-static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
+static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
-static gboolean left_vbox_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
+static gboolean left_vbox_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
-static gboolean top_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
+static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
 void getsize_main_window(GtkWidget *widget, GtkAllocation *allocation, void *data);
 
