@@ -36,7 +36,7 @@
 * Direct AHCI and IDE capability to circumvent OS drivers completely
 * USB Relay control for automatic drive power-cycling
 
-#### 📋 Planned Features
+#### 📋 Planned Changes
 
 * Refactoring of codebase (get rid of -fcommon flag)
 * Implement DKMS for driver (un-)installation
