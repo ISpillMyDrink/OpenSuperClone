@@ -416,23 +416,556 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
   return TRUE;
 }
 
-static gboolean top_drawing_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+static gboolean top_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
 {
-  redraw_top_drawing_area();
+  double x, y, w, l, r, g, b;
+
+  get_rgb_color(WHITE);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 0;
+  y = 0;
+  w = top_drawing_area_width;
+  l = top_drawing_area_height;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+
+  cairo_select_font_face(cr, "Monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 10);
+
+  get_rgb_color(nontrimmed_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 5;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGNONTRIMMED]);
+
+  get_rgb_color(nondivided_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 20;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGNONDIVIDED]);
+
+  get_rgb_color(nonscraped_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 35;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGNONSCRAPED]);
+
+  get_rgb_color(bad_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 50;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGBAD]);
+
+  get_rgb_color(nontried_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 65;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGNONTRIED]);
+
+  get_rgb_color(good_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 5;
+  y = 80;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGFINISHED]);
+
+  get_rgb_color(current_color_outer);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 200;
+  y = 5;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, curlang[LANGCURRENT]);
+
+  if (show_good_data)
+  {
+    get_rgb_color(good_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 23;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGGOODDATA]);
+  }
+
+  if (show_bad_head)
+  {
+    get_rgb_color(bad_head_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 38;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGBADHEAD]);
+  }
+
+  if (show_timing)
+  {
+    get_rgb_color(time_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 53;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGTIMING]);
+  }
+
+  if (show_domain)
+  {
+    get_rgb_color(domain_color);
+    r = rcolor;
+    g = gcolor;
+    b = bcolor;
+    x = 203;
+    y = 68;
+    w = 4;
+    l = 4;
+    cairo_set_source_rgb(cr, r, g, b);
+    cairo_rectangle(cr, x, y, w, l);
+    cairo_fill(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_move_to(cr, x + 12, y + 6);
+    cairo_show_text(cr, curlang[LANGDOMAIN]);
+  }
 
   return 0;
 }
 
-static gboolean main_drawing_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
 {
-  redraw_main_drawing_area();
+  double total_squares = main_grid_size;
+  double pixels = total_squares * main_square_size * main_square_size;
+
+  double x, y, w, l, r, g, b;
+  int max_width = main_scrolled_window_width - 25;
+  int adjusted_height = (pixels / max_width) + 1;
+  gtk_widget_set_size_request(GTK_WIDGET(main_drawing_area), max_width, adjusted_height + 1);
+
+  // printf("redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
+  //cairo_t *cr;
+  //cr = gdk_cairo_create(gtk_widget_get_window(main_drawing_area));
+
+  get_rgb_color(WHITE);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 0;
+  y = 0;
+  w = main_drawing_area_width;
+  l = main_drawing_area_height;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+
+  if (total_size > 0)
+  {
+    sprintf(tempmessage, "redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
+    message_debug(tempmessage, 0);
+    gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
+    sprintf(tempmessage, "scroll = %f\n", scroll_position);
+    message_debug(tempmessage, 0);
+    int scroll_row_start = scroll_position / main_square_size;
+    int scroll_row_end = scroll_row_start + (main_drawing_vbox_height / main_square_size);
+    int columns = main_drawing_area_width / main_square_size;
+    int rows = main_drawing_area_height / main_square_size;
+    int squares = columns * rows;
+    long long blocks_per_square = total_size / (squares - 1);
+    square_adjust = main_square_size / 32;
+    int adjustment = 1;
+    while (total_size > squares * blocks_per_square)
+    {
+      adjustment++;
+      blocks_per_square = total_size / (squares - adjustment);
+    }
+    sprintf(tempmessage, "total_size=%lld, squares*blocks_per_square=%lld\n", total_size, squares * blocks_per_square);
+    message_debug(tempmessage, 0);
+
+    int count = 0;
+    int i = 0;
+    int n = 0;
+
+    while (count < squares)
+    {
+      if (i >= scroll_row_start && i <= scroll_row_end)
+      {
+        int color = 0;
+        int bad_head = 0;
+        int good_data = 0;
+        long long position = count * blocks_per_square;
+        int status_bits = get_block_status(position, blocks_per_square);
+        int time_bits = get_block_timing(position, blocks_per_square);
+        int in_domain = process_domain(position, blocks_per_square, FINISHED, FINISHED);
+        if (status_bits & NONTRIMMED_BIT)
+        {
+          color = nontrimmed_color;
+        }
+        else if (status_bits & NONDIVIDED_BIT)
+        {
+          color = nondivided_color;
+        }
+        else if (status_bits & NONSCRAPED_BIT)
+        {
+          color = nonscraped_color;
+        }
+        else if (status_bits & BAD_BIT)
+        {
+          color = bad_color;
+        }
+        else if (status_bits & NONTRIED_BIT)
+        {
+          color = nontried_color;
+        }
+        else if (status_bits & FINISHED_BIT)
+        {
+          color = good_color;
+        }
+        else if (status_bits & UNKNOWN_BIT)
+        {
+          color = unknown_color;
+        }
+        if (status_bits & BAD_HEAD_BIT)
+        {
+          bad_head = 1;
+        }
+        if (status_bits & FINISHED_BIT)
+        {
+          good_data = 1;
+        }
+        get_rgb_color(color);
+        r = rcolor;
+        g = gcolor;
+        b = bcolor;
+        cairo_set_source_rgb(cr, r, g, b);
+        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust, (i * main_square_size) + 1 + square_adjust, main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
+        cairo_fill(cr);
+
+        if (bad_head && show_bad_head)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(bad_head_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+        }
+
+        if (good_data && show_good_data)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(good_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+        }
+
+        if ((time_bits >= show_timing) && show_timing)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(time_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+        }
+
+        if ((in_domain) && show_domain)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(domain_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+      }
+      }
+      count++;
+      if (count > squares)
+      {
+        sprintf(tempmessage, "main count out of range\n");
+        message_debug(tempmessage, 0);
+        break;
+      }
+      n++;
+      if (n >= columns)
+      {
+        n = 0;
+        i++;
+        if (i >= rows)
+        {
+          sprintf(tempmessage, "main rows out of range\n");
+          message_debug(tempmessage, 0);
+          break;
+        }
+      }
+    }
+
+    long long position = current_position / blocks_per_square;
+    count = 0;
+    for (i = 0; i < rows; i++)
+    {
+      for (n = 0; n < columns; n++)
+      {
+        if (position == count)
+        {
+          get_rgb_color(current_color_outer);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, n * main_square_size + 2 + (square_adjust * 2), i * main_square_size + 2 + (square_adjust * 2), main_square_size - 3 - (square_adjust * 4), main_square_size - 3 - (square_adjust * 4));
+          cairo_fill(cr);
+
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(current_color_inner);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+        }
+
+        // int xl = (n * main_square_size) + 1 + square_adjust;
+        // int yl = (i * main_square_size) + 1 + square_adjust;
+        // int xh = xl + main_square_size - 1 - (square_adjust * 2);
+        // int yh = yl + main_square_size - 1 - (square_adjust * 2);
+        int xl = (n * main_square_size) + square_adjust;
+        int yl = (i * main_square_size) + square_adjust;
+        int xh = xl + main_square_size - (square_adjust * 2);
+        int yh = yl + main_square_size - (square_adjust * 2);
+        if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
+        {
+          int spot_size = (main_square_size / 4) + 1;
+          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          get_rgb_color(selected_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_fill(cr);
+          get_block_information(blocks_per_square * count, blocks_per_square);
+          mouse_x_old = mouse_x;
+          mouse_y_old = mouse_y;
+        }
+
+        count++;
+      }
+    }
+  }
 
   return 0;
 }
 
-static gboolean left_vbox_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+static gboolean left_vbox_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data)
 {
-  redraw_left_vbox();
+  double x, y, w, l, r, g, b;
+
+  get_rgb_color(WHITE);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 0;
+  y = 0;
+  w = left_drawing_area_width;
+  l = left_drawing_area_height;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+
+  if (total_size > 0)
+  {
+    sprintf(tempmessage, "redrawing left width = %d, height = %d\n", left_drawing_area_width, left_drawing_area_height);
+    message_debug(tempmessage, 0);
+    int columns = left_drawing_area_width / left_square_size;
+    int rows = left_drawing_area_height / left_square_size;
+    int squares = columns * rows;
+    long long blocks_per_square = total_size / (squares - 1);
+
+    int count = 0;
+    int i = 0;
+    int n = 0;
+
+    while (count < squares)
+    {
+      int color = 0;
+      long long position = count * blocks_per_square;
+      int status_bits = get_block_status(position, blocks_per_square);
+      if (status_bits & NONTRIMMED_BIT)
+      {
+        color = nontrimmed_color;
+      }
+      else if (status_bits & NONDIVIDED_BIT)
+      {
+        color = nondivided_color;
+      }
+      else if (status_bits & NONSCRAPED_BIT)
+      {
+        color = nonscraped_color;
+      }
+      else if (status_bits & BAD_BIT)
+      {
+        color = bad_color;
+      }
+      else if (status_bits & NONTRIED_BIT)
+      {
+        color = nontried_color;
+      }
+      else if (status_bits & FINISHED_BIT)
+      {
+        color = good_color;
+      }
+      else if (status_bits & UNKNOWN_BIT)
+      {
+        color = unknown_color;
+      }
+      get_rgb_color(color);
+      r = rcolor;
+      g = gcolor;
+      b = bcolor;
+      cairo_set_source_rgb(cr, r, g, b);
+      cairo_rectangle(cr, n * left_square_size, i * left_square_size, left_square_size, left_square_size);
+      cairo_fill(cr);
+      count++;
+      if (count > squares)
+      {
+        sprintf(tempmessage, "left count out of range\n");
+        message_debug(tempmessage, 0);
+        break;
+      }
+      n++;
+      if (n >= columns)
+      {
+        n = 0;
+        i++;
+        if (i >= rows)
+        {
+          sprintf(tempmessage, "left rows out of range\n");
+          message_debug(tempmessage, 0);
+          break;
+        }
+      }
+      position = (count + 1) * blocks_per_square;
+    }
+
+    long long position = current_position / blocks_per_square;
+    count = 0;
+    for (i = 0; i < rows; i++)
+    {
+      for (n = 0; n < columns; n++)
+      {
+        if (position == count)
+        {
+          get_rgb_color(current_color_outer);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, n * left_square_size, i * left_square_size, left_square_size, left_square_size);
+          cairo_fill(cr);
+        }
+        count++;
+      }
+    }
+  }
 
   return 0;
 }
@@ -738,329 +1271,12 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
   gtk_widget_queue_draw(main_window);
 }
 
-void redraw_top_drawing_area(void)
-{
-  cairo_t *cr;
-  double x, y, w, l, r, g, b;
-  cr = gdk_cairo_create(gtk_widget_get_window(top_drawing_area));
-
-  get_rgb_color(WHITE);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 0;
-  y = 0;
-  w = top_drawing_area_width;
-  l = top_drawing_area_height;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-
-  cairo_select_font_face(cr, "Monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-  cairo_set_font_size(cr, 10);
-
-  get_rgb_color(nontrimmed_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 5;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONTRIMMED]);
-
-  get_rgb_color(nondivided_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 20;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONDIVIDED]);
-
-  get_rgb_color(nonscraped_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 35;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONSCRAPED]);
-
-  get_rgb_color(bad_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 50;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGBAD]);
-
-  get_rgb_color(nontried_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 65;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONTRIED]);
-
-  get_rgb_color(good_color);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 5;
-  y = 80;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGFINISHED]);
-
-  get_rgb_color(current_color_outer);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 200;
-  y = 5;
-  w = 10;
-  l = 10;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-  cairo_set_source_rgb(cr, 0, 0, 0);
-  cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGCURRENT]);
-
-  if (show_good_data)
-  {
-    get_rgb_color(good_color);
-    r = rcolor;
-    g = gcolor;
-    b = bcolor;
-    x = 203;
-    y = 23;
-    w = 4;
-    l = 4;
-    cairo_set_source_rgb(cr, r, g, b);
-    cairo_rectangle(cr, x, y, w, l);
-    cairo_fill(cr);
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
-    cairo_show_text(cr, curlang[LANGGOODDATA]);
-  }
-
-  if (show_bad_head)
-  {
-    get_rgb_color(bad_head_color);
-    r = rcolor;
-    g = gcolor;
-    b = bcolor;
-    x = 203;
-    y = 38;
-    w = 4;
-    l = 4;
-    cairo_set_source_rgb(cr, r, g, b);
-    cairo_rectangle(cr, x, y, w, l);
-    cairo_fill(cr);
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
-    cairo_show_text(cr, curlang[LANGBADHEAD]);
-  }
-
-  if (show_timing)
-  {
-    get_rgb_color(time_color);
-    r = rcolor;
-    g = gcolor;
-    b = bcolor;
-    x = 203;
-    y = 53;
-    w = 4;
-    l = 4;
-    cairo_set_source_rgb(cr, r, g, b);
-    cairo_rectangle(cr, x, y, w, l);
-    cairo_fill(cr);
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
-    cairo_show_text(cr, curlang[LANGTIMING]);
-  }
-
-  if (show_domain)
-  {
-    get_rgb_color(domain_color);
-    r = rcolor;
-    g = gcolor;
-    b = bcolor;
-    x = 203;
-    y = 68;
-    w = 4;
-    l = 4;
-    cairo_set_source_rgb(cr, r, g, b);
-    cairo_rectangle(cr, x, y, w, l);
-    cairo_fill(cr);
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
-    cairo_show_text(cr, curlang[LANGDOMAIN]);
-  }
-
-  cairo_destroy(cr);
-}
-
 void change_left_resolution(GtkWidget *w, gpointer data)
 {
   g_print("%d\n", GPOINTER_TO_INT(data));
   left_square_size = GPOINTER_TO_INT(data);
 
   gtk_widget_queue_draw(main_window);
-}
-
-void redraw_left_vbox(void)
-{
-  cairo_t *cr;
-  double x, y, w, l, r, g, b;
-  cr = gdk_cairo_create(gtk_widget_get_window(left_drawing_area));
-
-  get_rgb_color(WHITE);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 0;
-  y = 0;
-  w = left_drawing_area_width;
-  l = left_drawing_area_height;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-
-  if (total_size > 0)
-  {
-    sprintf(tempmessage, "redrawing left width = %d, height = %d\n", left_drawing_area_width, left_drawing_area_height);
-    message_debug(tempmessage, 0);
-    int columns = left_drawing_area_width / left_square_size;
-    int rows = left_drawing_area_height / left_square_size;
-    int squares = columns * rows;
-    long long blocks_per_square = total_size / (squares - 1);
-
-    int count = 0;
-    int i = 0;
-    int n = 0;
-
-    while (count < squares)
-    {
-      int color = 0;
-      long long position = count * blocks_per_square;
-      int status_bits = get_block_status(position, blocks_per_square);
-      if (status_bits & NONTRIMMED_BIT)
-      {
-        color = nontrimmed_color;
-      }
-      else if (status_bits & NONDIVIDED_BIT)
-      {
-        color = nondivided_color;
-      }
-      else if (status_bits & NONSCRAPED_BIT)
-      {
-        color = nonscraped_color;
-      }
-      else if (status_bits & BAD_BIT)
-      {
-        color = bad_color;
-      }
-      else if (status_bits & NONTRIED_BIT)
-      {
-        color = nontried_color;
-      }
-      else if (status_bits & FINISHED_BIT)
-      {
-        color = good_color;
-      }
-      else if (status_bits & UNKNOWN_BIT)
-      {
-        color = unknown_color;
-      }
-      get_rgb_color(color);
-      r = rcolor;
-      g = gcolor;
-      b = bcolor;
-      cairo_set_source_rgb(cr, r, g, b);
-      cairo_rectangle(cr, n * left_square_size, i * left_square_size, left_square_size, left_square_size);
-      cairo_fill(cr);
-      count++;
-      if (count > squares)
-      {
-        sprintf(tempmessage, "left count out of range\n");
-        message_debug(tempmessage, 0);
-        break;
-      }
-      n++;
-      if (n >= columns)
-      {
-        n = 0;
-        i++;
-        if (i >= rows)
-        {
-          sprintf(tempmessage, "left rows out of range\n");
-          message_debug(tempmessage, 0);
-          break;
-        }
-      }
-      position = (count + 1) * blocks_per_square;
-    }
-
-    long long position = current_position / blocks_per_square;
-    count = 0;
-    for (i = 0; i < rows; i++)
-    {
-      for (n = 0; n < columns; n++)
-      {
-        if (position == count)
-        {
-          get_rgb_color(current_color_outer);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, n * left_square_size, i * left_square_size, left_square_size, left_square_size);
-          cairo_fill(cr);
-        }
-        count++;
-      }
-    }
-  }
-  cairo_destroy(cr);
 }
 
 void change_main_resolution(GtkWidget *w, gpointer data)
@@ -1079,245 +1295,6 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
   main_grid_size = GPOINTER_TO_INT(data);
   
   gtk_widget_queue_draw(main_window);
-}
-
-void redraw_main_drawing_area(void)
-{
-  double total_squares = main_grid_size;
-  double pixels = total_squares * main_square_size * main_square_size;
-
-  double x, y, w, l, r, g, b;
-  int max_width = main_scrolled_window_width - 25;
-  int adjusted_height = (pixels / max_width) + 1;
-  gtk_widget_set_size_request(GTK_WIDGET(main_drawing_area), max_width, adjusted_height + 1);
-
-  // printf("redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
-  cairo_t *cr;
-  cr = gdk_cairo_create(gtk_widget_get_window(main_drawing_area));
-
-  get_rgb_color(WHITE);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 0;
-  y = 0;
-  w = main_drawing_area_width;
-  l = main_drawing_area_height;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-
-  if (total_size > 0)
-  {
-    sprintf(tempmessage, "redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
-    message_debug(tempmessage, 0);
-    gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
-    sprintf(tempmessage, "scroll = %f\n", scroll_position);
-    message_debug(tempmessage, 0);
-    int scroll_row_start = scroll_position / main_square_size;
-    int scroll_row_end = scroll_row_start + (main_drawing_vbox_height / main_square_size);
-    int columns = main_drawing_area_width / main_square_size;
-    int rows = main_drawing_area_height / main_square_size;
-    int squares = columns * rows;
-    long long blocks_per_square = total_size / (squares - 1);
-    square_adjust = main_square_size / 32;
-    int adjustment = 1;
-    while (total_size > squares * blocks_per_square)
-    {
-      adjustment++;
-      blocks_per_square = total_size / (squares - adjustment);
-    }
-    sprintf(tempmessage, "total_size=%lld, squares*blocks_per_square=%lld\n", total_size, squares * blocks_per_square);
-    message_debug(tempmessage, 0);
-
-    int count = 0;
-    int i = 0;
-    int n = 0;
-
-    while (count < squares)
-    {
-      if (i >= scroll_row_start && i <= scroll_row_end)
-      {
-        int color = 0;
-        int bad_head = 0;
-        int good_data = 0;
-        long long position = count * blocks_per_square;
-        int status_bits = get_block_status(position, blocks_per_square);
-        int time_bits = get_block_timing(position, blocks_per_square);
-        int in_domain = process_domain(position, blocks_per_square, FINISHED, FINISHED);
-        if (status_bits & NONTRIMMED_BIT)
-        {
-          color = nontrimmed_color;
-        }
-        else if (status_bits & NONDIVIDED_BIT)
-        {
-          color = nondivided_color;
-        }
-        else if (status_bits & NONSCRAPED_BIT)
-        {
-          color = nonscraped_color;
-        }
-        else if (status_bits & BAD_BIT)
-        {
-          color = bad_color;
-        }
-        else if (status_bits & NONTRIED_BIT)
-        {
-          color = nontried_color;
-        }
-        else if (status_bits & FINISHED_BIT)
-        {
-          color = good_color;
-        }
-        else if (status_bits & UNKNOWN_BIT)
-        {
-          color = unknown_color;
-        }
-        if (status_bits & BAD_HEAD_BIT)
-        {
-          bad_head = 1;
-        }
-        if (status_bits & FINISHED_BIT)
-        {
-          good_data = 1;
-        }
-        get_rgb_color(color);
-        r = rcolor;
-        g = gcolor;
-        b = bcolor;
-        cairo_set_source_rgb(cr, r, g, b);
-        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust, (i * main_square_size) + 1 + square_adjust, main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
-        cairo_fill(cr);
-
-        if (bad_head && show_bad_head)
-        {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(bad_head_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-        }
-
-        if (good_data && show_good_data)
-        {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(good_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-        }
-
-        if ((time_bits >= show_timing) && show_timing)
-        {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(time_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-        }
-
-        if ((in_domain) && show_domain)
-        {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(domain_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-      }
-      }
-      count++;
-      if (count > squares)
-      {
-        sprintf(tempmessage, "main count out of range\n");
-        message_debug(tempmessage, 0);
-        break;
-      }
-      n++;
-      if (n >= columns)
-      {
-        n = 0;
-        i++;
-        if (i >= rows)
-        {
-          sprintf(tempmessage, "main rows out of range\n");
-          message_debug(tempmessage, 0);
-          break;
-        }
-      }
-    }
-
-    long long position = current_position / blocks_per_square;
-    count = 0;
-    for (i = 0; i < rows; i++)
-    {
-      for (n = 0; n < columns; n++)
-      {
-        if (position == count)
-        {
-          get_rgb_color(current_color_outer);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, n * main_square_size + 2 + (square_adjust * 2), i * main_square_size + 2 + (square_adjust * 2), main_square_size - 3 - (square_adjust * 4), main_square_size - 3 - (square_adjust * 4));
-          cairo_fill(cr);
-
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(current_color_inner);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-        }
-
-        // int xl = (n * main_square_size) + 1 + square_adjust;
-        // int yl = (i * main_square_size) + 1 + square_adjust;
-        // int xh = xl + main_square_size - 1 - (square_adjust * 2);
-        // int yh = yl + main_square_size - 1 - (square_adjust * 2);
-        int xl = (n * main_square_size) + square_adjust;
-        int yl = (i * main_square_size) + square_adjust;
-        int xh = xl + main_square_size - (square_adjust * 2);
-        int yh = yl + main_square_size - (square_adjust * 2);
-        if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
-        {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(selected_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
-          get_block_information(blocks_per_square * count, blocks_per_square);
-          mouse_x_old = mouse_x;
-          mouse_y_old = mouse_y;
-        }
-
-        count++;
-      }
-    }
-  }
-  cairo_destroy(cr);
 }
 
 void get_rgb_color(int color)

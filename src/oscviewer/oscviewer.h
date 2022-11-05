@@ -364,11 +364,11 @@ void version(void);
 
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge);
 
-static gboolean main_drawing_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+static gboolean main_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
 
-static gboolean left_vbox_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+static gboolean left_vbox_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
 
-static gboolean top_drawing_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+static gboolean top_drawing_expose_event(GtkWidget* self, cairo_t* cr, gpointer user_data);
 
 void getsize_main_window(GtkWidget *widget, GtkAllocation *allocation, void *data);
 
@@ -398,13 +398,7 @@ void change_main_resolution(GtkWidget *w, gpointer data);
 
 void change_main_grid_size(GtkWidget *w, gpointer data);
 
-void redraw_main_drawing_area(void);
-
-void redraw_top_drawing_area(void);
-
 void change_left_resolution(GtkWidget *w, gpointer data);
-
-void redraw_left_vbox(void);
 
 int initialize_memory(void);
 
