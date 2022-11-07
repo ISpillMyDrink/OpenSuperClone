@@ -374,6 +374,17 @@ int main(int argc, char **argv)
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), curlang[LANGSHOWDOMAIN]);
 
+  // add keyboard shortcuts
+  GtkAccelGroup *accel_group = gtk_accel_group_new();
+  gtk_window_add_accel_group(GTK_WINDOW(main_window), accel_group);
+  gtk_widget_add_accelerator(quitmi, "activate", accel_group, GDK_KEY_q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(openmi, "activate", accel_group, GDK_KEY_o, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(domainmi, "activate", accel_group, GDK_KEY_d, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(dmdedomainmi, "activate", accel_group, GDK_KEY_m, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(showgoodcheck, "activate", accel_group, GDK_KEY_g, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(showbadcheck, "activate", accel_group, GDK_KEY_b, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(showdomaincheck, "activate", accel_group, GDK_KEY_d, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+
   // set it to exit if the quit item is selected
   g_signal_connect(G_OBJECT(quitmi), "activate", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -1166,7 +1177,7 @@ void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
 void select_file(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("File selection",
+  dialog = gtk_file_chooser_dialog_new("Log file selection",
                                        GTK_WINDOW(main_window),
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1204,7 +1215,7 @@ void select_file(void)
 void select_domain(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("File selection",
+  dialog = gtk_file_chooser_dialog_new("Domain file selection",
                                        GTK_WINDOW(main_window),
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1242,7 +1253,7 @@ void select_domain(void)
 void select_dmde_domain(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("File selection",
+  dialog = gtk_file_chooser_dialog_new("DMDE bytes file selection",
                                        GTK_WINDOW(main_window),
                                        GTK_FILE_CHOOSER_ACTION_OPEN,
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

@@ -279,6 +279,15 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
   // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
 
+  // add keyboard shortcuts
+  GtkAccelGroup *accel_group = gtk_accel_group_new();
+  gtk_window_add_accel_group(GTK_WINDOW(main_window_ccc), accel_group);
+  gtk_widget_add_accelerator(openmi_ccc, "activate", accel_group, GDK_KEY_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(savemi_ccc, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(saveasmi_ccc, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(quitmi_ccc, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(newmi_ccc, "activate", accel_group, GDK_KEY_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
   main_label = GTK_WIDGET(gtk_builder_get_object(builder, "main_label"));
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
