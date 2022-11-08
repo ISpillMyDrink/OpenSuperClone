@@ -25,11 +25,6 @@ void signal_callback_handler_ccc(int signum)
   pending_exit_ccc = true;
 }
 
-char *tool_title = "OpenSuperTool";
-char *tool_version_number = "1.10";
-char *scripts_title = "Scripts";
-char *scripts_version_number = "1.9";
-
 int main(int argc, char **argv)
 {
   title_ccc = "OpenSuperClone";
@@ -608,11 +603,6 @@ int main(int argc, char **argv)
   }
   else
   {
-    if (!quiet_ccc)
-    {
-      fprintf(stdout, "%s %s\n", tool_title, tool_version_number);
-      fprintf(stdout, "%s %s\n", scripts_title, scripts_version_number);
-    }
     supertooltool_ccc();
   }
 
@@ -1216,24 +1206,16 @@ void fix_driver_memory_driver_ccc(void)
 void help_ccc(void)
 {
   unsigned int i;
-    for (i = 0; i < opensuperclone_help_txt_len; i++)
-    {
-      fprintf(stdout, "%c", opensuperclone_help_txt[i]);
-    }
+  for (i = 0; i < opensuperclone_help_txt_len; i++)
+  {
+    fprintf(stdout, "%c", opensuperclone_help_txt[i]);
+  }
 }
 
 // function to display version
 void version_ccc(void)
 {
-  if (superclone_ccc)
-  {
-    fprintf(stdout, "%s %s\n", title_ccc, version_number_ccc);
-  }
-  else
-  {
-    printf("%s %s\n", tool_title, tool_version_number);
-    fprintf(stdout, "%s %s\n", scripts_title, scripts_version_number);
-  }
+  fprintf(stdout, "%s %s\n", title_ccc, version_number_ccc);
   fprintf(stdout, "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors.\n", copyright_year_ccc);
   fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
