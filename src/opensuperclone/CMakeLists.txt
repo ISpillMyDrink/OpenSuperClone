@@ -40,13 +40,6 @@ add_custom_command(
 LIST(APPEND RESOURCES opensuperclone_glade.h)
 
 add_custom_command(
-    OUTPUT opensupertool_help.h
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensupertool_help.txt opensupertool_help.txt
-    COMMAND xxd -i opensupertool_help.txt opensupertool_help.h
-)
-LIST(APPEND RESOURCES opensupertool_help.h)
-
-add_custom_command(
     OUTPUT opensuperclone_driver.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/driver/opensuperclone_driver.c opensuperclone_driver.c
     COMMAND xxd -i opensuperclone_driver.c opensuperclone_driver.h

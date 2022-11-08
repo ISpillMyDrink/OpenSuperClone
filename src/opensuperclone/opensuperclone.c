@@ -9,7 +9,6 @@
 #include "opensuperclone.h"
 #include "opensuperclone_help.h"
 #include "opensuperclone_driver.h"
-#include "opensupertool_help.h"
 
 // Function to handle ctrl-c
 void signal_callback_handler_ccc(int signum)
@@ -1216,22 +1215,11 @@ void fix_driver_memory_driver_ccc(void)
 // function to display help
 void help_ccc(void)
 {
-  if (superclone_ccc)
-  {
-    unsigned int i;
+  unsigned int i;
     for (i = 0; i < opensuperclone_help_txt_len; i++)
     {
       fprintf(stdout, "%c", opensuperclone_help_txt[i]);
     }
-  }
-  else
-  {
-    unsigned int i;
-    for (i = 0; i < opensupertool_help_txt_len; i++)
-    {
-      printf("%c", opensupertool_help_txt[i]);
-    }
-  }
 }
 
 // function to display version
