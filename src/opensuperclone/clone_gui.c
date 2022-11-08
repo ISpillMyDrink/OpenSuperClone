@@ -210,10 +210,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
   activate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button_main"));
   deactivate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button_main"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
 
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi_ccc), curlang_ccc[LANGFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi_ccc), curlang_ccc[LANGOPENPROJ]);
@@ -274,19 +270,24 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), curlang_ccc[LANGRESTOREUSBMASS]);
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), curlang_ccc[LANGACTIVATEMAIN]);
   gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), curlang_ccc[LANGDEACTIVATEMAIN]);
-  // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
-  // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
-  // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
-  // gtk_menu_item_set_label(GTK_MENU_ITEM(), curlang_ccc[]);
 
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window_ccc), accel_group);
+
   gtk_widget_add_accelerator(openmi_ccc, "activate", accel_group, GDK_KEY_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(savemi_ccc, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(saveasmi_ccc, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(quitmi_ccc, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(newmi_ccc, "activate", accel_group, GDK_KEY_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  // gtk_widget_add_accelerator(importddmi_ccc, "activate", accel_group, GDK_KEY_I, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  // gtk_widget_add_accelerator(exportddmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+  gtk_widget_add_accelerator(domainmi_ccc, "activate", accel_group, GDK_KEY_D, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(newdomainmi_ccc, "activate", accel_group, GDK_KEY_N, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(cleardomainmi_ccc, "activate", accel_group, GDK_KEY_C, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  // gtk_widget_add_accelerator(adddomainmi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(savedomainmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   main_label = GTK_WIDGET(gtk_builder_get_object(builder, "main_label"));
 
@@ -306,7 +307,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   driver_mode5_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_mode5_button"));
   soft_reset_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "soft_reset_button"));
   hard_reset_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "hard_reset_button"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
 
   gtk_button_set_label(GTK_BUTTON(connect_button_ccc), curlang_ccc[LANGCONNECT]);
   gtk_button_set_label(GTK_BUTTON(disconnect_button_ccc), curlang_ccc[LANGDISCONNECT]);
@@ -324,7 +324,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_button_set_label(GTK_BUTTON(driver_mode5_button_ccc), curlang_ccc[LANGDRIVERMODE5BUTTON]);
   gtk_button_set_label(GTK_BUTTON(soft_reset_button_ccc), curlang_ccc[LANGHARDRESETBUTTON]);
   gtk_button_set_label(GTK_BUTTON(hard_reset_button_ccc), curlang_ccc[LANGSOFTRESETBUTTON]);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
 
   gtk_label_set_text(GTK_LABEL(label_project_ccc), curlang_ccc[LANGPROJECTLABEL]);
   gtk_label_set_text(GTK_LABEL(label_domain_ccc), curlang_ccc[LANGDOMAINLABEL]);
@@ -359,9 +358,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), curlang_ccc[LANGRETRYPASSESLABEL]);
   gtk_label_set_text(GTK_LABEL(label_drivermode_ccc), curlang_ccc[LANGDRIVERMODE]);
   gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGCLONEMODE]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
   // set status buttons
   button_bbk_ccc = gtk_button_new_with_label("BBK");

@@ -1,6 +1,6 @@
 {
-    "cmake.configureOnEdit": true,
-    "cmake.configureOnOpen": true,
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnOpen": false,
     "cmake.sourceDirectory": "${workspaceFolder}",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.installPrefix": "${workspaceFolder}/${buildType}"
