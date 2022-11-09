@@ -8,7 +8,7 @@
 #include "oscviewer_glade.h"
 
 char *title = "OSCViewer";
-char *version_number = OSCVIEWER_VERSION;
+char *version_number = OSC_VERSION;
 int copyright_year = COPYRIGHT_YEAR;
 
 int main(int argc, char **argv)
@@ -3067,7 +3067,7 @@ void help(void)
 // function to display version
 void version(void)
 {
-  fprintf(stdout, "%s %s\n", title, version_number);
+  fprintf(stdout, "%s %s %s\n", title, version_number, GIT_REVISION);
   fprintf(stdout, "Copyright (C) %d Scott Dwyer and OpenSuperClone contributors.\n", copyright_year);
   fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");

@@ -1,6 +1,6 @@
-#define OSC_HOMEPAGE "@OpenSuperClone_HOMEPAGE_URL@"
-
-#cmakedefine OSCVIEWER_VERSION "@OSCVIEWER_VERSION@"
+#define OSC_VERSION "@OpenSuperClone_VERSION@"
 #cmakedefine GIT_REVISION "@GIT_REVISION@"
 #cmakedefine COPYRIGHT_YEAR @COPYRIGHT_YEAR@
+#define OSC_HOMEPAGE "@OpenSuperClone_HOMEPAGE_URL@"
+
 #cmakedefine OSCVIEWER_LANG_PATH "@OSCVIEWER_LANG_PATH@"

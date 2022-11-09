@@ -19,8 +19,8 @@ project(OpenSuperClone
         LANGUAGES C
 )
 
-# OSCViewer version 1.0
-set(OSCVIEWER_VERSION 1.0 CACHE STRING "OSCViewer Version")
+# Copyright year 2022
+set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
 # Path variables for language and script files
 set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
@@ -28,9 +28,6 @@ set(OSC_SCRIPT_PATH "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/" CACHE STRING "Open
 set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
 set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/opensuperclone/Language" CACHE STRING "OpenSuperClone Language Directory")
 set(OSCVIEWER_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/oscviewer/Language" CACHE STRING "OSCViewer Language Directory")
-
-# Copyright year 2022
-set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
 # If Git is installed, save the current revision number
 find_package(Git)
