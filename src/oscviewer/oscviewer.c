@@ -1235,6 +1235,10 @@ void select_domain(void)
       sprintf(tempmessage, "error processing domain file\n");
       message_now(tempmessage);
     }
+    else
+    {
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+    }
     // else
     // {
     //   ret = check_domain();
@@ -1272,6 +1276,10 @@ void select_dmde_domain(void)
     {
       sprintf(tempmessage, "error processing domain file\n");
       message_now(tempmessage);
+    }
+    else
+    {
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
     }
 
     gtk_widget_queue_draw(main_window);
