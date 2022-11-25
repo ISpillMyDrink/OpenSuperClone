@@ -19,13 +19,6 @@ set(SOURCES
 
 # Generate header files from resources
 add_custom_command(
-    OUTPUT opensuperclone_EULA.h
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone_EULA.txt opensuperclone_EULA.txt
-    COMMAND xxd -i opensuperclone_EULA.txt opensuperclone_EULA.h
-)
-LIST(APPEND RESOURCES opensuperclone_EULA.h)
-
-add_custom_command(
     OUTPUT opensuperclone_help.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone_help.txt opensuperclone_help.txt
     COMMAND xxd -i opensuperclone_help.txt opensuperclone_help.h

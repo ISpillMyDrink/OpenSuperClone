@@ -1,4 +1,4 @@
-_HDDSCViewer_1.0_20220212_
+_OSCViewer_2.4_
 |_|0000|_|
 Arquivo
 |_|0001|_|
@@ -132,5 +132,11 @@ Domínio do arquivo de bytes DMDE
 |_|0065|_|
 Áreas
 |_|0066|_|
+Carregar domínio
+|_|0067|_|
+Ajuda
+|_|0068|_|
+Cerca de
+|_|0069|_|
 manequim sempre colocado no final da lista de idiomas
 

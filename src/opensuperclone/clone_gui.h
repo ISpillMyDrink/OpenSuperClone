@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "opensuperclone_EULA.h"
 
 #define TRANSLATETIMERALL 1000000000   // nanosecond delay for every translate call
 #define TRANSLATETIMERFAST 10000000000 // nanosecond delay for each normal translate call

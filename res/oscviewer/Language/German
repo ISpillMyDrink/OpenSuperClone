@@ -1,4 +1,4 @@
-_HDDSCViewer_1.0_20220212_
+_OSCViewer_2.4_
 |_|0000|_|
 Datei
 |_|0001|_|
@@ -132,5 +132,11 @@ Domäne aus der DMDE-Bytes-Datei
 |_|0065|_|
 Bereiche
 |_|0066|_|
+Lade Domäne
+|_|0067|_|
+Hilfe
+|_|0068|_|
+Über
+|_|0069|_|
 Dummy wird immer ans Ende der Sprachenliste gesetzt
 

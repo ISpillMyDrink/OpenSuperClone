@@ -5,16 +5,16 @@
   <object class="GtkWindow" id="main_window">
     <property name="can-focus">False</property>
     <child>
-      <object class="GtkBox" id="vbox1">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar" id="menubar1">
+          <object class="GtkMenuBar">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkMenuItem" id="filem">
+              <object class="GtkMenuItem" id="filemi">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">_File</property>
@@ -31,7 +31,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -51,7 +51,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                      <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -73,7 +73,7 @@
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">View</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu5">
+                  <object class="GtkMenu">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
@@ -82,7 +82,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Left Panel Resolution</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="menu6">
+                          <object class="GtkMenu">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
@@ -126,7 +126,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Main Panel Resolution</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="menu7">
+                          <object class="GtkMenu">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
@@ -194,7 +194,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Main Grid Size</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="menu8">
+                          <object class="GtkMenu">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
@@ -310,7 +310,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Auto-Update</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="menu9">
+                          <object class="GtkMenu">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
@@ -393,13 +393,14 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Show High-Time</property>
                         <child type="submenu">
-                          <object class="GtkMenu" id="menu1">
+                          <object class="GtkMenu">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
                               <object class="GtkRadioMenuItem" id="showtimingbuttonoff">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Off</property>
                                 <property name="active">True</property>
                                 <property name="draw-as-radio">True</property>
                               </object>
@@ -408,6 +409,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton1">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">1</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -416,6 +418,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton2">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">2</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -424,6 +427,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton3">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">3</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -432,6 +436,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton4">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">4</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -440,6 +445,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton5">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">5</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -448,6 +454,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton7">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">7</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -456,6 +463,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton10">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">10</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -464,6 +472,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton15">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">15</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -472,6 +481,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton20">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">20</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -480,6 +490,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton25">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">25</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -488,6 +499,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton30">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">30</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -496,6 +508,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton40">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">40</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -504,6 +517,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton50">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">50</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -512,6 +526,7 @@
                               <object class="GtkRadioMenuItem" id="showtimingbutton60">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">60</property>
                                 <property name="draw-as-radio">True</property>
                                 <property name="group">showtimingbuttonoff</property>
                               </object>
@@ -531,6 +546,26 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="GtkMenuItem" id="helpmi">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Help</property>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="aboutmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">About</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -542,7 +577,6 @@
           <object class="GtkLabel" id="progress_log_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Log: </property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -555,7 +589,6 @@
           <object class="GtkLabel" id="domain_log_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Domain: </property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -611,20 +644,20 @@
                         <property name="can-focus">False</property>
                         <property name="border-width">2</property>
                         <child>
-                          <object class="GtkScrolledWindow" id="scrolledwindow1">
+                          <object class="GtkScrolledWindow">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="shadow-type">in</property>
                             <child>
-                              <object class="GtkViewport" id="viewport2">
+                              <object class="GtkViewport">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <child>
-                                  <object class="GtkFixed" id="fixed1">
+                                  <object class="GtkFixed">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <child>
-                                      <object class="GtkBox" id="vbox2">
+                                      <object class="GtkBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <child>
@@ -695,7 +728,7 @@
                         <property name="can-focus">True</property>
                         <property name="shadow-type">in</property>
                         <child>
-                          <object class="GtkViewport" id="viewport1">
+                          <object class="GtkViewport">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
@@ -704,6 +737,7 @@
                                 <property name="height-request">200</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="double-buffered">False</property>
                               </object>
                             </child>
                           </object>

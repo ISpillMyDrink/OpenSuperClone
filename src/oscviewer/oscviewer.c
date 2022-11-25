@@ -156,7 +156,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi), curlang[LANGFILE]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi), curlang[LANGQUIT]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi), curlang[LANGOPEN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), curlang[LANGDOMAIN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), curlang[LANGLOADDOMAIN]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(dmdedomainmi), curlang[LANGDMDEDOMAIN]);
 
   progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
@@ -389,6 +389,12 @@ int main(int argc, char **argv)
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
   }
 
+  // help menu
+  helpmi = GTK_WIDGET(gtk_builder_get_object(builder, "helpmi"));
+  aboutmi = GTK_WIDGET(gtk_builder_get_object(builder, "aboutmi"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi), curlang[LANGHELP]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi), curlang[LANGABOUT]);
+
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window), accel_group);
@@ -468,6 +474,8 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showtimingbutton40), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(40));
   g_signal_connect(G_OBJECT(showtimingbutton50), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(50));
   g_signal_connect(G_OBJECT(showtimingbutton60), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(60));
+
+  g_signal_connect(G_OBJECT(aboutmi), "activate", G_CALLBACK(about), NULL);
 
   // main hbox
   main_hbox = GTK_WIDGET(gtk_builder_get_object(builder, "main_hbox"));
@@ -3090,6 +3098,30 @@ int clear_error_message(void)
   return 0;
 }
 
+void about(void)
+{
+  GtkWidget *dialog = gtk_about_dialog_new();
+  char temp[1024];
+
+  gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title);
+
+  sprintf(temp, "%s %s", version_number, GIT_REVISION);
+  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
+
+  sprintf(temp, "Copyright (C) %i Scott Dwyer and OpenSuperClone contributors", COPYRIGHT_YEAR);
+  gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
+
+  strcpy(temp, "License type: GPL2\n");
+  strcat(temp, "There is NO WARRANTY, to the extent permitted by law.");
+  gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
+
+  gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
+  gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
+
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
 // function to display help
 void help(void)
 {
@@ -3926,7 +3958,7 @@ int setup_enlanguage(void)
 {
   strcpy(enlang[LANGFILE], "File");
   strcpy(enlang[LANGQUIT], "Quit");
-  strcpy(enlang[LANGOPEN], "Open");
+  strcpy(enlang[LANGOPEN], "Open Project");
   strcpy(enlang[LANGERROR], "Error!");
   strcpy(enlang[LANGWARN], "Warning");
   strcpy(enlang[LANGLANGUAGE], "Language");
@@ -3937,12 +3969,12 @@ int setup_enlanguage(void)
   strcpy(enlang[LANGLANGIMPORTERR2], "Error processing imported language file");
   strcpy(enlang[LANGLANGCHANGESUCCESS], "Language successfully changed!");
   strcpy(enlang[LANGSUCCESS], "Success!");
-  strcpy(enlang[LANGOPTIONS], "Options");
-  strcpy(enlang[LANGLEFTRES], "Left panel resolution");
-  strcpy(enlang[LANGMAINRES], "Main panel resolution");
-  strcpy(enlang[LANGMAINSIZE], "Main grid size");
-  strcpy(enlang[LANGAUTOUPDATE], "Auto update");
-  strcpy(enlang[LANGSHOWBADHEAD], "Show bad head");
+  strcpy(enlang[LANGOPTIONS], "View");
+  strcpy(enlang[LANGLEFTRES], "Left Panel Resolution");
+  strcpy(enlang[LANGMAINRES], "Main Panel Resolution");
+  strcpy(enlang[LANGMAINSIZE], "Main Grid Size");
+  strcpy(enlang[LANGAUTOUPDATE], "Auto-Update");
+  strcpy(enlang[LANGSHOWBADHEAD], "Show Bad Head");
   strcpy(enlang[LANGNONTRIMMED], "Non-trimmed");
   strcpy(enlang[LANGNONDIVIDED], "Non-divided");
   strcpy(enlang[LANGNONSCRAPED], "Non-scraped");
@@ -3977,19 +4009,22 @@ int setup_enlanguage(void)
   strcpy(enlang[LANG1MIN], "1 minute");
   strcpy(enlang[LANG2MIN], "2 minutes");
   strcpy(enlang[LANG5MIN], "5 minutes");
-  strcpy(enlang[LANGSHOWGOODDATA], "Highlight good data");
+  strcpy(enlang[LANGSHOWGOODDATA], "Highlight Good Data");
   strcpy(enlang[LANGGOODDATA], "Good data");
   strcpy(enlang[LANG2M], "2M");
   strcpy(enlang[LANG4M], "4M");
   strcpy(enlang[LANG8M], "8M");
   strcpy(enlang[LANG16M], "16M");
-  strcpy(enlang[LANGSHOWTIMING], "Show high time");
+  strcpy(enlang[LANGSHOWTIMING], "Show High-Time");
   strcpy(enlang[LANGTIMING], "Timing");
   strcpy(enlang[LANGDOMAIN], "Domain");
-  strcpy(enlang[LANGSHOWDOMAIN], "Show domain");
+  strcpy(enlang[LANGSHOWDOMAIN], "Show Domain");
   strcpy(enlang[LANGDOMAINBLOCKNOTFOUND], "Domain block not found");
-  strcpy(enlang[LANGDMDEDOMAIN], "Domain from DMDE bytes file");
+  strcpy(enlang[LANGDMDEDOMAIN], "Load DMDE Bytes File");
   strcpy(enlang[LANGAREAS], "Areas");
+  strcpy(enlang[LANGLOADDOMAIN], "Load Domain");
+  strcpy(enlang[LANGHELP], "Help");
+  strcpy(enlang[LANGABOUT], "About");
   strcpy(enlang[LANGDUMMY], "dummy always put at bottom of language list");
   // strcpy (enlang[], "");
 

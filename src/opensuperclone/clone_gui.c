@@ -5370,8 +5370,6 @@ void about_ccc(void)
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
   gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
 
-  gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(dialog), (char *)opensuperclone_EULA_txt);
-
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }

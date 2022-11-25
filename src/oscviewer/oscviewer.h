@@ -88,10 +88,13 @@
 #define LANGDOMAINBLOCKNOTFOUND 63
 #define LANGDMDEDOMAIN 64
 #define LANGAREAS 65
-#define LANGDUMMY 66 // always put at bottom of language list
+#define LANGLOADDOMAIN 66
+#define LANGHELP 67
+#define LANGABOUT 68
+#define LANGDUMMY 69 // always put at bottom of language list
 
 // TODO MAKE SURE TO UPDATE COUNT EVERY TIME! it should be one more than last defined
-#define LANGCOUNT 67
+#define LANGCOUNT 70
 #define MAXLANGLENGTH 256
 char enlang[LANGCOUNT][MAXLANGLENGTH];
 char curlang[LANGCOUNT][MAXLANGLENGTH];
@@ -265,6 +268,8 @@ GtkWidget *autoupdatebutton2m;
 GtkWidget *autoupdatebutton5m;
 GtkWidget *showbadcheck;
 GtkWidget *showdomaincheck;
+GtkWidget *helpmi;
+GtkWidget *aboutmi;
 GtkWidget *optionsw;
 GSList *leftresgroup = NULL;
 GSList *mainresgroup = NULL;
@@ -335,8 +340,8 @@ int main_square_size = MAINSQUARESIZE;
 int square_adjust = 0;
 int nontried_color = GRAY;
 int nontrimmed_color = YELLOW;
-int nondivided_color = BLUE;
-int nonscraped_color = MYBLUE;
+int nondivided_color = NAVY;
+int nonscraped_color = BLUE;
 int bad_color = RED;
 int good_color = LIME;
 int unknown_color = BLACK;
@@ -344,8 +349,8 @@ int current_color_outer = ORANGE;
 int current_color_inner = ORANGE;
 int bad_head_color = PURPLE;
 int selected_color = WHITE;
-int time_color = WHITE;
-int domain_color = NAVY;
+int time_color = MAGENTA;
+int domain_color = MYORANGE;
 int main_grid_size = MAINGRIDSIZE;
 gint timeout_tag = 0;
 int autotimer_on = 0;
@@ -357,6 +362,8 @@ int mouse_x = 0;
 int mouse_y = 0;
 int mouse_x_old = 0;
 int mouse_y_old = 0;
+
+void about(void);
 
 void help(void);
 

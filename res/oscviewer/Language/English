@@ -1,10 +1,10 @@
-_HDDSCViewer_1.0_20220212_
+_OSCViewer_2.4_
 |_|0|_|
 File
 |_|1|_|
 Quit
 |_|2|_|
-Open
+Open Project
 |_|3|_|
 Error!
 |_|4|_|
@@ -26,17 +26,17 @@ Language successfully changed!
 |_|12|_|
 Success!
 |_|13|_|
-Options
+View
 |_|14|_|
-Left panel resolution
+Left Panel Resolution
 |_|15|_|
-Main panel resolution
+Main Panel Resolution
 |_|16|_|
-Main grid size
+Main Grid Size
 |_|17|_|
-Auto update
+Auto-Update
 |_|18|_|
-Show bad head
+Show Bad Head
 |_|19|_|
 Non-trimmed
 |_|20|_|
@@ -106,7 +106,7 @@ Off
 |_|52|_|
 5 minutes
 |_|53|_|
-Highlight good data
+Highlight Good Data
 |_|54|_|
 Good data
 |_|55|_|
@@ -118,18 +118,24 @@ Good data
 |_|58|_|
 16M
 |_|59|_|
-Show high time
+Show High-Time
 |_|60|_|
 Timing
 |_|61|_|
 Domain
 |_|62|_|
-Show domain
+Show Domain
 |_|63|_|
 Domain block not found
 |_|64|_|
-Domain from DMDE bytes file
+Load DMDE Bytes File
 |_|65|_|
 Areas
 |_|66|_|
+Load Domain
+|_|67|_|
+Help
+|_|68|_|
+About
+|_|69|_|
 dummy always put at bottom of language list
