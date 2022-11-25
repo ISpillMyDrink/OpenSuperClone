@@ -10,10 +10,10 @@
 char *title = "OSCViewer";
 char *version_number = OSC_VERSION;
 int copyright_year = COPYRIGHT_YEAR;
+char window_title[256];
 
 int main(int argc, char **argv)
 {
-  char window_title[256];
   strcpy(window_title, title);
   strcat(window_title, " ");
   strcat(window_title, version_number);
@@ -349,9 +349,19 @@ int main(int argc, char **argv)
   showgoodcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showgoodcheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showgoodcheck), curlang[LANGSHOWGOODDATA]);
 
+  if(show_good_data)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showgoodcheck), TRUE);
+  }
+
   // show bad head item
   showbadcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showbadcheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showbadcheck), curlang[LANGSHOWBADHEAD]);
+
+  if(show_bad_head)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showbadcheck), TRUE);
+  }
 
   showtimemi = GTK_WIDGET(gtk_builder_get_object(builder, "showtimemi"));
   showtimingbuttonoff = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbuttonoff"));
@@ -373,6 +383,11 @@ int main(int argc, char **argv)
 
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), curlang[LANGSHOWDOMAIN]);
+
+  if(show_domain)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+  }
 
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
@@ -1204,6 +1219,11 @@ void select_file(void)
       {
         sprintf(tempmessage, "there were errors found in the log file\n");
         message_now(tempmessage);
+      }
+      else
+      {
+        sprintf(tempmessage, "%s [%s]", window_title, log_file);
+        gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
       }
     }
 
