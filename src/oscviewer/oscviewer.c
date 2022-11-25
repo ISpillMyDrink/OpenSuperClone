@@ -1222,7 +1222,8 @@ void select_file(void)
       }
       else
       {
-        sprintf(tempmessage, "%s [%s]", window_title, log_file);
+        char *filename = strrchr(log_file, '/') + 1;
+        sprintf(tempmessage, "%s [%s]", window_title, filename);
         gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
 
         sprintf(tempmessage, "Log: %s", log_file);
