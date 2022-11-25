@@ -697,15 +697,16 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     r = rcolor;
     g = gcolor;
     b = bcolor;
-    x = 203;
-    y = 38;
-    w = 4;
-    l = 4;
+    x = 200;
+    y = 50;
+    w = 10;
+    l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
+    cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
+    cairo_move_to(cr, x + 15, y + 9);
     cairo_show_text(cr, curlang[LANGBADHEAD]);
   }
 
@@ -715,15 +716,16 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     r = rcolor;
     g = gcolor;
     b = bcolor;
-    x = 203;
-    y = 53;
-    w = 4;
-    l = 4;
+    x = 200;
+    y = 65;
+    w = 10;
+    l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
+    cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
+    cairo_move_to(cr, x + 15, y + 9);
     cairo_show_text(cr, curlang[LANGTIMING]);
   }
 
@@ -733,15 +735,16 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     r = rcolor;
     g = gcolor;
     b = bcolor;
-    x = 203;
-    y = 68;
-    w = 4;
-    l = 4;
+    x = 200;
+    y = 80;
+    w = 10;
+    l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
+    cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
+    cairo_move_to(cr, x + 15, y + 9);
     cairo_show_text(cr, curlang[LANGDOMAIN]);
   }
 
@@ -856,15 +859,16 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
         if (bad_head && show_bad_head)
         {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
           get_rgb_color(bad_head_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
+          cairo_set_line_width(cr, 0.5);
+          cairo_stroke(cr);
         }
 
         if (good_data && show_good_data)
@@ -882,15 +886,16 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
         if ((time_bits >= show_timing) && show_timing)
         {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
           get_rgb_color(time_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
+          cairo_set_line_width(cr, 0.5);
+          cairo_stroke(cr);
         }
 
         if ((in_domain) && show_domain)
@@ -903,6 +908,7 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
+          cairo_set_line_width(cr, 0.5);
           cairo_stroke(cr);
         }
       }
@@ -3975,14 +3981,14 @@ int setup_enlanguage(void)
   strcpy(enlang[LANGMAINSIZE], "Main Grid Size");
   strcpy(enlang[LANGAUTOUPDATE], "Auto-Update");
   strcpy(enlang[LANGSHOWBADHEAD], "Show Bad Head");
-  strcpy(enlang[LANGNONTRIMMED], "Non-trimmed");
-  strcpy(enlang[LANGNONDIVIDED], "Non-divided");
-  strcpy(enlang[LANGNONSCRAPED], "Non-scraped");
+  strcpy(enlang[LANGNONTRIMMED], "Non-Trimmed");
+  strcpy(enlang[LANGNONDIVIDED], "Non-Divided");
+  strcpy(enlang[LANGNONSCRAPED], "Non-Scraped");
   strcpy(enlang[LANGBAD], "Bad");
-  strcpy(enlang[LANGNONTRIED], "Non-tried");
+  strcpy(enlang[LANGNONTRIED], "Non-Tried");
   strcpy(enlang[LANGFINISHED], "Finished");
   strcpy(enlang[LANGCURRENT], "Current");
-  strcpy(enlang[LANGBADHEAD], "Bad-head");
+  strcpy(enlang[LANGBADHEAD], "Bad Head");
   strcpy(enlang[LANG1PT], "1 pt");
   strcpy(enlang[LANG2PT], "2 pt");
   strcpy(enlang[LANG3PT], "3 pt");
@@ -4010,7 +4016,7 @@ int setup_enlanguage(void)
   strcpy(enlang[LANG2MIN], "2 minutes");
   strcpy(enlang[LANG5MIN], "5 minutes");
   strcpy(enlang[LANGSHOWGOODDATA], "Highlight Good Data");
-  strcpy(enlang[LANGGOODDATA], "Good data");
+  strcpy(enlang[LANGGOODDATA], "Good Data");
   strcpy(enlang[LANG2M], "2M");
   strcpy(enlang[LANG4M], "4M");
   strcpy(enlang[LANG8M], "8M");

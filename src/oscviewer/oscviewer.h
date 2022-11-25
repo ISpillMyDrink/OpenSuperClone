@@ -123,6 +123,7 @@ int copy_newlanguage(void);
 #define MAGENTA 0xFF00FF  // (255,0,255)
 #define SILVER 0xC0C0C0   // (192,192,192)
 #define GRAY 0x808080     // (128,128,128)
+#define LIGHTGRAY 0xD3D3D3
 #define MAROON 0x800000   // (128,0,0)
 #define OLIVE 0x808000    // (128,128,0)
 #define GREEN 0x008000    // (0,128,0)
@@ -156,8 +157,8 @@ int copy_newlanguage(void);
 #define MAINWINDOWWIDTH 800
 #define MAINWINDOWHEIGTH 600
 #define LEFTSQUARESIZE 2
-#define MAINSQUARESIZE 8
-#define MAINGRIDSIZE 65536
+#define MAINSQUARESIZE 12
+#define MAINGRIDSIZE 4096
 
 #define DISPLAY_MESSAGE_SIZE 4096
 #define EXIT_MESSAGE_SIZE 2048
@@ -338,7 +339,7 @@ double bcolor = 0;
 int left_square_size = LEFTSQUARESIZE;
 int main_square_size = MAINSQUARESIZE;
 int square_adjust = 0;
-int nontried_color = GRAY;
+int nontried_color = LIGHTGRAY;
 int nontrimmed_color = YELLOW;
 int nondivided_color = NAVY;
 int nonscraped_color = BLUE;
@@ -350,12 +351,12 @@ int current_color_inner = ORANGE;
 int bad_head_color = PURPLE;
 int selected_color = WHITE;
 int time_color = MAGENTA;
-int domain_color = MYORANGE;
+int domain_color = MYBLUE;
 int main_grid_size = MAINGRIDSIZE;
 gint timeout_tag = 0;
 int autotimer_on = 0;
 int show_bad_head = 0;
-int show_good_data = 1;
+int show_good_data = 0;
 int show_timing = 0;
 int show_domain = 0;
 int mouse_x = 0;
