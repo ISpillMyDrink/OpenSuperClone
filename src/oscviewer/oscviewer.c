@@ -1224,6 +1224,9 @@ void select_file(void)
       {
         sprintf(tempmessage, "%s [%s]", window_title, log_file);
         gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
+
+        sprintf(tempmessage, "Log: %s", log_file);
+        gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
       }
     }
 
@@ -1258,6 +1261,9 @@ void select_domain(void)
     else
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+
+      sprintf(tempmessage, "Domain: %s", domain_file);
+      gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
     // else
     // {
@@ -1300,6 +1306,9 @@ void select_dmde_domain(void)
     else
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+
+      sprintf(tempmessage, "Domain: %s", domain_file);
+      gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
 
     gtk_widget_queue_draw(main_window);
