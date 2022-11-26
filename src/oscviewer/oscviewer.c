@@ -709,7 +709,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
-    cairo_set_line_width(cr, 0.5);
+    // cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
@@ -728,7 +728,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
-    cairo_set_line_width(cr, 0.5);
+    // cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
@@ -747,7 +747,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
-    cairo_set_line_width(cr, 0.5);
+    // cairo_set_line_width(cr, 0.5);
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
@@ -873,7 +873,7 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_set_line_width(cr, 0.5);
+          // cairo_set_line_width(cr, 0.5);
           cairo_stroke(cr);
         }
 
@@ -900,7 +900,7 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_set_line_width(cr, 0.5);
+          // cairo_set_line_width(cr, 0.5);
           cairo_stroke(cr);
         }
 
@@ -914,7 +914,7 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_set_line_width(cr, 0.5);
+          // cairo_set_line_width(cr, 0.5);
           cairo_stroke(cr);
         }
       }
