@@ -162,6 +162,8 @@ int main(int argc, char **argv)
   progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
   domain_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_log_label"));
 
+  auto_update_label = GTK_WIDGET(gtk_builder_get_object(builder, "auto_update_label"));
+
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
   // options menu
@@ -344,6 +346,10 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton1m), curlang[LANG1MIN]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton2m), curlang[LANG2MIN]);
   gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5m), curlang[LANG5MIN]);
+
+  char temp[25];
+  sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
+  gtk_label_set_text(GTK_LABEL(auto_update_label), temp);
 
   // show good data item
   showgoodcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showgoodcheck"));
@@ -1380,6 +1386,37 @@ void set_autoupdate_timer(GtkWidget *w, gpointer data)
     timeout_tag = g_timeout_add(time, (GSourceFunc)reload_file, NULL);
     autotimer_on = 1;
   }
+
+  char temp[25];
+  if (!autotimer_on)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
+  }
+  else if (time == 5000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG5SEC]);
+  }
+  else if (time == 10000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG10SEC]);
+  }
+  else if (time == 30000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG30SEC]);
+  }
+  else if (time == 60000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG1MIN]);
+  }
+  else if (time == 120000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG2MIN]);
+  }
+  else if (time == 300000)
+  {
+    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG5MIN]);
+  }
+  gtk_label_set_text(GTK_LABEL(auto_update_label), temp);
 }
 
 void toggle_showbad(GtkWidget *w, gpointer data)

@@ -210,12 +210,17 @@ GtkWidget *frame;
 GtkWidget *progress_log_label;
 GtkWidget *domain_log_label;
 
+GtkWidget *auto_update_label;
+
 GtkWidget *block_information_label;
 
 // menu items
 GtkWidget *menubar;
 GtkWidget *menuvbox;
 GtkWidget *menuseparater;
+// help menu
+GtkWidget *helpmi;
+GtkWidget *aboutmi;
 // file menu
 GtkWidget *filemenu;
 GtkWidget *filemi;
@@ -269,8 +274,6 @@ GtkWidget *autoupdatebutton2m;
 GtkWidget *autoupdatebutton5m;
 GtkWidget *showbadcheck;
 GtkWidget *showdomaincheck;
-GtkWidget *helpmi;
-GtkWidget *aboutmi;
 GtkWidget *optionsw;
 GSList *leftresgroup = NULL;
 GSList *mainresgroup = NULL;
