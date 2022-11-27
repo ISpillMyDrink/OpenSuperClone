@@ -405,7 +405,7 @@ int choose_usb_device_ccc(void)
   {
     sprintf(tempmessage_ccc, "Error: USB device is not mass storage.\n");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }

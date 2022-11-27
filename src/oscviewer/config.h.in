@@ -3,4 +3,4 @@
 #cmakedefine COPYRIGHT_YEAR @COPYRIGHT_YEAR@
 #define OSC_HOMEPAGE "@OpenSuperClone_HOMEPAGE_URL@"
 
-#cmakedefine OSCVIEWER_LANG_PATH "@OSCVIEWER_LANG_PATH@"
+#cmakedefine OSC_LANG_PATH "@OSC_LANG_PATH@"

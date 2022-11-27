@@ -17,112 +17,26 @@
 #include <malloc.h>
 #include <gtk/gtk.h>
 #include <cairo.h>
-#ifdef DEBUG
-#include <curl/curl.h>
-#endif
 #include <sys/stat.h>
+#include <libintl.h>
+#include <locale.h>
 
-#define LANGFILE 0
-#define LANGQUIT 1
-#define LANGOPEN 2
-#define LANGERROR 3
-#define LANGWARN 4
-#define LANGLANGUAGE 5
-#define LANGEXPORTLANG 6
-#define LANGIMPORTLANG 7
-#define LANGLANGEXPORTERR 8
-#define LANGLANGIMPORTERR 9
-#define LANGLANGIMPORTERR2 10
-#define LANGLANGCHANGESUCCESS 11
-#define LANGSUCCESS 12
-#define LANGOPTIONS 13
-#define LANGLEFTRES 14
-#define LANGMAINRES 15
-#define LANGMAINSIZE 16
-#define LANGAUTOUPDATE 17
-#define LANGSHOWBADHEAD 18
-#define LANGNONTRIMMED 19
-#define LANGNONDIVIDED 20
-#define LANGNONSCRAPED 21
-#define LANGBAD 22
-#define LANGNONTRIED 23
-#define LANGFINISHED 24
-#define LANGCURRENT 25
-#define LANGBADHEAD 26
-#define LANG1PT 27
-#define LANG2PT 28
-#define LANG3PT 29
-#define LANG4PT 30
-#define LANG6PT 31
-#define LANG8PT 32
-#define LANG10PT 33
-#define LANG12PT 34
-#define LANG14PT 35
-#define LANG16PT 36
-#define LANG4K 37
-#define LANG8K 38
-#define LANG16K 39
-#define LANG32K 40
-#define LANG64K 41
-#define LANG128K 42
-#define LANG256K 43
-#define LANG512K 44
-#define LANG1M 45
-#define LANGOFF 46
-#define LANG5SEC 47
-#define LANG10SEC 48
-#define LANG30SEC 49
-#define LANG1MIN 50
-#define LANG2MIN 51
-#define LANG5MIN 52
-#define LANGSHOWGOODDATA 53
-#define LANGGOODDATA 54
-#define LANG2M 55
-#define LANG4M 56
-#define LANG8M 57
-#define LANG16M 58
-#define LANGSHOWTIMING 59
-#define LANGTIMING 60
-#define LANGDOMAIN 61
-#define LANGSHOWDOMAIN 62
-#define LANGDOMAINBLOCKNOTFOUND 63
-#define LANGDMDEDOMAIN 64
-#define LANGAREAS 65
-#define LANGLOADDOMAIN 66
-#define LANGHELP 67
-#define LANGABOUT 68
-#define LANGDUMMY 69 // always put at bottom of language list
+#define _(str) gettext(str)
+#define gettext_noop(str) (str)
+#define N_(str) gettext_noop(str)
 
-// TODO MAKE SURE TO UPDATE COUNT EVERY TIME! it should be one more than last defined
-#define LANGCOUNT 70
-#define MAXLANGLENGTH 256
-char enlang[LANGCOUNT][MAXLANGLENGTH];
-char curlang[LANGCOUNT][MAXLANGLENGTH];
-char newlang[LANGCOUNT][MAXLANGLENGTH];
 char program_title[256];
-GtkWidget *filelangex;
-GtkWidget *filelangim;
 
-int setup_enlanguage(void);
-
-int copy_enlanguage(void);
-
-int copy_newlanguage(void);
-
-#define TRANSLATETIMERALL 1000000000   // nanosecond delay for every translate call
-#define TRANSLATETIMERFAST 10000000000 // nanosecond delay for each normal translate call
-#define TRANSLATETIMERSLOW 2000000000  // nanosecond delay for each slow translate call
-
-#define BLACK 0x000000    // (0,0,0)
-#define WHITE 0xFFFFFF    // (255,255,255)
-#define RED 0xFF0000      // (255,0,0)
-#define LIME 0x00FF00     // (0,255,0)
-#define BLUE 0x0000FF     // (0,0,255)
-#define YELLOW 0xFFFF00   // (255,255,0)
-#define CYAN 0x00FFFF     // (0,255,255)
-#define MAGENTA 0xFF00FF  // (255,0,255)
-#define SILVER 0xC0C0C0   // (192,192,192)
-#define GRAY 0x808080     // (128,128,128)
+#define BLACK 0x000000   // (0,0,0)
+#define WHITE 0xFFFFFF   // (255,255,255)
+#define RED 0xFF0000     // (255,0,0)
+#define LIME 0x00FF00    // (0,255,0)
+#define BLUE 0x0000FF    // (0,0,255)
+#define YELLOW 0xFFFF00  // (255,255,0)
+#define CYAN 0x00FFFF    // (0,255,255)
+#define MAGENTA 0xFF00FF // (255,0,255)
+#define SILVER 0xC0C0C0  // (192,192,192)
+#define GRAY 0x808080    // (128,128,128)
 #define LIGHTGRAY 0xD3D3D3
 #define MAROON 0x800000   // (128,0,0)
 #define OLIVE 0x808000    // (128,128,0)
@@ -481,138 +395,10 @@ int process_status(int line);
 
 long long process_information(long long position, long long size, int line);
 
-int do_nanosleep(unsigned long long time);
-
-int set_language(void);
-
 int print_gui_error_message(char *message, char *title, int type);
-
-void export_language_file(void);
-
-// static void file_export_sel(GtkWidget *w, GtkFileSelection *fs);
-
-void import_language_file(void);
-
-static void file_import_sel(char *import_file);
-
-int translate_all(void);
-
-int translate_language(char *fromlang, char *translang, char *language, char *native);
-
-int translate_language_slow(char *fromlang, char *translang, char *language, char *native);
-
-char *get_translated_data(char *url_data);
 
 struct MemoryStruct
 {
     char *memory;
     size_t size;
 };
-
-char *languages[] = {
-    //    "Afrikaans","af","Afrikaans",
-    //    "Albanian","sq","shqiptar",
-    //    "Amharic","am","አማርኛ",
-    "Arabic", "ar", "عربى",
-    //    "Armenian","hy","հայերեն",
-    //    "Azeerbaijani","az","Azeerbaijani",
-    //    "Basque","eu","Euskal",
-    //    "Belarusian","be","беларускі",
-    //    "Bengali","bn","বাঙালি",
-    //    "Bosnian","bs","bosanski",
-    //    "Bulgarian","bg","български",
-    //    "Catalan","ca","català",
-    //    "Cebuano","ceb","Cebuano",
-    //    "Chichewa","ny","Chichewa",
-    "Chinese (Simplified)", "zh-CN", "简体中文）",
-    //    "Chinese (Traditional)","zh-TW","中國傳統的）",
-    //    "Corsican","co","Corsu",
-    //    "Croatian","hr","hrvatski",
-    //    "Czech","cs","čeština",
-    //    "Danish","da","dansk",
-    //    "Dutch","nl","Nederlands",
-    //    "Esperanto","eo","Esperanto",
-    //    "Estonian","et","eesti",
-    //    "Filipino","tl","Pilipino",
-    //    "Finnish","fi","Suomalainen",
-    "French", "fr", "français",
-    //    "Frisian","fy","Frysk",
-    //    "Galician","gl","galego",
-    //    "Georgian","ka","ქართული",
-    "German", "de", "Deutsche",
-    //    "Greek","el","Ελληνικά",
-    //    "Gujarati","gu","ગુજરાતી",
-    //    "Haitian Creole","ht","kreyòl ayisyen",
-    //    "Hausa","ha","Hausa",
-    //    "Hawaiian","haw","ʻŌlelo Hawaiʻi",
-    //    "Hebrew","iw","עִברִית",
-    "Hindi", "hi", "हिंदी",
-    //    "Hmong","hmn","Hmong",
-    //    "Hungarian","hu","Magyar",
-    //    "Icelandic","is","icelandic",
-    //    "Igbo","ig","Igbo",
-    "Indonesian", "id", "bahasa Indonesia",
-    //    "Irish","ga","Gaeilge",
-    "Italian", "it", "italiano",
-    "Japanese", "ja", "日本語",
-    //    "Javanese","jw","Jawa",
-    //    "Kannada","kn","ಕನ್ನಡ",
-    //    "Kazakh","kk","Қазақ",
-    //    "Khmer","km","ភាសាខ្មែរ",
-    //    "Korean","ko","한국어",
-    //    "Kurdish","ku","Kurdî",
-    //    "Kyrgyz","ky","Кыргызча",
-    //    "Lao","lo","ລາວ",
-    //    "Latin","la","Latine",
-    //    "Latvian","lv","Latvijas",
-    //    "Lithuanian","lt","Lietuvos",
-    //    "Luxembourgish","lb","lëtzebuergesch",
-    //    "Macedonian","mk","Македонски",
-    //    "Malagasy","mg","Malagasy",
-    //    "Malay","ms","Malay",
-    //    "Malayalam","ml","മലയാളം",
-    //    "Maltese","mt","Malti",
-    //    "Maori","mi","Maori",
-    //    "Marathi","mr","मराठी",
-    //    "Mongolian","mn","Монгол",
-    //    "Burmese","my","မြန်မာ",
-    //    "Nepali","ne","नेपाली",
-    //    "Norwegian","no","norsk",
-    //    "Pashto","ps","پښتو",
-    //    "Persian","fa","فارسی",
-    //    "Polish","pl","Polskie",
-    "Portuguese", "pt", "Português",
-    //    "Punjabi","pa","ਪੰਜਾਬੀ",
-    //    "Romanian","ro","Română",
-    "Russian", "ru", "русский",
-    //    "Samoan","sm","Samoa",
-    //    "Scots Gaelic","gd","Gàidhlig",
-    //    "Serbian","sr","Српски",
-    //    "Sesotho","st","Sesotho",
-    //    "Shona","sn","Shona",
-    //    "Sindhi","sd","سنڌي",
-    //    "Sinhala","si","සිංහල",
-    //    "Slovak","sk","slovenský",
-    //    "Slovenian","sl","slovenski",
-    //    "Somali","so","Soomaali",
-    "Spanish", "es", "Español",
-    //    "Sundanese","su","Sunda",
-    //    "Swahili","sw","Kiswahili",
-    //    "Swedish","sv","svenska",
-    //    "Tajik","tg","Тоҷикистон",
-    //    "Tamil","ta","தமிழ்",
-    //    "Telugu","te","తెలుగు",
-    //    "Thai","th","ไทย",
-    //    "Turkish","tr","Türk",
-    //    "Ukrainian","uk","український",
-    //    "Urdu","ur","اردو",
-    //    "Uzbek","uz","O'zbekiston",
-    //    "Vietnamese","vi","Tiếng Việt",
-    //    "Welsh","cy","Cymraeg",
-    //    "Xhosa","xh","isiXhosa",
-    //    "Yiddish","yi","ייִדיש",
-    //    "Yoruba","yo","yorùbá",
-    //    "Zulu","zu","Zulu"
-};
-
-#define n_languages (sizeof(languages) / sizeof(const char *))

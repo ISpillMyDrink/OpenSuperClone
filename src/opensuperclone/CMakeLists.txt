@@ -13,8 +13,6 @@ set(SOURCES
     common.h
     clone_gui.c
     clone_gui.h
-    clone_gui_language.c
-    clone_gui_language.h
 )
 
 # Generate header files from resources
@@ -68,8 +66,8 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
 )
 
 # Install language files
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone
-        DESTINATION share/doc
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone/locale
+        DESTINATION share
 )
 
 # Install desktop files

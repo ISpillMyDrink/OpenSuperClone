@@ -56,7 +56,6 @@ int main(int argc, char **argv)
   quiet_ccc = false;
   did_reset_ccc = 0;
   stop_signal_ccc = false;
-  translate_ccc = 0;
   running_clone_ccc = 0;
   superclone_ccc = true;
   force_danger_ccc = false;
@@ -273,7 +272,6 @@ int main(int argc, char **argv)
             {"debug", required_argument, 0, DEBUGOUT},
             {"verbose", required_argument, 0, VERBOSEOUT},
             {"tool", no_argument, 0, SUPERTOOL},
-            {"translate", required_argument, 0, TRANSLATE},
             {"quiet", no_argument, 0, 'Q'},
             {"crash-computer-destroy-data", no_argument, 0, CRASH},
             {"enable-rebuild-assist", no_argument, 0, ENABLE_REBUILD_ASSIST},
@@ -321,10 +319,6 @@ int main(int argc, char **argv)
 
     case VERBOSEOUT:
       verbose_ccc = strtoull(optarg, NULL, 16);
-      break;
-
-    case TRANSLATE:
-      translate_ccc = strtoull(optarg, NULL, 0);
       break;
 
     case 'Q':
@@ -740,18 +734,18 @@ int begin_driver_ccc(void)
   // if output offset is not default of -1 then this is a short trip, that is not allowed with the driver
   if (output_offset_ccc != -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORDRIVEROFFSET]);
+    strcpy(tempmessage_ccc, _("Error: Offset not allowed in driver mode"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
   // if sector size is not evenly dividable by kernel sector size of 512 that wont work either
   if (sector_size_ccc % KERNEL_SECTOR_SIZE || output_sector_size_adjustment_ccc != 0)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORDRIVERSECTORSIZE]);
+    strcpy(tempmessage_ccc, _("Error: Odd sector size not allowed in driver mode"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -829,7 +823,7 @@ int begin_driver_ccc(void)
   while (1)
   {
     n++;
-    strcpy(current_status_string_ccc, curlang_ccc[LANGIDLE]);
+    strcpy(current_status_string_ccc, _("Idle"));
 
     if (aggressive_driver_ccc)
     {
@@ -931,9 +925,9 @@ int begin_driver_ccc(void)
   if (ret && ret != STOP_SIGNAL_RETURN_CODE)
   {
     error = 1;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORDRIVERSTOPPEDERROR]);
+    strcpy(tempmessage_ccc, _("Error: Driver timeout or error"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
 
@@ -1025,10 +1019,10 @@ void install_driver_ccc(void)
 {
   if (!check_driver_ccc() && driver_memory_mapped_ccc)
   {
-    sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVERALREADYINSTALLED]);
+    sprintf(tempmessage_ccc, "%s", _("The driver is already installed and active\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
     driver_installed_ccc = 1;
     return;
@@ -1037,20 +1031,20 @@ void install_driver_ccc(void)
   {
     if (!map_driver_memory_ccc())
     {
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVERMEMORYCONNECTED]);
+      sprintf(tempmessage_ccc, "%s", _("The driver memory is now connected\n"));
       message_now_ccc(tempmessage_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
       driver_installed_ccc = 1;
       return;
     }
     else
     {
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGERRORCONNECTINGDRIVER]);
+      sprintf(tempmessage_ccc, "%s", _("Error connecting to driver memory\n"));
       message_now_ccc(tempmessage_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
       driver_installed_ccc = 0;
       return;
@@ -1068,10 +1062,10 @@ void install_driver_ccc(void)
   writefile = fopen(name, "w");
   if (writefile == NULL)
   {
-    sprintf(tempmessage_ccc, "%s %s (%s).\n", curlang_ccc[LANGCANNOTOPENFORWRITING], name, strerror(errno));
+    sprintf(tempmessage_ccc, "%s %s (%s).\n", _("Cannot open for writing"), name, strerror(errno));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -1088,10 +1082,10 @@ void install_driver_ccc(void)
   writefile = fopen(command, "w");
   if (writefile == NULL)
   {
-    sprintf(tempmessage_ccc, "%s %s (%s).\n", curlang_ccc[LANGCANNOTOPENFORWRITING], command, strerror(errno));
+    sprintf(tempmessage_ccc, "%s %s (%s).\n", _("Cannot open for writing"), command, strerror(errno));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -1105,10 +1099,10 @@ void install_driver_ccc(void)
   sprintf(command, "(cd %s; make -C/lib/modules/`uname -r`/build M=$PWD)", tempdir);
   if (system(command))
   {
-    sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGMAKEFAILED]);
+    sprintf(tempmessage_ccc, "%s", _("Make failed, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -1116,10 +1110,10 @@ void install_driver_ccc(void)
   sprintf(command, "insmod %s/%s%d.ko ioctl=%s%d mmap_m=%s%d mmap_tb=%s%d mmap_mdb=%s%d", tempdir, DRIVER_FILE_NAME, process_id_ccc, MAIN_DRIVER_IOCTL_NAME, process_id_ccc, MAIN_DRIVER_MMAP_NAME, process_id_ccc, MAIN_DRIVER_MMAPTB_NAME, process_id_ccc, MAIN_DRIVER_MMAPMDB_NAME, process_id_ccc);
   if (system(command))
   {
-    sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGFAILEDTOINSTALLDRIVER]);
+    sprintf(tempmessage_ccc, "%s", _("Failed to install driver module, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -1129,19 +1123,19 @@ void install_driver_ccc(void)
 
   if (map_driver_memory_ccc())
   {
-    sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGERRORCONNECTINGDRIVER]);
+    sprintf(tempmessage_ccc, "%s", _("Error connecting to driver memory\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
     driver_installed_ccc = 0;
     return;
   }
 
-  sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVERINSTALLSUCCESS]);
+  sprintf(tempmessage_ccc, "%s", _("Driver install success\n"));
   message_now_ccc(tempmessage_ccc);
   message_error_ccc(tempmessage_ccc);
-  print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+  print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   clear_error_message_ccc();
   if (superclone_ccc)
   {
@@ -1162,7 +1156,7 @@ void uninstall_driver_ccc(void)
     // sprintf (tempmessage_ccc, "The driver is currently not installed\n");
     // message_now_ccc(tempmessage_ccc);
     // message_error_ccc(tempmessage_ccc);
-    // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    // print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     // clear_error_message_ccc();
     driver_installed_ccc = 0;
     return;
@@ -1171,17 +1165,17 @@ void uninstall_driver_ccc(void)
   sprintf(name, "rmmod %s%d", DRIVER_FILE_NAME, process_id_ccc);
   if (system(name))
   {
-    sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGFAILEDTOREMOVEDRIVER]);
+    sprintf(tempmessage_ccc, "%s", _("Failed to remove driver module, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     // message_error_ccc(tempmessage_ccc);
-    // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    // print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     // clear_error_message_ccc();
     return;
   }
-  sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVERREMOVALSUCCESS]);
+  sprintf(tempmessage_ccc, "%s", _("Driver removal success\n"));
   message_now_ccc(tempmessage_ccc);
   // message_error_ccc(tempmessage_ccc);
-  // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+  // print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   // clear_error_message_ccc();
   if (!cleanup_mode_ccc)
   {
@@ -1196,9 +1190,9 @@ void fix_driver_memory_driver_ccc(void)
   system("sync");
   system("echo 3 > /proc/sys/vm/drop_caches");
   system("echo 1 > /proc/sys/vm/compact_memory");
-  strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+  strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
   message_error_ccc(tempmessage_ccc);
-  print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+  print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   clear_error_message_ccc();
 }
 
@@ -1229,11 +1223,11 @@ int initialize_logfile_memory_ccc(void)
   lposition_ccc = malloc(sizeof(*lposition_ccc) * log_rows_ccc);
   if (lposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1241,11 +1235,11 @@ int initialize_logfile_memory_ccc(void)
   lsize_ccc = malloc(sizeof(*lsize_ccc) * log_rows_ccc);
   if (lsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1253,11 +1247,11 @@ int initialize_logfile_memory_ccc(void)
   lstatus_ccc = malloc(sizeof(*lstatus_ccc) * log_rows_ccc);
   if (lstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1273,11 +1267,11 @@ int initialize_domainfile_memory_ccc(void)
   dposition_ccc = malloc(sizeof(*dposition_ccc) * domain_rows_ccc);
   if (dposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1285,11 +1279,11 @@ int initialize_domainfile_memory_ccc(void)
   dsize_ccc = malloc(sizeof(*dsize_ccc) * domain_rows_ccc);
   if (dsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1297,11 +1291,11 @@ int initialize_domainfile_memory_ccc(void)
   dstatus_ccc = malloc(sizeof(*dstatus_ccc) * domain_rows_ccc);
   if (dstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -1355,9 +1349,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, curlang_ccc[LANGBUFFERADDRESSRANGE]);
+        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return GENERAL_ERROR_RETURN_CODE;
       }
@@ -1373,9 +1367,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, curlang_ccc[LANGBUFFERADDRESSRANGE]);
+        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return GENERAL_ERROR_RETURN_CODE;
       }
@@ -1388,9 +1382,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, curlang_ccc[LANGBUFFERADDRESSRANGE]);
+        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return GENERAL_ERROR_RETURN_CODE;
       }
@@ -1419,11 +1413,11 @@ int initialize_memory_ccc(void)
         free(ccc_buffer_ccc);
         if (posix_memalign(&ccc_buffer_ccc, align, real_buffer_size_ccc))
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGPOSIXMEMFAIL]);
+          strcpy(tempmessage_ccc, _("posix_memalign failed"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " (%s)", strerror(errno));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return GENERAL_ERROR_RETURN_CODE;
         }
@@ -1483,9 +1477,9 @@ int set_main_scratchpad_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMAXSCRATCHPADSIZE]);
+      strcpy(tempmessage_ccc, _("ERROR: Maximum scratchpad size exceeded"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1500,11 +1494,11 @@ int set_main_scratchpad_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+      strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1523,9 +1517,9 @@ int set_sense_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMAXSENSESIZE]);
+      strcpy(tempmessage_ccc, _("ERROR: Maximum sensebuffer size exceeded"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1540,11 +1534,11 @@ int set_sense_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+      strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1565,7 +1559,7 @@ int set_main_usb_buffer_ccc(void)
     {
       strcpy(tempmessage_ccc, "ERROR: Maximum USB buffer size exceeded.\n"); // TODO make a language entry for this
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1580,11 +1574,11 @@ int set_main_usb_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+      strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1687,47 +1681,47 @@ int read_log_file_ccc(char *log_file)
           {
             if (current_status_ccc == PHASE1)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE1]);
+              strcpy(current_status_string_ccc, _("Phase 1"));
             }
             else if (current_status_ccc == PHASE2)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE2]);
+              strcpy(current_status_string_ccc, _("Phase 2"));
             }
             else if (current_status_ccc == PHASE3)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE3]);
+              strcpy(current_status_string_ccc, _("Phase 3"));
             }
             else if (current_status_ccc == PHASE4)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
+              strcpy(current_status_string_ccc, _("Phase 4"));
             }
             else if (current_status_ccc == TRIMMING)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
+              strcpy(current_status_string_ccc, _("Trimming"));
             }
             else if (current_status_ccc == DIVIDING1)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
+              strcpy(current_status_string_ccc, _("Dividing 1"));
             }
             else if (current_status_ccc == DIVIDING2)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
+              strcpy(current_status_string_ccc, _("Dividing 2"));
             }
             else if (current_status_ccc == SCRAPING)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
+              strcpy(current_status_string_ccc, _("Scraping"));
             }
             else if (current_status_ccc == FINISHED)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGFINISHED]);
+              strcpy(current_status_string_ccc, _("Finished"));
             }
             else if (current_status_ccc == RETRYING)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGRETRYING]);
+              strcpy(current_status_string_ccc, _("Retrying"));
             }
             else if (current_status_ccc == FILLING)
             {
-              strcpy(current_status_string_ccc, curlang_ccc[LANGFILLING]);
+              strcpy(current_status_string_ccc, _("Filling"));
             }
             else
             {
@@ -3288,11 +3282,11 @@ int increase_log_memory_ccc(int new_lines)
   temp_lposition_ccc = realloc(lposition_ccc, log_rows_ccc * sizeof(*lposition_ccc));
   if (temp_lposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3301,11 +3295,11 @@ int increase_log_memory_ccc(int new_lines)
   temp_lsize_ccc = realloc(lsize_ccc, log_rows_ccc * sizeof(*lsize_ccc));
   if (temp_lsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3314,11 +3308,11 @@ int increase_log_memory_ccc(int new_lines)
   temp_lstatus_ccc = realloc(lstatus_ccc, log_rows_ccc * sizeof(*lstatus_ccc));
   if (temp_lstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3333,11 +3327,11 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dposition_ccc = realloc(dposition_ccc, domain_rows_ccc * sizeof(*dposition_ccc));
   if (temp_dposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3346,11 +3340,11 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dsize_ccc = realloc(dsize_ccc, domain_rows_ccc * sizeof(*dsize_ccc));
   if (temp_dsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3359,11 +3353,11 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dstatus_ccc = realloc(dstatus_ccc, domain_rows_ccc * sizeof(*dstatus_ccc));
   if (temp_dstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -3376,9 +3370,9 @@ int update_logfile_ccc(int time_sec)
   return_value_ccc = write_logfile_ccc(log_file_ccc, time_sec);
   if (return_value_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+    strcpy(tempmessage_ccc, _("Error writing progress log file"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return LOGFILE_ERROR_RETURN_CODE;
   }
@@ -3667,9 +3661,9 @@ int update_domainfile_ccc(int time_sec)
     return_value_ccc = write_domainfile_ccc(domain_file_ccc, time_sec);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+      strcpy(tempmessage_ccc, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return LOGFILE_ERROR_RETURN_CODE;
     }
@@ -3958,15 +3952,15 @@ int check_log_ccc(void)
     // check that last position ends with total size
     if (lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1] != source_total_size_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGWRONGDRIVEFORLOG1]);
+      strcpy(tempmessage_ccc, _("The end does not equal the drive size!\nLogfile reports size of "));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "%lld", lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1]);
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGWRONGDRIVEFORLOG2]);
+      strcpy(tempmessage_ccc, _(",\nbut source has a size of "));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "%lld", source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGWRONGDRIVEFORLOG3]);
+      strcpy(tempmessage_ccc, _(".\nAre you sure this is the correct progress log file for this drive?\n"));
       message_error_ccc(tempmessage_ccc);
       fail = fail | 0x20;
     }
@@ -4029,9 +4023,9 @@ int check_and_repair_log_ccc(void)
     disable_log_backup_ccc = false;
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGBAKWRITEERR]);
+      strcpy(tempmessage_ccc, _("Error writing backup log file"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return LOGFILE_ERROR_RETURN_CODE;
     }
@@ -4606,16 +4600,16 @@ int do_fill_ccc(int status, long long mask)
 
   if (fill_erase_ccc)
   {
-    if (open_confirmation_dialog_ccc(curlang_ccc[LANGCONFIRMERASEDESTINATION]))
+    if (open_confirmation_dialog_ccc(_("You are about to erase all data on the destination!\nAre you sure you want to erase all data?")))
     {
       long long destination_size = lseek(disk2_fd_ccc, 0, SEEK_END);
       if (destination_size == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTGETSIZEDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -4639,7 +4633,7 @@ int do_fill_ccc(int status, long long mask)
       start_position_ccc = 0;
       end_position_ccc = destination_sectors;
       source_total_size_ccc = destination_sectors;
-      strcpy(current_status_string_ccc, curlang_ccc[LANGERASEING]);
+      strcpy(current_status_string_ccc, _("Erasing"));
       while (current_position_ccc < destination_sectors)
       {
         int write_size = original_cluster_size_ccc;
@@ -4665,9 +4659,9 @@ int do_fill_ccc(int status, long long mask)
       }
 
       update_display_ccc(0);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFINISHED]);
+      strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
 
       // current_position_ccc = current_position_bak;
@@ -4705,7 +4699,7 @@ int do_fill_ccc(int status, long long mask)
   current_position_ccc = start_position_ccc;
   start_position_ccc = input_offset_ccc;
   current_status_ccc = FILLING;
-  strcpy(current_status_string_ccc, curlang_ccc[LANGFILLING]);
+  strcpy(current_status_string_ccc, _("Filling"));
   update_display_ccc(0);
   if (stop_signal_ccc)
   {
@@ -4825,12 +4819,12 @@ int do_fill_ccc(int status, long long mask)
     }
   }
   current_status_ccc = FINISHED;
-  strcpy(current_status_string_ccc, curlang_ccc[LANGFINISHED]);
+  strcpy(current_status_string_ccc, _("Finished"));
   logfile_changed_ccc = true;
   update_display_ccc(0);
-  strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFINISHED]);
+  strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
   message_error_ccc(tempmessage_ccc);
-  print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+  print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   clear_error_message_ccc();
   return 0;
 }
@@ -5558,22 +5552,22 @@ int change_chunk_status_ccc(long long position, long long size, long long status
   int block = find_block_ccc(position);
   if (block == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGBLOCKNOTFOUND]);
+    strcpy(tempmessage_ccc, _("Error changing chunk status, block not found"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INTERNAL_ERROR_RETURN_CODE;
   }
   // make sure chunk fits within the block
   if (position < lposition_ccc[block] || (position + size) > (lposition_ccc[block] + lsize_ccc[block]))
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOTWITHINBLOCK]);
+    strcpy(tempmessage_ccc, _("Error changing chunk status, is not within the block"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INTERNAL_ERROR_RETURN_CODE;
   }
@@ -5695,11 +5689,11 @@ int add_to_domain_ccc(long long position, long long size)
     block = find_domain_block_ccc(position);
     if (block == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGDOMAINBLOCKNOTFOUND]);
+      strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "\nposition=%06llx  size=0x%06llx", position, size);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
 
       // fprintf (debug_file_ccc,"error1 position=%06llx  size=0x%06llx\n", position, size);
@@ -5800,11 +5794,11 @@ int add_to_domain_ccc(long long position, long long size)
       else
       {
         critical_process_ccc = false;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGDOMAINBLOCKNOTFOUND]);
+        strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, "\nposition=%06llx  size=0x%06llx", position, size);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
 
         // fprintf (debug_file_ccc,"error2 position=%06llx  size=0x%06llx\n", position, size);
@@ -5962,7 +5956,7 @@ int clone_forward_ccc(void)
   {
     if (rebuild_assist_ccc)
     {
-      strcpy(current_status_string_ccc, curlang_ccc[LANGREBUILDASSIST]);
+      strcpy(current_status_string_ccc, _("Rebuild Assist"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -5985,7 +5979,7 @@ int clone_forward_ccc(void)
       {
         current_position_ccc = start_position_ccc;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE1]);
+      strcpy(current_status_string_ccc, _("Phase 1"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6007,7 +6001,7 @@ int clone_forward_ccc(void)
       {
         current_position_ccc = end_position_ccc - 1;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE2]);
+      strcpy(current_status_string_ccc, _("Phase 2"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6060,12 +6054,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE3]);
+          strcpy(current_status_string_ccc, _("Phase 3"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE3]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Phase 3"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6092,12 +6086,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
+          strcpy(current_status_string_ccc, _("Phase 4"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Phase 4"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6121,12 +6115,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
+          strcpy(current_status_string_ccc, _("Trimming"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Trimming"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6150,12 +6144,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
+          strcpy(current_status_string_ccc, _("Dividing 1"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Dividing 1"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -6183,12 +6177,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
+          strcpy(current_status_string_ccc, _("Dividing 2"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Dividing 2"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -6216,12 +6210,12 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
+          strcpy(current_status_string_ccc, _("Scraping"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
+          strcpy(current_status_string_ccc, _("Scraping"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6261,7 +6255,7 @@ int clone_forward_ccc(void)
         current_position_ccc = start_position_ccc;
         retried_lba_count_ccc = 0;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGRETRYING]);
+      strcpy(current_status_string_ccc, _("Retrying"));
       skip_ccc = false;
       cluster_size_ccc = block_size_ccc;
       set_soft_timer_ccc(RETRYING);
@@ -6281,30 +6275,30 @@ int clone_forward_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    strcpy(current_status_string_ccc, curlang_ccc[LANGFINISHED]);
+    strcpy(current_status_string_ccc, _("Finished"));
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFINISHED]);
+    strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
     ret = 0;
   }
   else if (ret)
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFAILEDERROR]);
+    strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, "%d", ret);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
   else
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFAILED]);
+    strcpy(tempmessage_ccc, _("The rescue failed to finish"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
   set_soft_timer_ccc(-1);
@@ -6369,8 +6363,8 @@ int clone_reverse_ccc(void)
       {
         current_position_ccc = end_position_ccc;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE1]);
-      strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+      strcpy(current_status_string_ccc, _("Phase 1"));
+      strcat(current_status_string_ccc, _("(Reverse)"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6392,8 +6386,8 @@ int clone_reverse_ccc(void)
       {
         current_position_ccc = start_position_ccc;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE2]);
-      strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+      strcpy(current_status_string_ccc, _("Phase 2"));
+      strcat(current_status_string_ccc, _("(Reverse)"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6446,14 +6440,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE3]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Phase 3"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE3]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Phase 3"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6480,14 +6474,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Phase 4"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Phase 4"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6511,14 +6505,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Trimming"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Trimming"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6542,14 +6536,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Dividing 1"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Dividing 1"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -6577,14 +6571,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Dividing 2"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Dividing 2"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -6612,14 +6606,14 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Scraping"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGBADHEAD]);
-          strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+          strcpy(current_status_string_ccc, _("Scraping"));
+          strcat(current_status_string_ccc, _("(Bad Head)"));
+          strcat(current_status_string_ccc, _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6658,8 +6652,8 @@ int clone_reverse_ccc(void)
         current_position_ccc = end_position_ccc;
         retried_lba_count_ccc = 0;
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGRETRYING]);
-      strcat(current_status_string_ccc, curlang_ccc[LANGREVERSE]);
+      strcpy(current_status_string_ccc, _("Retrying"));
+      strcat(current_status_string_ccc, _("(Reverse)"));
       skip_ccc = false;
       cluster_size_ccc = block_size_ccc;
       set_soft_timer_ccc(RETRYING);
@@ -6679,30 +6673,30 @@ int clone_reverse_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    strcpy(current_status_string_ccc, curlang_ccc[LANGFINISHED]);
+    strcpy(current_status_string_ccc, _("Finished"));
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFINISHED]);
+    strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
     ret = 0;
   }
   else if (ret)
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFAILEDERROR]);
+    strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, "%d", ret);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
   else
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGRESCUEFAILED]);
+    strcpy(tempmessage_ccc, _("The rescue failed to finish"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
   set_soft_timer_ccc(-1);
@@ -6829,11 +6823,11 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INTERNAL_ERROR_RETURN_CODE;
     }
@@ -6862,7 +6856,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
           break;
         }
       }
-      strcpy(current_status_string_ccc, curlang_ccc[LANGREADINGDESTINATION]);
+      strcpy(current_status_string_ccc, _("Reading destination"));
       update_display_ccc(DISPLAY_UPDATE_TIME);
 
       int rsize = end_position_ccc - current_position_ccc;
@@ -6876,9 +6870,9 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       // sanity check
       if (rsize * sector_size_ccc > DRIVER_TRANSFER_BUFFER_SIZE)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVERBUFFEREXCEEDED]);
+        strcpy(tempmessage_ccc, _("Internal driver buffer error"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INTERNAL_ERROR_RETURN_CODE;
       }
@@ -6886,32 +6880,32 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       ret = lseek(disk2_fd_ccc, current_position_ccc * sector_size_ccc, SEEK_SET);
       if (ret == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTSEEKDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
       ret = read(disk2_fd_ccc, ccc_buffer_ccc, rsize * sector_size_ccc);
       if (ret == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTREADDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
       else if (ret != rsize * sector_size_ccc)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTREADDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -6972,8 +6966,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     current_position_ccc = start_position_ccc;
     if (ret == 0 && !complete && keep_going)
     {
-      strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-      strcat(current_status_string_ccc, curlang_ccc[LANGPHASE4]);
+      strcpy(current_status_string_ccc, _("Reading: "));
+      strcat(current_status_string_ccc, _("Phase 4"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = false;
       set_soft_timer_ccc(PHASE4);
@@ -6989,8 +6983,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_trim_ccc)
       {
-        strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-        strcat(current_status_string_ccc, curlang_ccc[LANGTRIMMING]);
+        strcpy(current_status_string_ccc, _("Reading: "));
+        strcat(current_status_string_ccc, _("Trimming"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -7003,8 +6997,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_divide1_ccc)
       {
-        strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-        strcat(current_status_string_ccc, curlang_ccc[LANGDIVIDING1]);
+        strcpy(current_status_string_ccc, _("Reading: "));
+        strcat(current_status_string_ccc, _("Dividing 1"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -7021,8 +7015,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_divide1_ccc && do_divide2_ccc)
       {
-        strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-        strcat(current_status_string_ccc, curlang_ccc[LANGDIVIDING2]);
+        strcpy(current_status_string_ccc, _("Reading: "));
+        strcat(current_status_string_ccc, _("Dividing 2"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -7039,8 +7033,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_scrape_ccc)
       {
-        strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-        strcat(current_status_string_ccc, curlang_ccc[LANGSCRAPING]);
+        strcpy(current_status_string_ccc, _("Reading: "));
+        strcat(current_status_string_ccc, _("Scraping"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -7053,8 +7047,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       while (retries_ccc > 0)
       {
-        strcpy(current_status_string_ccc, curlang_ccc[LANGREADING]);
-        strcat(current_status_string_ccc, curlang_ccc[LANGRETRYING]);
+        strcpy(current_status_string_ccc, _("Reading: "));
+        strcat(current_status_string_ccc, _("Retrying"));
         retry_error_size_ccc = 0;
         current_position_ccc = start_position_ccc;
         retried_lba_count_ccc = 0;
@@ -7088,9 +7082,9 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVELOCKED]);
+    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -7137,9 +7131,9 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
       int ret = call_command_on_error_ccc();
       if (ret)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGEXITDUETOSLOW]);
+        strcpy(tempmessage_ccc, _("Exiting due to slow read speed"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+        print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
         clear_error_message_ccc();
         return EXIT_ON_SLOW_RETURN_CODE;
       }
@@ -7164,11 +7158,11 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INTERNAL_ERROR_RETURN_CODE;
       }
@@ -7251,9 +7245,9 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           {
             sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
-            strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             return INTERNAL_ERROR_RETURN_CODE;
           }
@@ -7456,7 +7450,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return retstat;
             }
@@ -7503,9 +7497,9 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVELOCKED]);
+    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -7554,9 +7548,9 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
       int ret = call_command_on_error_ccc();
       if (ret)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGEXITDUETOSLOW]);
+        strcpy(tempmessage_ccc, _("Exiting due to slow read speed"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+        print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
         clear_error_message_ccc();
         return EXIT_ON_SLOW_RETURN_CODE;
       }
@@ -7579,11 +7573,11 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INTERNAL_ERROR_RETURN_CODE;
       }
@@ -7682,9 +7676,9 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             return INTERNAL_ERROR_RETURN_CODE;
           }
@@ -7847,7 +7841,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return retstat;
             }
@@ -7885,9 +7879,9 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVELOCKED]);
+    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -7928,11 +7922,11 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INTERNAL_ERROR_RETURN_CODE;
     }
@@ -8012,9 +8006,9 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             return INTERNAL_ERROR_RETURN_CODE;
           }
@@ -8145,7 +8139,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
             }
 #endif
@@ -8232,9 +8226,9 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
               sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-              strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+              strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return INTERNAL_ERROR_RETURN_CODE;
             }
@@ -8322,7 +8316,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
             }
 #endif
@@ -8387,9 +8381,9 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVELOCKED]);
+    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -8432,11 +8426,11 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INTERNAL_ERROR_RETURN_CODE;
     }
@@ -8543,9 +8537,9 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             return INTERNAL_ERROR_RETURN_CODE;
           }
@@ -8676,7 +8670,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
             }
 #endif
@@ -8759,9 +8753,9 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
               sprintf(tempmessage_ccc, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-              strcpy(tempmessage_ccc, curlang_ccc[LANGPOSOUTOFRANGE]);
+              strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return INTERNAL_ERROR_RETURN_CODE;
             }
@@ -8849,7 +8843,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             {
               strcpy(tempmessage_ccc, "fakebad error");
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
             }
 #endif
@@ -8915,9 +8909,9 @@ int analyze_drive_ccc(int sections, int extended)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVELOCKED]);
+    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -8931,7 +8925,7 @@ int analyze_drive_ccc(int sections, int extended)
   long long current_position_bak = current_position_ccc;
   start_position_ccc = 0;
   end_position_ccc = source_total_size_ccc;
-  strcpy(current_status_string_ccc, curlang_ccc[LANGANALYZING]);
+  strcpy(current_status_string_ccc, _("Analyzing"));
 
   int dont_mark = 1;
   if (td_soft_reset_time_ccc >= sc_soft_reset_time_ccc)
@@ -9013,11 +9007,11 @@ int analyze_drive_ccc(int sections, int extended)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGPOSNOTFOUND]);
+        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         start_position_ccc = start_position_bak;
         end_position_ccc = end_position_bak;
@@ -9205,7 +9199,7 @@ int analyze_drive_ccc(int sections, int extended)
   if (1)
   {
     // perform slow test
-    strcpy(current_status_string_ccc, curlang_ccc[LANGDETECTINGVARIANCE]);
+    strcpy(current_status_string_ccc, _("Detecting Variance"));
     update_display_ccc(0);
     maxruntime = ANALYZESLOWTIME;
     if (extended)
@@ -9438,9 +9432,9 @@ int process_skip_ccc(void)
     min_skip_size_ccc = original_min_skip_size_ccc;
     total_skip_resets_ccc++;
     reset_skip_ccc();
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSKIPRESET]);
+    strcpy(tempmessage_ccc, _("Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -9957,11 +9951,11 @@ int read_chunk_ccc(long long position, int size)
     if (read_ret == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTSEEKSOURCE]);
+      strcpy(tempmessage_ccc, _("Error: Unable to seek source"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -9969,11 +9963,11 @@ int read_chunk_ccc(long long position, int size)
     if (0 && read_ret == -1) // this is disabled as bad sectors cause simple I/O errors
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTREADSOURCE]);
+      strcpy(tempmessage_ccc, _("Error: Unable to read source"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -10064,9 +10058,9 @@ int read_chunk_ccc(long long position, int size)
     if (sense_key_ccc == 0x4 && asc_ccc == 0x44 && ascq_ccc == 0 && check_device_ccc())
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGDEVICEFAULT]);
+      strcpy(tempmessage_ccc, _("Error: Device fault detected on source"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return DEVICE_FAULT_RETURN_CODE;
     }
@@ -10076,9 +10070,9 @@ int read_chunk_ccc(long long position, int size)
     if ((ata_status_ccc & 1) && (ata_error_ccc & 0x20) && check_device_ccc())
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGDEVICEFAULT]);
+      strcpy(tempmessage_ccc, _("Error: Device fault detected on source"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return DEVICE_FAULT_RETURN_CODE;
     }
@@ -10092,11 +10086,11 @@ int read_chunk_ccc(long long position, int size)
       if (check_device_ccc())
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOFAULT]);
+        strcpy(tempmessage_ccc, _("Host IO error during reading source"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %d (%s)", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return DEVICE_ERROR_RETURN_CODE - io_host_status_bak;
       }
@@ -10110,16 +10104,6 @@ int read_chunk_ccc(long long position, int size)
     }
   }
 
-  // check if past allowed read limit
-  if (recovery_past_limit_ccc)
-  {
-    check_message_ccc = true;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGFREEREADLIMIT]);
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-    clear_error_message_ccc();
-    return GENERAL_ERROR_RETURN_CODE;
-  }
   // fprintf (stdout, "return was %d\n", ret);    //debug
   if (debug_ccc & DEBUG11)
   {
@@ -10147,11 +10131,11 @@ int write_chunk_ccc(long long position, int size)
     // sanity check
     if (size * sector_size_ccc != (int)ccc_main_buffer_size_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTWRITEDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "\ninternal program sector size error");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -10179,31 +10163,31 @@ int write_chunk_ccc(long long position, int size)
     int ret = scsi_write_ccc(position, size);
     if (ret)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTWRITEDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     else if (sense_key_ccc > 1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORWRITINGDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "\n %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     else if (io_host_status_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORWRITINGDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "\n %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -10211,11 +10195,11 @@ int write_chunk_ccc(long long position, int size)
     long long elapsed_time = end_time - start_time;
     if (elapsed_time > (SCSI_WRITE_TIMEOUT * 1000))
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORWRITINGDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, "\n %lldms", elapsed_time / 1000);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -10225,32 +10209,32 @@ int write_chunk_ccc(long long position, int size)
     int ret = lseek(disk2_fd_ccc, position * sector_size_ccc, SEEK_SET);
     if (ret == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTSEEKDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     ret = write(disk2_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
     if (ret == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTWRITEDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     else if (ret != size * sector_size_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTWRITEDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s", disk_2_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -10965,9 +10949,9 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           }
           return new_size;
         }
-        strcpy(tempmessage_ccc, curlang_ccc[LANGDOMAINERROR]);
+        strcpy(tempmessage_ccc, _("Internal program error processing domain check"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INTERNAL_ERROR_RETURN_CODE;
       }
@@ -11489,9 +11473,9 @@ int scsi_write_ccc(long long position, int size)
     if (!scsi_write16_supported_ccc && !scsi_write12_supported_ccc && !scsi_write10_supported_ccc && !scsi_write6_supported_ccc)
     {
       fprintf(stdout, "ERROR: No supported write modes found!\n");
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTWRITEDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -11766,11 +11750,11 @@ int process_chs_ccc(long long position)
   if (chs_ccc.cylinder >= chs_ccc.total_cylinders || chs_ccc.head >= chs_ccc.total_heads || chs_ccc.sector > chs_ccc.sectors_per_track || chs_ccc.cylinder > 65535 || chs_ccc.head > 15 || chs_ccc.sector > 256)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCHSERROR]);
+    strcpy(tempmessage_ccc, _("Error calculating CHS, value out of bounds"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " C=%lld H=%lld S=%lld\n", chs_ccc.cylinder, chs_ccc.head, chs_ccc.sector);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INTERNAL_ERROR_RETURN_CODE;
   }
@@ -11894,7 +11878,7 @@ int disk_reopen_ccc(void)
     if (disk1_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUNABLETOREOPEN]);
+      strcpy(tempmessage_ccc, _("Unable to reopen source device"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -11912,29 +11896,29 @@ int call_command_on_error_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    sprintf(tempmessage_ccc, "%s %s\n", curlang_ccc[LANGCALLCOMMAND], command_to_call_ccc);
+    sprintf(tempmessage_ccc, "%s %s\n", _("Call command:"), command_to_call_ccc);
     message_console_log_ccc(tempmessage_ccc, 0);
     int ret = system(command_to_call_ccc);
     if (ret)
     {
       int status = WEXITSTATUS(ret);
       int signal = WTERMSIG(ret);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDFAILED]);
+      strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
-    fprintf(stdout, "%s\n", curlang_ccc[LANGCOMMANDCOMPLETED]);
+    fprintf(stdout, "%s\n", _("The command completed normally"));
 
     // reconnect devices after command completes
     if (connect_source_disk_ccc() || open_target_destination_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+      strcpy(tempmessage_ccc, _("Unable to connect devices"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -11947,9 +11931,9 @@ int call_command_on_error_ccc(void)
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+        strcpy(tempmessage_ccc, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return -1;
       }
@@ -11957,9 +11941,9 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now
     if (check_device_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVEUNRESPONSIVE]);
+      strcpy(tempmessage_ccc, _("The drive is still unresponsive after the command call"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -11975,9 +11959,9 @@ int call_command_on_error_ccc(void)
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -11985,9 +11969,9 @@ int call_command_on_error_ccc(void)
     // reconnect devices after command completes
     if (connect_source_disk_ccc() || open_target_destination_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+      strcpy(tempmessage_ccc, _("Unable to connect devices"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -12000,9 +11984,9 @@ int call_command_on_error_ccc(void)
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+        strcpy(tempmessage_ccc, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return -1;
       }
@@ -12010,9 +11994,9 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now
     if (check_device_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGDRIVEUNRESPONSIVE]);
+      strcpy(tempmessage_ccc, _("The drive is still unresponsive after the command call"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -12029,22 +12013,22 @@ int call_command_on_power_cycle_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    sprintf(tempmessage_ccc, "%s %s\n", curlang_ccc[LANGCALLCOMMAND], power_command_to_call_ccc);
+    sprintf(tempmessage_ccc, "%s %s\n", _("Call command:"), power_command_to_call_ccc);
     message_console_log_ccc(tempmessage_ccc, 0);
     int ret = system(power_command_to_call_ccc);
     if (ret)
     {
       int status = WEXITSTATUS(ret);
       int signal = WTERMSIG(ret);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDFAILED]);
+      strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return 2;
     }
-    sprintf(tempmessage_ccc, "%s\n", curlang_ccc[LANGCOMMANDCOMPLETED]);
+    sprintf(tempmessage_ccc, "%s\n", _("The command completed normally"));
     message_console_log_ccc(tempmessage_ccc, 0);
 
     // reconnect devices after command completes
@@ -12056,9 +12040,9 @@ int call_command_on_power_cycle_ccc(void)
     // check device to see if it is good now
     // if (check_device_ccc())
     //{
-    // strcpy (tempmessage_ccc, curlang_ccc[LANGDRIVEUNRESPONSIVE]);
+    // strcpy (tempmessage_ccc, _("The drive is still unresponsive after the command call"));
     // message_error_ccc(tempmessage_ccc);
-    // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    // print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     // clear_error_message_ccc();
     //  return 1;
     //}
@@ -12074,9 +12058,9 @@ int call_command_on_power_cycle_ccc(void)
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return 2;
     }
@@ -12090,9 +12074,9 @@ int call_command_on_power_cycle_ccc(void)
     // check device to see if it is good now
     // if (check_device_ccc())
     //{
-    // strcpy (tempmessage_ccc, curlang_ccc[LANGDRIVEUNRESPONSIVE]);
+    // strcpy (tempmessage_ccc, _("The drive is still unresponsive after the command call"));
     // message_error_ccc(tempmessage_ccc);
-    // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    // print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     // clear_error_message_ccc();
     //  return 1;
     //}
@@ -12234,29 +12218,29 @@ int check_device_ccc(void)
     {
       update_display_status_buttons_ccc(0);
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCEIMPROPERIDENTIFY]);
+      strcpy(tempmessage_ccc, _("Source drive did not respond properly to identify command"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return DEVICE_ERROR_RETURN_CODE;
     }
     else if (ata_status_ccc & 1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCEERRORIDENTIFY]);
+      strcpy(tempmessage_ccc, _("Source drive responded with error to identify command"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return DEVICE_ERROR_RETURN_CODE;
     }
     else if (ata_passthrough_ccc && io_host_status_ccc)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRORIDENTIFY]);
+      strcpy(tempmessage_ccc, _("Host IO error during source drive identify"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return DEVICE_ERROR_RETURN_CODE;
     }
@@ -12292,11 +12276,11 @@ int check_device_ccc(void)
         if (usb_identify_ccc(initial_busy_wait_time_ccc / 1000))
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGIDENTIFYFAILED]);
+          strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return INPUT_DEVICE_ERROR_RETURN_CODE;
         }
@@ -12306,11 +12290,11 @@ int check_device_ccc(void)
         if (identify_device_ccc())
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGIDENTIFYFAILED]);
+          strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return INPUT_DEVICE_ERROR_RETURN_CODE;
         }
@@ -12330,13 +12314,13 @@ int check_device_ccc(void)
         if (ret)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGFAILEDSIZECHECK]);
+          strcpy(tempmessage_ccc, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, "\n");
           message_error_ccc(tempmessage_ccc);
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUNABLETOREOPEN]);
+          strcpy(tempmessage_ccc, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return DEVICE_ERROR_RETURN_CODE;
         }
@@ -12351,13 +12335,13 @@ int check_device_ccc(void)
         if (ret)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGFAILEDSIZECHECK]);
+          strcpy(tempmessage_ccc, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, "\n");
           message_error_ccc(tempmessage_ccc);
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUNABLETOREOPEN]);
+          strcpy(tempmessage_ccc, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return DEVICE_ERROR_RETURN_CODE;
         }
@@ -12369,22 +12353,22 @@ int check_device_ccc(void)
       if (read_capacity_16_ccc() || sense_key_ccc > 1)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGREADCAPFAILED]);
+        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
       else if (io_host_status_ccc)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRCAPACITY]);
+        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12399,22 +12383,22 @@ int check_device_ccc(void)
       if (read_capacity_10_ccc() || sense_key_ccc > 1)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGREADCAPFAILED]);
+        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
       else if (io_host_status_ccc)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRCAPACITY]);
+        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12441,9 +12425,9 @@ int check_device_ccc(void)
   {
     fprintf(stdout, "original size = %lld reported size = %lld\n", source_total_size_ccc, drive_size);
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCESIZECHANGED]);
+    strcpy(tempmessage_ccc, _("Source drive reports wrong size / size changed"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return DEVICE_ERROR_RETURN_CODE;
   }
@@ -12561,11 +12545,11 @@ int open_target_destination_ccc(void)
       pclose(fp);
       if (strncmp(disk_2_ccc, line, 8) == 0)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGTARGETISHOSTOS]);
+        strcpy(tempmessage_ccc, _("Error: Destination is detected to be the host OS drive"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " (%s)", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12613,11 +12597,11 @@ int open_target_destination_ccc(void)
     }
     if (disk2_fd_ccc == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTOPENDESTINATION]);
+      strcpy(tempmessage_ccc, _("Error: Unable to open destination"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -12625,11 +12609,11 @@ int open_target_destination_ccc(void)
     {
       if (lseek(disk2_fd_ccc, 0, SEEK_SET))
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTSEEKDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12637,11 +12621,11 @@ int open_target_destination_ccc(void)
       target_total_size_ccc = lseek(disk2_fd_ccc, 0, SEEK_END);
       if (target_total_size_ccc == -1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCANTGETSIZEDESTINATION]);
+        strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12652,9 +12636,9 @@ int open_target_destination_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDESTINATION]);
+    strcpy(tempmessage_ccc, _("No destination chosen\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return OUTPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -12693,13 +12677,13 @@ int open_source_disk_ccc(void)
       pclose(fp);
       if (strncmp(disk_1_ccc, line, 8) == 0)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCEMOUNTEDA]);
+        strcpy(tempmessage_ccc, _("Error: Source is detected to be mounted"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " (%s).\n", disk_1_ccc);
         message_error_ccc(tempmessage_ccc);
-        strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCEMOUNTEDB]);
+        strcpy(tempmessage_ccc, _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -12734,11 +12718,11 @@ int open_source_disk_ccc(void)
     }
     if (disk1_fd_ccc == -1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCANTOPENSOURCE]);
+      strcpy(tempmessage_ccc, _("Error: Unable to open source"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -12841,31 +12825,31 @@ int process_source_ccc(void)
     do_soft_reset_ccc(current_disk_ccc);
     if (identify_device_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGIDENTIFYFAILED]);
+      strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
     else if (ata_status_ccc & 1)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGIDENTIFYFAILED]);
+      strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSTATUSSLASHERROR]);
+      strcpy(tempmessage_ccc, _("\nStatus / Error"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %02x / %02x", ata_status_ccc, ata_error_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
     else if ((scsi_passthrough_ccc || ata_passthrough_ccc) && io_host_status_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRIDENTIFY]);
+      strcpy(tempmessage_ccc, _("Host IO error during identify"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -13272,21 +13256,21 @@ int process_source_ccc(void)
       allow16 = 0;
       if (read_capacity_10_ccc() || sense_key_ccc > 1)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGREADCAPFAILED]);
+        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
       else if (io_host_status_ccc)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRCAPACITY]);
+        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return INPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -13325,21 +13309,21 @@ int process_source_ccc(void)
         // if read capacity 16 failed then try read capacity 10
         if (read_capacity_10_ccc() || sense_key_ccc > 1)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGREADCAPFAILED]);
+          strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return INPUT_DEVICE_ERROR_RETURN_CODE;
         }
         else if (io_host_status_ccc)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGHOSTIOERRCAPACITY]);
+          strcpy(tempmessage_ccc, _("Host IO error during capacity"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return INPUT_DEVICE_ERROR_RETURN_CODE;
         }
@@ -13448,11 +13432,11 @@ int process_source_ccc(void)
     }
     if (remainder)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCENOTDIVISABLE]);
+      strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %lld", size);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -13481,11 +13465,11 @@ int process_source_ccc(void)
     long long remainder = generic_source_total_size_ccc % sector_size_ccc;
     if (remainder)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCENOTDIVISABLE]);
+      strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %lld", generic_source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
@@ -13493,11 +13477,11 @@ int process_source_ccc(void)
 
   if (source_total_size_ccc <= 0)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSOURCESIZEINVALID]);
+    strcpy(tempmessage_ccc, _("Error: Source size is invalid"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %lld", source_total_size_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -13510,9 +13494,9 @@ int process_source_ccc(void)
   end_position_ccc = input_offset_ccc + read_size_ccc;
   if (end_position_ccc > source_total_size_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGREADSIZEPASTEND]);
+    strcpy(tempmessage_ccc, _("Error: Read size extends past end of device"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return INPUT_DEVICE_ERROR_RETURN_CODE;
   }
@@ -13870,17 +13854,17 @@ int extract_smart_data_ccc(void)
 {
   if (!smart_supported_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSMARTNOTSUPPORTED]);
+    strcpy(tempmessage_ccc, _("Error: SMART not supported on this device"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return 1;
   }
   if (!smart_enabled_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSMARTNOTENABLED]);
+    strcpy(tempmessage_ccc, _("Error: SMART not enabled on this device"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return 1;
   }
@@ -13916,11 +13900,11 @@ int extract_smart_data_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORREADINGSMART]);
+    strcpy(tempmessage_ccc, _("Error: Unable to read SMART data from device"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, "return=%d status=0x%x sense=0x%x", retsmart, ata_status_ccc, sense_key_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return 1;
   }
@@ -13973,9 +13957,9 @@ int extract_smart_data_ccc(void)
   char temp[256];
   uint16_t version;
   memcpy(&version, smart_data, 2);
-  sprintf(temp, "# %s %d\n", curlang_ccc[LANGSMARTVERSION], version);
+  sprintf(temp, "# %s %d\n", _("SMART data structure version"), version);
   strcpy(smart_data_text_ccc, temp);
-  sprintf(temp, "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", curlang_ccc[LANGID], curlang_ccc[LANGFLAGS], curlang_ccc[LANGCURRENT], curlang_ccc[LANGWORST], curlang_ccc[LANGTHRESHOLD], curlang_ccc[LANGRAWDATA], curlang_ccc[LANGATTRIBUTENAME]);
+  sprintf(temp, "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", _("ID"), _("Flags"), _("Current"), _("Worst"), _("Threshold"), _("Raw data"), _("Attribute name"));
   strcat(smart_data_text_ccc, temp);
   uint8_t threshold = 0;
   int offset = 2;
@@ -15040,14 +15024,14 @@ void invoke_hba_reset_ccc(void)
   {
     strcpy(tempmessage_ccc, "hba reset error");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     strcpy(tempmessage_ccc, "hba reset complete");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 }
@@ -15060,20 +15044,20 @@ void disable_ports_ccc(void)
   system("cp -f /etc/default/grub /etc/default/grub_hddsc_last_bakup");
   if (access("/boot/grub/grub_hddsc_original_bakup.cfg", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/boot/grub/grub_hddsc_original_bakup.cfg");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /boot/grub/grub.cfg\n");
     return;
   }
   if (access("/etc/default/grub_hddsc_original_bakup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/etc/default/grub_hddsc_original_bakup");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /etc/default/grub\n");
     return;
@@ -15082,10 +15066,10 @@ void disable_ports_ccc(void)
   FILE *readfile = fopen("/etc/default/grub", "r");
   if (readfile == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUNABLETOOPEN]);
+    strcpy(tempmessage_ccc, _("Error: Unable to open file"));
     strcat(tempmessage_ccc, "\n/etc/default/grub");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error opening /etc/default/grub (%s)\n", strerror(errno));
     return;
@@ -15093,10 +15077,10 @@ void disable_ports_ccc(void)
   FILE *writefile = fopen("/etc/default/grub_tmp", "w");
   if (writefile == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUNABLETOOPEN]);
+    strcpy(tempmessage_ccc, _("Error: Unable to open file"));
     strcat(tempmessage_ccc, "\n/etc/default/grub_tmp");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error opening /etc/default/grub_tmp (%s)\n", strerror(errno));
     fclose(readfile);
@@ -15189,25 +15173,25 @@ void disable_ports_ccc(void)
 
   if (!found_default_line)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOGRUBDEFAULTLINE]);
+    strcpy(tempmessage_ccc, _("Error: Unable to locate the line in GRUB"));
     strcat(tempmessage_ccc, "\nGRUB_CMDLINE_LINUX_DEFAULT=");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
 
   if (confirm)
   {
-    if (open_confirmation_dialog_ccc(curlang_ccc[LANGCONFIRMGRUBUPDATE]))
+    if (open_confirmation_dialog_ccc(_("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
     {
       if (system("cp -f /etc/default/grub_tmp /etc/default/grub"))
       {
         // error copying
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCOPYFAILED]);
+        strcpy(tempmessage_ccc, _("Error: File copying failed"));
         strcat(tempmessage_ccc, "\ncp -f /etc/default/grub_tmp /etc/default/grub");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return;
       }
@@ -15216,17 +15200,17 @@ void disable_ports_ccc(void)
         if (system("update-grub"))
         {
           // error updating
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUPDATEGRUBFAILED]);
+          strcpy(tempmessage_ccc, _("Error: Updating GRUB failed"));
           strcat(tempmessage_ccc, "\nupdate-grub");
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return;
         }
       }
-      strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+      strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
     }
   }
@@ -15238,33 +15222,33 @@ void restore_ports_ccc(void)
 {
   if (access("/boot/grub/grub_hddsc_original_bakup.cfg", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/boot/grub/grub.cfg (/boot/grub/grub_hddsc_original_bakup.cfg)");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /boot/grub/grub.cfg\n");
   }
   if (access("/etc/default/grub_hddsc_original_bakup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/etc/default/grub (/etc/default/grub_hddsc_original_bakup)");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /etc/default/grub\n");
     return;
   }
 
-  if (open_confirmation_dialog_ccc(curlang_ccc[LANGCONFIRMGRUBUPDATE]))
+  if (open_confirmation_dialog_ccc(_("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
   {
     if (system("cp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub"))
     {
       // error copying
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCOPYFAILED]);
+      strcpy(tempmessage_ccc, _("Error: File copying failed"));
       strcat(tempmessage_ccc, "\ncp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return;
     }
@@ -15273,17 +15257,17 @@ void restore_ports_ccc(void)
       if (system("update-grub"))
       {
         // error updating
-        strcpy(tempmessage_ccc, curlang_ccc[LANGUPDATEGRUBFAILED]);
+        strcpy(tempmessage_ccc, _("Error: Updating GRUB failed"));
         strcat(tempmessage_ccc, "\nupdate-grub");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return;
       }
     }
-    strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 
@@ -15297,41 +15281,41 @@ void disable_usb_mass_storage_ccc(void)
 
   if (access("/root/usb-storage.ko.original", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/root/usb-storage.ko.original");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /root/usb-storage.ko.original\n");
     return;
   }
   if (access("/root/usb-storage.ko.backup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/root/usb-storage.ko.backup");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Error: no backup of /root/usb-storage.ko.backup\n");
     return;
   }
 
-  if (open_confirmation_dialog_ccc(curlang_ccc[LANGUSBMASSDISABLE]))
+  if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver,\nafter which no USB storage devices will be detected by the operating system.")))
   {
     system("modprobe -r usb-storage");
     if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko"))
     {
       // error copying
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCOPYFAILED]);
+      strcpy(tempmessage_ccc, _("Error: File copying failed"));
       strcat(tempmessage_ccc, "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return;
     }
-    strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 }
@@ -15340,38 +15324,38 @@ void restore_usb_mass_storage_ccc(void)
 {
   if (access("/root/usb-storage.ko.original", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/root/usb-storage.ko.original");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Warning: no backup of /root/usb-storage.ko.original\n");
   }
   if (access("/root/usb-storage.ko.backup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOBACKUPFILE]);
+    strcpy(tempmessage_ccc, _("Error: No backup file"));
     strcat(tempmessage_ccc, "\n/root/usb-storage.ko.backup");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fprintf(stdout, "Warning: no backup of /root/usb-storage.ko.backup\n");
   }
 
-  if (open_confirmation_dialog_ccc(curlang_ccc[LANGUSBMASSRESTORE]))
+  if (open_confirmation_dialog_ccc(_("You are about to restore the USB mass storage driver.")))
   {
     if (system("mv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
     {
       // error copying
-      strcpy(tempmessage_ccc, curlang_ccc[LANGCOPYFAILED]);
+      strcpy(tempmessage_ccc, _("Error: File copying failed"));
       strcat(tempmessage_ccc, "\nmv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return;
     }
-    strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 }
@@ -15641,11 +15625,11 @@ int initialize_head_map_memory_ccc(void)
   head_map_position_ccc = malloc(sizeof(*head_map_position_ccc) * head_map_rows_ccc);
   if (head_map_position_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15654,11 +15638,11 @@ int initialize_head_map_memory_ccc(void)
   head_map_size_ccc = malloc(sizeof(*head_map_size_ccc) * head_map_rows_ccc);
   if (head_map_size_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15667,11 +15651,11 @@ int initialize_head_map_memory_ccc(void)
   head_map_final_ccc = malloc(sizeof(*head_map_final_ccc) * head_map_rows_ccc);
   if (head_map_final_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15680,11 +15664,11 @@ int initialize_head_map_memory_ccc(void)
   head_map_head_ccc = malloc(sizeof(*head_map_head_ccc) * head_map_rows_ccc);
   if (head_map_head_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15693,11 +15677,11 @@ int initialize_head_map_memory_ccc(void)
   head_map_status_ccc = malloc(sizeof(*head_map_status_ccc) * head_map_rows_ccc);
   if (head_map_status_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15712,11 +15696,11 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_position_ccc = realloc(head_map_position_ccc, head_map_rows_ccc * sizeof(*head_map_position_ccc));
   if (temp_head_map_position_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15725,11 +15709,11 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_size_ccc = realloc(head_map_size_ccc, head_map_rows_ccc * sizeof(*head_map_size_ccc));
   if (temp_head_map_size_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15738,11 +15722,11 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_final_ccc = realloc(head_map_final_ccc, head_map_rows_ccc * sizeof(*head_map_final_ccc));
   if (temp_head_map_final_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15751,11 +15735,11 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_head_ccc = realloc(head_map_head_ccc, head_map_rows_ccc * sizeof(*head_map_head_ccc));
   if (temp_head_map_head_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15764,11 +15748,11 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_status_ccc = realloc(head_map_status_ccc, head_map_rows_ccc * sizeof(*head_map_status_ccc));
   if (temp_head_map_status_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGALLOCATEMEMERR]);
+    strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return GENERAL_ERROR_RETURN_CODE;
   }
@@ -15781,17 +15765,17 @@ int set_rebuild_assist_enabled_ccc(void)
 {
   if (!ahci_mode_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGREBUILDASSISTAHCIONLY]);
+    strcpy(tempmessage_ccc, _("Rebuild assist only works in direct ahci mode"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
   if (!ncq_supported_ccc || !rebuild_assist_supported_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGREBUILDASSISTNOTSUPPORTED]);
+    strcpy(tempmessage_ccc, _("Rebuild assist is not supported on this device"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -15799,9 +15783,9 @@ int set_rebuild_assist_enabled_ccc(void)
   // first disable rebuild assist to make sure it is cleared
   if (disable_rebuild_assist_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGREBUILDASSISTERRORDISABLING]);
+    strcpy(tempmessage_ccc, _("Error disabling rebuild assist"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -15810,9 +15794,9 @@ int set_rebuild_assist_enabled_ccc(void)
   // now enable rebuild assist
   if (enable_rebuild_assist_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGREBUILDASSISTERRORENABLING]);
+    strcpy(tempmessage_ccc, _("Error enabling rebuild assist"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     disable_rebuild_assist_ccc();
     return -1;
@@ -15901,7 +15885,7 @@ int rebuild_assist_map_heads_ccc(void)
   {
     strcpy(tempmessage_ccc, "rebuild assist is not supported on this device");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -15909,7 +15893,7 @@ int rebuild_assist_map_heads_ccc(void)
   {
     strcpy(tempmessage_ccc, "rebuild assist only works in direct ahci mode");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -15926,7 +15910,7 @@ int rebuild_assist_map_heads_ccc(void)
     message_error_ccc(tempmessage_ccc);
     strcpy(tempmessage_ccc, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -15950,7 +15934,7 @@ int rebuild_assist_map_heads_ccc(void)
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       fclose(headmap_debug_file);
       return -1;
@@ -15963,7 +15947,7 @@ int rebuild_assist_map_heads_ccc(void)
     message_error_ccc(tempmessage_ccc);
     strcpy(tempmessage_ccc, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fclose(headmap_debug_file);
     return -1;
@@ -15975,7 +15959,7 @@ int rebuild_assist_map_heads_ccc(void)
     message_error_ccc(tempmessage_ccc);
     strcpy(tempmessage_ccc, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     fclose(headmap_debug_file);
     return -1;
@@ -16021,7 +16005,7 @@ int rebuild_assist_map_heads_ccc(void)
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -16031,7 +16015,7 @@ int rebuild_assist_map_heads_ccc(void)
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       disable_rebuild_assist_ccc();
       return -1;
@@ -16045,7 +16029,7 @@ int rebuild_assist_map_heads_ccc(void)
       fprintf(stdout, "read chunk failure, return=0x%x status=%02x error=%02x\n", retstat, ata_status_ccc, ata_error_ccc);
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       disable_rebuild_assist_ccc();
       return -1;
@@ -16064,7 +16048,7 @@ int rebuild_assist_map_heads_ccc(void)
         fprintf(stdout, "failed to read ncq log, return=0x%x status=%02x error=%02x\n", ret, ata_status_ccc, ata_error_ccc);
         strcpy(tempmessage_ccc, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         disable_rebuild_assist_ccc();
         return -1;
@@ -16122,7 +16106,7 @@ int rebuild_assist_map_heads_ccc(void)
         fprintf(stdout, "unable to find pattern\n");
         strcpy(tempmessage_ccc, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         disable_rebuild_assist_ccc();
         return -1;
@@ -16145,7 +16129,7 @@ int rebuild_assist_map_heads_ccc(void)
     {
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       disable_rebuild_assist_ccc();
       return -1;
@@ -16341,7 +16325,7 @@ int rebuild_assist_map_heads_ccc(void)
         message_error_ccc(tempmessage_ccc);
         strcpy(tempmessage_ccc, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return -1;
       }
@@ -16352,7 +16336,7 @@ int rebuild_assist_map_heads_ccc(void)
         message_error_ccc(tempmessage_ccc);
         strcpy(tempmessage_ccc, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         disable_rebuild_assist_ccc();
         return -1;
@@ -16369,7 +16353,7 @@ int rebuild_assist_map_heads_ccc(void)
           fprintf(stdout, "read chunk failure, return=0x%x status=%02x error=%02x\n", retstat, ata_status_ccc, ata_error_ccc);
           strcpy(tempmessage_ccc, "error mapping heads");
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           disable_rebuild_assist_ccc();
           return -1;
@@ -16388,7 +16372,7 @@ int rebuild_assist_map_heads_ccc(void)
             fprintf(stdout, "failed to read ncq log, return=0x%x status=%02x error=%02x\n", ret, ata_status_ccc, ata_error_ccc);
             strcpy(tempmessage_ccc, "error mapping heads");
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             disable_rebuild_assist_ccc();
             return -1;
@@ -16467,7 +16451,7 @@ int rebuild_assist_map_heads_ccc(void)
           fprintf(stdout, "head %d failed position=%08llx\n", current_head, current_position);
           strcpy(tempmessage_ccc, "error mapping heads");
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           disable_rebuild_assist_ccc();
           return -1;

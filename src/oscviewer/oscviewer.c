@@ -14,6 +14,10 @@ char window_title[256];
 
 int main(int argc, char **argv)
 {
+  setlocale(LC_ALL, "");
+  bindtextdomain("oscviewer", OSC_LANG_PATH);
+  textdomain("oscviewer");
+
   strcpy(window_title, title);
   strcat(window_title, " ");
   strcat(window_title, version_number);
@@ -23,10 +27,6 @@ int main(int argc, char **argv)
   strcat(program_title, "_");
   strcat(program_title, version_number);
   strcat(program_title, "_");
-
-  // setup initial language
-  setup_enlanguage();
-  copy_enlanguage();
 
   // begin processing command line arguments
   int command_line_argument;
@@ -40,7 +40,6 @@ int main(int argc, char **argv)
             {"debug", no_argument, 0, 'd'},
             {"help", no_argument, 0, 'h'},
             {"version", no_argument, 0, 'v'},
-            {"translate", required_argument, 0, 't'},
             {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
@@ -64,10 +63,6 @@ int main(int argc, char **argv)
     case 'v':
       version();
       exit(0);
-
-    case 't':
-      translate = strtoull(optarg, NULL, 0);
-      break;
 
     case '?':
       // getopt_long already printed an error message.
@@ -112,14 +107,6 @@ int main(int argc, char **argv)
 
   gtk_init(&argc, &argv);
 
-  if (translate)
-  {
-    translate_all();
-    exit(0);
-  }
-
-  // change language dialog at startup
-  set_language();
 
   GtkBuilder *builder = gtk_builder_new();
   GError *err = NULL; // It is mandatory to initialize to NULL
@@ -153,31 +140,28 @@ int main(int argc, char **argv)
   openmi = GTK_WIDGET(gtk_builder_get_object(builder, "openmi"));
   domainmi = GTK_WIDGET(gtk_builder_get_object(builder, "domainmi"));
   dmdedomainmi = GTK_WIDGET(gtk_builder_get_object(builder, "dmdedomainmi"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(filemi), curlang[LANGFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi), curlang[LANGQUIT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(openmi), curlang[LANGOPEN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), curlang[LANGLOADDOMAIN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(dmdedomainmi), curlang[LANGDMDEDOMAIN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(filemi), _("File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi), _("Quit"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(openmi), _("Open"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), _("Load Domain"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(dmdedomainmi), _("Load DMDE Bytes File"));
 
   progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
   domain_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_log_label"));
-
-  sprintf(tempmessage, "%s: ", curlang[LANGFILE]);
+  sprintf(tempmessage, "%s:", _("Log"));
   gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
-
-  sprintf(tempmessage, "%s: ", curlang[LANGDOMAIN]);
+  sprintf(tempmessage, "%s:", _("Domain"));
   gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
 
   auto_update_label = GTK_WIDGET(gtk_builder_get_object(builder, "auto_update_label"));
-
-  sprintf(tempmessage, "%s: Off", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
+  sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("Off"));
   gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
 
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
   // options menu
   optionsmi = GTK_WIDGET(gtk_builder_get_object(builder, "optionsmi"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(optionsmi), curlang[LANGOPTIONS]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(optionsmi), _("View"));
 
   // left res menu
   leftresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "leftresolutionmi"));
@@ -185,11 +169,11 @@ int main(int argc, char **argv)
   leftresbutton2 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton2"));
   leftresbutton3 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton3"));
   leftresbutton4 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton4"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresolutionmi), curlang[LANGLEFTRES]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton1), curlang[LANG1PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton2), curlang[LANG2PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton3), curlang[LANG3PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton4), curlang[LANG4PT]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresolutionmi), _("Left Panel Resolution"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton1), _("1 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton2), _("2 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton3), _("3 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(leftresbutton4), _("4 pt"));
 
   if (left_square_size == 1)
   {
@@ -217,14 +201,14 @@ int main(int argc, char **argv)
   mainresbutton12 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton12"));
   mainresbutton14 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton14"));
   mainresbutton16 = GTK_WIDGET(gtk_builder_get_object(builder, "mainresbutton16"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresolutionmi), curlang[LANGMAINRES]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton4), curlang[LANG4PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton6), curlang[LANG6PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton8), curlang[LANG8PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton10), curlang[LANG10PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton12), curlang[LANG12PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton14), curlang[LANG14PT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton16), curlang[LANG16PT]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresolutionmi), _("Main Panel Resolution"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton4), _("4 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton6), _("6 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton8), _("8 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton10), _("10 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton12), _("12 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton14), _("14 pt"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainresbutton16), _("16 pt"));
 
   if (main_square_size == 4)
   {
@@ -270,20 +254,20 @@ int main(int argc, char **argv)
   mainsizebutton4m = GTK_WIDGET(gtk_builder_get_object(builder, "mainsizebutton4m"));
   mainsizebutton8m = GTK_WIDGET(gtk_builder_get_object(builder, "mainsizebutton8m"));
   mainsizebutton16m = GTK_WIDGET(gtk_builder_get_object(builder, "mainsizebutton16m"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(maingridsizemi), curlang[LANGMAINSIZE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton4k), curlang[LANG4K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8k), curlang[LANG8K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16k), curlang[LANG16K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton32k), curlang[LANG32K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton64k), curlang[LANG64K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton128k), curlang[LANG128K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton256k), curlang[LANG256K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton512k), curlang[LANG512K]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton1m), curlang[LANG1M]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton2m), curlang[LANG2M]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton4m), curlang[LANG4M]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8m), curlang[LANG8M]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16m), curlang[LANG16M]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(maingridsizemi), _("Main Grid Size"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton4k), _("4K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8k), _("8K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16k), _("16K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton32k), _("32K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton64k), _("64K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton128k), _("128K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton256k), _("256K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton512k), _("512K"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton1m), _("1M"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton2m), _("2M"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton4m), _("4M"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton8m), _("8M"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(mainsizebutton16m), _("16M"));
 
   if (main_grid_size == 4096)
   {
@@ -347,33 +331,29 @@ int main(int argc, char **argv)
   autoupdatebutton1m = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatebutton1m"));
   autoupdatebutton2m = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatebutton2m"));
   autoupdatebutton5m = GTK_WIDGET(gtk_builder_get_object(builder, "autoupdatebutton5m"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatemi), curlang[LANGAUTOUPDATE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebuttonoff), curlang[LANGOFF]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5s), curlang[LANG5SEC]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton10s), curlang[LANG10SEC]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton30s), curlang[LANG30SEC]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton1m), curlang[LANG1MIN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton2m), curlang[LANG2MIN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5m), curlang[LANG5MIN]);
-
-  char temp[25];
-  sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
-  gtk_label_set_text(GTK_LABEL(auto_update_label), temp);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatemi), _("Auto-Update"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebuttonoff), _("Off"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5s), _("5 seconds"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton10s), _("10 seconds"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton30s), _("30 seconds"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton1m), _("1 minute"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton2m), _("2 minutes"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(autoupdatebutton5m), _("5 minutes"));
 
   // show good data item
   showgoodcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showgoodcheck"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(showgoodcheck), curlang[LANGSHOWGOODDATA]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showgoodcheck), _("Highlight Good Data"));
 
-  if(show_good_data)
+  if (show_good_data)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showgoodcheck), TRUE);
   }
 
   // show bad head item
   showbadcheck = GTK_WIDGET(gtk_builder_get_object(builder, "showbadcheck"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(showbadcheck), curlang[LANGSHOWBADHEAD]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showbadcheck), _("Show Bad Head"));
 
-  if(show_bad_head)
+  if (show_bad_head)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showbadcheck), TRUE);
   }
@@ -394,12 +374,12 @@ int main(int argc, char **argv)
   showtimingbutton40 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton40"));
   showtimingbutton50 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton50"));
   showtimingbutton60 = GTK_WIDGET(gtk_builder_get_object(builder, "showtimingbutton60"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(showtimemi), curlang[LANGSHOWTIMING]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showtimemi), _("Show High-Time"));
 
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), curlang[LANGSHOWDOMAIN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), _("Show Domain"));
 
-  if(show_domain)
+  if (show_domain)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
   }
@@ -407,8 +387,8 @@ int main(int argc, char **argv)
   // help menu
   helpmi = GTK_WIDGET(gtk_builder_get_object(builder, "helpmi"));
   aboutmi = GTK_WIDGET(gtk_builder_get_object(builder, "aboutmi"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi), curlang[LANGHELP]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi), curlang[LANGABOUT]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi), _("Help"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi), _("About"));
 
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
@@ -596,7 +576,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONTRIMMED]);
+  cairo_show_text(cr, _("Non-Trimmed"));
 
   get_rgb_color(nondivided_color);
   r = rcolor;
@@ -611,7 +591,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONDIVIDED]);
+  cairo_show_text(cr, _("Non-Divided"));
 
   get_rgb_color(nonscraped_color);
   r = rcolor;
@@ -626,7 +606,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONSCRAPED]);
+  cairo_show_text(cr, _("Non-Scraped"));
 
   get_rgb_color(bad_color);
   r = rcolor;
@@ -641,7 +621,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGBAD]);
+  cairo_show_text(cr, _("Bad"));
 
   get_rgb_color(nontried_color);
   r = rcolor;
@@ -656,7 +636,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGNONTRIED]);
+  cairo_show_text(cr, _("Non-Tried"));
 
   get_rgb_color(good_color);
   r = rcolor;
@@ -671,7 +651,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGFINISHED]);
+  cairo_show_text(cr, _("Finished"));
 
   get_rgb_color(current_color_outer);
   r = rcolor;
@@ -686,7 +666,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_fill(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
-  cairo_show_text(cr, curlang[LANGCURRENT]);
+  cairo_show_text(cr, _("Current"));
 
   if (show_good_data)
   {
@@ -703,7 +683,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     cairo_fill(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 12, y + 6);
-    cairo_show_text(cr, curlang[LANGGOODDATA]);
+    cairo_show_text(cr, _("Good Data"));
   }
 
   if (show_bad_head)
@@ -722,7 +702,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
-    cairo_show_text(cr, curlang[LANGBADHEAD]);
+    cairo_show_text(cr, _("Bad Head"));
   }
 
   if (show_timing)
@@ -741,7 +721,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
-    cairo_show_text(cr, curlang[LANGTIMING]);
+    cairo_show_text(cr, _("Timing"));
   }
 
   if (show_domain)
@@ -760,7 +740,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_move_to(cr, x + 15, y + 9);
-    cairo_show_text(cr, curlang[LANGDOMAIN]);
+    cairo_show_text(cr, _("Domain"));
   }
 
   return 0;
@@ -1255,7 +1235,7 @@ void select_file(void)
         sprintf(tempmessage, "%s [%s]", window_title, filename);
         gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
 
-        sprintf(tempmessage, "%s: %s", curlang[LANGFILE], log_file);
+        sprintf(tempmessage, "%s: %s", _("File"), log_file);
         gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
       }
     }
@@ -1292,7 +1272,7 @@ void select_domain(void)
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
 
-      sprintf(tempmessage, "%s: %s", curlang[LANGDOMAIN], domain_file);
+      sprintf(tempmessage, "%s: %s", _("Domain"), domain_file);
       gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
     // else
@@ -1337,7 +1317,7 @@ void select_dmde_domain(void)
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
 
-      sprintf(tempmessage, "%s: %s", curlang[LANGDOMAIN], domain_file);
+      sprintf(tempmessage, "%s: %s", _("Domain"), domain_file);
       gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
 
@@ -1399,31 +1379,31 @@ void set_autoupdate_timer(GtkWidget *w, gpointer data)
   char temp[25];
   if (!autotimer_on)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("Off"));
   }
   else if (time == 5000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG5SEC]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("5 seconds"));
   }
   else if (time == 10000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG10SEC]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("10 seconds"));
   }
   else if (time == 30000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG30SEC]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("30 seconds"));
   }
   else if (time == 60000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG1MIN]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("1 minute"));
   }
   else if (time == 120000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG2MIN]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("2 minutes"));
   }
   else if (time == 300000)
   {
-    sprintf(temp, "%s: %s", curlang[LANGAUTOUPDATE], curlang[LANG5MIN]);
+    sprintf(temp, "%s: %s", _("Auto-Update"), _("5 minutes"));
   }
   gtk_label_set_text(GTK_LABEL(auto_update_label), temp);
 }
@@ -2355,11 +2335,11 @@ int add_to_domain(long long position, long long size)
     block = find_domain_block(position);
     if (block == -1)
     {
-      strcpy(tempmessage, curlang[LANGDOMAINBLOCKNOTFOUND]);
+      strcpy(tempmessage, _("Domain block not found"));
       message_error(tempmessage);
       sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
       message_error(tempmessage);
-      print_gui_error_message(error_message, curlang[LANGERROR], 1);
+      print_gui_error_message(error_message, _("Error!"), 1);
       clear_error_message();
 
       // fprintf (debug_file,"error1 position=%06llx  size=0x%06llx\n", position, size);
@@ -2457,11 +2437,11 @@ int add_to_domain(long long position, long long size)
       // the position is before the block which should not be possible
       else
       {
-        strcpy(tempmessage, curlang[LANGDOMAINBLOCKNOTFOUND]);
+        strcpy(tempmessage, _("Domain block not found"));
         message_error(tempmessage);
         sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
         message_error(tempmessage);
-        print_gui_error_message(error_message, curlang[LANGERROR], 1);
+        print_gui_error_message(error_message, _("Error!"), 1);
         clear_error_message();
 
         // fprintf (debug_file,"error2 position=%06llx  size=0x%06llx\n", position, size);
@@ -2898,21 +2878,21 @@ int get_block_information(long long position, long long size)
   strcpy(label, "");
   sprintf(tempchar, "0x%llx - 0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,   ", curlang[LANGFINISHED], finished);
+  sprintf(tempchar, "%s: %lld,   ", _("Finished"), finished);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,\n", curlang[LANGBAD], bad);
+  sprintf(tempchar, "%s: %lld,\n", _("Bad"), bad);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,   ", curlang[LANGNONTRIED], nontried);
+  sprintf(tempchar, "%s: %lld,   ", _("Non-Tried"), nontried);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,\n", curlang[LANGNONTRIMMED], nontrimmed);
+  sprintf(tempchar, "%s: %lld,\n", _("Non-Trimmed"), nontrimmed);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,   ", curlang[LANGNONDIVIDED], nondivided);
+  sprintf(tempchar, "%s: %lld,   ", _("Non-Divided"), nondivided);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld,\n", curlang[LANGNONSCRAPED], nonscraped);
+  sprintf(tempchar, "%s: %lld,\n", _("Non-Scraped"), nonscraped);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %d,   ", curlang[LANGAREAS], maxcount - chunk_count);
+  sprintf(tempchar, "%s: %d,   ", _("Areas"), maxcount - chunk_count);
   strcat(label, tempchar);
-  sprintf(tempchar, "%s: %lld\n", curlang[LANGTIMING], hightime);
+  sprintf(tempchar, "%s: %lld\n", _("Timing"), hightime);
   strcat(label, tempchar);
   strcat(label, lines);
   // fprintf (stdout, "%s", label);
@@ -3095,16 +3075,6 @@ int find_next_block(int line, long long status, long long mask)
   return (-1);
 }
 
-int do_nanosleep(unsigned long long time)
-{
-  // sleep time in nanoseconds
-  struct timespec tim, tim2;
-  tim.tv_sec = time / 1000000000;
-  tim.tv_nsec = time % 1000000000;
-  nanosleep(&tim, &tim2);
-  return (0);
-}
-
 int message_exit(char *message)
 {
   fprintf(stdout, "%s", message);
@@ -3195,49 +3165,6 @@ void version(void)
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
-int set_language(void)
-{
-  GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  // gtk_window_set_keep_above(GTK_WINDOW(window), TRUE);
-  gtk_window_set_title(GTK_WINDOW(window), "Language Options");
-  gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
-  gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-
-  gint handler_id1 = g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-  GtkWidget *box = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(window), box);
-
-  GtkWidget *enbutton = gtk_button_new_with_label("Continue");
-  // GtkWidget *exbutton = gtk_button_new_with_label("Export language file");
-  GtkWidget *imbutton = gtk_button_new_with_label("Change Language");
-  GtkWidget *okim = gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON);
-  // GtkWidget *saveim = gtk_image_new_from_stock(GTK_STOCK_SAVE, GTK_ICON_SIZE_BUTTON);
-  GtkWidget *openim = gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
-  gtk_button_set_image(GTK_BUTTON(enbutton), okim);
-  // gtk_button_set_image(GTK_BUTTON(exbutton), saveim);
-  gtk_button_set_image(GTK_BUTTON(imbutton), openim);
-
-  gtk_box_pack_start(GTK_BOX(box), enbutton, TRUE, TRUE, 0);
-  // gtk_box_pack_start (GTK_BOX (box), exbutton, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(box), imbutton, TRUE, TRUE, 0);
-
-  gint handler_id2 = g_signal_connect(enbutton, "clicked", G_CALLBACK(gtk_main_quit), NULL);
-  // gint handler_id3 = g_signal_connect (exbutton, "clicked", G_CALLBACK (export_language_file), NULL);
-  gint handler_id4 = g_signal_connect(imbutton, "clicked", G_CALLBACK(import_language_file), NULL);
-
-  gtk_widget_show_all(window);
-  gtk_main();
-  g_signal_handler_disconnect(window, handler_id1);
-  g_signal_handler_disconnect(enbutton, handler_id2);
-  // g_signal_handler_disconnect(exbutton, handler_id3);
-  g_signal_handler_disconnect(imbutton, handler_id4);
-  gtk_widget_hide(window);
-  gtk_widget_destroy(window);
-
-  return 0;
-}
-
 int print_gui_error_message(char *message, char *title, int type)
 {
   GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -3259,826 +3186,6 @@ int print_gui_error_message(char *message, char *title, int type)
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
   gtk_widget_destroy(window);
-
-  return 0;
-}
-
-void export_language_file(void)
-{
-  // /* Create a new file selection widget */
-  // filelangex = gtk_file_selection_new(curlang[LANGEXPORTLANG]);
-  // gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(filelangex));
-
-  // /* Connect the ok_button to file_ok_sel function */
-  // g_signal_connect(GTK_FILE_SELECTION(filelangex)->ok_button, "clicked", G_CALLBACK(file_export_sel), (gpointer)filelangex);
-
-  // /* Connect the cancel_button to destroy the widget */
-  // g_signal_connect_swapped(GTK_FILE_SELECTION(filelangex)->cancel_button, "clicked", G_CALLBACK(gtk_widget_destroy), filelangex);
-
-  // // set default file name
-  // // gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "progress.log");
-
-  // gtk_widget_show(filelangex);
-}
-
-// // get the export filename and load it
-// static void file_export_sel(GtkWidget *w, GtkFileSelection *fs)
-// {
-//   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
-//   char export_file[1024] = "";
-//   sprintf(export_file, "%s", gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs)));
-//   printf("%s\n", export_file);
-//   gtk_widget_destroy(filelangex);
-
-//   FILE *writefile;
-//   writefile = fopen(export_file, "w");
-//   if (writefile == NULL)
-//   {
-//     sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], export_file, strerror(errno));
-//     message_error(tempmessage);
-//     print_gui_error_message(error_message, curlang[LANGERROR], 1);
-//     clear_error_message();
-//   }
-
-//   fprintf(writefile, "%s", program_title);
-//   int i;
-//   for (i = 0; i < LANGCOUNT; i++)
-//   {
-//     fprintf(writefile, "\n|_|%d|_|\n", i);
-//     fprintf(writefile, "%s", enlang[i]);
-//   }
-
-//   fclose(writefile);
-// }
-
-void import_language_file(void)
-{
-  GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new(curlang[LANGIMPORTLANG],
-                                       GTK_WINDOW(language_window),
-                                       GTK_FILE_CHOOSER_ACTION_OPEN,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
-  if (access(OSCVIEWER_LANG_PATH, F_OK) == 0)
-  {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), OSCVIEWER_LANG_PATH);
-    g_print("found installed languages\n");
-  }
-  else if (access("Language/English", F_OK) == 0)
-  {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "Language");
-    g_print("found languages locally\n");
-  }
-  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename;
-    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    fprintf(stdout, "%s\n", filename);
-    file_import_sel(filename);
-    g_free(filename);
-  }
-  gtk_widget_destroy(dialog);
-}
-
-// get the import filename and load it
-static void file_import_sel(char *import_file)
-{
-  FILE *readfile;
-  readfile = fopen(import_file, "r");
-  if (readfile == NULL)
-  {
-    sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGIMPORTERR], import_file, strerror(errno));
-    message_error(tempmessage);
-    print_gui_error_message(error_message, curlang[LANGERROR], 1);
-    clear_error_message();
-  }
-  else
-  {
-
-    char line[MAXLANGLENGTH];
-    int count = 0;
-    int found_count = -1;
-    char found_title[MAXLANGLENGTH] = "";
-    int firstline = 1;
-
-    while (fgets(line, sizeof line, readfile))
-    {
-      if (firstline)
-      {
-        strcpy(found_title, line);
-        firstline = 0;
-      }
-      else
-      {
-        int scanline;
-        int new_count = -1;
-        scanline = sscanf(line, "| _ | %d | _ |", &new_count);
-        if (scanline == 1)
-        {
-          // fprintf (stdout, "num=%d, line=%s", new_count, line);
-          //  remove the last new line from the end
-          if (found_count >= 0)
-          {
-            int l = strlen(newlang[found_count]);
-            if (l > 0 && newlang[found_count][l - 1] == '\n')
-            {
-              newlang[found_count][l - 1] = '\0';
-            }
-          }
-          found_count = new_count;
-          strcpy(newlang[found_count], "");
-          count++;
-        }
-        else if (found_count >= 0 && found_count < LANGCOUNT)
-        {
-          strcat(newlang[found_count], line);
-          // fprintf (stdout, "%s", newlang[found_count]);
-        }
-      }
-    }
-
-    count--;
-    if (count == found_count && count == LANGCOUNT - 1)
-    {
-      copy_newlanguage();
-      sprintf(tempmessage, "%s", curlang[LANGLANGCHANGESUCCESS]);
-      message_error(tempmessage);
-      print_gui_error_message(error_message, curlang[LANGSUCCESS], 0);
-      clear_error_message();
-    }
-    else
-    {
-      // fprintf (stdout, "count=%d found_count=%d LANGCOUNT=%d\n", count, found_count, LANGCOUNT-1);
-      sprintf(tempmessage, "%s", curlang[LANGLANGIMPORTERR2]);
-      message_error(tempmessage);
-      print_gui_error_message(error_message, curlang[LANGERROR], 1);
-      clear_error_message();
-    }
-
-    fclose(readfile);
-  }
-}
-
-#ifdef DEBUG
-static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-  size_t realsize = size * nmemb;
-  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-  mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-  if (mem->memory == NULL)
-  {
-    /* out of memory! */
-    printf("not enough memory (realloc returned NULL)\n");
-    return 0;
-  }
-
-  memcpy(&(mem->memory[mem->size]), contents, realsize);
-  mem->size += realsize;
-  mem->memory[mem->size] = 0;
-
-  return realsize;
-}
-#endif
-
-int translate_all(void)
-{
-  unsigned int total_language_items = n_languages;
-  int translate_failed = 0;
-  if (translate >= 80000 && translate < 80010)
-  {
-    char(*reverselang)[LANGCOUNT][MAXLANGLENGTH];
-    reverselang = malloc((total_language_items / 3) * sizeof *reverselang);
-    char(*alllang)[LANGCOUNT][MAXLANGLENGTH];
-    alllang = malloc((total_language_items / 3) * sizeof *alllang);
-    char *reverse_file = "REVERSE_LANGUAGES.CSV";
-    char *all_file = "ALL_LANGUAGES.CSV";
-    char *export_file = "English";
-    FILE *writefile;
-    writefile = fopen(export_file, "w");
-    if (writefile == NULL)
-    {
-      sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], export_file, strerror(errno));
-      message_error(tempmessage);
-      print_gui_error_message(error_message, curlang[LANGERROR], 1);
-      clear_error_message();
-    }
-    fprintf(writefile, "%s", program_title);
-    unsigned int i;
-    unsigned int n;
-    for (i = 0; i < LANGCOUNT; i++)
-    {
-      fprintf(writefile, "\n|_|%u|_|\n", i);
-      fprintf(writefile, "%s", enlang[i]);
-    }
-    fclose(writefile);
-    chmod(export_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-    if (total_language_items % 3)
-    {
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "language count not dividable by 3\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      return -1;
-    }
-    for (i = 0; i < total_language_items; i += 3)
-    {
-      fprintf(stdout, "translating %u\n", i / 3);
-      char *translang = languages[i + 1];
-      char *language = languages[i];
-      char *native = languages[i + 2];
-      copy_enlanguage();
-      if (translate_language("en", translang, language, native))
-      {
-        fprintf(stdout, "\n*****************************************************\n");
-        fprintf(stdout, "Failed to translate to %s\n", language);
-        fprintf(stdout, "\n*****************************************************\n");
-        translate_failed = 1;
-      }
-      if (translate == 80009)
-      {
-        for (n = 0; n < LANGCOUNT; n++)
-        {
-          strcpy(alllang[i / 3][n], newlang[n]);
-        }
-        copy_newlanguage();
-        if (translate_language(translang, "en", language, "english"))
-        {
-          fprintf(stdout, "\n*****************************************************\n");
-          fprintf(stdout, "Failed to reverse translate %s\n", language);
-          fprintf(stdout, "\n*****************************************************\n");
-          translate_failed = 1;
-        }
-        for (n = 0; n < LANGCOUNT; n++)
-        {
-          strcpy(reverselang[i / 3][n], newlang[n]);
-        }
-      }
-    }
-
-    if (translate == 80009)
-    {
-      writefile = fopen(reverse_file, "w");
-      if (writefile == NULL)
-      {
-        sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], reverse_file, strerror(errno));
-        message_error(tempmessage);
-        print_gui_error_message(error_message, curlang[LANGERROR], 1);
-        clear_error_message();
-      }
-      fprintf(writefile, "\"%s\", ", "English");
-      for (i = 0; i < total_language_items; i += 3)
-      {
-        fprintf(writefile, "\"%s\", ", languages[i]);
-      }
-      fprintf(writefile, "\n");
-      for (n = 0; n < LANGCOUNT; n++)
-      {
-        fprintf(writefile, "\"%s\", ", enlang[n]);
-        for (i = 0; i < (total_language_items / 3); i++)
-        {
-          fprintf(writefile, "\"%s\", ", reverselang[i][n]);
-        }
-        fprintf(writefile, "\n");
-      }
-      fclose(writefile);
-      chmod(reverse_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-      writefile = fopen(all_file, "w");
-      if (writefile == NULL)
-      {
-        sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], all_file, strerror(errno));
-        message_error(tempmessage);
-        print_gui_error_message(error_message, curlang[LANGERROR], 1);
-        clear_error_message();
-      }
-      fprintf(writefile, "\"%s\", ", "English");
-      for (i = 0; i < total_language_items; i += 3)
-      {
-        fprintf(writefile, "\"%s\", ", languages[i]);
-      }
-      fprintf(writefile, "\n");
-      for (n = 0; n < LANGCOUNT; n++)
-      {
-        fprintf(writefile, "\"%s\", ", enlang[n]);
-        for (i = 0; i < (total_language_items / 3); i++)
-        {
-          fprintf(writefile, "\"%s\", ", alllang[i][n]);
-        }
-        fprintf(writefile, "\n");
-      }
-      fclose(writefile);
-      chmod(all_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    }
-  }
-  if (translate_failed)
-  {
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "Failed to translate\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    return -1;
-  }
-  return 0;
-}
-
-int translate_language(char *fromlang, char *translang, char *language, char *native)
-{
-  int failure = 0;
-  char return_data[1000000];
-  char new_lang_data[500000];
-  char url_data[250000];
-  char lang_data[250000];
-  char new_data[250000];
-  char temp_data[100000];
-  strcpy(lang_data, "");
-  strcpy(new_data, "");
-  strcpy(return_data, "");
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    sprintf(temp_data, "\n|_|%04d|_|\n", i);
-    strcat(lang_data, temp_data);
-    sprintf(temp_data, "%s", curlang[i]);
-    strcat(lang_data, temp_data);
-    int linebyline = 0;
-    if (strlen(lang_data) > 3000 || i == LANGCOUNT - 1 || linebyline)
-    {
-      int n;
-      int len = strlen(lang_data);
-      for (n = 0; n < len; n++)
-      {
-        char c = lang_data[n];
-        if (c == ' ')
-        {
-          strcat(new_data, "%20");
-        }
-        else if (c == '\n')
-        {
-          strcat(new_data, "%0a");
-        }
-        else
-        {
-          strncat(new_data, &c, 1);
-        }
-      }
-      // fprintf (stdout, "%s\n", new_data);
-
-      strcpy(url_data, "https://translate.googleapis.com/translate_a/single?client=gtx&sl=");
-      strcat(url_data, fromlang);
-      strcat(url_data, "&tl=");
-      strcat(url_data, translang);
-      strcat(url_data, "&dt=t&q=");
-      strcat(url_data, new_data);
-
-      fprintf(stdout, "%d %s to %s  ", i, fromlang, translang);
-      do_nanosleep(TRANSLATETIMERFAST); // this is a timer to deal with google translator
-      char *data = get_translated_data(url_data);
-      // fprintf (stdout, "%s\n", data);
-      strcat(return_data, data);
-      strcpy(lang_data, "");
-      strcpy(new_data, "");
-    }
-  }
-  // fprintf (stdout, "\n*****************************************************\n");
-  // fprintf (stdout, "%s\n", return_data);
-
-  strcpy(new_lang_data, "");
-  int return_length = strlen(return_data);
-  int bracket_depth = 0;
-  for (i = 0; i < return_length; i++)
-  {
-    if (return_data[i] == '[')
-    {
-      bracket_depth++;
-      if (return_data[i + 1] == '"' && bracket_depth < 5)
-      {
-        int n = i + 2;
-        while (n < return_length)
-        {
-          if (return_data[n] == '"')
-          {
-            strcat(new_lang_data, "\n");
-            break;
-          }
-          else if (return_data[n] == '\\' && return_data[n + 1] == 'n')
-          {
-            strcat(new_lang_data, "\n");
-            if (return_data[n + 2] == '\\' && return_data[n + 3] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-            }
-            if (return_data[n + 4] == '\\' && return_data[n + 5] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-            }
-            break;
-          }
-          char c = return_data[n];
-          strncat(new_lang_data, &c, 1);
-          n++;
-          i = n;
-        }
-      }
-    }
-    else if (return_data[i] == ']')
-    {
-      bracket_depth--;
-    }
-  }
-  // fprintf (stdout, "\n*****************************************************\n");
-  // fprintf (stdout, "%s\n", new_lang_data);
-
-  // read language data out of the variable
-  char *line = new_lang_data;
-  int count = 0;
-  int found_count = -1;
-  while (line)
-  {
-    char *nextLine = strchr(line, '\n');
-    if (nextLine)
-      *nextLine = '\0'; // temporarily terminate the current line
-    // printf("%s\n", line);
-
-    int scanline;
-    int new_count = -1;
-    scanline = sscanf(line, "| _ | %d | _ |", &new_count);
-    if (scanline == 1)
-    {
-      // fprintf (stdout, "num=%d, line=%s\n", new_count, line);
-      //  remove the last new line from the end
-      if (found_count >= 0)
-      {
-        int l = strlen(newlang[found_count]);
-        if (l > 0 && newlang[found_count][l - 1] == '\n')
-        {
-          newlang[found_count][l - 1] = '\0';
-        }
-      }
-      found_count = new_count;
-      strcpy(newlang[found_count], "");
-      count++;
-    }
-    else if (found_count >= 0 && found_count < LANGCOUNT)
-    {
-      unsigned int l = strlen(newlang[found_count]);
-      strncat(newlang[found_count], line, MAXLANGLENGTH - l - 1);
-      strcat(newlang[found_count], "\n");
-      // fprintf (stdout, "%s\n", newlang[found_count]);
-      if (MAXLANGLENGTH - l < strlen(line))
-      {
-        fprintf(stdout, "Warning: language count %d exceeded max length and was truncated.\n", found_count);
-        failure = 1;
-      }
-    }
-
-    if (nextLine)
-      *nextLine = '\n'; // then restore newline-char, just to be tidy
-    line = nextLine ? (nextLine + 1) : NULL;
-  }
-  count--;
-  if (count == found_count && count == LANGCOUNT - 1)
-  {
-    // do noting
-  }
-  else
-  {
-    fprintf(stdout, "FAILED count=%d found_count=%d LANGCOUNT=%d\n", count, found_count, LANGCOUNT - 1);
-    failure = 1;
-  }
-
-  if (failure && 0)
-  {
-    int retry = translate_language_slow(fromlang, translang, language, native);
-    return retry;
-  }
-
-  char langfile[256];
-  strcpy(langfile, language);
-  strcat(langfile, "(");
-  strcat(langfile, native);
-  strcat(langfile, ")");
-  if (failure)
-  {
-    strcat(langfile, "_FAILED_TRANSLATION");
-  }
-  FILE *writefile;
-  writefile = fopen(langfile, "w");
-  if (writefile == NULL)
-  {
-    sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], langfile, strerror(errno));
-    message_error(tempmessage);
-    print_gui_error_message(error_message, curlang[LANGERROR], 1);
-    clear_error_message();
-  }
-
-  fprintf(writefile, "%s", program_title);
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    fprintf(writefile, "\n|_|%04d|_|\n", i);
-    fprintf(writefile, "%s", newlang[i]);
-  }
-
-  fclose(writefile);
-  chmod(langfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-  return failure;
-}
-
-char *get_translated_data(char *url_data)
-{
-#ifdef DEBUG
-  do_nanosleep(TRANSLATETIMERALL); // this is a timer to deal with google translator
-  CURL *curl_handle;
-  CURLcode res;
-
-  struct MemoryStruct chunk;
-
-  chunk.memory = malloc(1); /* will be grown as needed by the realloc above */
-  chunk.size = 0;           /* no data at this point */
-
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  /* init the curl session */
-  curl_handle = curl_easy_init();
-
-  /* specify URL to get */
-  curl_easy_setopt(curl_handle, CURLOPT_URL, url_data);
-
-  /* send all data to this function  */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-  /* we pass our 'chunk' struct to the callback function */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-
-  /* some servers don't like requests that are made without a user-agent
-     field, so we provide one */
-  curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
-
-  /* get it! */
-  res = curl_easy_perform(curl_handle);
-
-  /* check for errors */
-  if (res != CURLE_OK)
-  {
-    fprintf(stdout, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-  }
-  else
-  {
-    fprintf(stdout, "%ld bytes retrieved\n", (long)chunk.size);
-    // printf("%s\n", chunk.memory);
-  }
-
-  /* cleanup curl stuff */
-  curl_easy_cleanup(curl_handle);
-
-  // free(chunk.memory);
-
-  /* we're done with libcurl, so clean it up */
-  curl_global_cleanup();
-
-  return chunk.memory;
-#else
-  return url_data;
-#endif
-}
-
-int translate_language_slow(char *fromlang, char *translang, char *language, char *native)
-{
-  int failure = 0;
-  char return_data[65536];
-  char new_lang_data[32768];
-  char url_data[6000];
-  char lang_data[8000];
-  char new_data[16000];
-  char temp_data[4096];
-  strcpy(lang_data, "");
-  strcpy(new_data, "");
-  strcpy(return_data, "");
-  int count;
-  for (count = 0; count < LANGCOUNT; count++)
-  {
-    strcpy(lang_data, "");
-    strcpy(new_data, "");
-    sprintf(temp_data, "%s", curlang[count]);
-    strcat(lang_data, temp_data);
-    int n;
-    int len = strlen(lang_data);
-    for (n = 0; n < len; n++)
-    {
-      char c = lang_data[n];
-      if (c == ' ')
-      {
-        strcat(new_data, "%20");
-      }
-      else if (c == '\n')
-      {
-        strcat(new_data, "%0a");
-      }
-      else
-      {
-        strncat(new_data, &c, 1);
-      }
-    }
-    // fprintf (stdout, "%s\n", new_data);
-
-    strcpy(url_data, "https://translate.googleapis.com/translate_a/single?client=gtx&sl=");
-    strcat(url_data, fromlang);
-    strcat(url_data, "&tl=");
-    strcat(url_data, translang);
-    strcat(url_data, "&dt=t&q=");
-    strcat(url_data, new_data);
-
-    fprintf(stdout, "%d %s to %s  ", count, fromlang, translang);
-    do_nanosleep(TRANSLATETIMERSLOW); // this is a timer to deal with google translator
-    char *data = get_translated_data(url_data);
-    // fprintf (stdout, "%s\n", data);
-    strcpy(return_data, data);
-    // fprintf (stdout, "\n*****************************************************\n");
-    // fprintf (stdout, "%s\n", return_data);
-
-    strcpy(new_lang_data, "");
-    int return_length = strlen(return_data);
-    int i;
-    for (i = 0; i < return_length; i++)
-    {
-      if (return_data[i] == '[')
-      {
-        if (return_data[i + 1] == '"')
-        {
-          int n = i + 2;
-          while (n < return_length)
-          {
-            if (return_data[n] == '"')
-            {
-              break;
-            }
-            else if (return_data[n] == '\\' && return_data[n + 1] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-              if (return_data[n + 2] == '\\' && return_data[n + 3] == 'n')
-              {
-                strcat(new_lang_data, "\n");
-              }
-              if (return_data[n + 4] == '\\' && return_data[n + 5] == 'n')
-              {
-                strcat(new_lang_data, "\n");
-              }
-              break;
-            }
-            char c = return_data[n];
-            strncat(new_lang_data, &c, 1);
-            n++;
-            i = n;
-          }
-        }
-      }
-    }
-    // fprintf (stdout, "\n*****************************************************\n");
-    // fprintf (stdout, "%s\n", new_lang_data);
-    if (strlen(new_lang_data) >= MAXLANGLENGTH)
-    {
-      fprintf(stdout, "Warning: language count %d exceeded max length and was truncated.\n", count);
-      failure = 1;
-    }
-    strcpy(newlang[count], new_lang_data);
-  }
-
-  char langfile[256];
-  strcpy(langfile, language);
-  strcat(langfile, "(");
-  strcat(langfile, native);
-  strcat(langfile, ")");
-  if (failure)
-  {
-    strcat(langfile, "_FAILED_TRANSLATION");
-  }
-  FILE *writefile;
-  writefile = fopen(langfile, "w");
-  if (writefile == NULL)
-  {
-    sprintf(tempmessage, "%s: %s (%s)", curlang[LANGLANGEXPORTERR], langfile, strerror(errno));
-    message_error(tempmessage);
-    print_gui_error_message(error_message, curlang[LANGERROR], 1);
-    clear_error_message();
-  }
-
-  fprintf(writefile, "%s", program_title);
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    fprintf(writefile, "\n|_|%d|_|\n", i);
-    fprintf(writefile, "%s", newlang[i]);
-  }
-
-  fclose(writefile);
-  chmod(langfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-  return failure;
-}
-
-int copy_enlanguage(void)
-{
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    strcpy(curlang[i], enlang[i]);
-  }
-  return 0;
-}
-
-int copy_newlanguage(void)
-{
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    strcpy(curlang[i], newlang[i]);
-    // fprintf(stdout, "%d %s", i, newlang[i]);
-  }
-  return 0;
-}
-
-int setup_enlanguage(void)
-{
-  strcpy(enlang[LANGFILE], "File");
-  strcpy(enlang[LANGQUIT], "Quit");
-  strcpy(enlang[LANGOPEN], "Open Project");
-  strcpy(enlang[LANGERROR], "Error!");
-  strcpy(enlang[LANGWARN], "Warning");
-  strcpy(enlang[LANGLANGUAGE], "Language");
-  strcpy(enlang[LANGEXPORTLANG], "Export language");
-  strcpy(enlang[LANGIMPORTLANG], "Import language");
-  strcpy(enlang[LANGLANGEXPORTERR], "Cannot open file for writing");
-  strcpy(enlang[LANGLANGIMPORTERR], "Cannot open file for reading");
-  strcpy(enlang[LANGLANGIMPORTERR2], "Error processing imported language file");
-  strcpy(enlang[LANGLANGCHANGESUCCESS], "Language successfully changed!");
-  strcpy(enlang[LANGSUCCESS], "Success!");
-  strcpy(enlang[LANGOPTIONS], "View");
-  strcpy(enlang[LANGLEFTRES], "Left Panel Resolution");
-  strcpy(enlang[LANGMAINRES], "Main Panel Resolution");
-  strcpy(enlang[LANGMAINSIZE], "Main Grid Size");
-  strcpy(enlang[LANGAUTOUPDATE], "Auto-Update");
-  strcpy(enlang[LANGSHOWBADHEAD], "Show Bad Head");
-  strcpy(enlang[LANGNONTRIMMED], "Non-Trimmed");
-  strcpy(enlang[LANGNONDIVIDED], "Non-Divided");
-  strcpy(enlang[LANGNONSCRAPED], "Non-Scraped");
-  strcpy(enlang[LANGBAD], "Bad");
-  strcpy(enlang[LANGNONTRIED], "Non-Tried");
-  strcpy(enlang[LANGFINISHED], "Finished");
-  strcpy(enlang[LANGCURRENT], "Current");
-  strcpy(enlang[LANGBADHEAD], "Bad Head");
-  strcpy(enlang[LANG1PT], "1 pt");
-  strcpy(enlang[LANG2PT], "2 pt");
-  strcpy(enlang[LANG3PT], "3 pt");
-  strcpy(enlang[LANG4PT], "4 pt");
-  strcpy(enlang[LANG6PT], "6 pt");
-  strcpy(enlang[LANG8PT], "8 pt");
-  strcpy(enlang[LANG10PT], "10 pt");
-  strcpy(enlang[LANG12PT], "12 pt");
-  strcpy(enlang[LANG14PT], "14 pt");
-  strcpy(enlang[LANG16PT], "16 pt");
-  strcpy(enlang[LANG4K], "4K");
-  strcpy(enlang[LANG8K], "8K");
-  strcpy(enlang[LANG16K], "16K");
-  strcpy(enlang[LANG32K], "32K");
-  strcpy(enlang[LANG64K], "64K");
-  strcpy(enlang[LANG128K], "128K");
-  strcpy(enlang[LANG256K], "256K");
-  strcpy(enlang[LANG512K], "512K");
-  strcpy(enlang[LANG1M], "1M");
-  strcpy(enlang[LANGOFF], "Off");
-  strcpy(enlang[LANG5SEC], "5 seconds");
-  strcpy(enlang[LANG10SEC], "10 seconds");
-  strcpy(enlang[LANG30SEC], "30 seconds");
-  strcpy(enlang[LANG1MIN], "1 minute");
-  strcpy(enlang[LANG2MIN], "2 minutes");
-  strcpy(enlang[LANG5MIN], "5 minutes");
-  strcpy(enlang[LANGSHOWGOODDATA], "Highlight Good Data");
-  strcpy(enlang[LANGGOODDATA], "Good Data");
-  strcpy(enlang[LANG2M], "2M");
-  strcpy(enlang[LANG4M], "4M");
-  strcpy(enlang[LANG8M], "8M");
-  strcpy(enlang[LANG16M], "16M");
-  strcpy(enlang[LANGSHOWTIMING], "Show High-Time");
-  strcpy(enlang[LANGTIMING], "Timing");
-  strcpy(enlang[LANGDOMAIN], "Domain");
-  strcpy(enlang[LANGSHOWDOMAIN], "Show Domain");
-  strcpy(enlang[LANGDOMAINBLOCKNOTFOUND], "Domain block not found");
-  strcpy(enlang[LANGDMDEDOMAIN], "Load DMDE Bytes File");
-  strcpy(enlang[LANGAREAS], "Areas");
-  strcpy(enlang[LANGLOADDOMAIN], "Load Domain");
-  strcpy(enlang[LANGHELP], "Help");
-  strcpy(enlang[LANGABOUT], "About");
-  strcpy(enlang[LANGDUMMY], "dummy always put at bottom of language list");
-  // strcpy (enlang[], "");
 
   return 0;
 }

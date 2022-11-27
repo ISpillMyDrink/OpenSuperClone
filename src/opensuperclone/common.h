@@ -38,6 +38,12 @@
 #include <byteswap.h>
 #include <dirent.h>
 #include <usb.h>
+#include <libintl.h>
+#include <locale.h>
+
+#define _(str) gettext(str)
+#define gettext_noop(str) (str)
+#define N_(str) gettext_noop(str)
 
 #define DEBUG1 0x00000001  // general program startup items
 #define DEBUG2 0x00000002  // logfile reading writing

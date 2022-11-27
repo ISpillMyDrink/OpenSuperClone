@@ -3,7 +3,6 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
-#include "clone_gui_language.h"
 #include <stdbool.h>
 
 #define MAX_CALL_LENGTH 200
@@ -23,9 +22,6 @@
 char *title_ccc;
 char *version_number_ccc;
 char *copyright_year_ccc;
-char curlang_ccc[LANGCOUNT][MAXLANGLENGTH];
-char newlang_ccc[LANGCOUNT][MAXLANGLENGTH];
-int translate_ccc;
 char *log_file_ccc;
 char *ddilog_file_ccc;
 char *ddelog_file_ccc;

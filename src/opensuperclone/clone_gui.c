@@ -11,9 +11,9 @@
 
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
-  // setup initial language
-  setup_enlanguage_ccc();
-  copy_enlanguage_ccc();
+  setlocale(LC_ALL, "");
+  bindtextdomain("opensuperclone", OSC_LANG_PATH);
+  textdomain("opensuperclone");
 
   // initialize memory so it is ready
   return_value_ccc = initialize_logfile_memory_ccc();
@@ -47,14 +47,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   strcat(program_title, "_");
 
   gtk_init(&argc, &argv);
-
-  if (translate_ccc)
-  {
-    translate_all_ccc();
-    exit(0);
-  }
-
-  set_language_ccc();
 
   if (enable_data_dump_ccc || enable_dump_identify_on_check_ccc)
   {
@@ -211,65 +203,65 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   activate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button_main"));
   deactivate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button_main"));
 
-  gtk_menu_item_set_label(GTK_MENU_ITEM(filemi_ccc), curlang_ccc[LANGFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(openmi_ccc), curlang_ccc[LANGOPENPROJ]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(newmi_ccc), curlang_ccc[LANGNEWPROJ]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi_ccc), curlang_ccc[LANGQUIT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(sourcemi_ccc), curlang_ccc[LANGSOURCE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(destinationmi_ccc), curlang_ccc[LANGDESTINATION]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(blockmi_ccc), curlang_ccc[LANGBLOCKDEV]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(drivemi_ccc), curlang_ccc[LANGDRIVE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(drivesmi_ccc), curlang_ccc[LANGDRIVES]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(imagemi_ccc), curlang_ccc[LANGIMAGEFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(devnullmi_ccc), curlang_ccc[LANGNODESTINATION]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(modemi_ccc), curlang_ccc[LANGMODE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(copyimagemi_ccc), curlang_ccc[LANGCOPYIMAGE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(genericmi_ccc), curlang_ccc[LANGGENERIC]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_automi_ccc), curlang_ccc[LANGMODEAUTO]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_scsimi_ccc), curlang_ccc[LANGMODESCSI]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_atrami_ccc), curlang_ccc[LANGMODEATA]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(directmi_ccc), curlang_ccc[LANGMODEIDE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(ahcimi_ccc), curlang_ccc[LANGMODEAHCI]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(usbmi_ccc), curlang_ccc[LANGMODEUSB]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(usbatami_ccc), curlang_ccc[LANGMODEUSBATA]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(settingsmi_ccc), curlang_ccc[LANGSETTINGS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(advancedmi_ccc), curlang_ccc[LANGADVANCED]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(clonemi_ccc), curlang_ccc[LANGCLONE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(savemi_ccc), curlang_ccc[LANGSAVE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(saveasmi_ccc), curlang_ccc[LANGSAVEAS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(resetstatusmi_ccc), curlang_ccc[LANGRESETSTATUS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(toolsmi_ccc), curlang_ccc[LANGTOOLS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(resetlogmi_ccc), curlang_ccc[LANGRESETLOG]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(repairlogmi_ccc), curlang_ccc[LANGREPAIRLOG]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(fillzeromi_ccc), curlang_ccc[LANGFILLZERO]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(fillmarkmi_ccc), curlang_ccc[LANGFILLMARK]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(fillerasemi_ccc), curlang_ccc[LANGFILLERASE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi_ccc), curlang_ccc[LANGDOMAIN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(importddmi_ccc), curlang_ccc[LANGIMPORTDD]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(exportddmi_ccc), curlang_ccc[LANGEXPORTDD]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(cleardomainmi_ccc), curlang_ccc[LANGCLEARDOMAIN]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi_ccc), curlang_ccc[LANGHELP]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi_ccc), curlang_ccc[LANGABOUT]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(timermi_ccc), curlang_ccc[LANGTIMERS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(installdrivermi_ccc), curlang_ccc[LANGINSTALLDRIVER]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(uninstalldrivermi_ccc), curlang_ccc[LANGUNINSTALLDRIVER]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(fixdrivermemorymi_ccc), curlang_ccc[LANGFIXDRIVERMEMORYERROR]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(driveronlymi_ccc), curlang_ccc[LANGDRIVERONLYMI]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(adddomainmi_ccc), curlang_ccc[LANGADDDOMAINFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(newdomainmi_ccc), curlang_ccc[LANGNEWDOMAINFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainmi_ccc), curlang_ccc[LANGSAVEDOMAINFILE]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainasmi_ccc), curlang_ccc[LANGSAVEDOMAINFILEAS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), curlang_ccc[LANGDISABLEPORTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(restoreportsmi_ccc), curlang_ccc[LANGRESTOREPORTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(displayidentifymi_ccc), curlang_ccc[LANGDISPLAYIDENTIFYRESULTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), curlang_ccc[LANGDISPLAYANALYZERESULTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(displaysmartmi_ccc), curlang_ccc[LANGDISPLAYSMARTRESULTS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), curlang_ccc[LANGPRIMARYRELAY]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), curlang_ccc[LANGCHOOSEPRIMARYUSB]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), curlang_ccc[LANGDISABLEUSBMASS]);
-  gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), curlang_ccc[LANGRESTOREUSBMASS]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), curlang_ccc[LANGACTIVATEMAIN]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), curlang_ccc[LANGDEACTIVATEMAIN]);
+  gtk_menu_item_set_label(GTK_MENU_ITEM(filemi_ccc), _("File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(openmi_ccc), _("Open Project"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(newmi_ccc), _("New Project"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi_ccc), _("Quit"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(sourcemi_ccc), _("Choose Source Drive"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(destinationmi_ccc), _("Choose Destination"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(blockmi_ccc), _("Generic block device"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(drivemi_ccc), _("Drive"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(drivesmi_ccc), _("Drives"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(imagemi_ccc), _("Image file"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(devnullmi_ccc), _("NULL (No destination)"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(modemi_ccc), _("Mode"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(copyimagemi_ccc), _("Generic source file"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(genericmi_ccc), _("Generic source device"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_automi_ccc), _("Passthrough auto detect"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_scsimi_ccc), _("Passthrough SCSI"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(pass_atrami_ccc), _("Passthrough ATA"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(directmi_ccc), _("Direct IDE"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(ahcimi_ccc), _("Direct AHCI"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(usbmi_ccc), _("Direct USB"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(usbatami_ccc), _("Direct USB ATA"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(settingsmi_ccc), _("Settings"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(advancedmi_ccc), _("Advanced Settings"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(clonemi_ccc), _("Clone Settings"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(savemi_ccc), _("Save Project"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(saveasmi_ccc), _("Save Project As"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(resetstatusmi_ccc), _("Reset Current Status"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(toolsmi_ccc), _("Tools"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(resetlogmi_ccc), _("Reset Log"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(repairlogmi_ccc), _("Repair Log"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(fillzeromi_ccc), _("Fill Zero"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(fillmarkmi_ccc), _("Fill Mark"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(fillerasemi_ccc), _("Erase Destination"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi_ccc), _("Load Domain File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(importddmi_ccc), _("Import ddrescue log (map) file"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(exportddmi_ccc), _("Export ddrescue log (map) file"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(cleardomainmi_ccc), _("Clear Domain"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi_ccc), _("Help"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi_ccc), _("About"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(timermi_ccc), _("Timer Settings"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(installdrivermi_ccc), _("Start Virtual Disk Driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(uninstalldrivermi_ccc), _("Stop Virtual Disk Driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(fixdrivermemorymi_ccc), _("Fix Driver Memory Error"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(driveronlymi_ccc), _("Virtual Driver only"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(adddomainmi_ccc), _("Add to Domain from DMDE bytes file"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(newdomainmi_ccc), _("New Domain File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainmi_ccc), _("Save Domain File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainasmi_ccc), _("Save Domain File As"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), _("Disable Ports"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(restoreportsmi_ccc), _("Restore original startup port configuration"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(displayidentifymi_ccc), _("Display Identify Results"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), _("Display Analyze Results"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(displaysmartmi_ccc), _("Display SMART Results"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), _("Primary Relay Settings"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB mass storage driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB mass storage driver"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), _("Power Off"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), _("Power On"));
 
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
@@ -308,56 +300,56 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   soft_reset_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "soft_reset_button"));
   hard_reset_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "hard_reset_button"));
 
-  gtk_button_set_label(GTK_BUTTON(connect_button_ccc), curlang_ccc[LANGCONNECT]);
-  gtk_button_set_label(GTK_BUTTON(disconnect_button_ccc), curlang_ccc[LANGDISCONNECT]);
-  gtk_button_set_label(GTK_BUTTON(start_button_ccc), curlang_ccc[LANGSTART]);
-  gtk_button_set_label(GTK_BUTTON(stop_button_ccc), curlang_ccc[LANGSTOP]);
-  gtk_button_set_label(GTK_BUTTON(analyze_button_ccc), curlang_ccc[LANGANALYZE]);
-  gtk_button_set_label(GTK_BUTTON(analyze_long_button_ccc), curlang_ccc[LANGANALYZELONG]);
-  gtk_button_set_label(GTK_BUTTON(smart_button_ccc), curlang_ccc[LANGSMART]);
-  gtk_button_set_label(GTK_BUTTON(clone_mode_button_ccc), curlang_ccc[LANGCLONEMODEBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(agressive_driver_checkbutton_ccc), curlang_ccc[LANGAGRESSIVEDRIVERBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(driver_mode1_button_ccc), curlang_ccc[LANGDRIVERMODE1BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(driver_mode2_button_ccc), curlang_ccc[LANGDRIVERMODE2BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(driver_mode3_button_ccc), curlang_ccc[LANGDRIVERMODE3BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(driver_mode4_button_ccc), curlang_ccc[LANGDRIVERMODE4BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(driver_mode5_button_ccc), curlang_ccc[LANGDRIVERMODE5BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(soft_reset_button_ccc), curlang_ccc[LANGHARDRESETBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(hard_reset_button_ccc), curlang_ccc[LANGSOFTRESETBUTTON]);
+  gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Connect"));
+  gtk_button_set_label(GTK_BUTTON(disconnect_button_ccc), _("Disconnect"));
+  gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Start"));
+  gtk_button_set_label(GTK_BUTTON(stop_button_ccc), _("Stop"));
+  gtk_button_set_label(GTK_BUTTON(analyze_button_ccc), _("Analyze"));
+  gtk_button_set_label(GTK_BUTTON(analyze_long_button_ccc), _("Extended\nAnalyze"));
+  gtk_button_set_label(GTK_BUTTON(smart_button_ccc), _("SMART"));
+  gtk_button_set_label(GTK_BUTTON(clone_mode_button_ccc), _("Clone\nMode"));
+  gtk_button_set_label(GTK_BUTTON(agressive_driver_checkbutton_ccc), _("Slow\nDriver"));
+  gtk_button_set_label(GTK_BUTTON(driver_mode1_button_ccc), _("Virtual\nMode 1"));
+  gtk_button_set_label(GTK_BUTTON(driver_mode2_button_ccc), _("Virtual\nMode 2"));
+  gtk_button_set_label(GTK_BUTTON(driver_mode3_button_ccc), _("Virtual\nMode 3"));
+  gtk_button_set_label(GTK_BUTTON(driver_mode4_button_ccc), _("Virtual\nMode 4"));
+  gtk_button_set_label(GTK_BUTTON(driver_mode5_button_ccc), _("Virtual\nMode 5"));
+  gtk_button_set_label(GTK_BUTTON(soft_reset_button_ccc), _("Soft\nReset"));
+  gtk_button_set_label(GTK_BUTTON(hard_reset_button_ccc), _("Hard\nReset"));
 
-  gtk_label_set_text(GTK_LABEL(label_project_ccc), curlang_ccc[LANGPROJECTLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_domain_ccc), curlang_ccc[LANGDOMAINLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_source_ccc), curlang_ccc[LANGSOURCELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_destination_ccc), curlang_ccc[LANGDESTINATIONLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_totallba_ccc), curlang_ccc[LANGTOTALLBALABEL]);
-  gtk_label_set_text(GTK_LABEL(label_lbatoread_ccc), curlang_ccc[LANGLBATOREADLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_domainsize_ccc), curlang_ccc[LANGDOMAINSIZELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_runtime_ccc), curlang_ccc[LANGRUNTIMELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_remainingtime_ccc), curlang_ccc[LANGREMAININGTIMELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_currentposition_ccc), curlang_ccc[LANGCURRENTPOSISIONLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_currentstatus_ccc), curlang_ccc[LANGCURRENTSTATUSLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_currentrate_ccc), curlang_ccc[LANGCURRENTRATELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_recentrate_ccc), curlang_ccc[LANGRECENTRATELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_totalrate_ccc), curlang_ccc[LANGTOTALRATELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_skipsize_ccc), curlang_ccc[LANGSKIPSIZELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_skips_ccc), curlang_ccc[LANGSKIPSLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_slowskips_ccc), curlang_ccc[LANGSLOWSKIPLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_skipruns_ccc), curlang_ccc[LANGSKIPRUNSLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_skipresets_ccc), curlang_ccc[LANGSKIPRESETSLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_runsize_ccc), curlang_ccc[LANGRUNSIZELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_finished_ccc), curlang_ccc[LANGFINISHEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_nontried_ccc), curlang_ccc[LANGNONTRIEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_nontrimmed_ccc), curlang_ccc[LANGNONTRIMMEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_nondivided_ccc), curlang_ccc[LANGNONDIVIDEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_nonscraped_ccc), curlang_ccc[LANGNONSCRAPEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_bad_ccc), curlang_ccc[LANGBADLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_datapreview_ccc), curlang_ccc[LANGDATAPREVIEWLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_longestreadtime_ccc), curlang_ccc[LANGLONGESTREADTIMELABEL]);
-  gtk_label_set_text(GTK_LABEL(label_filled_ccc), curlang_ccc[LANGFILLEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_retried_ccc), curlang_ccc[LANGRETRIEDLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), curlang_ccc[LANGRETRYPASSESLABEL]);
-  gtk_label_set_text(GTK_LABEL(label_drivermode_ccc), curlang_ccc[LANGDRIVERMODE]);
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGCLONEMODE]);
+  gtk_label_set_text(GTK_LABEL(label_project_ccc), _("Project"));
+  gtk_label_set_text(GTK_LABEL(label_domain_ccc), _("Domain"));
+  gtk_label_set_text(GTK_LABEL(label_source_ccc), _("Source"));
+  gtk_label_set_text(GTK_LABEL(label_destination_ccc), _("Destination (All data will be overwritten!)"));
+  gtk_label_set_text(GTK_LABEL(label_totallba_ccc), _("Total LBA"));
+  gtk_label_set_text(GTK_LABEL(label_lbatoread_ccc), _("LBA to read"));
+  gtk_label_set_text(GTK_LABEL(label_domainsize_ccc), _("Domain size"));
+  gtk_label_set_text(GTK_LABEL(label_runtime_ccc), _("Run time"));
+  gtk_label_set_text(GTK_LABEL(label_remainingtime_ccc), _("Remaining time"));
+  gtk_label_set_text(GTK_LABEL(label_currentposition_ccc), _("Current position"));
+  gtk_label_set_text(GTK_LABEL(label_currentstatus_ccc), _("Current status"));
+  gtk_label_set_text(GTK_LABEL(label_currentrate_ccc), _("Current rate"));
+  gtk_label_set_text(GTK_LABEL(label_recentrate_ccc), _("Recent rate"));
+  gtk_label_set_text(GTK_LABEL(label_totalrate_ccc), _("Total rate"));
+  gtk_label_set_text(GTK_LABEL(label_skipsize_ccc), _("Base skip size"));
+  gtk_label_set_text(GTK_LABEL(label_skips_ccc), _("Skips"));
+  gtk_label_set_text(GTK_LABEL(label_slowskips_ccc), _("Slow skips"));
+  gtk_label_set_text(GTK_LABEL(label_skipruns_ccc), _("Skip runs"));
+  gtk_label_set_text(GTK_LABEL(label_skipresets_ccc), _("Skip resets"));
+  gtk_label_set_text(GTK_LABEL(label_runsize_ccc), _("Last run size"));
+  gtk_label_set_text(GTK_LABEL(label_finished_ccc), _("Finished"));
+  gtk_label_set_text(GTK_LABEL(label_nontried_ccc), _("Non-Tried"));
+  gtk_label_set_text(GTK_LABEL(label_nontrimmed_ccc), _("Non-Trimmed"));
+  gtk_label_set_text(GTK_LABEL(label_nondivided_ccc), _("Non-Divided"));
+  gtk_label_set_text(GTK_LABEL(label_nonscraped_ccc), _("Non-Scraped"));
+  gtk_label_set_text(GTK_LABEL(label_bad_ccc), _("Bad"));
+  gtk_label_set_text(GTK_LABEL(label_datapreview_ccc), _("Data preview"));
+  gtk_label_set_text(GTK_LABEL(label_longestreadtime_ccc), _("Current / Recent / Longest"));
+  gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Filled"));
+  gtk_label_set_text(GTK_LABEL(label_retried_ccc), _("Retried"));
+  gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), _("Remaining retry passes"));
+  gtk_label_set_text(GTK_LABEL(label_drivermode_ccc), _("Clone/Driver Mode"));
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Clone"));
 
   // set status buttons
   button_bbk_ccc = gtk_button_new_with_label("BBK");
@@ -415,70 +407,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_window_set_default_size(main_window_ccc, 1075, 775);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
-
-  return 0;
-}
-
-int copy_enlanguage_ccc(void)
-{
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    strcpy(curlang_ccc[i], enlang_ccc[i]);
-  }
-  return 0;
-}
-
-int copy_newlanguage_ccc(void)
-{
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    strcpy(curlang_ccc[i], newlang_ccc[i]);
-    // fprintf(stdout, "%d %s", i, newlang_ccc[i]);
-  }
-  return 0;
-}
-
-int set_language_ccc(void)
-{
-  language_window_ccc = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  // gtk_window_set_keep_above(GTK_WINDOW(language_window_ccc), TRUE);
-  gtk_window_set_title(GTK_WINDOW(language_window_ccc), "Language Options");
-  gtk_window_set_default_size(GTK_WINDOW(language_window_ccc), 300, 200);
-  gtk_window_set_position(GTK_WINDOW(language_window_ccc), GTK_WIN_POS_CENTER);
-
-  gint handler_id1 = g_signal_connect(G_OBJECT(language_window_ccc), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-  GtkWidget *box = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(language_window_ccc), box);
-
-  GtkWidget *enbutton = gtk_button_new_with_label("Continue");
-  // GtkWidget *exbutton = gtk_button_new_with_label("Export language file");
-  GtkWidget *imbutton = gtk_button_new_with_label("Change Language");
-  GtkWidget *okim = gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON);
-  // GtkWidget *saveim = gtk_image_new_from_stock(GTK_STOCK_SAVE, GTK_ICON_SIZE_BUTTON);
-  GtkWidget *openim = gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
-  gtk_button_set_image(GTK_BUTTON(enbutton), okim);
-  // gtk_button_set_image(GTK_BUTTON(exbutton), saveim);
-  gtk_button_set_image(GTK_BUTTON(imbutton), openim);
-
-  gtk_box_pack_start(GTK_BOX(box), enbutton, TRUE, TRUE, 0);
-  // gtk_box_pack_start (GTK_BOX (box), exbutton, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(box), imbutton, TRUE, TRUE, 0);
-
-  gint handler_id2 = g_signal_connect(enbutton, "clicked", G_CALLBACK(gtk_main_quit), NULL);
-  // gint handler_id3 = g_signal_connect (exbutton, "clicked", G_CALLBACK (export_language_file_ccc), NULL);
-  gint handler_id4 = g_signal_connect(imbutton, "clicked", G_CALLBACK(import_language_file_ccc), NULL);
-
-  gtk_widget_show_all(language_window_ccc);
-  gtk_main();
-  g_signal_handler_disconnect(language_window_ccc, handler_id1);
-  g_signal_handler_disconnect(enbutton, handler_id2);
-  // g_signal_handler_disconnect(exbutton, handler_id3);
-  g_signal_handler_disconnect(imbutton, handler_id4);
-  gtk_widget_hide(language_window_ccc);
-  gtk_widget_destroy(language_window_ccc);
 
   return 0;
 }
@@ -563,564 +491,6 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 }
 #endif
 
-int translate_all_ccc(void)
-{
-  unsigned int total_language_items = n_languages_ccc;
-  int translate_failed = 0;
-  if (translate_ccc >= 80000 && translate_ccc < 80010)
-  {
-    char(*reverselang)[LANGCOUNT][MAXLANGLENGTH];
-    reverselang = malloc((total_language_items / 3) * sizeof *reverselang);
-    char(*alllang)[LANGCOUNT][MAXLANGLENGTH];
-    alllang = malloc((total_language_items / 3) * sizeof *alllang);
-    char *reverse_file = "REVERSE_LANGUAGES.CSV";
-    char *all_file = "ALL_LANGUAGES.CSV";
-    char *export_file = "English";
-    FILE *writefile;
-    writefile = fopen(export_file, "w");
-    if (writefile == NULL)
-    {
-      sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], export_file, strerror(errno));
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-      clear_error_message_ccc();
-    }
-    fprintf(writefile, "%s", program_title);
-    unsigned int i;
-    unsigned int n;
-    for (i = 0; i < LANGCOUNT; i++)
-    {
-      fprintf(writefile, "\n|__|%04u|__|\n", i);
-      fprintf(writefile, "%s", enlang_ccc[i]);
-    }
-    fclose(writefile);
-    chmod(export_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-    if (total_language_items % 3)
-    {
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "language count not dividable by 3\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      fprintf(stdout, "\n*****************************************************\n");
-      return -1;
-    }
-    for (i = 0; i < total_language_items; i += 3)
-    {
-      fprintf(stdout, "translating %u of %u\n", i / 3, total_language_items / 3);
-      char *translang = languages_ccc[i + 1];
-      char *language = languages_ccc[i];
-      char *native = languages_ccc[i + 2];
-      copy_enlanguage_ccc();
-      if (translate_language_ccc("en", translang, language, native))
-      {
-        fprintf(stdout, "\n*****************************************************\n");
-        fprintf(stdout, "Failed to translate to %s\n", language);
-        fprintf(stdout, "\n*****************************************************\n");
-        translate_failed = 1;
-      }
-      if (translate_ccc == 80009)
-      {
-        for (n = 0; n < LANGCOUNT; n++)
-        {
-          strcpy(alllang[i / 3][n], newlang_ccc[n]);
-        }
-        copy_newlanguage_ccc();
-        if (translate_language_ccc(translang, "en", language, "english"))
-        {
-          fprintf(stdout, "\n*****************************************************\n");
-          fprintf(stdout, "Failed to reverse translate %s\n", language);
-          fprintf(stdout, "\n*****************************************************\n");
-          translate_failed = 1;
-        }
-        for (n = 0; n < LANGCOUNT; n++)
-        {
-          strcpy(reverselang[i / 3][n], newlang_ccc[n]);
-        }
-      }
-    }
-
-    if (translate_ccc == 80009)
-    {
-      writefile = fopen(reverse_file, "w");
-      if (writefile == NULL)
-      {
-        sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], reverse_file, strerror(errno));
-        message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-        clear_error_message_ccc();
-      }
-      fprintf(writefile, "\"%s\", ", "English");
-      for (i = 0; i < total_language_items; i += 3)
-      {
-        fprintf(writefile, "\"%s\", ", languages_ccc[i]);
-      }
-      fprintf(writefile, "\n");
-      for (n = 0; n < LANGCOUNT; n++)
-      {
-        fprintf(writefile, "\"%s\", ", enlang_ccc[n]);
-        for (i = 0; i < (total_language_items / 3); i++)
-        {
-          fprintf(writefile, "\"%s\", ", reverselang[i][n]);
-        }
-        fprintf(writefile, "\n");
-      }
-      fclose(writefile);
-      chmod(reverse_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-      writefile = fopen(all_file, "w");
-      if (writefile == NULL)
-      {
-        sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], all_file, strerror(errno));
-        message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-        clear_error_message_ccc();
-      }
-      fprintf(writefile, "\"%s\", ", "English");
-      for (i = 0; i < total_language_items; i += 3)
-      {
-        fprintf(writefile, "\"%s\", ", languages_ccc[i]);
-      }
-      fprintf(writefile, "\n");
-      for (n = 0; n < LANGCOUNT; n++)
-      {
-        fprintf(writefile, "\"%s\", ", enlang_ccc[n]);
-        for (i = 0; i < (total_language_items / 3); i++)
-        {
-          fprintf(writefile, "\"%s\", ", alllang[i][n]);
-        }
-        fprintf(writefile, "\n");
-      }
-      fclose(writefile);
-      chmod(all_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    }
-  }
-  if (translate_failed)
-  {
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "Failed to translate\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    fprintf(stdout, "\n*****************************************************\n");
-    return -1;
-  }
-  return 0;
-}
-
-int translate_language_ccc(char *fromlang, char *translang, char *language, char *native)
-{
-  int failure = 0;
-  char return_data[1000000];
-  char new_lang_data[500000];
-  char url_data[250000];
-  char lang_data[250000];
-  char new_data[250000];
-  char temp_data[100000];
-  strcpy(lang_data, "");
-  strcpy(new_data, "");
-  strcpy(return_data, "");
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    strcpy(newlang_ccc[i], "");
-  }
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    sprintf(temp_data, "\n|__|%04d|__|\n", i);
-    strcat(lang_data, temp_data);
-    sprintf(temp_data, "%s", curlang_ccc[i]);
-    strcat(lang_data, temp_data);
-    if (strlen(lang_data) > 3000 || i == LANGCOUNT - 1)
-    {
-      int n;
-      int len = strlen(lang_data);
-      for (n = 0; n < len; n++)
-      {
-        char c = lang_data[n];
-        if (c == ' ')
-        {
-          strcat(new_data, "%20");
-        }
-        else if (c == '\n')
-        {
-          strcat(new_data, "%0a");
-        }
-        else
-        {
-          strncat(new_data, &c, 1);
-        }
-      }
-      // fprintf (stdout, "%s\n", new_data);
-
-      strcpy(url_data, "https://translate.googleapis.com/translate_a/single?client=gtx&sl=");
-      strcat(url_data, fromlang);
-      strcat(url_data, "&tl=");
-      strcat(url_data, translang);
-      strcat(url_data, "&dt=t&q=");
-      strcat(url_data, new_data);
-
-      fprintf(stdout, "%d %s to %s  ", i, fromlang, translang);
-      do_nanosleep_ccc(TRANSLATETIMERFAST); // this is a timer to deal with google translator
-      char *data = get_translated_data_ccc(url_data);
-      // fprintf (stdout, "%s\n", data);
-      strcat(return_data, data);
-      strcpy(lang_data, "");
-      strcpy(new_data, "");
-    }
-  }
-  // fprintf (stdout, "\n*****************************************************\n");
-  // fprintf (stdout, "%s\n", return_data);
-
-  strcpy(new_lang_data, "");
-  int return_length = strlen(return_data);
-  int bracket_depth = 0;
-  for (i = 0; i < return_length; i++)
-  {
-    if (return_data[i] == '[')
-    {
-      bracket_depth++;
-      if (return_data[i + 1] == '"' && bracket_depth < 5)
-      {
-        int n = i + 2;
-        while (n < return_length)
-        {
-          if (return_data[n] == '"')
-          {
-            strcat(new_lang_data, "\n");
-            break;
-          }
-          else if (return_data[n] == '\\' && return_data[n + 1] == 'n')
-          {
-            strcat(new_lang_data, "\n");
-            if (return_data[n + 2] == '\\' && return_data[n + 3] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-            }
-            if (return_data[n + 4] == '\\' && return_data[n + 5] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-            }
-            break;
-          }
-          char c = return_data[n];
-          strncat(new_lang_data, &c, 1);
-          n++;
-          i = n;
-        }
-      }
-    }
-    else if (return_data[i] == ']')
-    {
-      bracket_depth--;
-    }
-  }
-  // fprintf (stdout, "\n*****************************************************\n");
-  // fprintf (stdout, "%s\n", new_lang_data);
-
-  // read language data out of the variable
-  char *line = new_lang_data;
-  int count = 0;
-  int found_count = -1;
-  while (line)
-  {
-    char *nextLine = strchr(line, '\n');
-    if (nextLine)
-      *nextLine = '\0'; // temporarily terminate the current line
-    // printf("%s\n", line);
-
-    int scanline;
-    int new_count = -1;
-    scanline = sscanf(line, "| _ _ | %d | _ _ |", &new_count);
-    if (scanline == 1)
-    {
-      if (new_count >= 0 && new_count < LANGCOUNT)
-      {
-        // fprintf (stdout, "num=%d, line=%s\n", new_count, line);
-        //  remove the last new line from the end
-        if (found_count >= 0)
-        {
-          int l = strlen(newlang_ccc[found_count]);
-          if (l > 0 && newlang_ccc[found_count][l - 1] == '\n')
-          {
-            newlang_ccc[found_count][l - 1] = '\0';
-          }
-        }
-        found_count = new_count;
-        strcpy(newlang_ccc[found_count], "");
-        if (count != found_count)
-        {
-          // fprintf (stdout, "FAILED count=%d found_count=%d\n", count, found_count);
-        }
-        count++;
-      }
-      else
-      {
-        fprintf(stdout, "Warning: language count %d not valid.\n", new_count);
-        failure = 1;
-      }
-    }
-    else if (found_count >= 0 && found_count < LANGCOUNT)
-    {
-      unsigned int l = strlen(newlang_ccc[found_count]);
-      strncat(newlang_ccc[found_count], line, MAXLANGLENGTH - l - 1);
-      strcat(newlang_ccc[found_count], "\n");
-      // fprintf (stdout, "%s\n", newlang_ccc[found_count]);
-      if (MAXLANGLENGTH - l < strlen(line))
-      {
-        fprintf(stdout, "Warning: language count %d exceeded max length and was truncated.\n", found_count);
-        failure = 1;
-      }
-    }
-
-    if (nextLine)
-      *nextLine = '\n'; // then restore newline-char, just to be tidy
-    line = nextLine ? (nextLine + 1) : NULL;
-  }
-  count--;
-  if (count == found_count && count == LANGCOUNT - 1)
-  {
-    // do noting
-  }
-  else
-  {
-    fprintf(stdout, "FAILED count=%d found_count=%d LANGCOUNT=%d\n", count, found_count, LANGCOUNT - 1);
-    failure = 1;
-  }
-
-  if (failure && 0)
-  {
-    int retry = translate_language_slow_ccc(fromlang, translang, language, native);
-    return retry;
-  }
-
-  char langfile[256];
-  strcpy(langfile, language);
-  strcat(langfile, "(");
-  strcat(langfile, native);
-  strcat(langfile, ")");
-  if (failure)
-  {
-    strcat(langfile, "_FAILED_TRANSLATION");
-  }
-  FILE *writefile;
-  writefile = fopen(langfile, "w");
-  if (writefile == NULL)
-  {
-    sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], langfile, strerror(errno));
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-    clear_error_message_ccc();
-  }
-
-  fprintf(writefile, "%s", program_title);
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    fprintf(writefile, "\n|__|%04d|__|\n", i);
-    fprintf(writefile, "%s", newlang_ccc[i]);
-  }
-
-  fclose(writefile);
-  chmod(langfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-  return failure;
-}
-
-char *get_translated_data_ccc(char *url_data)
-{
-#ifdef DEBUG
-  do_nanosleep_ccc(TRANSLATETIMERALL); // this is a timer to deal with google translator
-  CURL *curl_handle;
-  CURLcode res;
-
-  struct MemoryStruct chunk;
-
-  chunk.memory = malloc(1); /* will be grown as needed by the realloc above */
-  chunk.size = 0;           /* no data at this point */
-
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  /* init the curl session */
-  curl_handle = curl_easy_init();
-
-  /* specify URL to get */
-  curl_easy_setopt(curl_handle, CURLOPT_URL, url_data);
-
-  /* send all data to this function  */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-  /* we pass our 'chunk' struct to the callback function */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-
-  /* some servers don't like requests that are made without a user-agent
-     field, so we provide one */
-  curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
-
-  /* get it! */
-  res = curl_easy_perform(curl_handle);
-
-  /* check for errors */
-  if (res != CURLE_OK)
-  {
-    fprintf(stdout, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-  }
-  else
-  {
-    fprintf(stdout, "%ld bytes retrieved\n", (long)chunk.size);
-    // printf("%s\n", chunk.memory);
-  }
-
-  /* cleanup curl stuff */
-  curl_easy_cleanup(curl_handle);
-
-  // free(chunk.memory);
-
-  /* we're done with libcurl, so clean it up */
-  curl_global_cleanup();
-
-  return chunk.memory;
-#else
-  return url_data;
-#endif
-}
-
-int translate_language_slow_ccc(char *fromlang, char *translang, char *language, char *native)
-{
-  int failure = 0;
-  char return_data[65536];
-  char new_lang_data[32768];
-  char url_data[6000];
-  char lang_data[8000];
-  char new_data[16000];
-  char temp_data[4096];
-  strcpy(lang_data, "");
-  strcpy(new_data, "");
-  strcpy(return_data, "");
-  int count;
-  for (count = 0; count < LANGCOUNT; count++)
-  {
-    strcpy(lang_data, "");
-    strcpy(new_data, "");
-    sprintf(temp_data, "%s", curlang_ccc[count]);
-    strcat(lang_data, temp_data);
-    int n;
-    int len = strlen(lang_data);
-    for (n = 0; n < len; n++)
-    {
-      char c = lang_data[n];
-      if (c == ' ')
-      {
-        strcat(new_data, "%20");
-      }
-      else if (c == '\n')
-      {
-        strcat(new_data, "%0a");
-      }
-      else
-      {
-        strncat(new_data, &c, 1);
-      }
-    }
-    // fprintf (stdout, "%s\n", new_data);
-
-    strcpy(url_data, "https://translate.googleapis.com/translate_a/single?client=gtx&sl=");
-    strcat(url_data, fromlang);
-    strcat(url_data, "&tl=");
-    strcat(url_data, translang);
-    strcat(url_data, "&dt=t&q=");
-    strcat(url_data, new_data);
-
-    fprintf(stdout, "%d %s to %s  ", count, fromlang, translang);
-    do_nanosleep_ccc(TRANSLATETIMERSLOW); // this is a timer to deal with google translator
-    char *data = get_translated_data_ccc(url_data);
-    // fprintf (stdout, "%s\n", data);
-    strcpy(return_data, data);
-    // fprintf (stdout, "\n*****************************************************\n");
-    // fprintf (stdout, "%s\n", return_data);
-
-    strcpy(new_lang_data, "");
-    int return_length = strlen(return_data);
-    int i;
-    for (i = 0; i < return_length; i++)
-    {
-      if (return_data[i] == '[')
-      {
-        if (return_data[i + 1] == '"')
-        {
-          int n = i + 2;
-          while (n < return_length)
-          {
-            if (return_data[n] == '"')
-            {
-              break;
-            }
-            else if (return_data[n] == '\\' && return_data[n + 1] == 'n')
-            {
-              strcat(new_lang_data, "\n");
-              if (return_data[n + 2] == '\\' && return_data[n + 3] == 'n')
-              {
-                strcat(new_lang_data, "\n");
-              }
-              if (return_data[n + 4] == '\\' && return_data[n + 5] == 'n')
-              {
-                strcat(new_lang_data, "\n");
-              }
-              break;
-            }
-            char c = return_data[n];
-            strncat(new_lang_data, &c, 1);
-            n++;
-            i = n;
-          }
-        }
-      }
-    }
-    // fprintf (stdout, "\n*****************************************************\n");
-    // fprintf (stdout, "%s\n", new_lang_data);
-    if (strlen(new_lang_data) >= MAXLANGLENGTH)
-    {
-      fprintf(stdout, "Warning: language count %d exceeded max length and was truncated.\n", count);
-      failure = 1;
-    }
-    strcpy(newlang_ccc[count], new_lang_data);
-  }
-
-  char langfile[256];
-  strcpy(langfile, language);
-  strcat(langfile, "(");
-  strcat(langfile, native);
-  strcat(langfile, ")");
-  if (failure)
-  {
-    strcat(langfile, "_FAILED_TRANSLATION");
-  }
-  FILE *writefile;
-  writefile = fopen(langfile, "w");
-  if (writefile == NULL)
-  {
-    sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], langfile, strerror(errno));
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-    clear_error_message_ccc();
-  }
-
-  fprintf(writefile, "%s", program_title);
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    fprintf(writefile, "\n|__|%04d|__|\n", i);
-    fprintf(writefile, "%s", newlang_ccc[i]);
-  }
-
-  fclose(writefile);
-  chmod(langfile, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-
-  return failure;
-}
-
 int print_gui_error_message_ccc(char *message, char *title, int type)
 {
   if (!superclone_ccc)
@@ -1158,179 +528,19 @@ int print_gui_error_message_ccc(char *message, char *title, int type)
   return 0;
 }
 
-void export_language_file_ccc(void)
-{
-  GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGEXPORTLANG],
-                                       GTK_WINDOW(language_window_ccc),
-                                       GTK_FILE_CHOOSER_ACTION_SAVE,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-                                       NULL);
-  gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
-  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename;
-    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    fprintf(stdout, "%s\n", filename);
-    file_export_sel_ccc(filename);
-    g_free(filename);
-  }
-  gtk_widget_destroy(dialog);
-}
-
-// get the export filename and load it
-static void file_export_sel_ccc(char *export_file)
-{
-  FILE *writefile;
-  writefile = fopen(export_file, "w");
-  if (writefile == NULL)
-  {
-    sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGEXPORTERR], export_file, strerror(errno));
-    message_error_ccc(tempmessage_ccc);
-    //     print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-    clear_error_message_ccc();
-  }
-
-  fprintf(writefile, "%s", program_title);
-  int i;
-  for (i = 0; i < LANGCOUNT; i++)
-  {
-    fprintf(writefile, "\n|__|%04d|__|\n", i);
-    fprintf(writefile, "%s", enlang_ccc[i]);
-  }
-
-  fclose(writefile);
-  chmod(export_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-}
-
-void import_language_file_ccc(void)
-{
-  GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGIMPORTLANG],
-                                       GTK_WINDOW(language_window_ccc),
-                                       GTK_FILE_CHOOSER_ACTION_OPEN,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
-  if (access(OSC_LANG_PATH, F_OK) == 0)
-  {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), OSC_LANG_PATH);
-    g_print("found installed languages\n");
-  }
-  else if (access("Language/English", F_OK) == 0)
-  {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "Language");
-    g_print("found languages locally\n");
-  }
-  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-    char *filename;
-    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    fprintf(stdout, "%s\n", filename);
-    file_import_sel_ccc(filename);
-    g_free(filename);
-  }
-  gtk_widget_destroy(dialog);
-}
-
-// get the import filename and load it
-static void file_import_sel_ccc(char *import_file)
-{
-  FILE *readfile;
-  readfile = fopen(import_file, "r");
-  if (readfile == NULL)
-  {
-    sprintf(tempmessage_ccc, "%s: %s (%s)", curlang_ccc[LANGLANGIMPORTERR], import_file, strerror(errno));
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-    clear_error_message_ccc();
-  }
-  else
-  {
-
-    char line[MAXLANGLENGTH];
-    int count = 0;
-    int found_count = -1;
-    char found_title[MAXLANGLENGTH] = "";
-    int firstline = 1;
-
-    while (fgets(line, sizeof line, readfile))
-    {
-      if (firstline)
-      {
-        strncpy(found_title, line, MAXLANGLENGTH - 1);
-        firstline = 0;
-      }
-      else
-      {
-        int scanline;
-        int new_count = -1;
-        scanline = sscanf(line, "| _ _ | %d | _ _ |", &new_count);
-        if (scanline == 1)
-        {
-          // fprintf (stdout, "num=%d, line=%s", new_count, line);
-          //  remove the last new line from the end
-          if (found_count >= 0)
-          {
-            int l = strlen(newlang_ccc[found_count]);
-            if (l > 0 && newlang_ccc[found_count][l - 1] == '\n')
-            {
-              newlang_ccc[found_count][l - 1] = '\0';
-            }
-          }
-          found_count = new_count;
-          strcpy(newlang_ccc[found_count], "");
-          count++;
-        }
-        else if (found_count >= 0 && found_count < LANGCOUNT)
-        {
-          unsigned int l = strlen(newlang_ccc[found_count]);
-          strncat(newlang_ccc[found_count], line, MAXLANGLENGTH - l - 1);
-          // fprintf (stdout, "%s", newlang_ccc[found_count]);
-          if (MAXLANGLENGTH - l < strlen(line))
-          {
-            g_print("Warning: language count %d exceeded max length and was truncated.\n", found_count);
-          }
-        }
-      }
-    }
-
-    count--;
-    if (count == found_count && count == LANGCOUNT - 1)
-    {
-      copy_newlanguage_ccc();
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGLANGCHANGESUCCESS]);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGSUCCESS], 0);
-      clear_error_message_ccc();
-    }
-    else
-    {
-      fprintf(stdout, "count=%d found_count=%d LANGCOUNT=%d\n", count, found_count, LANGCOUNT - 1);
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGLANGIMPORTERR2]);
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
-      clear_error_message_ccc();
-    }
-
-    fclose(readfile);
-  }
-}
-
 void select_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGLOADPROJFILE],
+    dialog = gtk_file_chooser_dialog_new(_("Load project (progress) file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_OPEN,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1355,15 +565,15 @@ void new_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGNEWPROJFILE],
+    dialog = gtk_file_chooser_dialog_new(_("New project (progress) file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1388,15 +598,15 @@ void new_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGNEWDOMAINFILE],
+    dialog = gtk_file_chooser_dialog_new(_("New Domain File"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1419,22 +629,22 @@ void select_ddrescue_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (!new_project_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCHOOSENEWPROJECT]);
+    strcpy(tempmessage_ccc, _("You must start a new project before importing a ddrescue log file"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGIMPORTDD],
+    dialog = gtk_file_chooser_dialog_new(_("Import ddrescue log (map) file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_OPEN,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1456,9 +666,9 @@ void save_file_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -1466,9 +676,9 @@ void save_file_ccc(void)
     return_value_ccc = write_logfile_ccc(log_file_ccc, 0);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+      strcpy(tempmessage_ccc, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
   }
@@ -1478,15 +688,15 @@ void save_file_as_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGSAVEPROJFILE],
+    dialog = gtk_file_chooser_dialog_new(_("Save Project File As"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1501,9 +711,9 @@ void save_file_as_ccc(void)
       return_value_ccc = write_logfile_ccc(filename, 0);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+        strcpy(tempmessage_ccc, _("Error writing progress log file"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       g_free(filename);
@@ -1516,9 +726,9 @@ void save_domain_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -1526,9 +736,9 @@ void save_domain_ccc(void)
     return_value_ccc = write_domainfile_ccc(domain_file_ccc, 0);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+      strcpy(tempmessage_ccc, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
   }
@@ -1538,15 +748,15 @@ void save_domain_as_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGSAVEDOMAINFILEAS],
+    dialog = gtk_file_chooser_dialog_new(_("Save Domain File As"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1561,9 +771,9 @@ void save_domain_as_ccc(void)
       return_value_ccc = write_domainfile_ccc(filename, 0);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGLOGWRITEERR]);
+        strcpy(tempmessage_ccc, _("Error writing progress log file"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       g_free(filename);
@@ -1576,15 +786,15 @@ void export_ddrescue_file_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGEXPORTDD],
+    dialog = gtk_file_chooser_dialog_new(_("Export ddrescue log (map) file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1599,9 +809,9 @@ void export_ddrescue_file_ccc(void)
       return_value_ccc = write_ddrescue_logfile_ccc(filename);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGLOGEXPORTERR]);
+        strcpy(tempmessage_ccc, _("Error exporting ddrescue log (map) file"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       g_free(filename);
@@ -1614,15 +824,15 @@ void select_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGDOMAIN],
+    dialog = gtk_file_chooser_dialog_new(_("Load Domain File"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_OPEN,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1644,22 +854,22 @@ void add_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (1 && !do_domain_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNODOMAIN]);
+    strcpy(tempmessage_ccc, _("Error: Domain is not active or no domain file loaded"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGADDDOMAINFILE],
+    dialog = gtk_file_chooser_dialog_new(_("Choose Destination Image"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_OPEN,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1701,9 +911,9 @@ static void load_log_file_ccc(char *log_file)
     int ret2 = 0;
     if (ret != 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1720,9 +930,9 @@ static void load_log_file_ccc(char *log_file)
       check_log_size_ccc = 1;
       if (ret != 0 || ret2 != 0)
       {
-        strcpy(tempmessage_ccc, curlang_ccc[LANGLOGCHECKERR]);
+        strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
         clear_error_message_ccc();
       }
 
@@ -1762,9 +972,9 @@ static void load_ddrescue_log_file_ccc(char *log_file)
     int ret2 = 0;
     if (ret != 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -1781,9 +991,9 @@ static void load_ddrescue_log_file_ccc(char *log_file)
         ret = check_log_ccc();
         if (ret != 0 || ret2 != 0)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGLOGCHECKERR]);
+          strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
           clear_error_message_ccc();
         }
       }
@@ -1822,9 +1032,9 @@ static void load_domain_file_ccc(char *log_file)
     int ret = read_domain_file_ccc(domain_file_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       do_domain_ccc = false;
     }
@@ -1847,9 +1057,9 @@ static void add_domain_file_ccc(char *log_file)
   int ret = read_domain_add_file_ccc(log_file);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+    strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   update_display_ccc(0);
@@ -1859,9 +1069,9 @@ void clear_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -1940,29 +1150,29 @@ void choose_source_ccc(void)
   use_rebuild_assist_ccc = false;
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (memory_failed_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGBUFFERADDRESSRANGE]);
+    strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (copy_image_mode_ccc)
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGCHOOSEIMAGE],
+    dialog = gtk_file_chooser_dialog_new(_("Choose image file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_OPEN,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -2000,9 +1210,9 @@ void choose_source_ccc(void)
           int ret = read_domain_file_ccc(domain_file_ccc);
           if (ret < 0)
           {
-            strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+            strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             clear_domain_ccc();
             // initialize_domainfile_memory_ccc();
@@ -2021,9 +1231,9 @@ void choose_source_ccc(void)
         clear_source_ccc();
         strcpy(current_source_model_ccc, "");
         strcpy(current_source_serial_ccc, "");
-        sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGSOURCEERROR]);
+        sprintf(tempmessage_ccc, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       release_devices_ccc();
@@ -2040,7 +1250,7 @@ void choose_source_ccc(void)
     }
     find_all_devices_ccc();
 
-    choose_source_dialog_window_ccc = gtk_dialog_new_with_buttons(curlang_ccc[LANGSOURCE], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+    choose_source_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Choose Source Drive"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
     // gtk_window_set_title (GTK_WINDOW (choose_source_dialog_window_ccc), "GtkScrolledWindow example");
     gtk_container_set_border_width(GTK_CONTAINER(choose_source_dialog_window_ccc), 0);
     gtk_widget_set_size_request(choose_source_dialog_window_ccc, 600, 400);
@@ -2183,9 +1393,9 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGSOURCEERROR]);
+          sprintf(tempmessage_ccc, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
         }
         else if (ret == -200)
@@ -2194,9 +1404,9 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGSOURCEERROR]);
+          sprintf(tempmessage_ccc, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
         }
         else
@@ -2205,9 +1415,9 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGSOURCEERROR]);
+          sprintf(tempmessage_ccc, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
         }
       }
@@ -2230,9 +1440,9 @@ void choose_source_ccc(void)
           int ret = read_domain_file_ccc(domain_file_ccc);
           if (ret < 0)
           {
-            strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+            strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+            print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
             clear_domain_ccc();
             // initialize_domainfile_memory_ccc();
@@ -2251,9 +1461,9 @@ void choose_source_ccc(void)
         clear_source_ccc();
         strcpy(current_source_model_ccc, "");
         strcpy(current_source_serial_ccc, "");
-        sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGSOURCEERROR]);
+        sprintf(tempmessage_ccc, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       release_devices_ccc();
@@ -2290,16 +1500,16 @@ void choose_destination_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -2329,7 +1539,7 @@ void choose_destination_ccc(void)
     generic_mode_ccc = generic_mode_ccc_bak;
     usb_mode_ccc = usb_mode_bak;
 
-    choose_destination_dialog_window_ccc = gtk_dialog_new_with_buttons(curlang_ccc[LANGDESTINATION], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+    choose_destination_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Destination (All data will be overwritten!)"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
     // gtk_window_set_title (GTK_WINDOW (choose_source_dialog_window_ccc), "GtkScrolledWindow example");
     gtk_container_set_border_width(GTK_CONTAINER(choose_destination_dialog_window_ccc), 0);
     gtk_widget_set_size_request(choose_destination_dialog_window_ccc, 600, 400);
@@ -2374,9 +1584,9 @@ void choose_destination_ccc(void)
       {
         fprintf(stdout, "error selecting destination, ret=%d\n", ret);
         clear_destination_ccc();
-        sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDESTINATIONERROR]);
+        sprintf(tempmessage_ccc, "%s", _("Error selecting destination"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -2396,9 +1606,9 @@ void choose_destination_ccc(void)
             int ret = read_domain_file_ccc(domain_file_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+              strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               clear_domain_ccc();
               // initialize_domainfile_memory_ccc();
@@ -2428,22 +1638,22 @@ void choose_image_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(curlang_ccc[LANGCHOOSEIMAGE],
+    dialog = gtk_file_chooser_dialog_new(_("Choose image file"),
                                          GTK_WINDOW(main_window_ccc),
                                          GTK_FILE_CHOOSER_ACTION_SAVE,
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -2457,7 +1667,7 @@ void choose_image_ccc(void)
       filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       if (access(filename, F_OK) == 0)
       {
-        sprintf(tempmessage_ccc, "   %s   \n%s", filename, curlang_ccc[LANGCONFIRMIMAGEFILE]);
+        sprintf(tempmessage_ccc, "   %s   \n%s", filename, _("The image file currently exists.\nThis will continue the recovery using this image file."));
         if (!open_confirmation_dialog_ccc(tempmessage_ccc))
         {
           confirmed = 0;
@@ -2486,9 +1696,9 @@ void choose_image_ccc(void)
             int ret = read_domain_file_ccc(domain_file_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, curlang_ccc[LANGLOGLOADERR]);
+              strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               clear_domain_ccc();
               // initialize_domainfile_memory_ccc();
@@ -2515,16 +1725,16 @@ void choose_null_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGSTILLCONNECTED]);
+    strcpy(tempmessage_ccc, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -2533,7 +1743,7 @@ void choose_null_ccc(void)
     free(disk_2_ccc);
     disk_2_ccc = malloc(16);
     strcpy(disk_2_ccc, "/dev/null");
-    strcpy(current_destination_model_ccc, curlang_ccc[LANGNODESTINATION]);
+    strcpy(current_destination_model_ccc, _("NULL (No destination)"));
     strcpy(current_destination_serial_ccc, "");
     logfile_changed_ccc = true;
     update_display_ccc(0);
@@ -2552,9 +1762,9 @@ void connect_devices_ccc(void)
   }
   if (memory_failed_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGBUFFERADDRESSRANGE]);
+    strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (relaycheck && project_chosen_ccc && destination_chosen_ccc && (fill_mode_ccc || driver_only_ccc))
@@ -2571,25 +1781,25 @@ void connect_devices_ccc(void)
     }
     if (new_project_ccc && !fill_mode_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGSOURCE]);
+      strcpy(tempmessage_ccc, _("No source chosen\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       set_disconnected_ccc();
     }
     else if (ret || ret2)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGCHECKERR]);
+      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       set_disconnected_ccc();
     }
     else if (driver_only_ccc && !driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       set_disconnected_ccc();
     }
@@ -2598,17 +1808,17 @@ void connect_devices_ccc(void)
       if (open_target_destination_ccc())
       {
         release_devices_ccc();
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+        strcpy(tempmessage_ccc, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         set_disconnected_ccc();
       }
       else
       {
-        // strcpy (tempmessage_ccc, curlang_ccc[LANGCONNECTED]);
+        // strcpy (tempmessage_ccc, _("Devices now connected"));
         // message_error_ccc(tempmessage_ccc);
-        // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGSUCCESS], 0);
+        // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
         // clear_error_message_ccc();
         check_and_adjust_variables_after_connection_ccc();
         set_connected_ccc();
@@ -2629,17 +1839,17 @@ void connect_devices_ccc(void)
     }
     if (check_same_device_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGSAMEDEVICE]);
+      strcpy(tempmessage_ccc, _("Source and Destination cannot be the same device"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       set_disconnected_ccc();
     }
     else if (ret || ret2)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGCHECKERR]);
+      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       set_disconnected_ccc();
     }
@@ -2648,26 +1858,26 @@ void connect_devices_ccc(void)
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
         release_devices_ccc();
-        strcpy(tempmessage_ccc, curlang_ccc[LANGCONNECTIONERR]);
+        strcpy(tempmessage_ccc, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         set_disconnected_ccc();
       }
       else
       {
-        // strcpy (tempmessage_ccc, curlang_ccc[LANGCONNECTED]);
+        // strcpy (tempmessage_ccc, _("Devices now connected"));
         // message_error_ccc(tempmessage_ccc);
-        // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGSUCCESS], 0);
+        // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
         // clear_error_message_ccc();
         if (!enable_scsi_write_ccc && destination_size_valid_ccc && source_total_size_ccc > target_total_size_ccc)
         {
           fprintf(stdout, "Warning! Destination is smaller than souce.\n");
           fprintf(stdout, "Source size= %lld\n", source_total_size_ccc);
           fprintf(stdout, "Target size= %lld\n", target_total_size_ccc);
-          strcpy(tempmessage_ccc, curlang_ccc[LANGDESTINATIONTOOSMALL]);
+          strcpy(tempmessage_ccc, _("Warning! The destination is smaller than the source.\nSome data may not be copied."));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
           clear_error_message_ccc();
         }
         check_and_adjust_variables_after_connection_ccc();
@@ -2680,28 +1890,28 @@ void connect_devices_ccc(void)
   {
     if (!project_chosen_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGPROJECT]);
+      strcpy(tempmessage_ccc, _("No project chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
     if (!source_chosen_ccc && !(fill_mode_ccc || driver_only_ccc))
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGSOURCE]);
+      strcpy(tempmessage_ccc, _("No source chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
     if (!destination_chosen_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDESTINATION]);
+      strcpy(tempmessage_ccc, _("No destination chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
-    strcpy(tempmessage_ccc, curlang_ccc[LANGDONTCONNECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project, source, and destination before connecting."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     if (!relaycheck)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+      strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
   }
@@ -2747,9 +1957,9 @@ void disconnect_devices_ccc(void)
 {
   release_devices_ccc();
   connected_ccc = 0;
-  // strcpy (tempmessage_ccc, curlang_ccc[LANGDISCONNECTED]);
+  // strcpy (tempmessage_ccc, _("Devices now disconnected"));
   // message_error_ccc(tempmessage_ccc);
-  // print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGSUCCESS], 0);
+  // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
   // clear_error_message_ccc();
   set_disconnected_ccc();
   ata_status_ccc = 0;
@@ -2762,9 +1972,9 @@ void set_connected_ccc(void)
   if (driver_mode_ccc && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    strcpy(tempmessage_ccc, curlang_ccc[LANGWARNINGNULLDRIVER]);
+    strcpy(tempmessage_ccc, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
   }
   connected_ccc = 1;
@@ -2903,7 +2113,7 @@ void set_clone_mode_ccc(void)
     do_domain_ccc = true;
   }
   driver_mode_ccc = 0;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGCLONEMODE]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Clone"));
   update_display_ccc(0);
 }
 
@@ -2912,7 +2122,7 @@ void set_driver_mode1_ccc(void)
   do_domain_ccc = false;
   check_driver_null_condition_ccc();
   driver_mode_ccc = 1;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGDRIVERMODE1]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Mode 1"));
   update_display_ccc(0);
 }
 
@@ -2921,7 +2131,7 @@ void set_driver_mode2_ccc(void)
   do_domain_ccc = false;
   check_driver_null_condition_ccc();
   driver_mode_ccc = 2;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGDRIVERMODE2]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Mode 2"));
   update_display_ccc(0);
 }
 
@@ -2930,7 +2140,7 @@ void set_driver_mode3_ccc(void)
   do_domain_ccc = false;
   check_driver_null_condition_ccc();
   driver_mode_ccc = 3;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGDRIVERMODE3]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Mode 3"));
   update_display_ccc(0);
 }
 
@@ -2939,7 +2149,7 @@ void set_driver_mode4_ccc(void)
   do_domain_ccc = false;
   check_driver_null_condition_ccc();
   driver_mode_ccc = 4;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGDRIVERMODE4]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Mode 4"));
   update_display_ccc(0);
 }
 
@@ -2948,7 +2158,7 @@ void set_driver_mode5_ccc(void)
   do_domain_ccc = false;
   check_driver_null_condition_ccc();
   driver_mode_ccc = 5;
-  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), curlang_ccc[LANGDRIVERMODE5]);
+  gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Mode 5"));
   update_display_ccc(0);
 }
 
@@ -2958,9 +2168,9 @@ void check_driver_null_condition_ccc(void)
   if (disk_2_ccc != NULL && driver_mode_ccc == 0 && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    strcpy(tempmessage_ccc, curlang_ccc[LANGWARNINGNULLDRIVER]);
+    strcpy(tempmessage_ccc, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
   }
 }
@@ -3033,9 +2243,9 @@ void start_cloning_ccc(void)
   }
   else
   {
-    gtk_label_set_text(GTK_LABEL(label_filled_ccc), curlang_ccc[LANGLASTREADSIZELABEL]);
+    gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Last read size"));
     ret = begin_driver_ccc();
-    gtk_label_set_text(GTK_LABEL(label_filled_ccc), curlang_ccc[LANGFILLEDLABEL]);
+    gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Filled"));
   }
   running_clone_ccc = 0;
   update_logfile_ccc(0);
@@ -3123,9 +2333,9 @@ void start_analyzing_ccc(void)
     analyze_slow_low_ccc[i] = 999999999999;
   }
   running_analyze_ccc = 1;
-  gtk_label_set_text(GTK_LABEL(label_filled_ccc), curlang_ccc[LANGTOTALGOODBADLABEL]);
+  gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Total, Good, Bad, Slow"));
   ret = analyze_drive_ccc(sections, extended);
-  gtk_label_set_text(GTK_LABEL(label_filled_ccc), curlang_ccc[LANGFILLEDLABEL]);
+  gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Filled"));
   running_analyze_ccc = 0;
 
   long long average_read_time[MAXANALYZESECTIONS];
@@ -3200,11 +2410,11 @@ void start_analyzing_ccc(void)
   good_percent = 100.0f * total_good_reads / total_read_attempts;
   bad_percent = 100.0f * total_bad_reads / total_read_attempts;
   slow_percent = 100.0f * total_slow_reads / total_read_attempts;
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGGOOD], good_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Good"), good_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGBAD], bad_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Bad"), bad_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGSLOW], slow_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Slow"), slow_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
 
   sprintf(tempmessage_ccc, "#\n");
@@ -3238,7 +2448,7 @@ void start_analyzing_ccc(void)
     slow_variance_percent = 100.0f * slow_variance_count / slowsections;
   }
   slow_issue_percent = slow_issue_percent + slow_variance_percent;
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGSLOWRESPONDINGISSUE], slow_issue_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Slow Responding Firmware Issue"), slow_issue_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
 
   int consecutive_no_read_sections = 0;
@@ -3268,7 +2478,7 @@ void start_analyzing_ccc(void)
   {
     partial_access_percent = partial_access_percent * 2.0f;
   }
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGPARTIALACCESSISSUE], partial_access_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Partial Access Issue"), partial_access_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
 
   int bad_sections = 0;
@@ -3284,7 +2494,7 @@ void start_analyzing_ccc(void)
     }
   }
   float bad_head_percent = 100.0f * bad_sections / sections;
-  sprintf(tempmessage_ccc, "# %s = %f%%\n", curlang_ccc[LANGBADORWEAKHEAD], bad_head_percent);
+  sprintf(tempmessage_ccc, "# %s = %f%%\n", _("Bad Or Weak Head"), bad_head_percent);
   strcat(analyze_text_ccc, tempmessage_ccc);
 
   sprintf(tempmessage_ccc, "#\n");
@@ -3292,7 +2502,7 @@ void start_analyzing_ccc(void)
 
   if (1)
   {
-    sprintf(tempmessage_ccc, "# (%d) %s", analyze_slow_total_reads_ccc, curlang_ccc[LANGVARIANCEREADTIMES]);
+    sprintf(tempmessage_ccc, "# (%d) %s", analyze_slow_total_reads_ccc, _("Variance read times low/high:"));
     strcat(analyze_text_ccc, tempmessage_ccc);
     int slowsections = MAXANALYZESLOW / 4;
     if (extended)
@@ -3315,12 +2525,12 @@ void start_analyzing_ccc(void)
   sprintf(tempmessage_ccc, "#\n");
   strcat(analyze_text_ccc, tempmessage_ccc);
 
-  sprintf(tempmessage_ccc, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", curlang_ccc[LANGZONES], curlang_ccc[LANGTOTAL], total_read_attempts, curlang_ccc[LANGGOOD], total_good_reads, curlang_ccc[LANGBAD], total_bad_reads, total_timeouts, curlang_ccc[LANGSLOW], total_slow_reads, curlang_ccc[LANGLOW], total_low_time / 1000, curlang_ccc[LANGHIGH], total_high_time / 1000, curlang_ccc[LANGAVERAGE], total_average_read_time / 1000);
+  sprintf(tempmessage_ccc, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zones"), _("Total"), total_read_attempts, _("Good"), total_good_reads, _("Bad"), total_bad_reads, total_timeouts, _("Slow"), total_slow_reads, _("Low"), total_low_time / 1000, _("High"), total_high_time / 1000, _("Average"), total_average_read_time / 1000);
   strcat(analyze_text_ccc, tempmessage_ccc);
 
   for (i = 0; i < sections; i++)
   {
-    sprintf(tempmessage_ccc, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", curlang_ccc[LANGZONE], i, curlang_ccc[LANGTOTAL], analyze_read_attempts_ccc[i], curlang_ccc[LANGGOOD], analyze_good_reads_ccc[i], curlang_ccc[LANGBAD], analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], curlang_ccc[LANGSLOW], analyze_slow_reads_ccc[i], curlang_ccc[LANGLOW], analyze_low_time_ccc[i] / 1000, curlang_ccc[LANGHIGH], analyze_high_time_ccc[i] / 1000, curlang_ccc[LANGAVERAGE], average_read_time[i] / 1000);
+    sprintf(tempmessage_ccc, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), average_read_time[i] / 1000);
     strcat(analyze_text_ccc, tempmessage_ccc);
   }
   fprintf(stdout, "%s", analyze_text_ccc);
@@ -3370,10 +2580,8 @@ void display_analyze_results_ccc(void)
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(analyze_results_data_label), analyze_text_ccc);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGRESULTS]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
@@ -3408,10 +2616,8 @@ void display_smart_data_ccc(void)
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(smart_results_data_label), smart_data_text_ccc);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGRESULTS]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
@@ -3428,15 +2634,11 @@ void display_identify_data_ccc(void)
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_dialog"));
   GtkWidget *smart_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
   // GtkWidget *smart_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "smart_results_box_label"));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(smart_results_data_label), identify_device_raw_text_ccc);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGRESULTS]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
@@ -3499,44 +2701,36 @@ void open_clone_settings_dialog_ccc(void)
   alignment_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "alignment_spinbutton"));
   maxreadrate_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "maxreadrate_button_label"));
   maxreadrate_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "maxreadrate_spinbutton"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
-  gtk_label_set_text(GTK_LABEL(phase_control_label_ccc), curlang_ccc[LANGPHASECONTROLLABEL]);
-  gtk_button_set_label(GTK_BUTTON(phase1_check_button_ccc), curlang_ccc[LANGPHASE1BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(phase2_check_button_ccc), curlang_ccc[LANGPHASE2BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(phase3_check_button_ccc), curlang_ccc[LANGPHASE3BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(phase4_check_button_ccc), curlang_ccc[LANGPHASE4BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(divide_check_button_ccc), curlang_ccc[LANGDIVIDEBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(divide2_check_button_ccc), curlang_ccc[LANGDIVIDE2BUTTON]);
-  gtk_button_set_label(GTK_BUTTON(trim_check_button_ccc), curlang_ccc[LANGTRIMBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(scrape_check_button_ccc), curlang_ccc[LANGSCRAPTBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(markbad_check_button_ccc), curlang_ccc[LANGMARKBADBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(readbad_check_button_ccc), curlang_ccc[LANGREADBADBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(rebuild_assist_check_button_ccc), curlang_ccc[LANGREBUILDASSIST]);
-  gtk_button_set_label(GTK_BUTTON(reverse_check_button_ccc), curlang_ccc[LANGREVERSEBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(skipfast_check_button_ccc), curlang_ccc[LANGSKIPFASTBUTTON]);
-  gtk_label_set_text(GTK_LABEL(retries_button_label_ccc), curlang_ccc[LANGRETRIESBUTTON]);
-  gtk_label_set_text(GTK_LABEL(clustersize_button_label_ccc), curlang_ccc[LANGCLUSTERSIZEBUTTON]);
-  gtk_label_set_text(GTK_LABEL(inputoffset_button_label_ccc), curlang_ccc[LANGINPUTOFFSETBUTTON]);
-  gtk_label_set_text(GTK_LABEL(size_button_label_ccc), curlang_ccc[LANGSIZEBUTTON]);
-  gtk_label_set_text(GTK_LABEL(blocksize_button_label_ccc), curlang_ccc[LANGBLOCKSIZEBUTTON]);
-  gtk_label_set_text(GTK_LABEL(skipsize_button_label_ccc), curlang_ccc[LANGSKIPSIZEBUTTON]);
-  gtk_label_set_text(GTK_LABEL(maxskipsize_button_label_ccc), curlang_ccc[LANGMAXSKIPSIZEBUTTON]);
-  gtk_label_set_text(GTK_LABEL(skipthreshold_button_label_ccc), curlang_ccc[LANGSKIPTHRESHOLDBUTTON]);
-  gtk_label_set_text(GTK_LABEL(rateskip_button_label_ccc), curlang_ccc[LANGRATESKIPBUTTON]);
-  gtk_label_set_text(GTK_LABEL(exitonslow_button_label_ccc), curlang_ccc[LANGEXITONSLOW]);
-  gtk_label_set_text(GTK_LABEL(exitonslowtime_button_label_ccc), curlang_ccc[LANGEXITONSLOWTIME]);
-  gtk_label_set_text(GTK_LABEL(sectorsize_button_label_ccc), curlang_ccc[LANGSECTORSIZE]);
-  gtk_label_set_text(GTK_LABEL(alignment_button_label_ccc), curlang_ccc[LANGBLOCKALIGNMENT]);
-  gtk_label_set_text(GTK_LABEL(maxreadrate_button_label_ccc), curlang_ccc[LANGMAXREADRATE]);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_label_set_text(GTK_LABEL(phase_control_label_ccc), _("Phase Control"));
+  gtk_button_set_label(GTK_BUTTON(phase1_check_button_ccc), _("Phase 1"));
+  gtk_button_set_label(GTK_BUTTON(phase2_check_button_ccc), _("Phase 2"));
+  gtk_button_set_label(GTK_BUTTON(phase3_check_button_ccc), _("Phase 3"));
+  gtk_button_set_label(GTK_BUTTON(phase4_check_button_ccc), _("Phase 4"));
+  gtk_button_set_label(GTK_BUTTON(divide_check_button_ccc), _("Divide"));
+  gtk_button_set_label(GTK_BUTTON(divide2_check_button_ccc), _("Divide 2"));
+  gtk_button_set_label(GTK_BUTTON(trim_check_button_ccc), _("Trim (overrides dividing)"));
+  gtk_button_set_label(GTK_BUTTON(scrape_check_button_ccc), _("Scrape"));
+  gtk_button_set_label(GTK_BUTTON(markbad_check_button_ccc), _("Mark Bad Head"));
+  gtk_button_set_label(GTK_BUTTON(readbad_check_button_ccc), _("Read Bad Head"));
+  gtk_button_set_label(GTK_BUTTON(rebuild_assist_check_button_ccc), _("Rebuild Assist"));
+  gtk_button_set_label(GTK_BUTTON(reverse_check_button_ccc), _("Reverse"));
+  gtk_button_set_label(GTK_BUTTON(skipfast_check_button_ccc), _("Skip Fast"));
+  gtk_label_set_text(GTK_LABEL(retries_button_label_ccc), _("Retries"));
+  gtk_label_set_text(GTK_LABEL(clustersize_button_label_ccc), _("Cluster Size (LBA)"));
+  gtk_label_set_text(GTK_LABEL(inputoffset_button_label_ccc), _("Input Offset (LBA)"));
+  gtk_label_set_text(GTK_LABEL(size_button_label_ccc), _("Size (LBA)"));
+  gtk_label_set_text(GTK_LABEL(blocksize_button_label_ccc), _("Block size (LBA)"));
+  gtk_label_set_text(GTK_LABEL(skipsize_button_label_ccc), _("Skip Size (LBA) phase-1-2-3"));
+  gtk_label_set_text(GTK_LABEL(maxskipsize_button_label_ccc), _("Max Skip Size (LBA) phase-1-2"));
+  gtk_label_set_text(GTK_LABEL(skipthreshold_button_label_ccc), _("Skip Threshold (ms) phase-1-2"));
+  gtk_label_set_text(GTK_LABEL(rateskip_button_label_ccc), _("Rate Skip (kB/s) phase-3"));
+  gtk_label_set_text(GTK_LABEL(exitonslow_button_label_ccc), _("Exit on Slow (kB/s) phase-1-2"));
+  gtk_label_set_text(GTK_LABEL(exitonslowtime_button_label_ccc), _("Exit on Slow Time (sec) phase-1-2"));
+  gtk_label_set_text(GTK_LABEL(sectorsize_button_label_ccc), _("Sector size (bytes)"));
+  gtk_label_set_text(GTK_LABEL(alignment_button_label_ccc), _("Alignment offset (LBA)"));
+  gtk_label_set_text(GTK_LABEL(maxreadrate_button_label_ccc), _("Max read rate (kB/s)"));
 
   g_signal_connect(G_OBJECT(phase1_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASE1));
   g_signal_connect(G_OBJECT(phase2_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASE2));
@@ -3555,7 +2749,7 @@ void open_clone_settings_dialog_ccc(void)
   load_clone_settings_ccc();
   update_clone_button_settings_ccc();
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGCLONE]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Clone Settings"));
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
     clone_settings_ccc.retries = gtk_spin_button_get_value(GTK_SPIN_BUTTON(retries_spin_button_ccc));
@@ -3630,47 +2824,42 @@ void open_advanced_settings_dialog_ccc(void)
   driver_minimum_cluster_size_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_minimum_cluster_size_button_label"));
   driver_minimum_cluster_size_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_minimum_cluster_size_spinbutton"));
   use_color_statusbar_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "use_color_statusbar_checkbutton"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
-  gtk_button_set_label(GTK_BUTTON(no_log_backup_checkbutton_ccc), curlang_ccc[LANGNOLOGBACKUP]);
-  gtk_button_set_label(GTK_BUTTON(force_mounted_checkbutton_ccc), curlang_ccc[LANGFORCEMOUNTED]);
-  gtk_button_set_label(GTK_BUTTON(force_dangerous_checkbutton_ccc), curlang_ccc[LANGFORCEDANGEROUS]);
-  gtk_button_set_label(GTK_BUTTON(enable_output_offset_checkbutton_ccc), curlang_ccc[LANGENABLEOUTPUTOFFSET]);
-  gtk_label_set_text(GTK_LABEL(output_offset_button_label_ccc), curlang_ccc[LANGOUTPUTOFFSET]);
-  gtk_button_set_label(GTK_BUTTON(enable_current_position_checkbutton_ccc), curlang_ccc[LANGENABLECURRENTPOSITION]);
-  gtk_label_set_text(GTK_LABEL(current_position_button_label_ccc), curlang_ccc[LANGCURRENTPOSISIONLABEL]);
-  gtk_label_set_text(GTK_LABEL(action_on_error_label_ccc), curlang_ccc[LANGACTIONONERROR]);
-  gtk_button_set_label(GTK_BUTTON(stop_on_error_radio_button_ccc), curlang_ccc[LANGSTOPONERROR]);
-  gtk_button_set_label(GTK_BUTTON(call_command_radio_button_ccc), curlang_ccc[LANGCALLCOMMAND]);
-  gtk_button_set_label(GTK_BUTTON(test_command_button_ccc), curlang_ccc[LANGTESTCOMMAND]);
-  gtk_button_set_label(GTK_BUTTON(primary_relay_on_error_radio_button_ccc), curlang_ccc[LANGPRIMARYRELAYONERROR]);
-  gtk_button_set_label(GTK_BUTTON(write_buffer_disable_radio_button_ccc), curlang_ccc[LANGWRITEBUFFERDISABLE]);
-  gtk_button_set_label(GTK_BUTTON(write_buffer_enable_radio_button_ccc), curlang_ccc[LANGWRITEBUFFERENABLE]);
-  gtk_label_set_text(GTK_LABEL(write_buffer_label_ccc), curlang_ccc[LANGWRITEBUFFERLABEL]);
-  gtk_button_set_label(GTK_BUTTON(disable_identify_checkbutton_ccc), curlang_ccc[LANGDONTIDENTIFY]);
-  gtk_button_set_label(GTK_BUTTON(pio_mode_checkbutton_ccc), curlang_ccc[LANGPIOMODE]);
-  gtk_button_set_label(GTK_BUTTON(enable_rebuild_assist_checkbutton_ccc), curlang_ccc[LANGENABLEREBUILDASSIST]);
-  gtk_button_set_label(GTK_BUTTON(enable_process_chunk_checkbutton_ccc), curlang_ccc[LANGENABLEPROCESSCHUNK]);
-  gtk_button_set_label(GTK_BUTTON(enable_read_twice_checkbutton_ccc), curlang_ccc[LANGENABLEREADTWICE]);
-  gtk_button_set_label(GTK_BUTTON(enable_retry_connecting_checkbutton_ccc), curlang_ccc[LANGENABLERETRYCONNECTING]);
-  gtk_button_set_label(GTK_BUTTON(enable_scsi_write_checkbutton_ccc), curlang_ccc[LANGENABLESCSIWRITE]);
-  gtk_button_set_label(GTK_BUTTON(enable_phase_log_checkbutton_ccc), curlang_ccc[LANGENABLEPHASELOG]);
-  gtk_button_set_label(GTK_BUTTON(enable_output_sector_size_checkbutton_ccc), curlang_ccc[LANGENABLEOUTPUTSECTORSIZE]);
-  gtk_label_set_text(GTK_LABEL(output_sector_size_button_label_ccc), curlang_ccc[LANGOUTPUTSECTORSIZE]);
-  gtk_button_set_label(GTK_BUTTON(driver_io_scsi_only_checkbutton_ccc), curlang_ccc[LANGIOSCSIONLY]);
-  gtk_button_set_label(GTK_BUTTON(use_physical_sector_size_for_virtual_checkbutton_ccc), curlang_ccc[LANGUSEPHYSICALSECTORSIZE]);
-  gtk_button_set_label(GTK_BUTTON(driver_return_error_radio_button_ccc), curlang_ccc[LANGDRIVERRETURNERROR]);
-  gtk_button_set_label(GTK_BUTTON(driver_return_zeros_radio_button_ccc), curlang_ccc[LANGDRIVERRETURNZEROS]);
-  gtk_button_set_label(GTK_BUTTON(driver_return_marked_radio_button_ccc), curlang_ccc[LANGDRIVERRETURNMARKED]);
-  gtk_label_set_text(GTK_LABEL(driver_error_options_label_ccc), curlang_ccc[LANGDRIVEROUTPUTOPTIONS]);
-  gtk_label_set_text(GTK_LABEL(driver_minimum_cluster_size_button_label_ccc), curlang_ccc[LANGVIRTUALMINCLUSTER]);
-  gtk_label_set_text(GTK_LABEL(virtual_disk_device_name_label_ccc), curlang_ccc[LANGVIRTUALNAME]);
-  gtk_button_set_label(GTK_BUTTON(use_color_statusbar_checkbutton_ccc), curlang_ccc[LANGUSECOLORSTATUSBAR]);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_button_set_label(GTK_BUTTON(no_log_backup_checkbutton_ccc), _("Do not create backup log"));
+  gtk_button_set_label(GTK_BUTTON(force_mounted_checkbutton_ccc), _("Force access of mounted disk (not recommended)"));
+  gtk_button_set_label(GTK_BUTTON(force_dangerous_checkbutton_ccc), _("Force same controller / slave (not recommended)"));
+  gtk_button_set_label(GTK_BUTTON(enable_output_offset_checkbutton_ccc), _("Enable changing output offset (use with caution)"));
+  gtk_label_set_text(GTK_LABEL(output_offset_button_label_ccc), _("Output Offset (default value is -1, follow input offset)"));
+  gtk_button_set_label(GTK_BUTTON(enable_current_position_checkbutton_ccc), _("Enable changing current position (can affect skipping algorithm)"));
+  gtk_label_set_text(GTK_LABEL(current_position_button_label_ccc), _("Current position"));
+  gtk_label_set_text(GTK_LABEL(action_on_error_label_ccc), _("Action to perform on major drive error:"));
+  gtk_button_set_label(GTK_BUTTON(stop_on_error_radio_button_ccc), _("Stop cloning with error message"));
+  gtk_button_set_label(GTK_BUTTON(call_command_radio_button_ccc), _("Call command:"));
+  gtk_button_set_label(GTK_BUTTON(test_command_button_ccc), _("Test command"));
+  gtk_button_set_label(GTK_BUTTON(primary_relay_on_error_radio_button_ccc), _("Activate primary relay"));
+  gtk_button_set_label(GTK_BUTTON(write_buffer_disable_radio_button_ccc), _("Disabled (safer if there is a power loss)"));
+  gtk_button_set_label(GTK_BUTTON(write_buffer_enable_radio_button_ccc), _("Enabled (faster)"));
+  gtk_label_set_text(GTK_LABEL(write_buffer_label_ccc), _("Operating System write buffer (must disconnect to take effect)"));
+  gtk_button_set_label(GTK_BUTTON(disable_identify_checkbutton_ccc), _("Do not perform identify when listing source devices"));
+  gtk_button_set_label(GTK_BUTTON(pio_mode_checkbutton_ccc), _("PIO mode"));
+  gtk_button_set_label(GTK_BUTTON(enable_rebuild_assist_checkbutton_ccc), _("Enable Rebuild Assist"));
+  gtk_button_set_label(GTK_BUTTON(enable_process_chunk_checkbutton_ccc), _("Enable using ATA return to mark bad sectors"));
+  gtk_button_set_label(GTK_BUTTON(enable_read_twice_checkbutton_ccc), _("Enable read twice on timeout"));
+  gtk_button_set_label(GTK_BUTTON(enable_retry_connecting_checkbutton_ccc), _("Retry connecting on failure after relay power cycle"));
+  gtk_button_set_label(GTK_BUTTON(enable_scsi_write_checkbutton_ccc), _("Enable SCSI write to destination (for odd sector size)"));
+  gtk_button_set_label(GTK_BUTTON(enable_phase_log_checkbutton_ccc), _("Enable phase logs"));
+  gtk_button_set_label(GTK_BUTTON(enable_output_sector_size_checkbutton_ccc), _("Enable output sector size adjustment"));
+  gtk_label_set_text(GTK_LABEL(output_sector_size_button_label_ccc), _("Output sector size adjustment"));
+  gtk_button_set_label(GTK_BUTTON(driver_io_scsi_only_checkbutton_ccc), _("Virtual Disk IO SCSI only"));
+  gtk_button_set_label(GTK_BUTTON(use_physical_sector_size_for_virtual_checkbutton_ccc), _("Use physical sector size as logical for virtual disk"));
+  gtk_button_set_label(GTK_BUTTON(driver_return_error_radio_button_ccc), _("Return read error (standard)"));
+  gtk_button_set_label(GTK_BUTTON(driver_return_zeros_radio_button_ccc), _("Return zero filled data"));
+  gtk_button_set_label(GTK_BUTTON(driver_return_marked_radio_button_ccc), _("Return mark filled data"));
+  gtk_label_set_text(GTK_LABEL(driver_error_options_label_ccc), _("Virtual Disk Device Driver output options for read errors"));
+  gtk_label_set_text(GTK_LABEL(driver_minimum_cluster_size_button_label_ccc), _("Virtual Disk minimum cluster read size (mode 3)"));
+  gtk_label_set_text(GTK_LABEL(virtual_disk_device_name_label_ccc), _("Virtual Disk device name"));
+  gtk_button_set_label(GTK_BUTTON(use_color_statusbar_checkbutton_ccc), _("Use button colors in bottom status bar"));
 
   if (!advanced_settings_ccc.enable_output_offset)
   {
@@ -3724,7 +2913,7 @@ void open_advanced_settings_dialog_ccc(void)
     gtk_widget_set_sensitive(GTK_WIDGET(pio_mode_checkbutton_ccc), FALSE);
   }
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGADVANCED]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Advanced Settings"));
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
@@ -3805,41 +2994,36 @@ void open_timer_settings_dialog_ccc(void)
   enable_usb_soft_reset_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_usb_soft_reset_checkbutton"));
   enable_usb_hard_reset_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_usb_hard_reset_checkbutton"));
   enable_usb_port_reset_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_usb_port_reset_checkbutton"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(timer_settings_label_ccc), "");
-  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc), curlang_ccc[LANGTIMERINFO]);
-  gtk_label_set_text(GTK_LABEL(initial_busy_wait_time_button_label_ccc), curlang_ccc[LANGINITIALBUSYWAIT]);
-  gtk_label_set_text(GTK_LABEL(busy_wait_time_button_label_ccc), curlang_ccc[LANGBUSYWAIT]);
-  gtk_label_set_text(GTK_LABEL(soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIME]);
-  gtk_label_set_text(GTK_LABEL(hard_reset_time_button_label_ccc), curlang_ccc[LANGHARDTIME]);
-  gtk_label_set_text(GTK_LABEL(power_cycle_time_button_label_ccc), curlang_ccc[LANGPOWERTIME]);
-  gtk_label_set_text(GTK_LABEL(general_timout_button_label_ccc), curlang_ccc[LANGGENERALTIME]);
-  gtk_label_set_text(GTK_LABEL(action_power_cycle_label_ccc), curlang_ccc[LANGPOWERACTION]);
-  gtk_button_set_label(GTK_BUTTON(stop_on_power_cycle_radio_button_ccc), curlang_ccc[LANGSTOPONPOWER]);
-  gtk_button_set_label(GTK_BUTTON(call_power_command_radio_button_ccc), curlang_ccc[LANGCALLCOMMAND]);
-  gtk_button_set_label(GTK_BUTTON(test_power_command_button_ccc), curlang_ccc[LANGTESTCOMMAND]);
-  gtk_button_set_label(GTK_BUTTON(primary_relay_power_cycle_radio_button_ccc), curlang_ccc[LANGCYCLEPRIMARYRELAY]);
-  gtk_label_set_text(GTK_LABEL(phase_timers_label_ccc), curlang_ccc[LANGPHASETIMERS]);
-  gtk_button_set_label(GTK_BUTTON(phase_timers_checkbutton_ccc), curlang_ccc[LANGPHASETIMERSENABLE]);
-  gtk_label_set_text(GTK_LABEL(p12_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMEP12]);
-  gtk_label_set_text(GTK_LABEL(p3_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMEP3]);
-  gtk_label_set_text(GTK_LABEL(p4_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMEP4]);
-  gtk_label_set_text(GTK_LABEL(td_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMETD]);
-  gtk_label_set_text(GTK_LABEL(d2_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMED2]);
-  gtk_label_set_text(GTK_LABEL(sc_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMESC]);
-  gtk_label_set_text(GTK_LABEL(rt_soft_reset_time_button_label_ccc), curlang_ccc[LANGSOFTTIMERT]);
-  gtk_button_set_label(GTK_BUTTON(always_wait_for_reset_timers_checkbutton_ccc), curlang_ccc[LANGALWAYSWAITRESETTIME]);
-  gtk_label_set_text(GTK_LABEL(usb_resets_label_ccc), curlang_ccc[LANGUSBRESETS]);
-  gtk_button_set_label(GTK_BUTTON(enable_usb_bulk_reset_checkbutton_ccc), curlang_ccc[LANGENABLEUSBBULKRESET]);
-  gtk_button_set_label(GTK_BUTTON(enable_usb_soft_reset_checkbutton_ccc), curlang_ccc[LANGENABLEUSBSOFTRESET]);
-  gtk_button_set_label(GTK_BUTTON(enable_usb_hard_reset_checkbutton_ccc), curlang_ccc[LANGENABLEUSBHARDRESET]);
-  gtk_button_set_label(GTK_BUTTON(enable_usb_port_reset_checkbutton_ccc), curlang_ccc[LANGENABLEUSBPORTRESET]);
-
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc), _("These timer settings are only for Direct IDE and Direct AHCI modes.\nThey have no effect with the passthrough modes.\n"));
+  gtk_label_set_text(GTK_LABEL(initial_busy_wait_time_button_label_ccc), _("Initial busy wait time (ms)"));
+  gtk_label_set_text(GTK_LABEL(busy_wait_time_button_label_ccc), _("Busy wait time (ms)"));
+  gtk_label_set_text(GTK_LABEL(soft_reset_time_button_label_ccc), _("Soft reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(hard_reset_time_button_label_ccc), _("Hard reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(power_cycle_time_button_label_ccc), _("Reset timeout (ms)"));
+  gtk_label_set_text(GTK_LABEL(general_timout_button_label_ccc), _("General timeout (ms)"));
+  gtk_label_set_text(GTK_LABEL(action_power_cycle_label_ccc), _("Action for reset timeout"));
+  gtk_button_set_label(GTK_BUTTON(stop_on_power_cycle_radio_button_ccc), _("Do nothing"));
+  gtk_button_set_label(GTK_BUTTON(call_power_command_radio_button_ccc), _("Call command:"));
+  gtk_button_set_label(GTK_BUTTON(test_power_command_button_ccc), _("Test command"));
+  gtk_button_set_label(GTK_BUTTON(primary_relay_power_cycle_radio_button_ccc), _("Activate primary relay"));
+  gtk_label_set_text(GTK_LABEL(phase_timers_label_ccc), _("Phase timers (soft reset timers)"));
+  gtk_button_set_label(GTK_BUTTON(phase_timers_checkbutton_ccc), _("Enable phase timers"));
+  gtk_label_set_text(GTK_LABEL(p12_soft_reset_time_button_label_ccc), _("Phase 1-2 reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(p3_soft_reset_time_button_label_ccc), _("Phase 3 reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(p4_soft_reset_time_button_label_ccc), _("Phase 4 reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(td_soft_reset_time_button_label_ccc), _("Trim/Divide reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(d2_soft_reset_time_button_label_ccc), _("Divide 2 reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(sc_soft_reset_time_button_label_ccc), _("Scrape reset time (ms)"));
+  gtk_label_set_text(GTK_LABEL(rt_soft_reset_time_button_label_ccc), _("Retry reset time (ms)"));
+  gtk_button_set_label(GTK_BUTTON(always_wait_for_reset_timers_checkbutton_ccc), _("Always wait for reset timers"));
+  gtk_label_set_text(GTK_LABEL(usb_resets_label_ccc), _("USB reset choices"));
+  gtk_button_set_label(GTK_BUTTON(enable_usb_bulk_reset_checkbutton_ccc), _("Enable USB bulk reset"));
+  gtk_button_set_label(GTK_BUTTON(enable_usb_soft_reset_checkbutton_ccc), _("Enable USB soft reset"));
+  gtk_button_set_label(GTK_BUTTON(enable_usb_hard_reset_checkbutton_ccc), _("Enable USB hard reset"));
+  gtk_button_set_label(GTK_BUTTON(enable_usb_port_reset_checkbutton_ccc), _("Enable USB port reset"));
 
   gtk_entry_set_max_length(GTK_ENTRY(power_command_to_call_text_ccc), MAX_CALL_LENGTH);
 
@@ -3882,7 +3066,7 @@ void open_timer_settings_dialog_ccc(void)
     gtk_widget_set_sensitive(GTK_WIDGET(hard_reset_time_spinbutton_ccc), FALSE);
   }
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGTIMERS]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Timer Settings"));
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
@@ -3942,27 +3126,22 @@ int open_ports_dialog_ccc(char *current_ports)
   updated_ports_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "updated_ports_label"));
   updated_ports_info_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "updated_ports_info_label"));
   update_ports_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "update_ports_button"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
   strcpy(new_ports_ccc, "");
   char portsinfo[4096] = "";
-  strcpy(portsinfo, curlang_ccc[LANGDISABLEPORTSINFO1]);
-  strcat(portsinfo, curlang_ccc[LANGDISABLEPORTSINFO2]);
+  strcpy(portsinfo, _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"));
+  strcat(portsinfo, _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
   gtk_label_set_text(GTK_LABEL(disable_ports_info_label_ccc), portsinfo);
-  gtk_label_set_text(GTK_LABEL(disable_ports_label_ccc), curlang_ccc[LANGDISABLEPORTS]);
-  gtk_label_set_text(GTK_LABEL(current_ports_label_ccc), curlang_ccc[LANGCURRENTDISPORTS]);
+  gtk_label_set_text(GTK_LABEL(disable_ports_label_ccc), _("Disable Ports"));
+  gtk_label_set_text(GTK_LABEL(current_ports_label_ccc), _("Current disabled ports (GRUB data)"));
   gtk_label_set_text(GTK_LABEL(current_ports_info_label_ccc), current_ports);
-  gtk_label_set_text(GTK_LABEL(set_disabled_ports_label_ccc), curlang_ccc[LANGSETDISPORTS]);
-  gtk_label_set_text(GTK_LABEL(updated_ports_label_ccc), curlang_ccc[LANGUPDATEDDISPORTS]);
+  gtk_label_set_text(GTK_LABEL(set_disabled_ports_label_ccc), _("Set disabled ports"));
+  gtk_label_set_text(GTK_LABEL(updated_ports_label_ccc), _("Updated disabled ports (GRUB data)"));
   gtk_label_set_text(GTK_LABEL(updated_ports_info_label_ccc), current_ports);
-  gtk_button_set_label(GTK_BUTTON(update_ports_button_ccc), curlang_ccc[LANGUPDATEPORTS]);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_button_set_label(GTK_BUTTON(update_ports_button_ccc), _("Update ports"));
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGDISABLEPORTS]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Disable Ports"));
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
@@ -3991,26 +3170,21 @@ int set_lun_dialog_ccc(int max_lun)
   lun_values_info_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "lun_values_info_label"));
   set_current_lun_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "set_current_lun_label"));
   current_lun_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "current_lun_spinbutton"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
   char luninfo[256] = "";
   sprintf(luninfo, "0 - %d", max_lun);
-  gtk_label_set_text(GTK_LABEL(select_lun_label_ccc), curlang_ccc[LANGSELECTLUN]);
-  gtk_label_set_text(GTK_LABEL(select_lun_info_label_ccc), curlang_ccc[LANGSELECTLUNINFO]);
-  gtk_label_set_text(GTK_LABEL(lun_values_label_ccc), curlang_ccc[LANGLUNVALUES]);
+  gtk_label_set_text(GTK_LABEL(select_lun_label_ccc), _("Select Logical Unit"));
+  gtk_label_set_text(GTK_LABEL(select_lun_info_label_ccc), _("This device has more than 1 logical unit.\nPlease choose which logical unit."));
+  gtk_label_set_text(GTK_LABEL(lun_values_label_ccc), _("Possible Logical Units"));
   gtk_label_set_text(GTK_LABEL(lun_values_info_label_ccc), luninfo);
-  gtk_label_set_text(GTK_LABEL(set_current_lun_label_ccc), curlang_ccc[LANGSETLUN]);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_label_set_text(GTK_LABEL(set_current_lun_label_ccc), _("Set Logical Unit"));
 
   gtk_adjustment_ccc = (GtkAdjustment *)gtk_adjustment_new(0, 0, max_lun, 1, 1, 0);
   gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(current_lun_spinbutton_ccc), gtk_adjustment_ccc);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(current_lun_spinbutton_ccc), usb_lun_ccc);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGSELECTLUN]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Select Logical Unit"));
 
   int ret = 1;
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
@@ -4071,35 +3245,32 @@ void open_primary_relay_dialog_ccc(void)
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_label_ccc), "");
-  gtk_label_set_text(GTK_LABEL(primary_relay_settings_info_label_ccc), curlang_ccc[LANGPRIMARYRELAYINFO]);
-  gtk_label_set_text(GTK_LABEL(label_current_primary_relay_board_ccc), curlang_ccc[LANGCURRENTRELAY]);
-  gtk_label_set_text(GTK_LABEL(primary_relay_board_settings_label_ccc), curlang_ccc[LANGRELAYBOARDSETTINGS]);
-  gtk_label_set_text(GTK_LABEL(primary_relay_activation_label_ccc), curlang_ccc[LANGRELAYACTIVATION]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay1_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY1]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay2_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY2]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay3_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY3]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay4_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY4]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay5_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY5]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay6_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY6]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay7_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY7]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay8_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY8]);
-  gtk_label_set_text(GTK_LABEL(primary_relay_deactivation_label_ccc), curlang_ccc[LANGRELAYDEACTIVATION]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay1_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY1]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay2_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY2]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay3_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY3]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay4_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY4]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay5_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY5]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay6_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY6]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay7_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY7]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay8_checkbutton_ccc), curlang_ccc[LANGACTIVATERELAY8]);
-  gtk_label_set_text(GTK_LABEL(primary_relay_activate_time_label_ccc), curlang_ccc[LANGRELAYACTIVATETIME]);
-  gtk_label_set_text(GTK_LABEL(primary_relay_delay_time_label_ccc), curlang_ccc[LANGRELAYDELAYTIME]);
-  gtk_button_set_label(GTK_BUTTON(test_primary_relay_button_ccc), curlang_ccc[LANGTESTRELAYBUTTON]);
-  gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_ccc), curlang_ccc[LANGACTIVATE]);
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_ccc), curlang_ccc[LANGDEACTIVATE]);
-
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
+  gtk_label_set_text(GTK_LABEL(primary_relay_settings_info_label_ccc), _("Primary relay board settings"));
+  gtk_label_set_text(GTK_LABEL(label_current_primary_relay_board_ccc), _("Current relay board"));
+  gtk_label_set_text(GTK_LABEL(primary_relay_board_settings_label_ccc), _("Relay board settings"));
+  gtk_label_set_text(GTK_LABEL(primary_relay_activation_label_ccc), _("Activation condition"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay1_checkbutton_ccc), _("Energize relay 1"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay2_checkbutton_ccc), _("Energize relay 2"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay3_checkbutton_ccc), _("Energize relay 3"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay4_checkbutton_ccc), _("Energize relay 4"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay5_checkbutton_ccc), _("Energize relay 5"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay6_checkbutton_ccc), _("Energize relay 6"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay7_checkbutton_ccc), _("Energize relay 7"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay8_checkbutton_ccc), _("Energize relay 8"));
+  gtk_label_set_text(GTK_LABEL(primary_relay_deactivation_label_ccc), _("Deactivation condition"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay1_checkbutton_ccc), _("Energize relay 1"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay2_checkbutton_ccc), _("Energize relay 2"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay3_checkbutton_ccc), _("Energize relay 3"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay4_checkbutton_ccc), _("Energize relay 4"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay5_checkbutton_ccc), _("Energize relay 5"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay6_checkbutton_ccc), _("Energize relay 6"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay7_checkbutton_ccc), _("Energize relay 7"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay8_checkbutton_ccc), _("Energize relay 8"));
+  gtk_label_set_text(GTK_LABEL(primary_relay_activate_time_label_ccc), _("Activation time (sec)"));
+  gtk_label_set_text(GTK_LABEL(primary_relay_delay_time_label_ccc), _("Post activation delay time (sec)"));
+  gtk_button_set_label(GTK_BUTTON(test_primary_relay_button_ccc), _("Test relay operation"));
+  gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_ccc), _("Activate (Power Off)"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_ccc), _("Deactivate (Power On)"));
 
   // gtk_entry_set_max_length (GTK_ENTRY (power_command_to_call_text_ccc), MAX_CALL_LENGTH);
 
@@ -4109,7 +3280,7 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), primary_relay_settings_ccc.primary_relay_name);
   update_primary_relay_button_settings_ccc();
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGPRIMARYRELAY]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Primary Relay Settings"));
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
@@ -4151,9 +3322,9 @@ void do_test_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -4183,9 +3354,9 @@ void do_test_primary_relay_ccc(void)
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     error = 1;
   }
@@ -4204,9 +3375,9 @@ void do_test_primary_relay_ccc(void)
     g_print("deactivate primary relay\n");
     if (deactivate_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       error = 1;
     }
@@ -4225,9 +3396,9 @@ void do_test_primary_relay_ccc(void)
     }
     g_print("\n");
     g_print("relay test complete\n");
-    strcpy(tempmessage_ccc, curlang_ccc[LANGOPERATIONSUCCEEDED]);
+    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 
@@ -4256,9 +3427,9 @@ int cycle_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -4266,9 +3437,9 @@ int cycle_primary_relay_ccc(void)
   g_print("activate primary relay ");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -4284,9 +3455,9 @@ int cycle_primary_relay_ccc(void)
   g_print("deactivate and wait ");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -4347,16 +3518,11 @@ int open_confirmation_dialog_ccc(char *message)
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "confirmation_dialog"));
   confirmation_box_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "confirmation_box_label"));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(confirmation_box_label_ccc), message);
-  // gtk_button_set_label(GTK_BUTTON(), curlang_ccc[]);
-  // gtk_label_set_text(GTK_LABEL(), curlang_ccc[]);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), curlang_ccc[LANGCONFIRMOPERATION]);
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Confirm Operation"));
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == 5)
   {
@@ -4375,18 +3541,18 @@ void test_command_ccc(void)
   {
     int status = WEXITSTATUS(ret);
     int signal = WTERMSIG(ret);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDFAILED]);
+    strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDCOMPLETED]);
+    strcpy(tempmessage_ccc, _("The command completed normally"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 }
@@ -4400,18 +3566,18 @@ void test_power_command_ccc(void)
   {
     int status = WEXITSTATUS(ret);
     int signal = WTERMSIG(ret);
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDFAILED]);
+    strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGCOMMANDCOMPLETED]);
+    strcpy(tempmessage_ccc, _("The command completed normally"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
 }
@@ -4783,7 +3949,7 @@ void update_clone_button_settings_ccc(void)
     cluster_limit = check_buffer_limit_ccc();
     if (cluster_limit < 0)
     {
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     }
     if (clone_settings_ccc.cluster_size > cluster_limit)
     {
@@ -4893,7 +4059,7 @@ void update_advanced_button_settings_ccc(void)
     cluster_limit = check_buffer_limit_ccc();
     if (cluster_limit < 0)
     {
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     }
   }
   if (clone_settings_ccc.cluster_size > 0 && cluster_limit > clone_settings_ccc.cluster_size)
@@ -5170,9 +4336,9 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_output_offset = button_status;
     if (previous_status != advanced_settings_ccc.enable_output_offset)
     {
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGREOPENADVANCED]);
+      sprintf(tempmessage_ccc, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
     }
     break;
@@ -5183,9 +4349,9 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_current_position = button_status;
     if (previous_status != advanced_settings_ccc.enable_current_position)
     {
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGREOPENADVANCED]);
+      sprintf(tempmessage_ccc, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
     }
     break;
@@ -5196,9 +4362,9 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_output_sector_size = button_status;
     if (previous_status != advanced_settings_ccc.enable_output_sector_size)
     {
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGREOPENADVANCED]);
+      sprintf(tempmessage_ccc, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGINFO], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
     }
     break;
@@ -5225,17 +4391,17 @@ void do_reset_status_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(curlang_ccc[LANGRESETSTATUS], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window = gtk_dialog_new_with_buttons(_("Reset Current Status"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
-  GtkWidget *new_label = gtk_label_new(curlang_ccc[LANGRESETSTATUSMESSAGE]);
+  GtkWidget *new_label = gtk_label_new(_("This will reset the current log status to Phase1,\n and current position to 0,\n and reset all skip data"));
   // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(new_dialog_window)->vbox), new_label, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(new_dialog_window))), new_label, TRUE, TRUE, 0);
 
@@ -5256,17 +4422,17 @@ void do_reset_log_status_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(curlang_ccc[LANGRESETLOG], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window = gtk_dialog_new_with_buttons(_("Reset Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
-  GtkWidget *new_label = gtk_label_new(curlang_ccc[LANGRESETLOGMESSAGE]);
+  GtkWidget *new_label = gtk_label_new(_("This will reset the position to 0, \nthe current status to non-tried, \nand will change all unfinished blocks \nin the log to a status of non-tried. \nThis will also reset all skipping data."));
   // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(new_dialog_window)->vbox), new_label, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(new_dialog_window))), new_label, TRUE, TRUE, 0);
 
@@ -5305,17 +4471,17 @@ void do_repair_log_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNOPROJECT]);
+    strcpy(tempmessage_ccc, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(curlang_ccc[LANGREPAIRLOG], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window = gtk_dialog_new_with_buttons(_("Repair Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
-  GtkWidget *new_label = gtk_label_new(curlang_ccc[LANGREPAIRLOGMESSAGE]);
+  GtkWidget *new_label = gtk_label_new(_("This will repair the current progress log in memory. \nIt is recommended to make a backup copy of the log before repairing."));
   // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(new_dialog_window)->vbox), new_label, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(new_dialog_window))), new_label, TRUE, TRUE, 0);
 
@@ -5338,9 +4504,9 @@ void do_repair_log_ccc(void)
     int ret = check_and_repair_log_ccc();
     if (check_log_ccc() || ret)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGLOGCHECKERR]);
+      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     repair_log_ccc = false;
@@ -5379,7 +4545,7 @@ void choose_primary_usb_ccc(void)
 {
   find_all_usb_devices_ccc();
 
-  choose_usb_dialog_window_ccc = gtk_dialog_new_with_buttons(curlang_ccc[LANGCHOOSEUSB], GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  choose_usb_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Choose USB Relay"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   gtk_container_set_border_width(GTK_CONTAINER(choose_usb_dialog_window_ccc), 0);
   gtk_widget_set_size_request(choose_usb_dialog_window_ccc, 600, 400);
 
@@ -5420,9 +4586,9 @@ void choose_primary_usb_ccc(void)
     {
       fprintf(stdout, "error selecting usb, ret=%d\n", ret);
       clear_usbr1_ccc();
-      sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGUSBERROR]);
+      sprintf(tempmessage_ccc, "%s", _("Error choosing USB relay"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -5456,9 +4622,9 @@ void do_activate_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -5487,9 +4653,9 @@ void do_activate_primary_relay_ccc(void)
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
 
@@ -5518,9 +4684,9 @@ void do_deactivate_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
@@ -5549,9 +4715,9 @@ void do_deactivate_primary_relay_ccc(void)
   g_print("deactivate primary relay\n");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
 
@@ -5580,18 +4746,18 @@ void do_activate_primary_relay_main_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
 }
@@ -5600,18 +4766,18 @@ void do_deactivate_primary_relay_main_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGNORELAYCHOSEN]);
+    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return;
   }
   g_print("deactivate primary relay\n");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUSBRELAYERROR]);
+    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
 }
@@ -5622,7 +4788,7 @@ void map_heads_ccc(void)
   {
     strcpy(tempmessage_ccc, "you must be connected to map heads");
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
@@ -5631,7 +4797,7 @@ void map_heads_ccc(void)
     {
       strcpy(tempmessage_ccc, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
   }

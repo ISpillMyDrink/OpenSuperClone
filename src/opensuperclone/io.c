@@ -124,7 +124,7 @@ int post_ioctl_ccc(void)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -640,7 +640,7 @@ int do_scsi_cmd_ccc(int disk_fd)
       {
         check_message_ccc = true;
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -1657,7 +1657,7 @@ int do_ata28_cmd_ccc(int disk_fd)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -1699,7 +1699,7 @@ int do_ata28_cmd_ccc(int disk_fd)
         if (superclone_ccc)
         {
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
         }
         else
@@ -1714,7 +1714,7 @@ int do_ata28_cmd_ccc(int disk_fd)
         if (superclone_ccc)
         {
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           status = INPUT_DEVICE_ERROR_RETURN_CODE;
         }
@@ -1787,7 +1787,7 @@ int do_ata48_cmd_ccc(int disk_fd)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -1831,7 +1831,7 @@ int do_ata48_cmd_ccc(int disk_fd)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         status = INPUT_DEVICE_ERROR_RETURN_CODE;
       }
@@ -2230,7 +2230,7 @@ int do_ata_dma_read_ccc(int command_type)
     if (superclone_ccc)
     {
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 0);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 0);
       clear_error_message_ccc();
     }
     else
@@ -2546,7 +2546,7 @@ int do_ata_dma_write_ccc(int command_type)
     if (superclone_ccc)
     {
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
     else
@@ -4082,9 +4082,9 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
 {
   if (!driver_installed_ccc)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+    strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -4196,11 +4196,11 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4213,7 +4213,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4252,11 +4252,11 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4269,7 +4269,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4331,11 +4331,11 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -4347,7 +4347,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -4485,9 +4485,9 @@ int hba_test_ccc(void)
 
     if (!driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4505,11 +4505,11 @@ int hba_test_ccc(void)
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4522,7 +4522,7 @@ int hba_test_ccc(void)
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4552,9 +4552,9 @@ int hba_test_ccc(void)
 
     if (!driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4572,11 +4572,11 @@ int hba_test_ccc(void)
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return -1;
     }
@@ -4589,7 +4589,7 @@ int hba_test_ccc(void)
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4646,9 +4646,9 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -4666,11 +4666,11 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -4683,7 +4683,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5168,9 +5168,9 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -5188,11 +5188,11 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -5205,7 +5205,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5235,9 +5235,9 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -5255,11 +5255,11 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+          print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
           return -1;
         }
@@ -5272,7 +5272,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5329,9 +5329,9 @@ int hba_test_ccc(void)
 
             if (!driver_installed_ccc)
             {
-              strcpy(tempmessage_ccc, curlang_ccc[LANGMISSINGDRIVER]);
+              strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return -1;
             }
@@ -5349,11 +5349,11 @@ int hba_test_ccc(void)
             if (main_driver_fd_ccc == -1)
             {
               check_message_ccc = true;
-              strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+              strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
               sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
-              print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+              print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
               return -1;
             }
@@ -5366,7 +5366,7 @@ int hba_test_ccc(void)
             int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+              strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
               sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
@@ -5958,7 +5958,7 @@ int post_direct_ccc(int command_type)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -8684,9 +8684,9 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVESAMECONTROLLER]);
+          sprintf(tempmessage_ccc, "%s", _("WARNING: There is possibly another drive on the same controller!\nYou should NEVER work with a drive when another drive is on the same controller!\nThat could be very dangerous, and could result in data loss (or worse)!\n"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+          print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
           if (!force_danger_ccc)
           {
@@ -8722,9 +8722,9 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVEISSLAVE]);
+          sprintf(tempmessage_ccc, "%s", _("WARNING: The selected device is a slave on the controller!\nThis does not always work as expected!\nThat could be very dangerous, and could result in data loss (or worse)!\nIt is recommended for the device to be master on the controller!\n"));
           message_error_ccc(tempmessage_ccc);
-          print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+          print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
           if (!force_danger_ccc)
           {
@@ -8760,9 +8760,9 @@ int choose_device_ccc(void)
     {
       if (superclone_ccc)
       {
-        sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVEVISABLEOS]);
+        sprintf(tempmessage_ccc, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+        print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
         clear_error_message_ccc();
         if (!force_stupid_ccc)
         {
@@ -8797,9 +8797,9 @@ int choose_device_ccc(void)
         {
           if (superclone_ccc)
           {
-            sprintf(tempmessage_ccc, "%s", curlang_ccc[LANGDRIVEVISABLEOS]);
+            sprintf(tempmessage_ccc, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
             message_error_ccc(tempmessage_ccc);
-            print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGWARN], 0);
+            print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
             clear_error_message_ccc();
             if (!force_stupid_ccc)
             {
@@ -9820,7 +9820,7 @@ int set_and_send_regs_ccc(int command_type)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -9971,7 +9971,7 @@ int set_and_send_regs_ccc(int command_type)
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
-        print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
       }
       else
@@ -10506,11 +10506,11 @@ int start_driver_ccc(void)
   if (main_driver_fd_ccc == -1)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -10530,7 +10530,7 @@ int start_driver_ccc(void)
   int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10553,7 +10553,7 @@ int start_driver_ccc(void)
   ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTARTINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10576,11 +10576,11 @@ int stop_driver_ccc(void)
   if (main_driver_fd_ccc == -1)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGUERROROPENINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
@@ -10598,7 +10598,7 @@ int stop_driver_ccc(void)
   if (ret < 0)
   {
     error = 1;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORSTOPINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error stoping virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10616,14 +10616,14 @@ int stop_driver_ccc(void)
   if (ret < 0)
   {
     error = 1;
-    strcpy(tempmessage_ccc, curlang_ccc[LANGERRORCLOSINGINGDRIVER]);
+    strcpy(tempmessage_ccc, _("Error closing virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     sprintf(tempmessage_ccc, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
   }
   if (error)
   {
-    print_gui_error_message_ccc(error_message_ccc, curlang_ccc[LANGERROR], 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     return -1;
   }
