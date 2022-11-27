@@ -162,7 +162,16 @@ int main(int argc, char **argv)
   progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
   domain_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_log_label"));
 
+  sprintf(tempmessage, "%s: ", curlang[LANGFILE]);
+  gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
+
+  sprintf(tempmessage, "%s: ", curlang[LANGDOMAIN]);
+  gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
+
   auto_update_label = GTK_WIDGET(gtk_builder_get_object(builder, "auto_update_label"));
+
+  sprintf(tempmessage, "%s: Off", curlang[LANGAUTOUPDATE], curlang[LANGOFF]);
+  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
 
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
@@ -1246,7 +1255,7 @@ void select_file(void)
         sprintf(tempmessage, "%s [%s]", window_title, filename);
         gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
 
-        sprintf(tempmessage, "Log: %s", log_file);
+        sprintf(tempmessage, "%s: %s", curlang[LANGFILE], log_file);
         gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
       }
     }
@@ -1283,7 +1292,7 @@ void select_domain(void)
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
 
-      sprintf(tempmessage, "Domain: %s", domain_file);
+      sprintf(tempmessage, "%s: %s", curlang[LANGDOMAIN], domain_file);
       gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
     // else
@@ -1328,7 +1337,7 @@ void select_dmde_domain(void)
     {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
 
-      sprintf(tempmessage, "Domain: %s", domain_file);
+      sprintf(tempmessage, "%s: %s", curlang[LANGDOMAIN], domain_file);
       gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
 
