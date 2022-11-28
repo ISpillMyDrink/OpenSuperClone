@@ -1376,36 +1376,35 @@ void set_autoupdate_timer(GtkWidget *w, gpointer data)
     autotimer_on = 1;
   }
 
-  char temp[25];
   if (!autotimer_on)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("Off"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("Off"));
   }
   else if (time == 5000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("5 seconds"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("5 seconds"));
   }
   else if (time == 10000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("10 seconds"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("10 seconds"));
   }
   else if (time == 30000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("30 seconds"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("30 seconds"));
   }
   else if (time == 60000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("1 minute"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("1 minute"));
   }
   else if (time == 120000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("2 minutes"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("2 minutes"));
   }
   else if (time == 300000)
   {
-    sprintf(temp, "%s: %s", _("Auto-Update"), _("5 minutes"));
+    sprintf(tempmessage, "%s: %s", _("Auto-Update"), _("5 minutes"));
   }
-  gtk_label_set_text(GTK_LABEL(auto_update_label), temp);
+  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
 }
 
 void toggle_showbad(GtkWidget *w, gpointer data)
