@@ -81,7 +81,7 @@ $ ./Release/bin/oscviewer
 
 ## 💵 Credits
 
-All credit belongs to Scott Dwyer with his work on HDDSuperClone.
+All credit belongs to Scott Dwyer with his work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>.
 
 This project makes use of the following libraries/programs:
 * GTK (https://www.gtk.org/)

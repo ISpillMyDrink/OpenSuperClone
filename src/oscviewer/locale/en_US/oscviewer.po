@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.4\n"
+"Project-Id-Version: OpenSuperClone 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-27 22:04+0100\n"
 "PO-Revision-Date: 2022-11-28 09:54+0100\n"
