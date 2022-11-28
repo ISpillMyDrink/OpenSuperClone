@@ -37,11 +37,25 @@ add_custom_command(
 )
 LIST(APPEND RESOURCES opensuperclone_driver.h)
 
+# Compile language files
+file(GLOB PO_LANGS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/locale/*)
+foreach(PO_LANG IN ITEMS ${PO_LANGS})
+    if(IS_DIRECTORY ${PO_LANG})
+        get_filename_component(PO_LANG_NAME ${PO_LANG} NAME)
+        add_custom_command(
+            OUTPUT locale/${PO_LANG_NAME}/LC_MESSAGES/opensuperclone.mo
+            COMMAND ${CMAKE_COMMAND} -E make_directory locale/${PO_LANG_NAME}/LC_MESSAGES
+            COMMAND msgfmt -o locale/${PO_LANG_NAME}/LC_MESSAGES/opensuperclone.mo ${PO_LANG}/opensuperclone.po
+        )
+        LIST(APPEND MO_FILES locale/${PO_LANG_NAME}/LC_MESSAGES/opensuperclone.mo)
+    endif()
+endforeach()
+
 # Generate config file for OpenSuperClone
 configure_file(config.h.in config.h)
 
 # Add build target OpenSuperClone
-add_executable(opensuperclone ${SOURCES} ${RESOURCES})
+add_executable(opensuperclone ${SOURCES} ${RESOURCES} ${MO_FILES})
 
 # Include resources
 target_include_directories(opensuperclone PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
@@ -66,7 +80,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/oscscripts
 )
 
 # Install language files
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/opensuperclone/locale
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/locale
         DESTINATION share
 )
 

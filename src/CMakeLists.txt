@@ -1,4 +1,5 @@
 find_package(PkgConfig REQUIRED)
+find_package(Gettext REQUIRED)
 
 # Find GTK dependency
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)

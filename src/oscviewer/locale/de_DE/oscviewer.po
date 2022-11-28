@@ -1,0 +1,267 @@
+# German translations for OpenSuperClone package.
+# Copyright (C) 2022 OpenSuperClone Contributors
+# This file is distributed under the same license as the OpenSuperClone package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSuperClone 2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-27 21:57+0100\n"
+"PO-Revision-Date: 2022-11-28 09:46+0100\n"
+"Last-Translator: Julian Frohmüller <admin@socialz.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/oscviewer/oscviewer.c:339 src/oscviewer/oscviewer.c:1398
+msgid "1 minute"
+msgstr "1 Minute"
+
+#: src/oscviewer/oscviewer.c:173
+msgid "1 pt"
+msgstr "1 pt"
+
+#: src/oscviewer/oscviewer.c:208
+msgid "10 pt"
+msgstr "10 pt"
+
+#: src/oscviewer/oscviewer.c:337 src/oscviewer/oscviewer.c:1390
+msgid "10 seconds"
+msgstr "10 Sekunden"
+
+#: src/oscviewer/oscviewer.c:209
+msgid "12 pt"
+msgstr "12 pt"
+
+#: src/oscviewer/oscviewer.c:263
+msgid "128K"
+msgstr "128K"
+
+#: src/oscviewer/oscviewer.c:210
+msgid "14 pt"
+msgstr "14 pt"
+
+#: src/oscviewer/oscviewer.c:211
+msgid "16 pt"
+msgstr "16 pt"
+
+#: src/oscviewer/oscviewer.c:260
+msgid "16K"
+msgstr "16K"
+
+#: src/oscviewer/oscviewer.c:270
+msgid "16M"
+msgstr "16M"
+
+#: src/oscviewer/oscviewer.c:266
+msgid "1M"
+msgstr "1M"
+
+#: src/oscviewer/oscviewer.c:340 src/oscviewer/oscviewer.c:1402
+msgid "2 minutes"
+msgstr "2 Minuten"
+
+#: src/oscviewer/oscviewer.c:174
+msgid "2 pt"
+msgstr "2 pt"
+
+#: src/oscviewer/oscviewer.c:264
+msgid "256K"
+msgstr "256K"
+
+#: src/oscviewer/oscviewer.c:267
+msgid "2M"
+msgstr "2M"
+
+#: src/oscviewer/oscviewer.c:175
+msgid "3 pt"
+msgstr "3 pt"
+
+#: src/oscviewer/oscviewer.c:338 src/oscviewer/oscviewer.c:1394
+msgid "30 seconds"
+msgstr "30 Sekunden"
+
+#: src/oscviewer/oscviewer.c:261
+msgid "32K"
+msgstr "32K"
+
+#: src/oscviewer/oscviewer.c:176 src/oscviewer/oscviewer.c:205
+msgid "4 pt"
+msgstr "4 pt"
+
+#: src/oscviewer/oscviewer.c:258
+msgid "4K"
+msgstr "4K"
+
+#: src/oscviewer/oscviewer.c:268
+msgid "4M"
+msgstr "4M"
+
+#: src/oscviewer/oscviewer.c:341 src/oscviewer/oscviewer.c:1406
+msgid "5 minutes"
+msgstr "5 Minuten"
+
+#: src/oscviewer/oscviewer.c:336 src/oscviewer/oscviewer.c:1386
+msgid "5 seconds"
+msgstr "5 Sekunden"
+
+#: src/oscviewer/oscviewer.c:265
+msgid "512K"
+msgstr "512K"
+
+#: src/oscviewer/oscviewer.c:206
+msgid "6 pt"
+msgstr "6 pt"
+
+#: src/oscviewer/oscviewer.c:262
+msgid "64K"
+msgstr "64K"
+
+#: src/oscviewer/oscviewer.c:207
+msgid "8 pt"
+msgstr "8 pt"
+
+#: src/oscviewer/oscviewer.c:259
+msgid "8K"
+msgstr "8K"
+
+#: src/oscviewer/oscviewer.c:269
+msgid "8M"
+msgstr "8M"
+
+#: src/oscviewer/oscviewer.c:391
+msgid "About"
+msgstr "Über"
+
+#: src/oscviewer/oscviewer.c:2893
+msgid "Areas"
+msgstr "Bereiche"
+
+#: src/oscviewer/oscviewer.c:157 src/oscviewer/oscviewer.c:334
+#: src/oscviewer/oscviewer.c:1382 src/oscviewer/oscviewer.c:1386
+#: src/oscviewer/oscviewer.c:1390 src/oscviewer/oscviewer.c:1394
+#: src/oscviewer/oscviewer.c:1398 src/oscviewer/oscviewer.c:1402
+#: src/oscviewer/oscviewer.c:1406
+msgid "Auto-Update"
+msgstr "Auto-Aktualisierung"
+
+#: src/oscviewer/oscviewer.c:624 src/oscviewer/oscviewer.c:2883
+msgid "Bad"
+msgstr "Schlecht"
+
+#: src/oscviewer/oscviewer.c:705
+msgid "Bad Head"
+msgstr "Schlechter Kopf"
+
+#: src/oscviewer/oscviewer.c:669
+msgid "Current"
+msgstr "Aktuell"
+
+#: src/oscviewer/oscviewer.c:153 src/oscviewer/oscviewer.c:743
+#: src/oscviewer/oscviewer.c:1275 src/oscviewer/oscviewer.c:1320
+msgid "Domain"
+msgstr "Domäne"
+
+#: src/oscviewer/oscviewer.c:2338 src/oscviewer/oscviewer.c:2440
+msgid "Domain block not found"
+msgstr "Domänenblock nicht gefunden"
+
+#: src/oscviewer/oscviewer.c:2342 src/oscviewer/oscviewer.c:2444
+msgid "Error!"
+msgstr "Fehler!"
+
+#: src/oscviewer/oscviewer.c:143 src/oscviewer/oscviewer.c:1238
+msgid "File"
+msgstr "Datei"
+
+#: src/oscviewer/oscviewer.c:654 src/oscviewer/oscviewer.c:2881
+msgid "Finished"
+msgstr "Fertig"
+
+#: src/oscviewer/oscviewer.c:686
+msgid "Good Data"
+msgstr "Gute Daten"
+
+#: src/oscviewer/oscviewer.c:390
+msgid "Help"
+msgstr "Hilfe"
+
+#: src/oscviewer/oscviewer.c:345
+msgid "Highlight Good Data"
+msgstr "Gute Daten hervorheben"
+
+#: src/oscviewer/oscviewer.c:172
+msgid "Left Panel Resolution"
+msgstr "Auflösung des linken Panels"
+
+#: src/oscviewer/oscviewer.c:147
+msgid "Load DMDE Bytes File"
+msgstr "Lade DMDE Bytes Datei"
+
+#: src/oscviewer/oscviewer.c:146
+msgid "Load Domain"
+msgstr "Lade Domäne"
+
+#: src/oscviewer/oscviewer.c:151
+msgid "Log"
+msgstr "Protokoll"
+
+#: src/oscviewer/oscviewer.c:257
+msgid "Main Grid Size"
+msgstr "Größe des Hauptgitters"
+
+#: src/oscviewer/oscviewer.c:204
+msgid "Main Panel Resolution"
+msgstr "Auflösung des Hauptpanels"
+
+#: src/oscviewer/oscviewer.c:594 src/oscviewer/oscviewer.c:2889
+msgid "Non-Divided"
+msgstr "Nicht-Geteilt"
+
+#: src/oscviewer/oscviewer.c:609 src/oscviewer/oscviewer.c:2891
+msgid "Non-Scraped"
+msgstr "Nicht-Gescraped"
+
+#: src/oscviewer/oscviewer.c:639 src/oscviewer/oscviewer.c:2885
+msgid "Non-Tried"
+msgstr "Nicht-Versucht"
+
+#: src/oscviewer/oscviewer.c:579 src/oscviewer/oscviewer.c:2887
+msgid "Non-Trimmed"
+msgstr "Nicht-Getrimmt"
+
+#: src/oscviewer/oscviewer.c:157 src/oscviewer/oscviewer.c:335
+#: src/oscviewer/oscviewer.c:1382
+msgid "Off"
+msgstr "Aus"
+
+#: src/oscviewer/oscviewer.c:145
+msgid "Open"
+msgstr "Öffnen"
+
+#: src/oscviewer/oscviewer.c:144
+msgid "Quit"
+msgstr "Beenden"
+
+#: src/oscviewer/oscviewer.c:354
+msgid "Show Bad Head"
+msgstr "Zeige schlechten Kopf"
+
+#: src/oscviewer/oscviewer.c:380
+msgid "Show Domain"
+msgstr "Zeige Domäne"
+
+#: src/oscviewer/oscviewer.c:377
+msgid "Show High-Time"
+msgstr "Zeige High-Time"
+
+#: src/oscviewer/oscviewer.c:724 src/oscviewer/oscviewer.c:2895
+msgid "Timing"
+msgstr "Timing"
+
+#: src/oscviewer/oscviewer.c:164
+msgid "View"
+msgstr "Ansicht"
