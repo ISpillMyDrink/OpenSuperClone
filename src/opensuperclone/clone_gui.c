@@ -11,10 +11,6 @@
 
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
-  setlocale(LC_ALL, "");
-  bindtextdomain("opensuperclone", OSC_LANG_PATH);
-  textdomain("opensuperclone");
-
   // initialize memory so it is ready
   return_value_ccc = initialize_logfile_memory_ccc();
   if (return_value_ccc != 0)

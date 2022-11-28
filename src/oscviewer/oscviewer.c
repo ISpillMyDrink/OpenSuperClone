@@ -14,7 +14,6 @@ char window_title[256];
 
 int main(int argc, char **argv)
 {
-  setlocale(LC_ALL, "");
   bindtextdomain("oscviewer", OSC_LANG_PATH);
   textdomain("oscviewer");
 

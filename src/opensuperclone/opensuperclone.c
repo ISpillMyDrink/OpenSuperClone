@@ -27,6 +27,9 @@ void signal_callback_handler_ccc(int signum)
 
 int main(int argc, char **argv)
 {
+  bindtextdomain("opensuperclone", OSC_LANG_PATH);
+  textdomain("opensuperclone");
+
   title_ccc = "OpenSuperClone";
   version_number_ccc = OSC_VERSION;
   copyright_year_ccc = COPYRIGHT_YEAR;
