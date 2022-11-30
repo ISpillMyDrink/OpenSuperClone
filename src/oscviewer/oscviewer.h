@@ -25,8 +25,6 @@
 #define gettext_noop(str) (str)
 #define N_(str) gettext_noop(str)
 
-char program_title[256];
-
 #define BLACK 0x000000   // (0,0,0)
 #define WHITE 0xFFFFFF   // (255,255,255)
 #define RED 0xFF0000     // (255,0,0)
