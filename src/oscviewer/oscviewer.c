@@ -17,15 +17,17 @@ int main(int argc, char **argv)
   bindtextdomain("oscviewer", OSC_LANG_PATH);
   textdomain("oscviewer");
 
-  strcpy(window_title, title);
-  strcat(window_title, " ");
-  strcat(window_title, version_number);
+  //strcpy(window_title, title);
+  //strcat(window_title, " ");
+  //strcat(window_title, version_number);
+  snprintf(window_title, sizeof(window_title), "%s %s", title, version_number);
 
-  strcpy(program_title, "_");
-  strcat(program_title, title);
-  strcat(program_title, "_");
-  strcat(program_title, version_number);
-  strcat(program_title, "_");
+  //strcpy(program_title, "_");
+  //strcat(program_title, title);
+  //strcat(program_title, "_");
+  //strcat(program_title, version_number);
+  //strcat(program_title, "_");
+  snprintf(program_title, sizeof(program_title), "_%s_%s_", title, version_number);
 
   // begin processing command line arguments
   int command_line_argument;
@@ -1787,10 +1789,14 @@ int read_log_file(char *log_file)
     char raw_info[MAX_LINE_LENGTH];
     char raw_errstat[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    //strcpy(raw_position, "");
+    //strcpy(raw_size, "");
+    //strcpy(raw_status, "");
+    //strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %s %s %[^\n]", raw_position, raw_size, raw_status, raw_info, raw_errstat, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2102,10 +2108,14 @@ int read_domain_file(char *domain_file)
     char raw_info[MAX_LINE_LENGTH];
     char raw_errstat[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    //strcpy(raw_position, "");
+    //strcpy(raw_size, "");
+    //strcpy(raw_status, "");
+    //strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %s %s %[^\n]", raw_position, raw_size, raw_status, raw_info, raw_errstat, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2347,9 +2357,12 @@ int read_domain_dmde_file(char *dmde_file)
     char raw_position[MAX_LINE_LENGTH];
     char raw_size[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(rest_of_line, "");
+    //strcpy(raw_position, "");
+    //strcpy(raw_size, "");
+    //strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %[^\n]", raw_position, raw_size, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2454,7 +2467,8 @@ int add_to_domain(long long position, long long size)
     block = find_domain_block(position);
     if (block == -1)
     {
-      strcpy(tempmessage, _("Domain block not found"));
+      //strcpy(tempmessage, _("Domain block not found"));
+      snprintf(tempmessage, sizeof(tempmessage), _("Domain block not found"));
       message_error(tempmessage);
       //sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
       snprintf(tempmessage, sizeof(tempmessage), "\nposition=%06llx  size=0x%06llx", position, size);
@@ -2557,7 +2571,8 @@ int add_to_domain(long long position, long long size)
       // the position is before the block which should not be possible
       else
       {
-        strcpy(tempmessage, _("Domain block not found"));
+        //strcpy(tempmessage, _("Domain block not found"));
+        snprintf(tempmessage, sizeof(tempmessage), _("Domain block not found"));
         message_error(tempmessage);
         //sprintf(tempmessage, "\nposition=%06llx  size=0x%06llx", position, size);
         snprintf(tempmessage, sizeof(tempmessage), "\nposition=%06llx  size=0x%06llx", position, size);
@@ -2919,7 +2934,8 @@ int get_block_information(long long position, long long size)
   long long hightime = 0;
   char tempchar[384];
   char lines[maxcount * sizeof(tempchar)];
-  strcpy(lines, "");
+  //strcpy(lines, "");
+  lines[0] = '\0';
   // process current status
   // fprintf (stdout, "1 pos=%lld siz=%lld nsiz=%lld lin=%d lpos=%lld lsiz=%lld\n", position, size, new_size, line, lposition[line], lsize[line]);    //debug
   ret = process_information(position, size, line);
@@ -3009,7 +3025,8 @@ int get_block_information(long long position, long long size)
   }
 
   char label[8092 + (maxcount * sizeof(tempchar))];
-  strcpy(label, "");
+  //strcpy(label, "");
+  label[0] = '\0';
   //sprintf(tempchar, "0x%llx - 0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
   snprintf(tempchar, sizeof(tempchar), "0x%llx - 0x%llx  (%lld-%lld)\n", position, (position + size) - 1, position, (position + size) - 1);
   strcat(label, tempchar);
@@ -3259,7 +3276,8 @@ int message_error(char *message)
 
 int clear_error_message(void)
 {
-  strcpy(error_message, "\0");
+  //strcpy(error_message, "\0");
+  snprintf(error_message, ERROR_MESSAGE_SIZE, "\0");
   return 0;
 }
 
@@ -3278,8 +3296,9 @@ void about(void)
   snprintf(temp, sizeof(temp), "Copyright (C) %i Scott Dwyer and OpenSuperClone contributors", COPYRIGHT_YEAR);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
-  strcpy(temp, "License type: GPL2\n");
-  strcat(temp, "There is NO WARRANTY, to the extent permitted by law.");
+  //strcpy(temp, "License type: GPL2\n");
+  //strcat(temp, "There is NO WARRANTY, to the extent permitted by law.");
+  snprintf(temp, sizeof(temp), "License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law.");
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
