@@ -182,8 +182,8 @@ msgid "Choose Source Drive"
 msgstr "Disque source"
 
 #: src/opensuperclone/clone_gui.c:4548
-msgid "relais USB"
-msgstr ""
+msgid "Choose USB Relay"
+msgstr "Relais USB"
 
 #: src/opensuperclone/clone_gui.c:1175 src/opensuperclone/clone_gui.c:1656
 msgid "Choose image file"

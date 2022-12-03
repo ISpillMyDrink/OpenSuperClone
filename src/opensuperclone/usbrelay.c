@@ -9,7 +9,7 @@
 
 int find_all_usb_devices_ccc(void)
 {
-  sprintf(tempmessage_ccc, "Finding USB devices\n");
+  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Finding USB devices\n");
   message_now_ccc(tempmessage_ccc);
   // clear the list
   int i;
@@ -403,7 +403,7 @@ int choose_usb_device_ccc(void)
 
   if (superclone_ccc && !usb_mass_storage_ccc[i])
   {
-    sprintf(tempmessage_ccc, "Error: USB device is not mass storage.\n");
+    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: USB device is not mass storage.\n");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1023,7 +1023,7 @@ int usb_get_max_lun_ccc(int timeout)
 {
   if (superclone_ccc)
   {
-    sprintf(tempmessage_ccc, "usb get max lun\n");
+    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "usb get max lun\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
   int requesttype = 0xa1;
@@ -1161,7 +1161,7 @@ int usb_bulk_only_reset_ccc(int timeout)
 {
   if (superclone_ccc)
   {
-    sprintf(tempmessage_ccc, "usb bulk reset\n");
+    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "usb bulk reset\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
   int requesttype = 0x21;
@@ -1184,7 +1184,7 @@ int do_usb_reset_ccc(void)
 {
   if (superclone_ccc)
   {
-    sprintf(tempmessage_ccc, "usb port reset\n");
+    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "usb port reset\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
   int ret = 0;

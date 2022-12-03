@@ -748,26 +748,26 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (value_type == 1)
     {
       unsigned char *c = (unsigned char *)ccc_buffer_ccc + offset;
-      sprintf(value, "0x%x", (unsigned char)*c);
+      snprintf(value, sizeof(value), "0x%x", (unsigned char)*c);
     }
     else if (value_type == 2)
     {
       uint16_t w;
       memcpy(&w, ccc_buffer_ccc + offset, 2);
-      sprintf(value, "0x%x", w);
+      snprintf(value, sizeof(value), "0x%x", w);
     }
     else if (value_type == 4)
     {
       uint32_t dw;
       memcpy(&dw, ccc_buffer_ccc + offset, 4);
-      sprintf(value, "0x%x", dw);
+      snprintf(value, sizeof(value), "0x%x", dw);
     }
     else if (value_type == 8)
     {
       uint64_t qw;
       memcpy(&qw, ccc_buffer_ccc + offset, 8);
       unsigned long long qw64 = qw;
-      sprintf(value, "0x%llx", qw64);
+      snprintf(value, sizeof(value), "0x%llx", qw64);
     }
     else
     {
@@ -855,26 +855,26 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (value_type == 1)
     {
       unsigned char *c = (unsigned char *)ccc_usbbuffer_ccc + offset;
-      sprintf(value, "0x%x", (unsigned char)*c);
+      snprintf(value, sizeof(value), "0x%x", (unsigned char)*c);
     }
     else if (value_type == 2)
     {
       uint16_t w;
       memcpy(&w, ccc_usbbuffer_ccc + offset, 2);
-      sprintf(value, "0x%x", w);
+      snprintf(value, sizeof(value), "0x%x", w);
     }
     else if (value_type == 4)
     {
       uint32_t dw;
       memcpy(&dw, ccc_usbbuffer_ccc + offset, 4);
-      sprintf(value, "0x%x", dw);
+      snprintf(value, sizeof(value), "0x%x", dw);
     }
     else if (value_type == 8)
     {
       uint64_t qw;
       memcpy(&qw, ccc_usbbuffer_ccc + offset, 8);
       unsigned long long qw64 = qw;
-      sprintf(value, "0x%llx", qw64);
+      snprintf(value, sizeof(value), "0x%llx", qw64);
     }
     else
     {
@@ -962,26 +962,26 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     if (value_type == 1)
     {
       unsigned char *c = (unsigned char *)ccc_scratchpad_ccc + offset;
-      sprintf(value, "0x%x", (unsigned char)*c);
+      snprintf(value, sizeof(value), "0x%x", (unsigned char)*c);
     }
     else if (value_type == 2)
     {
       uint16_t w;
       memcpy(&w, ccc_scratchpad_ccc + offset, 2);
-      sprintf(value, "0x%x", w);
+      snprintf(value, sizeof(value), "0x%x", w);
     }
     else if (value_type == 4)
     {
       uint32_t dw;
       memcpy(&dw, ccc_scratchpad_ccc + offset, 4);
-      sprintf(value, "0x%x", dw);
+      snprintf(value, sizeof(value), "0x%x", dw);
     }
     else if (value_type == 8)
     {
       uint64_t qw;
       memcpy(&qw, ccc_scratchpad_ccc + offset, 8);
       unsigned long long qw64 = qw;
-      sprintf(value, "0x%llx", qw64);
+      snprintf(value, sizeof(value), "0x%llx", qw64);
     }
     else
     {
@@ -1038,7 +1038,7 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
     }
 
     unsigned char *c = (unsigned char *)sensebuffer_ccc + offset;
-    sprintf(value, "0x%x", (unsigned char)*c);
+    snprintf(value, sizeof(value), "0x%x", (unsigned char)*c);
   }
 
   if (var_name[0] != '$')
@@ -1337,11 +1337,11 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
               char str[32];
               if (print_hex_ccc)
               {
-                sprintf(str, "%llx", number_variable_buffer_ccc[var_num]);
+                snprintf(str, sizeof(str), "%llx", number_variable_buffer_ccc[var_num]);
               }
               else
               {
-                sprintf(str, "%lld", number_variable_buffer_ccc[var_num]);
+                snprintf(str, sizeof(str), "%lld", number_variable_buffer_ccc[var_num]);
               }
               strcat(temp_var, str);
             }

@@ -1558,7 +1558,7 @@ msgstr "Rebuild Assist funktioniert nur im direkten AHCI-Modus"
 
 #: src/opensuperclone/clone_gui.c:332
 msgid "Recent rate"
-msgstr "Aktuelle Rate"
+msgstr "Letzte Rate"
 
 #: src/opensuperclone/clone_gui.c:3250
 msgid "Relay board settings"
