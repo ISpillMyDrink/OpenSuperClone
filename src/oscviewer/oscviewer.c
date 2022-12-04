@@ -92,6 +92,9 @@ int main(int argc, char **argv)
 
   // end of command line processing
 
+  // read the configuration file
+  read_config_file();
+
   // initialize the memory for the progress log file
   if (initialize_memory())
   {
@@ -118,6 +121,11 @@ int main(int argc, char **argv)
   gtk_window_set_default_size(GTK_WINDOW(main_window), MAINWINDOWWIDTH, MAINWINDOWHEIGTH);
   gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
 
+  settings_window = GTK_WIDGET(gtk_builder_get_object(builder, "settings_window"));
+  gtk_window_set_keep_above(GTK_WINDOW(settings_window), TRUE);
+  gtk_window_set_title(GTK_WINDOW(settings_window), _("Settings"));
+  g_signal_connect(settings_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+
   // set it to exit if closed
   g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -131,11 +139,13 @@ int main(int argc, char **argv)
   openmi = GTK_WIDGET(gtk_builder_get_object(builder, "openmi"));
   domainmi = GTK_WIDGET(gtk_builder_get_object(builder, "domainmi"));
   dmdedomainmi = GTK_WIDGET(gtk_builder_get_object(builder, "dmdedomainmi"));
+  settingsmi = GTK_WIDGET(gtk_builder_get_object(builder, "settingsmi"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi), _("File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi), _("Quit"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi), _("Open"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(domainmi), _("Load Domain"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(dmdedomainmi), _("Load DMDE Bytes File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(settingsmi), _("Settings"));
 
   progress_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "progress_log_label"));
   domain_log_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_log_label"));
@@ -381,6 +391,61 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(helpmi), _("Help"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(aboutmi), _("About"));
 
+  // settings window
+  nontried_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "nontried_color_button"));
+  nontrimmed_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "nontrimmed_color_button"));
+  nondivided_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "nondivided_color_button"));
+  nonscraped_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "nonscraped_color_button"));
+  bad_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "bad_color_button"));
+  good_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "good_color_button"));
+  current_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "current_color_button"));
+  bad_head_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "bad_head_color_button"));
+  selected_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "selected_color_button"));
+  time_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "time_color_button"));
+  domain_color_button = GTK_WIDGET(gtk_builder_get_object(builder, "domain_color_button"));
+
+  nontried_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "nontried_color_label"));
+  nontrimmed_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "nontrimmed_color_label"));
+  nondivided_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "nondivided_color_label"));
+  nonscraped_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "nonscraped_color_label"));
+  bad_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "bad_color_label"));
+  good_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "good_color_label"));
+  current_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "current_color_label"));
+  bad_head_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "bad_head_color_label"));
+  selected_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "selected_color_label"));
+  time_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "time_color_label"));
+  domain_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "domain_color_label"));
+
+  block_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_color_label"));
+  marker_color_label = GTK_WIDGET(gtk_builder_get_object(builder, "marker_color_label"));
+
+  g_signal_connect(good_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(1));
+  g_signal_connect(bad_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(2));
+  g_signal_connect(nontried_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(3));
+  g_signal_connect(nontrimmed_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(4));
+  g_signal_connect(nondivided_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(5));
+  g_signal_connect(nonscraped_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(6));
+  g_signal_connect(domain_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(7));
+  g_signal_connect(time_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(8));
+  g_signal_connect(bad_head_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(9));
+  g_signal_connect(current_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(10));
+  g_signal_connect(selected_color_button, "color-set", G_CALLBACK(set_color), GINT_TO_POINTER(11));
+
+  gtk_label_set_text(GTK_LABEL(nontried_color_label), _("Non-Tried"));
+  gtk_label_set_text(GTK_LABEL(nontrimmed_color_label), _("Non-Trimmed"));
+  gtk_label_set_text(GTK_LABEL(nondivided_color_label), _("Non-Divided"));
+  gtk_label_set_text(GTK_LABEL(nonscraped_color_label), _("Non-Scraped"));
+  gtk_label_set_text(GTK_LABEL(bad_color_label), _("Bad"));
+  gtk_label_set_text(GTK_LABEL(good_color_label), _("Finished"));
+  gtk_label_set_text(GTK_LABEL(current_color_label), _("Current"));
+  gtk_label_set_text(GTK_LABEL(bad_head_color_label), _("Bad Head"));
+  gtk_label_set_text(GTK_LABEL(selected_color_label), _("Selected"));
+  gtk_label_set_text(GTK_LABEL(time_color_label), _("Time"));
+  gtk_label_set_text(GTK_LABEL(domain_color_label), _("Domain"));
+
+  gtk_label_set_text(GTK_LABEL(block_color_label), _("Block Colors"));
+  gtk_label_set_text(GTK_LABEL(marker_color_label), _("Marker Colors"));
+
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window), accel_group);
@@ -403,6 +468,9 @@ int main(int argc, char **argv)
 
   // set it to open a file if the dmde domain item is selected
   g_signal_connect(G_OBJECT(dmdedomainmi), "activate", G_CALLBACK(select_dmde_domain), NULL);
+
+  // set it to open the settings window if the settings item is selected
+  g_signal_connect(G_OBJECT(settingsmi), "activate", G_CALLBACK(show_settings_window), NULL);
 
   g_signal_connect(G_OBJECT(leftresbutton1), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(1));
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
@@ -3169,4 +3237,238 @@ int print_gui_error_message(char *message, char *title, int type)
   gtk_widget_destroy(window);
 
   return 0;
+}
+
+void show_settings_window(void)
+{
+  gtk_widget_show_all(settings_window);
+
+  GdkRGBA good_color_rgba;
+  good_color_rgba.red = ((good_color >> 16) & 0xFF) / 255.0;
+  good_color_rgba.green = ((good_color >> 8) & 0xFF) / 255.0;
+  good_color_rgba.blue = (good_color & 0xFF) / 255.0;
+  good_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(good_color_button), &good_color_rgba);
+
+  GdkRGBA bad_color_rgba;
+  bad_color_rgba.red = ((bad_color >> 16) & 0xFF) / 255.0;
+  bad_color_rgba.green = ((bad_color >> 8) & 0xFF) / 255.0;
+  bad_color_rgba.blue = (bad_color & 0xFF) / 255.0;
+  bad_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(bad_color_button), &bad_color_rgba);
+
+  GdkRGBA nontried_color_rgba;
+  nontried_color_rgba.red = ((nontried_color >> 16) & 0xFF) / 255.0;
+  nontried_color_rgba.green = ((nontried_color >> 8) & 0xFF) / 255.0;
+  nontried_color_rgba.blue = (nontried_color & 0xFF) / 255.0;
+  nontried_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(nontried_color_button), &nontried_color_rgba);
+
+  GdkRGBA nontrimmed_color_rgba;
+  nontrimmed_color_rgba.red = ((nontrimmed_color >> 16) & 0xFF) / 255.0;
+  nontrimmed_color_rgba.green = ((nontrimmed_color >> 8) & 0xFF) / 255.0;
+  nontrimmed_color_rgba.blue = (nontrimmed_color & 0xFF) / 255.0;
+  nontrimmed_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(nontrimmed_color_button), &nontrimmed_color_rgba);
+
+  GdkRGBA nondivided_color_rgba;
+  nondivided_color_rgba.red = ((nondivided_color >> 16) & 0xFF) / 255.0;
+  nondivided_color_rgba.green = ((nondivided_color >> 8) & 0xFF) / 255.0;
+  nondivided_color_rgba.blue = (nondivided_color & 0xFF) / 255.0;
+  nondivided_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(nondivided_color_button), &nondivided_color_rgba);
+
+  GdkRGBA nonscraped_color_rgba;
+  nonscraped_color_rgba.red = ((nonscraped_color >> 16) & 0xFF) / 255.0;
+  nonscraped_color_rgba.green = ((nonscraped_color >> 8) & 0xFF) / 255.0;
+  nonscraped_color_rgba.blue = (nonscraped_color & 0xFF) / 255.0;
+  nonscraped_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(nonscraped_color_button), &nonscraped_color_rgba);
+
+  GdkRGBA domain_color_rgba;
+  domain_color_rgba.red = ((domain_color >> 16) & 0xFF) / 255.0;
+  domain_color_rgba.green = ((domain_color >> 8) & 0xFF) / 255.0;
+  domain_color_rgba.blue = (domain_color & 0xFF) / 255.0;
+  domain_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_color_button), &domain_color_rgba);
+
+  GdkRGBA time_color_rgba;
+  time_color_rgba.red = ((time_color >> 16) & 0xFF) / 255.0;
+  time_color_rgba.green = ((time_color >> 8) & 0xFF) / 255.0;
+  time_color_rgba.blue = (time_color & 0xFF) / 255.0;
+  time_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(time_color_button), &time_color_rgba);
+
+  GdkRGBA bad_head_color_rgba;
+  bad_head_color_rgba.red = ((bad_head_color >> 16) & 0xFF) / 255.0;
+  bad_head_color_rgba.green = ((bad_head_color >> 8) & 0xFF) / 255.0;
+  bad_head_color_rgba.blue = (bad_head_color & 0xFF) / 255.0;
+  bad_head_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(bad_head_color_button), &bad_head_color_rgba);
+
+  GdkRGBA current_color_rgba;
+  current_color_rgba.red = ((current_color_inner >> 16) & 0xFF) / 255.0;
+  current_color_rgba.green = ((current_color_inner >> 8) & 0xFF) / 255.0;
+  current_color_rgba.blue = (current_color_inner & 0xFF) / 255.0;
+  current_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(current_color_button), &current_color_rgba);
+
+  GdkRGBA selected_color_rgba;
+  selected_color_rgba.red = ((selected_color >> 16) & 0xFF) / 255.0;
+  selected_color_rgba.green = ((selected_color >> 8) & 0xFF) / 255.0;
+  selected_color_rgba.blue = (selected_color & 0xFF) / 255.0;
+  selected_color_rgba.alpha = 1.0;
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(selected_color_button), &selected_color_rgba);
+}
+
+void set_color(GtkWidget *widget, gpointer data)
+{
+  GdkRGBA color;
+  gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(widget), &color);
+  int color_int = ((int)(color.red * 255) << 16) + ((int)(color.green * 255) << 8) + (int)(color.blue * 255);
+  if (data == (gpointer)1)
+  {
+    good_color = color_int;
+  }
+  else if (data == (gpointer)2)
+  {
+    bad_color = color_int;
+  }
+  else if (data == (gpointer)3)
+  {
+    nontried_color = color_int;
+  }
+  else if (data == (gpointer)4)
+  {
+    nontrimmed_color = color_int;
+  }
+  else if (data == (gpointer)5)
+  {
+    nondivided_color = color_int;
+  }
+  else if (data == (gpointer)6)
+  {
+    nonscraped_color = color_int;
+  }
+  else if (data == (gpointer)7)
+  {
+    domain_color = color_int;
+  }
+  else if (data == (gpointer)8)
+  {
+    time_color = color_int;
+  }
+  else if (data == (gpointer)9)
+  {
+    bad_head_color = color_int;
+  }
+  else if (data == (gpointer)10)
+  {
+    current_color_inner = color_int;
+    current_color_outer = color_int;
+  }
+  else if (data == (gpointer)11)
+  {
+    selected_color = color_int;
+  }
+
+  write_config_file();
+}
+
+void read_config_file(void)
+{
+  char config_file_name[256];
+  snprintf(config_file_name, sizeof(config_file_name), "%s/.oscviewer.cfg", getenv("HOME"));
+
+  FILE *config_file = fopen(config_file_name, "r");
+  if (config_file == NULL)
+  {
+    return;
+  }
+  char line[256];
+  while (fgets(line, sizeof(line), config_file))
+  {
+    if (line[0] == '#')
+    {
+      continue;
+    }
+    char *key = strtok(line, "=");
+    char *value = strtok(NULL, "=");
+    if (strcmp(key, "good_color") == 0)
+    {
+      good_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "bad_color") == 0)
+    {
+      bad_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "nontried_color") == 0)
+    {
+      nontried_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "nontrimmed_color") == 0)
+    {
+      nontrimmed_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "nondivided_color") == 0)
+    {
+      nondivided_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "nonscraped_color") == 0)
+    {
+      nonscraped_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "domain_color") == 0)
+    {
+      domain_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "time_color") == 0)
+    {
+      time_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "bad_head_color") == 0)
+    {
+      bad_head_color = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "current_color_inner") == 0)
+    {
+      current_color_inner = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "current_color_outer") == 0)
+    {
+      current_color_outer = strtol(value, NULL, 16);
+    }
+    else if (strcmp(key, "selected_color") == 0)
+    {
+      selected_color = strtol(value, NULL, 16);
+    }
+  }
+
+  fclose(config_file);
+}
+
+void write_config_file(void)
+{
+  char config_file_name[256];
+  snprintf(config_file_name, sizeof(config_file_name), "%s/.oscviewer.cfg", getenv("HOME"));
+
+  FILE *config_file = fopen(config_file_name, "w");
+  if (config_file == NULL)
+  {
+    return;
+  }
+  fprintf(config_file, "# oscviewer config file\n");
+  fprintf(config_file, "good_color=%06X\n", good_color);
+  fprintf(config_file, "bad_color=%06X\n", bad_color);
+  fprintf(config_file, "nontried_color=%06X\n", nontried_color);
+  fprintf(config_file, "nontrimmed_color=%06X\n", nontrimmed_color);
+  fprintf(config_file, "nondivided_color=%06X\n", nondivided_color);
+  fprintf(config_file, "nonscraped_color=%06X\n", nonscraped_color);
+  fprintf(config_file, "domain_color=%06X\n", domain_color);
+  fprintf(config_file, "time_color=%06X\n", time_color);
+  fprintf(config_file, "bad_head_color=%06X\n", bad_head_color);
+  fprintf(config_file, "current_color_inner=%06X\n", current_color_inner);
+  fprintf(config_file, "current_color_outer=%06X\n", current_color_outer);
+  fprintf(config_file, "selected_color=%06X\n", selected_color);
+  fclose(config_file);
 }

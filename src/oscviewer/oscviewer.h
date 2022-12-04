@@ -104,7 +104,6 @@ gint main_scrolled_window_height;
 gint main_drawing_vbox_width;
 gint main_drawing_vbox_height;
 
-GtkWidget *language_window;
 GtkWidget *main_window;
 GtkWidget *main_vbox;
 GtkWidget *main_hbox;
@@ -118,6 +117,7 @@ GtkWidget *left_drawing_area;
 GtkWidget *main_scrolled_window;
 GtkWidget *main_drawing_vbox;
 GtkWidget *frame;
+GtkWidget *settings_window;
 
 GtkWidget *progress_log_label;
 GtkWidget *domain_log_label;
@@ -140,6 +140,7 @@ GtkWidget *quitmi;
 GtkWidget *openmi;
 GtkWidget *domainmi;
 GtkWidget *dmdedomainmi;
+GtkWidget *settingsmi;
 GtkWidget *filew;
 GtkWidget *domainw;
 // options menu
@@ -208,6 +209,33 @@ GtkWidget *showtimingbutton30;
 GtkWidget *showtimingbutton40;
 GtkWidget *showtimingbutton50;
 GtkWidget *showtimingbutton60;
+
+GtkWidget *nontried_color_button;
+GtkWidget *nontrimmed_color_button;
+GtkWidget *nondivided_color_button;
+GtkWidget *nonscraped_color_button;
+GtkWidget *bad_color_button;
+GtkWidget *good_color_button;
+GtkWidget *current_color_button;
+GtkWidget *bad_head_color_button;
+GtkWidget *selected_color_button;
+GtkWidget *time_color_button;
+GtkWidget *domain_color_button;
+
+GtkWidget *nontried_color_label;
+GtkWidget *nontrimmed_color_label;
+GtkWidget *nondivided_color_label;
+GtkWidget *nonscraped_color_label;
+GtkWidget *bad_color_label;
+GtkWidget *good_color_label;
+GtkWidget *current_color_label;
+GtkWidget *bad_head_color_label;
+GtkWidget *selected_color_label;
+GtkWidget *time_color_label;
+GtkWidget *domain_color_label;
+
+GtkWidget *block_color_label;
+GtkWidget *marker_color_label;
 
 int debug = 0;
 int translate = 0;
@@ -394,6 +422,14 @@ int process_status(int line);
 long long process_information(long long position, long long size, int line);
 
 int print_gui_error_message(char *message, char *title, int type);
+
+void show_settings_window(void);
+
+void set_color(GtkWidget *widget, gpointer data);
+
+void read_config_file(void);
+
+void write_config_file(void);
 
 struct MemoryStruct
 {
