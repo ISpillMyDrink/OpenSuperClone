@@ -1,8 +1,32 @@
-mkdir build
+[ ! -d build ] && mkdir build
 
-# Build for Release and install to /usr/local/
+echo "Configuring..."
 cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/
 
+if [ $? -ne 0 ]; then
+    echo "CMake failed. Aborting."
+    exit 1
+else
+    echo "CMake succeeded."
+fi
+
+echo "Building..."
 cd build
 make
+
+if [ $? -ne 0 ]; then
+    echo "Build failed. Aborting."
+    exit 1
+else
+    echo "Build succeeded."
+fi
+
+echo "Installing..."
 sudo make install
+
+if [ $? -ne 0 ]; then
+    echo "Install failed. Aborting."
+    exit 1
+else
+    echo "Install succeeded."
+fi
