@@ -32,15 +32,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   }
 
   char window_title[256];
-  strcpy(window_title, title);
-  strcat(window_title, " ");
-  strcat(window_title, version);
-
-  strcpy(program_title, "_");
-  strcat(program_title, title);
-  strcat(program_title, "_");
-  strcat(program_title, version);
-  strcat(program_title, "_");
+  snprintf(window_title, sizeof(window_title), "%s %s", title, version);
 
   gtk_init(&argc, &argv);
 
@@ -979,10 +971,10 @@ static void load_ddrescue_log_file_ccc(char *log_file)
       ret = check_log_ccc();
       if (ret)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "There were errors found in the progress log file\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "There were errors found in the progress log file\n");
         message_now_ccc(tempmessage_ccc);
         ret2 = check_and_repair_log_ccc();
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Checking the progress log file again to make sure it was fixed correctly.\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Checking the progress log file again to make sure it was fixed correctly.\n");
         message_now_ccc(tempmessage_ccc);
         ret = check_log_ccc();
         if (ret != 0 || ret2 != 0)
@@ -1227,7 +1219,7 @@ void choose_source_ccc(void)
         clear_source_ccc();
         strcpy(current_source_model_ccc, "");
         strcpy(current_source_serial_ccc, "");
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting source"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1389,7 +1381,7 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting source"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -1400,7 +1392,7 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting source"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -1411,7 +1403,7 @@ void choose_source_ccc(void)
           clear_source_ccc();
           strcpy(current_source_model_ccc, "");
           strcpy(current_source_serial_ccc, "");
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting source"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -1457,7 +1449,7 @@ void choose_source_ccc(void)
         clear_source_ccc();
         strcpy(current_source_model_ccc, "");
         strcpy(current_source_serial_ccc, "");
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting source"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1555,7 +1547,7 @@ void choose_destination_ccc(void)
     for (i = 0; i < device_count_ccc; i++)
     {
       char button_label[MAX_BUTTON_LABEL_SIZE] = "";
-      snprintf(button_label, sizeof(tempmessage_ccc), "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+      snprintf(button_label, TEMP_MESSAGE_SIZE, "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
       button[i] = gtk_button_new_with_label(button_label);
       gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
       g_signal_connect(button[i], "clicked", G_CALLBACK(get_destination_from_button_ccc), GINT_TO_POINTER(i));
@@ -1580,7 +1572,7 @@ void choose_destination_ccc(void)
       {
         fprintf(stdout, "error selecting destination, ret=%d\n", ret);
         clear_destination_ccc();
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error selecting destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting destination"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1663,7 +1655,7 @@ void choose_image_ccc(void)
       filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       if (access(filename, F_OK) == 0)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "   %s   \n%s", filename, _("The image file currently exists.\nThis will continue the recovery using this image file."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   %s   \n%s", filename, _("The image file currently exists.\nThis will continue the recovery using this image file."));
         if (!open_confirmation_dialog_ccc(tempmessage_ccc))
         {
           confirmed = 0;
@@ -2406,15 +2398,15 @@ void start_analyzing_ccc(void)
   good_percent = 100.0f * total_good_reads / total_read_attempts;
   bad_percent = 100.0f * total_bad_reads / total_read_attempts;
   slow_percent = 100.0f * total_slow_reads / total_read_attempts;
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Good"), good_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Bad"), bad_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Slow"), slow_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Good"), good_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad"), bad_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow"), slow_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "#\n");
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   float slow_issue_percent;
   if (slow_percent > 50.0f)
@@ -2444,8 +2436,8 @@ void start_analyzing_ccc(void)
     slow_variance_percent = 100.0f * slow_variance_count / slowsections;
   }
   slow_issue_percent = slow_issue_percent + slow_variance_percent;
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Slow Responding Firmware Issue"), slow_issue_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow Responding Firmware Issue"), slow_issue_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   int consecutive_no_read_sections = 0;
   int highest_no_read_sections = 0;
@@ -2474,8 +2466,8 @@ void start_analyzing_ccc(void)
   {
     partial_access_percent = partial_access_percent * 2.0f;
   }
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Partial Access Issue"), partial_access_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Partial Access Issue"), partial_access_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   int bad_sections = 0;
   for (i = 0; i < sections; i++)
@@ -2490,16 +2482,16 @@ void start_analyzing_ccc(void)
     }
   }
   float bad_head_percent = 100.0f * bad_sections / sections;
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s = %f%%\n", _("Bad Or Weak Head"), bad_head_percent);
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad Or Weak Head"), bad_head_percent);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "#\n");
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   if (1)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# (%d) %s", analyze_slow_total_reads_ccc, _("Variance read times low/high:"));
-    strcat(analyze_text_ccc, tempmessage_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# (%d) %s", analyze_slow_total_reads_ccc, _("Variance read times low/high:"));
+    strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
     int slowsections = MAXANALYZESLOW / 4;
     if (extended)
     {
@@ -2509,25 +2501,25 @@ void start_analyzing_ccc(void)
     {
       if ((i % 8) == 0)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n#     ");
-        strcat(analyze_text_ccc, tempmessage_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n#     ");
+        strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld/%lld  ", analyze_slow_low_ccc[i] / 1000, analyze_slow_high_ccc[i] / 1000);
-      strcat(analyze_text_ccc, tempmessage_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld/%lld  ", analyze_slow_low_ccc[i] / 1000, analyze_slow_high_ccc[i] / 1000);
+      strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
     }
-    strcat(analyze_text_ccc, "\n");
+    strncat(analyze_text_ccc, "\n", MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
   }
 
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "#\n");
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zones"), _("Total"), total_read_attempts, _("Good"), total_good_reads, _("Bad"), total_bad_reads, total_timeouts, _("Slow"), total_slow_reads, _("Low"), total_low_time / 1000, _("High"), total_high_time / 1000, _("Average"), total_average_read_time / 1000);
-  strcat(analyze_text_ccc, tempmessage_ccc);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zones"), _("Total"), total_read_attempts, _("Good"), total_good_reads, _("Bad"), total_bad_reads, total_timeouts, _("Slow"), total_slow_reads, _("Low"), total_low_time / 1000, _("High"), total_high_time / 1000, _("Average"), total_average_read_time / 1000);
+  strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   for (i = 0; i < sections; i++)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), average_read_time[i] / 1000);
-    strcat(analyze_text_ccc, tempmessage_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), average_read_time[i] / 1000);
+    strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
   }
   fprintf(stdout, "%s", analyze_text_ccc);
 
@@ -3126,8 +3118,8 @@ int open_ports_dialog_ccc(char *current_ports)
 
   strcpy(new_ports_ccc, "");
   char portsinfo[4096] = "";
-  strcpy(portsinfo, _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"));
-  strcat(portsinfo, _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
+  snprintf(portsinfo, sizeof(portsinfo), "%s%s", _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"),
+           _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
   gtk_label_set_text(GTK_LABEL(disable_ports_info_label_ccc), portsinfo);
   gtk_label_set_text(GTK_LABEL(disable_ports_label_ccc), _("Disable Ports"));
   gtk_label_set_text(GTK_LABEL(current_ports_label_ccc), _("Current disabled ports (GRUB data)"));
@@ -3493,7 +3485,7 @@ void update_ports_ccc(void)
     {
       snprintf(temp, sizeof(temp), ",%u:disable", port);
     }
-    strcat(new_ports_ccc, temp);
+    strncat(new_ports_ccc, temp, sizeof(new_ports_ccc) - strlen(new_ports_ccc) - 1);
     first = 0;
     count++;
     scanline--;
@@ -3539,7 +3531,7 @@ void test_command_ccc(void)
     int signal = WTERMSIG(ret);
     strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%d / %d)", signal, status);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3564,7 +3556,7 @@ void test_power_command_ccc(void)
     int signal = WTERMSIG(ret);
     strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%d / %d)", signal, status);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4332,7 +4324,7 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_output_offset = button_status;
     if (previous_status != advanced_settings_ccc.enable_output_offset)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("You must reopen the advanced setting for this change to take effect"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
@@ -4345,7 +4337,7 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_current_position = button_status;
     if (previous_status != advanced_settings_ccc.enable_current_position)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("You must reopen the advanced setting for this change to take effect"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
@@ -4358,7 +4350,7 @@ void set_state_from_button_ccc(GtkWidget *widget, gpointer data)
     advanced_settings_ccc.enable_output_sector_size = button_status;
     if (previous_status != advanced_settings_ccc.enable_output_sector_size)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("You must reopen the advanced setting for this change to take effect"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("You must reopen the advanced setting for this change to take effect"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
@@ -4525,8 +4517,7 @@ void about_ccc(void)
   snprintf(temp, sizeof(temp), "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors", copyright_year_ccc);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
-  strcpy(temp, "License type: GPL2\n");
-  strcat(temp, "There is NO WARRANTY, to the extent permitted by law.");
+  snprintf(temp, sizeof(temp), "License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law.");
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
@@ -4582,7 +4573,7 @@ void choose_primary_usb_ccc(void)
     {
       fprintf(stdout, "error selecting usb, ret=%d\n", ret);
       clear_usbr1_ccc();
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error choosing USB relay"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error choosing USB relay"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();

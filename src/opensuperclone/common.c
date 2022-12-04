@@ -97,20 +97,20 @@ int set_main_buffer_ccc(void)
   {
     if (ccc_main_buffer_size_ccc > MAX_USB_BUFFER_SIZE || ccc_main_buffer_size_ccc > real_buffer_size_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ERROR: Maximum buffer size exceeded.\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum buffer size exceeded.\n");
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
   }
   else if (ccc_main_buffer_size_ccc > MAX_BUFFER_SIZE || ccc_main_buffer_size_ccc > real_buffer_size_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ERROR: Maximum buffer size exceeded.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum buffer size exceeded.\n");
     message_now_ccc(tempmessage_ccc);
     return (-1);
   }
   if (ahci_mode_ccc && ccc_main_buffer_size_ccc > max_dma_size_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ERROR: Maximum AHCI buffer size (%llu) exceeded.\n", max_dma_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum AHCI buffer size (%llu) exceeded.\n", max_dma_size_ccc);
     message_now_ccc(tempmessage_ccc);
     return (-1);
   }
@@ -290,7 +290,7 @@ int set_table_buffer_ccc(void)
       if (temp == NULL)
       {
         free(padding_buffer_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "realloc failed");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "realloc failed");
         message_now_ccc(tempmessage_ccc);
         return -1;
       }
@@ -306,7 +306,7 @@ int set_table_buffer_ccc(void)
     }
     else if (posix_memalign(&table_buffer_ccc, align, table_size_ccc))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "posix_memalign failed (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "posix_memalign failed (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
@@ -359,7 +359,7 @@ int get_table_physical_memory_location_ccc(void)
   pagemap_ccc = fopen(path, "rb");
   if (!pagemap_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Cannot open %s\n", path);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Cannot open %s\n", path);
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -369,7 +369,7 @@ int get_table_physical_memory_location_ccc(void)
   int status = fseek(pagemap_ccc, file_offset, SEEK_SET);
   if (status)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Failed to do fseek! (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -438,7 +438,7 @@ int set_command_list_buffer_ccc(void)
       if (temp == NULL)
       {
         free(padding_buffer_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "realloc failed");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "realloc failed");
         message_now_ccc(tempmessage_ccc);
         return -1;
       }
@@ -454,7 +454,7 @@ int set_command_list_buffer_ccc(void)
     }
     else if (posix_memalign(&command_list_buffer_ccc, align, command_list_size_ccc))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "posix_memalign failed (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "posix_memalign failed (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
@@ -502,7 +502,7 @@ int get_command_list_physical_memory_location_ccc(void)
   pagemap_ccc = fopen(path, "rb");
   if (!pagemap_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Cannot open %s\n", path);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Cannot open %s\n", path);
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -512,7 +512,7 @@ int get_command_list_physical_memory_location_ccc(void)
   int status = fseek(pagemap_ccc, file_offset, SEEK_SET);
   if (status)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Failed to do fseek! (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -581,7 +581,7 @@ int set_fis_buffer_ccc(void)
       if (temp == NULL)
       {
         free(padding_buffer_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "realloc failed");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "realloc failed");
         message_now_ccc(tempmessage_ccc);
         return -1;
       }
@@ -597,7 +597,7 @@ int set_fis_buffer_ccc(void)
     }
     else if (posix_memalign(&fis_buffer_ccc, align, fis_size_ccc))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "posix_memalign failed (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "posix_memalign failed (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
@@ -645,7 +645,7 @@ int get_fis_physical_memory_location_ccc(void)
   pagemap_ccc = fopen(path, "rb");
   if (!pagemap_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Cannot open %s\n", path);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Cannot open %s\n", path);
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -655,7 +655,7 @@ int get_fis_physical_memory_location_ccc(void)
   int status = fseek(pagemap_ccc, file_offset, SEEK_SET);
   if (status)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Failed to do fseek! (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
     return -1;
   }
@@ -723,7 +723,7 @@ int get_buffer_physical_memory_locations_ccc(void)
       if (temp == NULL)
       {
         free(padding_buffer_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "realloc failed");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "realloc failed");
         message_now_ccc(tempmessage_ccc);
         return -1;
       }
@@ -739,7 +739,7 @@ int get_buffer_physical_memory_locations_ccc(void)
     }
     else if (posix_memalign(&ccc_buffer_ccc, align, real_buffer_size_ccc))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "posix_memalign failed (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "posix_memalign failed (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
@@ -766,7 +766,7 @@ int get_buffer_physical_memory_locations_ccc(void)
     pagemap_ccc = fopen(path, "rb");
     if (!pagemap_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Cannot open %s\n", path);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Cannot open %s\n", path);
       message_now_ccc(tempmessage_ccc);
       return -1;
     }
@@ -778,7 +778,7 @@ int get_buffer_physical_memory_locations_ccc(void)
     int status = fseek(pagemap_ccc, file_offset, SEEK_SET);
     if (status)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Failed to do fseek! (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
       return -1;
     }

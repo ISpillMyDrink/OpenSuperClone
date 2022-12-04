@@ -89,7 +89,7 @@ int post_ioctl_ccc(void)
       break;
 
     default:
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\nbad (SG_IO) sense buffer response code from input device\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nbad (SG_IO) sense buffer response code from input device\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -98,7 +98,7 @@ int post_ioctl_ccc(void)
       {
         message_now_ccc(tempmessage_ccc);
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "raw sense buffer: ");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "raw sense buffer: ");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -110,7 +110,7 @@ int post_ioctl_ccc(void)
       int i;
       for (i = 0; i < io_hdr.sb_len_wr; i++)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%02x ", io_hdr.sbp[i]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%02x ", io_hdr.sbp[i]);
         if (superclone_ccc)
         {
           message_error_ccc(tempmessage_ccc);
@@ -120,7 +120,7 @@ int post_ioctl_ccc(void)
           message_now_ccc(tempmessage_ccc);
         }
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -635,7 +635,7 @@ int do_scsi_cmd_ccc(int disk_fd)
     int ioctl_ret = ioctl(disk_fd, SG_IO, &io_hdr);
     if (ioctl_ret < 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error performing IO on input device (%s).\n", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error performing IO on input device (%s).\n", strerror(errno));
       if (superclone_ccc)
       {
         check_message_ccc = true;
@@ -1021,11 +1021,11 @@ int usb_soft_hard_reset_ccc(unsigned char reset_type, int timeout)
   {
     if (reset_type == USB_RESET_TYPE_SOFT)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "usb soft reset\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "usb soft reset\n");
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "usb hard reset\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "usb hard reset\n");
     }
     message_console_log_ccc(tempmessage_ccc, 0);
   }
@@ -1113,7 +1113,7 @@ int usb_soft_hard_reset_ccc(unsigned char reset_type, int timeout)
   {
     if (superclone_ccc && sense_key_ccc == 5)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "soft/hard reset illegal request\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "soft/hard reset illegal request\n");
       message_console_log_ccc(tempmessage_ccc, 0);
     }
     return sense_key_ccc;
@@ -1653,7 +1653,7 @@ int do_ata28_cmd_ccc(int disk_fd)
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Protocol and direction settings not correct for direct mode.\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Protocol and direction settings not correct for direct mode.\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -1695,7 +1695,7 @@ int do_ata28_cmd_ccc(int disk_fd)
     {
       if (identify_flag_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Bad ioctl accessing input device(%s)", strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Bad ioctl accessing input device(%s)", strerror(errno));
         if (superclone_ccc)
         {
           message_error_ccc(tempmessage_ccc);
@@ -1710,7 +1710,7 @@ int do_ata28_cmd_ccc(int disk_fd)
       }
       else
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error performing passthrough IO on input device (%s).\n", strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error performing passthrough IO on input device (%s).\n", strerror(errno));
         if (superclone_ccc)
         {
           message_error_ccc(tempmessage_ccc);
@@ -1783,7 +1783,7 @@ int do_ata48_cmd_ccc(int disk_fd)
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error! Protocol and direction settings not correct for direct mode.\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error! Protocol and direction settings not correct for direct mode.\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -1827,7 +1827,7 @@ int do_ata48_cmd_ccc(int disk_fd)
     int ioctl_ret = ioctl(disk_fd, SG_IO, &io_hdr);
     if (ioctl_ret < 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error performing passthrough IO on input device (%s).\n", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error performing passthrough IO on input device (%s).\n", strerror(errno));
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -2169,8 +2169,8 @@ int ahci_rw_ccc(int command_type, int write_bit)
         // what_changed = what_changed | 0x2000;
         // memcpy(&io_byte_ccc[1], port_virt_addr_ccc + 0x20, 1);    // status    
         // memcpy(&io_byte_ccc[2], port_virt_addr_ccc + 0x21, 1);    // error    
-        // snprintf (tempmessage_ccc, sizeof(tempmessage_ccc), "port ERR = 0x%08x s/e=0x%02x/0x%02x fail=0x%04x changed=0x%04x\n", port_error, io_byte_ccc[1], io_byte_ccc[2], fail_level, what_changed);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "port ERR = 0x%08x\n", port_error);
+        // snprintf (tempmessage_ccc, TEMP_MESSAGE_SIZE, "port ERR = 0x%08x s/e=0x%02x/0x%02x fail=0x%04x changed=0x%04x\n", port_error, io_byte_ccc[1], io_byte_ccc[2], fail_level, what_changed);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "port ERR = 0x%08x\n", port_error);
         message_console_log_ccc(tempmessage_ccc, 0);
         // fprintf (stdout, "port ERR = 0x%08x\n", port_error);
       }
@@ -2180,8 +2180,8 @@ int ahci_rw_ccc(int command_type, int write_bit)
         // what_changed = what_changed | 0x2000;
         // memcpy(&io_byte_ccc[1], port_virt_addr_ccc + 0x20, 1);    // status    
         // memcpy(&io_byte_ccc[2], port_virt_addr_ccc + 0x21, 1);    // error    
-        // snprintf (tempmessage_ccc, sizeof(tempmessage_ccc), "port DS = 0x%08x s/e=0x%02x/0x%02x fail=0x%04x changed=0x%04x\n", port_status, io_byte_ccc[1], io_byte_ccc[2], fail_level, what_changed);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "port DS = 0x%08x\n", port_status);
+        // snprintf (tempmessage_ccc, TEMP_MESSAGE_SIZE, "port DS = 0x%08x s/e=0x%02x/0x%02x fail=0x%04x changed=0x%04x\n", port_status, io_byte_ccc[1], io_byte_ccc[2], fail_level, what_changed);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "port DS = 0x%08x\n", port_status);
         message_console_log_ccc(tempmessage_ccc, 0);
         // fprintf (stdout, "port DS = 0x%08x\n", port_status);
       }
@@ -2226,7 +2226,7 @@ int do_ata_dma_read_ccc(int command_type)
 {
   if (ccc_main_buffer_size_ccc > max_dma_size_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
     if (superclone_ccc)
     {
       message_error_ccc(tempmessage_ccc);
@@ -2542,7 +2542,7 @@ int do_ata_dma_write_ccc(int command_type)
 {
   if (ccc_main_buffer_size_ccc > max_dma_size_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum DMA buffer size (%llu) exceeded.\n", max_dma_size_ccc);
     if (superclone_ccc)
     {
       message_error_ccc(tempmessage_ccc);
@@ -2835,7 +2835,7 @@ int soft_reset_ccc(int disk_fd)
   {
     if (superclone_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "soft reset\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "soft reset\n");
       message_console_log_ccc(tempmessage_ccc, 0);
     }
     if (ahci_mode_ccc)
@@ -3030,7 +3030,7 @@ int soft_reset_ccc(int disk_fd)
         }
         if (status == 1)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "timeout after soft reset\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "timeout after soft reset\n");
           message_console_log_ccc(tempmessage_ccc, 0);
           // if it timed out then do hard reset
           performing_reset_ccc = 1;
@@ -3086,7 +3086,7 @@ int soft_reset_ccc(int disk_fd)
       performing_reset_ccc = 1;
       if (!did_hard_reset_ccc && identify_device_ccc())
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "identify failed after soft reset\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "identify failed after soft reset\n");
         message_console_log_ccc(tempmessage_ccc, 0);
         if (did_hard_reset_ccc)
         {
@@ -3237,7 +3237,7 @@ int hard_reset_ccc(int disk_fd)
         // ahci
         if (superclone_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "hard reset\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "hard reset\n");
           message_console_log_ccc(tempmessage_ccc, 0);
         }
 #ifdef DEBUG
@@ -3369,7 +3369,7 @@ int hard_reset_ccc(int disk_fd)
 
         if (superclone_ccc && status)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "timeout after hard reset\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "timeout after hard reset\n");
           message_console_log_ccc(tempmessage_ccc, 0);
           status = call_command_on_power_cycle_ccc();
           did_power_cycle_ccc = 1;
@@ -3423,7 +3423,7 @@ int hard_reset_ccc(int disk_fd)
         performing_reset_ccc = 1;
         if (identify_device_ccc())
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "identify failed after hard reset\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "identify failed after hard reset\n");
           message_console_log_ccc(tempmessage_ccc, 0);
           performing_reset_ccc = 0;
           if (did_power_cycle_ccc)
@@ -3516,7 +3516,7 @@ int hba_reset_ccc(void)
       mytime = time(NULL);
       fprintf(hba_debug_reset_file, "%s", ctime(&mytime));
 
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "HBA Reset\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "HBA Reset\n");
       message_console_log_ccc(tempmessage_ccc, 0);
 
       unsigned char hba_backup[0x30];
@@ -4198,7 +4198,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4215,7 +4215,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     {
       strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return -1;
     }
@@ -4254,7 +4254,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4271,7 +4271,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     {
       strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return -1;
     }
@@ -4333,7 +4333,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -4349,7 +4349,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         {
           strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           return -1;
         }
@@ -4507,7 +4507,7 @@ int hba_test_ccc(void)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4524,7 +4524,7 @@ int hba_test_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return -1;
     }
@@ -4574,7 +4574,7 @@ int hba_test_ccc(void)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4591,7 +4591,7 @@ int hba_test_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return -1;
     }
@@ -4668,7 +4668,7 @@ int hba_test_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -4685,7 +4685,7 @@ int hba_test_ccc(void)
         {
           strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           return -1;
         }
@@ -5190,7 +5190,7 @@ int hba_test_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -5207,7 +5207,7 @@ int hba_test_ccc(void)
         {
           strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           return -1;
         }
@@ -5257,7 +5257,7 @@ int hba_test_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -5274,7 +5274,7 @@ int hba_test_ccc(void)
         {
           strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
           return -1;
         }
@@ -5351,7 +5351,7 @@ int hba_test_ccc(void)
               check_message_ccc = true;
               strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -5368,7 +5368,7 @@ int hba_test_ccc(void)
             {
               strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
               return -1;
             }
@@ -5954,7 +5954,7 @@ int post_direct_ccc(int command_type)
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n\nInternal error, post direct command type not valid\n\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n\nInternal error, post direct command type not valid\n\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -6075,7 +6075,7 @@ int find_all_devices_ccc(void)
     find_all_usb_devices_ccc();
     return 0;
   }
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Finding devices\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Finding devices\n");
   message_now_ccc(tempmessage_ccc);
   // clear the list
   int i;
@@ -6450,7 +6450,7 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
 
     if (port_mem_dev_ccc == -1)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "unable to open /dev/mem\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "unable to open /dev/mem\n");
       message_now_ccc(tempmessage_ccc);
       return (0);
     }
@@ -6473,7 +6473,7 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
 
     if (port_mem_pointer_ccc == MAP_FAILED)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "mem map failed\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "mem map failed\n");
       message_now_ccc(tempmessage_ccc);
       return (0);
     }
@@ -7267,7 +7267,7 @@ int identify_device_ahci_ccc(int count)
     int port_mem_dev_ccc = open("/dev/mem", O_RDWR | O_SYNC);
     if (port_mem_dev_ccc == -1)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "unable to open /dev/mem\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "unable to open /dev/mem\n");
       message_now_ccc(tempmessage_ccc);
       return (-1);
     }
@@ -7290,7 +7290,7 @@ int identify_device_ahci_ccc(int count)
 
     if (port_mem_pointer_ccc == MAP_FAILED)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "mem map failed\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "mem map failed\n");
       message_now_ccc(tempmessage_ccc);
       return (0);
     }
@@ -8684,7 +8684,7 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("WARNING: There is possibly another drive on the same controller!\nYou should NEVER work with a drive when another drive is on the same controller!\nThat could be very dangerous, and could result in data loss (or worse)!\n"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: There is possibly another drive on the same controller!\nYou should NEVER work with a drive when another drive is on the same controller!\nThat could be very dangerous, and could result in data loss (or worse)!\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
@@ -8722,7 +8722,7 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("WARNING: The selected device is a slave on the controller!\nThis does not always work as expected!\nThat could be very dangerous, and could result in data loss (or worse)!\nIt is recommended for the device to be master on the controller!\n"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: The selected device is a slave on the controller!\nThis does not always work as expected!\nThat could be very dangerous, and could result in data loss (or worse)!\nIt is recommended for the device to be master on the controller!\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
@@ -8760,7 +8760,7 @@ int choose_device_ccc(void)
     {
       if (superclone_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
         clear_error_message_ccc();
@@ -8797,7 +8797,7 @@ int choose_device_ccc(void)
         {
           if (superclone_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
             clear_error_message_ccc();
@@ -9816,7 +9816,7 @@ int set_and_send_regs_ccc(int command_type)
 
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n\nInternal error, send regs command type not valid\n\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n\nInternal error, send regs command type not valid\n\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -9967,7 +9967,7 @@ int set_and_send_regs_ccc(int command_type)
 
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n\nInternal error, send regs command type not valid\n\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n\nInternal error, send regs command type not valid\n\n");
       if (superclone_ccc)
       {
         message_error_ccc(tempmessage_ccc);
@@ -10508,7 +10508,7 @@ int start_driver_ccc(void)
     check_message_ccc = true;
     strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -10532,7 +10532,7 @@ int start_driver_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10555,7 +10555,7 @@ int start_driver_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10578,7 +10578,7 @@ int stop_driver_ccc(void)
     check_message_ccc = true;
     strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -10600,7 +10600,7 @@ int stop_driver_ccc(void)
     error = 1;
     strcpy(tempmessage_ccc, _("Error stoping virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
   }
 
@@ -10618,7 +10618,7 @@ int stop_driver_ccc(void)
     error = 1;
     strcpy(tempmessage_ccc, _("Error closing virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", driver_device_name_ccc, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
   }
   if (error)
@@ -10668,7 +10668,7 @@ int map_driver_memory_ccc(void)
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Opening driver mapping file failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Opening driver mapping file failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10676,7 +10676,7 @@ int map_driver_memory_ccc(void)
   driver_control_address_ccc = mmap(NULL, pagesize_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, 0);
   if (driver_control_address_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10684,7 +10684,7 @@ int map_driver_memory_ccc(void)
   driver_error_bitmap_address_ccc = mmap(NULL, pagesize_ccc * 2, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, pagesize_ccc * 1);
   if (driver_error_bitmap_address_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10692,7 +10692,7 @@ int map_driver_memory_ccc(void)
   driver_table_buffer_ccc = mmap(NULL, pagesize_ccc * 4, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, pagesize_ccc * 3);
   if (driver_table_buffer_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10700,7 +10700,7 @@ int map_driver_memory_ccc(void)
   driver_command_list_buffer_ccc = mmap(NULL, pagesize_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, pagesize_ccc * 7);
   if (driver_command_list_buffer_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10708,7 +10708,7 @@ int map_driver_memory_ccc(void)
   driver_fis_buffer_ccc = mmap(NULL, pagesize_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, pagesize_ccc * 8);
   if (driver_fis_buffer_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10719,7 +10719,7 @@ int map_driver_memory_ccc(void)
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Opening driver mapping file failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Opening driver mapping file failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10727,7 +10727,7 @@ int map_driver_memory_ccc(void)
   driver_transfer_buffer_address_ccc = mmap(NULL, DRIVER_TRANSFER_BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, 0);
   if (driver_transfer_buffer_address_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10737,7 +10737,7 @@ int map_driver_memory_ccc(void)
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Opening driver mapping file failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Opening driver mapping file failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }
@@ -10745,7 +10745,7 @@ int map_driver_memory_ccc(void)
   driver_main_data_buffer_address_ccc = mmap(NULL, DRIVER_MAIN_DATA_BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, configfd, 0);
   if (driver_main_data_buffer_address_ccc == MAP_FAILED)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Mapping driver memory failed (%s)\n", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Mapping driver memory failed (%s)\n", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return -1;
   }

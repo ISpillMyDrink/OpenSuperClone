@@ -436,7 +436,6 @@ GtkAdjustment *gtk_adjustment_ccc;
 gint display_status_timer_ccc = 0;
 int display_status_timer_running_ccc = 0;
 
-char program_title[256];
 int source_chosen_ccc = 0;
 int destination_chosen_ccc = 0;
 int destination_size_valid_ccc = 0;
@@ -476,16 +475,6 @@ static void load_domain_file_ccc(char *log_file);
 static void new_log_file_ccc(char *log_file);
 
 static void load_ddrescue_log_file_ccc(char *log_file);
-
-void export_language_file_ccc(void);
-
-static void file_export_sel_ccc(char *export_file);
-
-void import_language_file_ccc(void);
-
-static void file_import_sel_ccc(char *import_file);
-
-int set_language_ccc(void);
 
 void choose_source_ccc(void);
 

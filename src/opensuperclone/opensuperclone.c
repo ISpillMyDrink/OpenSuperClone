@@ -15,7 +15,7 @@ void signal_callback_handler_ccc(int signum)
 {
   if (!critical_process_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Terminated by user\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Terminated by user\n");
     message_exit_ccc(tempmessage_ccc);
     forced_exit_ccc = true;
     exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
   pagesize_ccc = sysconf(_SC_PAGESIZE);
   if (pagesize_ccc > 4096)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Internal Error, pagesize too great\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Internal Error, pagesize too great\n");
     message_exit_ccc(tempmessage_ccc);
     exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
     cleanup_ccc();
@@ -425,7 +425,7 @@ int main(int argc, char **argv)
       break;
 
     default:
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Unknown error processing command line options\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Unknown error processing command line options\n");
       message_exit_ccc(tempmessage_ccc);
       command_line_error = true;
     }
@@ -445,7 +445,7 @@ int main(int argc, char **argv)
     debug_file_ccc = fopen(debugfile_ccc, "w");
     if (debug_file_ccc == NULL)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for writing (%s).\nAborting...\n", debugfile_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for writing (%s).\nAborting...\n", debugfile_ccc, strerror(errno));
       message_exit_ccc(tempmessage_ccc);
       exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
       cleanup_ccc();
@@ -564,9 +564,9 @@ int main(int argc, char **argv)
   // exit on command line error
   if (command_line_error)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s: Command line error.\n", title_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s: Command line error.\n", title_ccc);
     message_exit_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Try '%s --help' for more information.\n", title_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Try '%s --help' for more information.\n", title_ccc);
     message_exit_ccc(tempmessage_ccc);
     exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
     cleanup_ccc();
@@ -576,10 +576,10 @@ int main(int argc, char **argv)
 
   if (!quiet_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s %s\n", title_ccc, version_number_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s\n", title_ccc, version_number_ccc);
     message_now_ccc(tempmessage_ccc);
 #ifdef DEBUG
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "DEBUG version\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "DEBUG version\n");
     message_now_ccc(tempmessage_ccc);
     debugversion_ccc = true;
 #endif
@@ -588,7 +588,7 @@ int main(int argc, char **argv)
   // Check if root privilages
   if (geteuid())
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Root privilages not detected! This program must be run as root.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Root privilages not detected! This program must be run as root.\n");
     message_now_ccc(tempmessage_ccc);
     exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
     cleanup_ccc();
@@ -756,10 +756,10 @@ int begin_driver_ccc(void)
   if ((sector_size_ccc * original_cluster_size_ccc) > MAX_BUFFER_SIZE)
   {
     int cluster_limit = MAX_BUFFER_SIZE / sector_size_ccc;
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Warning: The cluster limit for the driver is %d and you chose %d.\n", cluster_limit, original_cluster_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit for the driver is %d and you chose %d.\n", cluster_limit, original_cluster_size_ccc);
     message_now_ccc(tempmessage_ccc);
     original_cluster_size_ccc = cluster_limit;
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Using a new cluster size of %d\n", original_cluster_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", original_cluster_size_ccc);
     message_now_ccc(tempmessage_ccc);
   }
   copy_start_time_ccc = get_elapsed_usec_ccc() / 1000;
@@ -1022,7 +1022,7 @@ void install_driver_ccc(void)
 {
   if (!check_driver_ccc() && driver_memory_mapped_ccc)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("The driver is already installed and active\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("The driver is already installed and active\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1034,7 +1034,7 @@ void install_driver_ccc(void)
   {
     if (!map_driver_memory_ccc())
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("The driver memory is now connected\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("The driver memory is now connected\n"));
       message_now_ccc(tempmessage_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1044,7 +1044,7 @@ void install_driver_ccc(void)
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error connecting to driver memory\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error connecting to driver memory\n"));
       message_now_ccc(tempmessage_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1065,7 +1065,7 @@ void install_driver_ccc(void)
   writefile = fopen(name, "w");
   if (writefile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s %s (%s).\n", _("Cannot open for writing"), name, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), name, strerror(errno));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1085,7 +1085,7 @@ void install_driver_ccc(void)
   writefile = fopen(command, "w");
   if (writefile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s %s (%s).\n", _("Cannot open for writing"), command, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), command, strerror(errno));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1102,7 +1102,7 @@ void install_driver_ccc(void)
   snprintf(command, sizeof(command), "(cd %s; make -C/lib/modules/`uname -r`/build M=$PWD)", tempdir);
   if (system(command))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Make failed, see the console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Make failed, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1113,7 +1113,7 @@ void install_driver_ccc(void)
   snprintf(command, sizeof(command), "insmod %s/%s%d.ko ioctl=%s%d mmap_m=%s%d mmap_tb=%s%d mmap_mdb=%s%d", tempdir, DRIVER_FILE_NAME, process_id_ccc, MAIN_DRIVER_IOCTL_NAME, process_id_ccc, MAIN_DRIVER_MMAP_NAME, process_id_ccc, MAIN_DRIVER_MMAPTB_NAME, process_id_ccc, MAIN_DRIVER_MMAPMDB_NAME, process_id_ccc);
   if (system(command))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Failed to install driver module, see the console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to install driver module, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1126,7 +1126,7 @@ void install_driver_ccc(void)
 
   if (map_driver_memory_ccc())
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Error connecting to driver memory\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error connecting to driver memory\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1135,7 +1135,7 @@ void install_driver_ccc(void)
     return;
   }
 
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Driver install success\n"));
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Driver install success\n"));
   message_now_ccc(tempmessage_ccc);
   message_error_ccc(tempmessage_ccc);
   print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1156,7 +1156,7 @@ void uninstall_driver_ccc(void)
   }
   if (check_driver_ccc())
   {
-    // snprintf (tempmessage_ccc, sizeof(tempmessage_ccc), "The driver is currently not installed\n");
+    // snprintf (tempmessage_ccc, TEMP_MESSAGE_SIZE, "The driver is currently not installed\n");
     // message_now_ccc(tempmessage_ccc);
     // message_error_ccc(tempmessage_ccc);
     // print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1168,14 +1168,14 @@ void uninstall_driver_ccc(void)
   snprintf(name, sizeof(name), "rmmod %s%d", DRIVER_FILE_NAME, process_id_ccc);
   if (system(name))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Failed to remove driver module, see the console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to remove driver module, see the console for more information"));
     message_now_ccc(tempmessage_ccc);
     // message_error_ccc(tempmessage_ccc);
     // print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     // clear_error_message_ccc();
     return;
   }
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", _("Driver removal success\n"));
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Driver removal success\n"));
   message_now_ccc(tempmessage_ccc);
   // message_error_ccc(tempmessage_ccc);
   // print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -1228,7 +1228,7 @@ int initialize_logfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1240,7 +1240,7 @@ int initialize_logfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1252,7 +1252,7 @@ int initialize_logfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1272,7 +1272,7 @@ int initialize_domainfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1284,7 +1284,7 @@ int initialize_domainfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1296,7 +1296,7 @@ int initialize_domainfile_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1321,7 +1321,7 @@ int initialize_memory_ccc(void)
     attempt++;
     if (!quiet_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Initializing memory\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Initializing memory\n");
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -1418,7 +1418,7 @@ int initialize_memory_ccc(void)
         {
           strcpy(tempmessage_ccc, _("posix_memalign failed"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -1433,7 +1433,7 @@ int initialize_memory_ccc(void)
     }
     if (!quiet_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Memory initialized\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Memory initialized\n");
       message_now_ccc(tempmessage_ccc);
     }
     attempt++;
@@ -1499,7 +1499,7 @@ int set_main_scratchpad_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1539,7 +1539,7 @@ int set_sense_buffer_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1579,7 +1579,7 @@ int set_main_usb_buffer_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1598,14 +1598,14 @@ int read_log_file_ccc(char *log_file)
 {
   if (log_file == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: No log file specified.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No log file specified.\n");
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
 
   if (verbose_ccc & DEBUG2)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Reading %s into memory...\n", log_file);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Reading %s into memory...\n", log_file);
     message_now_ccc(tempmessage_ccc);
   }
 
@@ -1613,7 +1613,7 @@ int read_log_file_ccc(char *log_file)
   readfile = fopen(log_file, "r");
   if (readfile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for reading (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for reading (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -1636,7 +1636,7 @@ int read_log_file_ccc(char *log_file)
     // process the line here
     if (verbose_ccc & DEBUG2)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -1665,18 +1665,18 @@ int read_log_file_ccc(char *log_file)
           current_position_ccc = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
           current_status_ccc = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
@@ -1732,22 +1732,22 @@ int read_log_file_ccc(char *log_file)
             }
           }
           found_current = 1;
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx\n", real_line_number, i, current_position_ccc, current_status_ccc); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx\n", real_line_number, i, current_position_ccc, current_status_ccc); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
         }
         else if (!found_current)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing progress log file line %d, expecting current status\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing progress log file line %d, expecting current status\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = 1;
         }
         else if (scanline != 5)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing progress log file line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing progress log file line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = 1;
         }
@@ -1757,49 +1757,49 @@ int read_log_file_ccc(char *log_file)
           lposition_ccc[i] = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
           lsize_ccc[i] = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
           lstatus_ccc[i] = strtoll(raw_status, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
           lstatus_ccc[i] += (strtoll(raw_info, &endptr, 0)) << 8;
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing info on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing info on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
           lstatus_ccc[i] += (strtoll(raw_errstat, &endptr, 0)) << 32;
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing err/stat on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing err/stat on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -2422,14 +2422,14 @@ int read_domain_file_ccc(char *domain_file)
 {
   if (domain_file == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: No domain file specified.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No domain file specified.\n");
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
 
   if (verbose_ccc & DEBUG2)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Reading %s into memory...\n", domain_file);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Reading %s into memory...\n", domain_file);
     message_now_ccc(tempmessage_ccc);
   }
 
@@ -2437,7 +2437,7 @@ int read_domain_file_ccc(char *domain_file)
   readfile = fopen(domain_file, "r");
   if (readfile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for reading (%s).\n", domain_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for reading (%s).\n", domain_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -2454,7 +2454,7 @@ int read_domain_file_ccc(char *domain_file)
     // process the line here
     if (verbose_ccc & DEBUG2)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -2495,9 +2495,9 @@ int read_domain_file_ccc(char *domain_file)
           domain_dd_ccc = false;
           if (found_ddrescue)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "domain format error on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "domain format error on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -2505,49 +2505,49 @@ int read_domain_file_ccc(char *domain_file)
           dposition_ccc[i] = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           dsize_ccc[i] = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           dstatus_ccc[i] = strtoll(raw_status, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           dstatus_ccc[i] += (strtoll(raw_info, &endptr, 0)) << 8;
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain info on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain info on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           dstatus_ccc[i] += (strtoll(raw_errstat, &endptr, 0)) << 32;
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain err/stat on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain err/stat on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -2559,9 +2559,9 @@ int read_domain_file_ccc(char *domain_file)
           domain_dd_ccc = true;
           if (found_hddsuperclone)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "domain format error on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "domain format error on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -2569,25 +2569,25 @@ int read_domain_file_ccc(char *domain_file)
           temp_position = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           temp_size = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           scanline = sscanf(raw_status, "%c %[^\n]", &temp_status, rest_of_line);
           if (scanline != 1)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -2597,7 +2597,7 @@ int read_domain_file_ccc(char *domain_file)
             dposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -2606,7 +2606,7 @@ int read_domain_file_ccc(char *domain_file)
             dsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -2634,9 +2634,9 @@ int read_domain_file_ccc(char *domain_file)
             }
             else
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing line %d, domain status not recognized\n", real_line_number);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing line %d, domain status not recognized\n", real_line_number);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_now_ccc(tempmessage_ccc);
               found_error = -1;
             }
@@ -2653,16 +2653,16 @@ int read_domain_file_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
 
         else
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain file line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain file line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
         }
@@ -2696,14 +2696,14 @@ int read_domain_add_file_ccc(char *add_file)
 {
   if (add_file == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: No file specified.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No file specified.\n");
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
 
   if (verbose_ccc & DEBUG2)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Reading %s into memory...\n", add_file);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Reading %s into memory...\n", add_file);
     message_now_ccc(tempmessage_ccc);
   }
 
@@ -2711,7 +2711,7 @@ int read_domain_add_file_ccc(char *add_file)
   readfile = fopen(add_file, "r");
   if (readfile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for reading (%s).\n", add_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for reading (%s).\n", add_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -2726,7 +2726,7 @@ int read_domain_add_file_ccc(char *add_file)
     // process the line here
     if (verbose_ccc & DEBUG2)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -2750,9 +2750,9 @@ int read_domain_add_file_ccc(char *add_file)
         temp_position = strtoull(raw_position, &endptr, 0);
         if (*endptr)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing position on line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing position on line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
           good = 0;
@@ -2760,9 +2760,9 @@ int read_domain_add_file_ccc(char *add_file)
         temp_size = strtoull(raw_size, &endptr, 0);
         if (*endptr)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing size on line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing size on line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
           good = 0;
@@ -2781,9 +2781,9 @@ int read_domain_add_file_ccc(char *add_file)
           }
           if (position + size > source_total_size_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "end position greater than source size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "end position greater than source size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -2792,9 +2792,9 @@ int read_domain_add_file_ccc(char *add_file)
             int ret = add_to_domain_ccc(position, size);
             if (ret)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error adding to domain from line %d\n", real_line_number);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error adding to domain from line %d\n", real_line_number);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_now_ccc(tempmessage_ccc);
               found_error = -1;
             }
@@ -2803,9 +2803,9 @@ int read_domain_add_file_ccc(char *add_file)
       }
       else
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "format error on line %d\n", real_line_number);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "format error on line %d\n", real_line_number);
         message_now_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
         message_now_ccc(tempmessage_ccc);
         found_error = -1;
       }
@@ -2821,14 +2821,14 @@ int read_ddrescue_log_ccc(char *log_file)
 {
   if (log_file == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: No log file specified.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No log file specified.\n");
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
 
   if (verbose_ccc & DEBUG2)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Reading %s into memory...\n", log_file);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Reading %s into memory...\n", log_file);
     message_now_ccc(tempmessage_ccc);
   }
 
@@ -2836,7 +2836,7 @@ int read_ddrescue_log_ccc(char *log_file)
   readfile = fopen(log_file, "r");
   if (readfile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for reading (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for reading (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -2853,7 +2853,7 @@ int read_ddrescue_log_ccc(char *log_file)
     // process the line here
     if (verbose_ccc & DEBUG2)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -2883,32 +2883,32 @@ int read_ddrescue_log_ccc(char *log_file)
           temp_position = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           scanline = sscanf(raw_size, "%c %[^\n]", &temp_status, rest_of_line);
           if (scanline != 1)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           found_current = 1;
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llX  %c\n", real_line_number, i, temp_position, temp_status); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llX  %c\n", real_line_number, i, temp_position, temp_status); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           if (!found_error)
           {
             current_position_ccc = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_debug_ccc(tempmessage_ccc, DEBUG14);
               found_error = 1;
             }
@@ -2934,9 +2934,9 @@ int read_ddrescue_log_ccc(char *log_file)
             }
             else
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing line %d, status not recognized\n", real_line_number);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing line %d, status not recognized\n", real_line_number);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_now_ccc(tempmessage_ccc);
               found_error = -1;
             }
@@ -2944,17 +2944,17 @@ int read_ddrescue_log_ccc(char *log_file)
         }
         else if (!found_current)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing progress log file line %d, expecting current status\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing progress log file line %d, expecting current status\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
         }
         else if (scanline != 3)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing progress log file line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing progress log file line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
         }
@@ -2964,25 +2964,25 @@ int read_ddrescue_log_ccc(char *log_file)
           temp_position = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           temp_size = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           scanline = sscanf(raw_status, "%c %[^\n]", &temp_status, rest_of_line);
           if (scanline != 1)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -2992,7 +2992,7 @@ int read_ddrescue_log_ccc(char *log_file)
             lposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -3001,7 +3001,7 @@ int read_ddrescue_log_ccc(char *log_file)
             lsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -3029,9 +3029,9 @@ int read_ddrescue_log_ccc(char *log_file)
             }
             else
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing line %d, status not recognized\n", real_line_number);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing line %d, status not recognized\n", real_line_number);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_now_ccc(tempmessage_ccc);
               found_error = -1;
             }
@@ -3048,7 +3048,7 @@ int read_ddrescue_log_ccc(char *log_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3086,14 +3086,14 @@ int read_ddrescue_domain_ccc(char *domain_file)
 {
   if (domain_file == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error: No domain file specified.\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No domain file specified.\n");
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
 
   if (verbose_ccc & DEBUG2)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Reading %s into memory...\n", domain_file);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Reading %s into memory...\n", domain_file);
     message_now_ccc(tempmessage_ccc);
   }
 
@@ -3101,7 +3101,7 @@ int read_ddrescue_domain_ccc(char *domain_file)
   readfile = fopen(domain_file, "r");
   if (readfile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for reading (%s).\n", domain_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for reading (%s).\n", domain_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -3118,7 +3118,7 @@ int read_ddrescue_domain_ccc(char *domain_file)
     // process the line here
     if (verbose_ccc & DEBUG2)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
       message_now_ccc(tempmessage_ccc);
     }
 
@@ -3148,9 +3148,9 @@ int read_ddrescue_domain_ccc(char *domain_file)
         }
         else if (scanline != 3)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain file line %d\n", real_line_number);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain file line %d\n", real_line_number);
           message_now_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
           message_now_ccc(tempmessage_ccc);
           found_error = -1;
         }
@@ -3160,25 +3160,25 @@ int read_ddrescue_domain_ccc(char *domain_file)
           temp_position = strtoull(raw_position, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain position on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain position on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           temp_size = strtoull(raw_size, &endptr, 0);
           if (*endptr)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain size on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain size on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
           scanline = sscanf(raw_status, "%c %[^\n]", &temp_status, rest_of_line);
           if (scanline != 1)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing domain status on line %d\n", real_line_number);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing domain status on line %d\n", real_line_number);
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
@@ -3188,7 +3188,7 @@ int read_ddrescue_domain_ccc(char *domain_file)
             dposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -3197,7 +3197,7 @@ int read_ddrescue_domain_ccc(char *domain_file)
             dsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -3225,9 +3225,9 @@ int read_ddrescue_domain_ccc(char *domain_file)
             }
             else
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error processing line %d, domain status not recognized\n", real_line_number);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error processing line %d, domain status not recognized\n", real_line_number);
               message_now_ccc(tempmessage_ccc);
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "line%d= %s", real_line_number, line);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_now_ccc(tempmessage_ccc);
               found_error = -1;
             }
@@ -3244,7 +3244,7 @@ int read_ddrescue_domain_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3287,7 +3287,7 @@ int increase_log_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3300,7 +3300,7 @@ int increase_log_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3313,7 +3313,7 @@ int increase_log_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3332,7 +3332,7 @@ int increase_domain_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3345,7 +3345,7 @@ int increase_domain_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3358,7 +3358,7 @@ int increase_domain_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3389,7 +3389,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
   if (new_time > last_log_write_ccc + time_sec || time_sec == 0)
   {
     last_log_write_ccc = new_time;
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Overwriting %s with updated...\n", log_file); // debug
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Overwriting %s with updated...\n", log_file); // debug
     message_debug_ccc(tempmessage_ccc, DEBUG2);
 
     // write a temp logfile so the original still exists if system crashes during log write
@@ -3400,7 +3400,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
     writefile = fopen(tmp_logfile, "w");
     if (writefile == NULL)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for writing (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for writing (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return (1);
     }
@@ -3591,20 +3591,20 @@ int write_logfile_ccc(char *log_file, int time_sec)
     int error_ret = 0;
     if (fflush(writefile))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Flushing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Flushing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
     int fp = fileno(writefile);
     if (fsync(fp))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Syncing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Syncing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
     if (fclose(writefile))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Closing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Closing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
@@ -3622,7 +3622,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
       strcat(backup_logfile, ".bak");
       if (rename(log_file, backup_logfile) != 0)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         return (1);
       }
@@ -3631,7 +3631,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
     // now rename the new logfile
     if (rename(tmp_logfile, log_file) != 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Renaming %s to %s failed (%s).\n", tmp_logfile, log_file, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", tmp_logfile, log_file, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return (1);
     }
@@ -3642,7 +3642,7 @@ int write_logfile_ccc(char *log_file, int time_sec)
       return_value_ccc = write_ddrescue_logfile_ccc(ddelog_file_ccc);
       if (return_value_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Error writing ddrescue mapfile\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error writing ddrescue mapfile\n");
         message_error_ccc(tempmessage_ccc);
         return (1);
       }
@@ -3681,7 +3681,7 @@ int write_domainfile_ccc(char *log_file, int time_sec)
   if (new_time > last_domain_write_ccc + time_sec || time_sec == 0)
   {
     last_domain_write_ccc = new_time;
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Overwriting %s with updated...\n", log_file); // debug
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Overwriting %s with updated...\n", log_file); // debug
     message_debug_ccc(tempmessage_ccc, DEBUG2);
 
     // write a temp logfile so the original still exists if system crashes during log write
@@ -3692,7 +3692,7 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     writefile = fopen(tmp_logfile, "w");
     if (writefile == NULL)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for writing (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for writing (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return (1);
     }
@@ -3711,20 +3711,20 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     int error_ret = 0;
     if (fflush(writefile))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Flushing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Flushing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
     int fp = fileno(writefile);
     if (fsync(fp))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Syncing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Syncing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
     if (fclose(writefile))
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Closing %s failed (%s).\n", tmp_logfile, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Closing %s failed (%s).\n", tmp_logfile, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       error_ret = 1;
     }
@@ -3742,7 +3742,7 @@ int write_domainfile_ccc(char *log_file, int time_sec)
       strcat(backup_logfile, ".bak");
       if (rename(log_file, backup_logfile) != 0)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         return (1);
       }
@@ -3751,7 +3751,7 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     // now rename the new logfile
     if (rename(tmp_logfile, log_file) != 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Renaming %s to %s failed (%s).\n", tmp_logfile, log_file, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", tmp_logfile, log_file, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return (1);
     }
@@ -3764,14 +3764,14 @@ int write_domainfile_ccc(char *log_file, int time_sec)
 // function to export to a ddrescue style log
 int write_ddrescue_logfile_ccc(char *log_file)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Exporting to ddresce style log %s...\n", log_file); // debug
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Exporting to ddresce style log %s...\n", log_file); // debug
   message_debug_ccc(tempmessage_ccc, DEBUG2);
 
   FILE *writefile;
   writefile = fopen(log_file, "w");
   if (writefile == NULL)
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Cannot open %s for writing (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open %s for writing (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     return (1);
   }
@@ -3845,20 +3845,20 @@ int write_ddrescue_logfile_ccc(char *log_file)
   int error_ret = 0;
   if (fflush(writefile))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Flushing %s failed (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Flushing %s failed (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     error_ret = 1;
   }
   int fp = fileno(writefile);
   if (fsync(fp))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Syncing %s failed (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Syncing %s failed (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     error_ret = 1;
   }
   if (fclose(writefile))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Closing %s failed (%s).\n", log_file, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Closing %s failed (%s).\n", log_file, strerror(errno));
     message_error_ccc(tempmessage_ccc);
     error_ret = 1;
   }
@@ -3905,7 +3905,7 @@ void initialize_domain_log_ccc(void)
 
 int check_log_ccc(void)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Checking progress log file...\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Checking progress log file...\n");
   message_now_ccc(tempmessage_ccc);
   int i;
   int fail = 0;
@@ -3914,7 +3914,7 @@ int check_log_ccc(void)
     // check that first position is 0
     if (lposition_ccc[0] != 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "The first position is not 0\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "The first position is not 0\n");
       message_now_ccc(tempmessage_ccc);
       fail = fail | 1;
     }
@@ -3924,28 +3924,28 @@ int check_log_ccc(void)
     // check if there is an overlap
     if ((lposition_ccc[i] + lsize_ccc[i]) > lposition_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Overlap found on line %d\n", i + 1);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Overlap found on line %d\n", i + 1);
       message_now_ccc(tempmessage_ccc);
       fail = fail | 2;
     }
     // check if size is 0
     if (lsize_ccc[i] == 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Size of 0 found on line %d\n", i + 1);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Size of 0 found on line %d\n", i + 1);
       message_now_ccc(tempmessage_ccc);
       fail = fail | 4;
     }
     // check if there is a gap
     if ((lposition_ccc[i] + lsize_ccc[i]) < lposition_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Gap found on line %d\n", i + 1);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Gap found on line %d\n", i + 1);
       message_now_ccc(tempmessage_ccc);
       fail = fail | 8;
     }
     // check if the next status is the same
     if (lstatus_ccc[i] == lstatus_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Same status found on line %d\n", i + 1);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Same status found on line %d\n", i + 1);
       message_now_ccc(tempmessage_ccc);
       fail = fail | 0x10;
     }
@@ -3957,11 +3957,11 @@ int check_log_ccc(void)
     {
       strcpy(tempmessage_ccc, _("The end does not equal the drive size!\nLogfile reports size of "));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld", lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1]);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1]);
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, _(",\nbut source has a size of "));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld", source_total_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, _(".\nAre you sure this is the correct progress log file for this drive?\n"));
       message_error_ccc(tempmessage_ccc);
@@ -3973,7 +3973,7 @@ int check_log_ccc(void)
 
 int check_domain_ccc(void)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Checking domain file...\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Checking domain file...\n");
   message_now_ccc(tempmessage_ccc);
   int i;
   int fail = 0;
@@ -3982,7 +3982,7 @@ int check_domain_ccc(void)
     // check if there is an overlap
     if ((dposition_ccc[i] + dsize_ccc[i]) > dposition_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Overlap found on domain line %d\n", i + 1);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Overlap found on domain line %d\n", i + 1);
       message_now_ccc(tempmessage_ccc);
       fail = 2;
     }
@@ -4011,7 +4011,7 @@ int write_logfile_phase_ccc(char *phase)
 
 int check_and_repair_log_ccc(void)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Checking and repairing progress log file...\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Checking and repairing progress log file...\n");
   message_now_ccc(tempmessage_ccc);
 
   if (repair_log_ccc && !no_log_backup_ccc)
@@ -4039,7 +4039,7 @@ int check_and_repair_log_ccc(void)
     // check that first position is 0, if not insert line
     if (lposition_ccc[0] != 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "The first position is not 0\n"); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "The first position is not 0\n"); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       insert_line_ccc(0, 0, lposition_ccc[1], NONTRIED);
     }
@@ -4047,7 +4047,7 @@ int check_and_repair_log_ccc(void)
     // check that last position ends with total size, if less then add line, if more then chop
     if (lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1] != source_total_size_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "The end does not equal the drive size\n"); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "The end does not equal the drive size\n"); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       long long block_end = lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1];
       if (block_end < source_total_size_ccc)
@@ -4071,7 +4071,7 @@ int check_and_repair_log_ccc(void)
     long long block_end = lposition_ccc[i] + lsize_ccc[i];
     if (block_end > lposition_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Overlap found on line %d\n", i + 1); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Overlap found on line %d\n", i + 1); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       long long difference = block_end - lposition_ccc[i + 1];
       if (lsize_ccc[i] >= difference)
@@ -4094,7 +4094,7 @@ int check_and_repair_log_ccc(void)
     // check if size is 0 and if so delete the line
     if (lsize_ccc[i] == 0)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Size of 0 found on line %d\n", i + 1); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Size of 0 found on line %d\n", i + 1); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       // delete line
       delete_line_ccc(i);
@@ -4113,17 +4113,17 @@ int check_and_repair_log_ccc(void)
     {
       for (n = 0; n < total_lines_ccc; n++)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d %d  0x%08llx  0x%08llx  0x%08llx\n", i, n, lposition_ccc[n], lsize_ccc[n], lstatus_ccc[n]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d %d  0x%08llx  0x%08llx  0x%08llx\n", i, n, lposition_ccc[n], lsize_ccc[n], lstatus_ccc[n]);
         message_debug_ccc(tempmessage_ccc, DEBUG15);
       }
     }
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "linec= %d\n", i);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "linec= %d\n", i);
     message_debug_ccc(tempmessage_ccc, DEBUG15);
     // check if there is a gap and if so fill with untried
     long long block_end = lposition_ccc[i] + lsize_ccc[i];
     if (block_end < lposition_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Gap found on line %d\n", i + 1); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Gap found on line %d\n", i + 1); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       long long difference = lposition_ccc[i + 1] - block_end;
       insert_line_ccc(i + 1, block_end, difference, NONTRIED);
@@ -4132,11 +4132,11 @@ int check_and_repair_log_ccc(void)
     {
       for (n = 0; n < total_lines_ccc; n++)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d %d  0x%08llx  0x%08llx  0x%08llx\n", i, n, lposition_ccc[n], lsize_ccc[n], lstatus_ccc[n]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d %d  0x%08llx  0x%08llx  0x%08llx\n", i, n, lposition_ccc[n], lsize_ccc[n], lstatus_ccc[n]);
         message_debug_ccc(tempmessage_ccc, DEBUG15);
       }
     }
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d  0x%08llx  0x%08llx  0x%08llx\n", i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d  0x%08llx  0x%08llx  0x%08llx\n", i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]);
     message_debug_ccc(tempmessage_ccc, DEBUG15);
   }
 
@@ -4145,7 +4145,7 @@ int check_and_repair_log_ccc(void)
     // check if the next status is the same and if so merge
     if (lstatus_ccc[i] == lstatus_ccc[i + 1])
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Same status found on line %d\n", i + 1); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Same status found on line %d\n", i + 1); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG15);
       lsize_ccc[i] = lsize_ccc[i] + lsize_ccc[i + 1];
       // delete the next line since we just merged it into the current line
@@ -4163,7 +4163,7 @@ int check_and_repair_log_ccc(void)
 
 int reset_log_status_ccc(void)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Resetting the log\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Resetting the log\n");
   message_now_ccc(tempmessage_ccc);
 
   if (!no_log_backup_ccc)
@@ -4610,7 +4610,7 @@ int do_fill_ccc(int status, long long mask)
       {
         strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -5131,7 +5131,7 @@ int update_display_ccc(int time_ms)
 
     if (verbose_ccc & DEBUG4)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "longest read time: %lld ms\n", longest_read_time_ccc / 1000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "longest read time: %lld ms\n", longest_read_time_ccc / 1000);
       message_display_ccc(tempmessage_ccc);
     }
     if (longest_read_time_ccc > max_longest_read_time_ccc)
@@ -5149,21 +5149,21 @@ int update_display_ccc(int time_ms)
         recent_longest_read_time_ccc = read_time_history_ccc[i];
       }
     }
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
     strncpy(display_output_ccc.longestreadtime, tempmessage_ccc, sizeof(display_output_ccc.longestreadtime) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Current/Recent/Longest %lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Current/Recent/Longest %lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
     message_display_ccc(tempmessage_ccc);
     longest_read_time_ccc = 0;
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
     message_display_ccc(tempmessage_ccc);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Logfile: %s\n", log_file_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Logfile: %s\n", log_file_ccc);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s ", log_file_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s ", log_file_ccc);
     strncpy(display_output_ccc.logfile, tempmessage_ccc, sizeof(display_output_ccc.logfile) - 1);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s ", domain_file_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s ", domain_file_ccc);
     strncpy(display_output_ccc.domainfile, tempmessage_ccc, sizeof(display_output_ccc.domainfile) - 1);
 
     char data_preview[DISPLAY_BUFFER_SIZE * 8] = "";
@@ -5171,82 +5171,82 @@ int update_display_ccc(int time_ms)
     int size = BUFFER_DISPLAY_COUNT * 16;
     for (i = 0; i < size; i += 16)
     {
-      // snprintf (tempmessage_ccc, sizeof(tempmessage_ccc), "#");
+      // snprintf (tempmessage_ccc, TEMP_MESSAGE_SIZE, "#");
       // message_display_ccc(tempmessage_ccc);
       unsigned char *c;
       int n;
       for (n = 0; n < 16 && i + n < size; n++)
       {
         c = (unsigned char *)display_buffer_ccc + i + n + offset;
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%02x ", *c);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%02x ", *c);
         message_display_ccc(tempmessage_ccc);
         strcat(data_preview, tempmessage_ccc);
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "   ");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   ");
       message_display_ccc(tempmessage_ccc);
       for (n = 0; n < 16 && i + n < size; n++)
       {
         c = (unsigned char *)display_buffer_ccc + i + n + offset;
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%c", isprint(*c) ? *c : '.');
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%c", isprint(*c) ? *c : '.');
         message_display_ccc(tempmessage_ccc);
         strcat(data_preview, tempmessage_ccc);
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
       message_display_ccc(tempmessage_ccc);
       strcat(data_preview, tempmessage_ccc);
     }
     memset(display_buffer_ccc, 0, DISPLAY_BUFFER_SIZE);
     strncpy(display_output_ccc.datapreview, data_preview, sizeof(display_output_ccc.datapreview) - 1);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "     Source: %10s (%s, %s)\n", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Source: %10s (%s, %s)\n", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s (%s, %s)", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
     strncpy(display_output_ccc.source, tempmessage_ccc, sizeof(display_output_ccc.source) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "#Destination: %10s (%s, %s)\n", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#Destination: %10s (%s, %s)\n", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s (%s, %s)", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
     strncpy(display_output_ccc.destination, tempmessage_ccc, sizeof(display_output_ccc.destination) - 1);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", source_total_size_ccc, (double)(source_total_size_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", source_total_size_ccc, (double)(source_total_size_ccc * sector_size_ccc) / 1000000000);
     strncpy(display_output_ccc.totallba, tempmessage_ccc, sizeof(display_output_ccc.totallba) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
     strncpy(display_output_ccc.lbatoread, tempmessage_ccc, sizeof(display_output_ccc.lbatoread) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
     strncpy(display_output_ccc.domainsize, tempmessage_ccc, sizeof(display_output_ccc.domainsize) - 1);
     if (do_domain_ccc || driver_mode_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "  Total LBA: %10lld        LBA to read: %10lld (%lld)\n", source_total_size_ccc, read_size_ccc, total_domain_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to read: %10lld (%lld)\n", source_total_size_ccc, read_size_ccc, total_domain_size_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", total_domain_size_ccc, (double)(total_domain_size_ccc * sector_size_ccc) / 1000000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", total_domain_size_ccc, (double)(total_domain_size_ccc * sector_size_ccc) / 1000000000);
       strncpy(display_output_ccc.domainsize, tempmessage_ccc, sizeof(display_output_ccc.domainsize) - 1);
     }
     else if (fill_mode_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "  Total LBA: %10lld        LBA to fill: %10lld\n", source_total_size_ccc, fill_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to fill: %10lld\n", source_total_size_ccc, fill_size_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", fill_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", fill_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
       strncpy(display_output_ccc.lbatoread, tempmessage_ccc, sizeof(display_output_ccc.lbatoread) - 1);
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "  Total LBA: %10lld        LBA to read: %10lld\n", source_total_size_ccc, read_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to read: %10lld\n", source_total_size_ccc, read_size_ccc);
       message_display_ccc(tempmessage_ccc);
     }
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "   Run time: %1d:%02d:%02d:%02d        Remaining:%4d:%02d:%02d:%02d\n", days, hours, minutes, seconds, remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Run time: %1d:%02d:%02d:%02d        Remaining:%4d:%02d:%02d:%02d\n", days, hours, minutes, seconds, remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%1d:%02d:%02d:%02d", days, hours, minutes, seconds);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", days, hours, minutes, seconds);
     strncpy(display_output_ccc.runtime, tempmessage_ccc, sizeof(display_output_ccc.runtime) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%1d:%02d:%02d:%02d", remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
     strncpy(display_output_ccc.remainingtime, tempmessage_ccc, sizeof(display_output_ccc.remainingtime) - 1);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "       Rate: %10lld %s   Recent: %lld %s  Total: %lld %s\n", rate, modifier, avergage_rate, avg_modifier, total_rate, total_modifier);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "       Rate: %10lld %s   Recent: %lld %s  Total: %lld %s\n", rate, modifier, avergage_rate, avg_modifier, total_rate, total_modifier);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld %s", rate, modifier);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", rate, modifier);
     strncpy(display_output_ccc.currentrate, tempmessage_ccc, sizeof(display_output_ccc.currentrate) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld %s", avergage_rate, avg_modifier);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", avergage_rate, avg_modifier);
     strncpy(display_output_ccc.recentrate, tempmessage_ccc, sizeof(display_output_ccc.recentrate) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld %s", total_rate, total_modifier);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", total_rate, total_modifier);
     strncpy(display_output_ccc.totalrate, tempmessage_ccc, sizeof(display_output_ccc.totalrate) - 1);
 
     strcpy(display_output_ccc.totalfilled, "");
@@ -5254,9 +5254,9 @@ int update_display_ccc(int time_ms)
     strcpy(display_output_ccc.retrypasses, "");
     if (driver_mode_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld, %lld, %lld", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld, %lld, %lld", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
       strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
     }
     if (running_analyze_ccc)
@@ -5286,75 +5286,75 @@ int update_display_ccc(int time_ms)
       {
         total_slow_reads = total_slow_reads + analyze_slow_reads_ccc[i];
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d, %d, %d (%d), %d", total_read_attempts, total_good_reads, total_bad_reads, total_timeouts, total_slow_reads);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d, %d, %d (%d), %d", total_read_attempts, total_good_reads, total_bad_reads, total_timeouts, total_slow_reads);
       strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", analyze_slow_total_reads_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", analyze_slow_total_reads_ccc);
       strncpy(display_output_ccc.retried, tempmessage_ccc, sizeof(display_output_ccc.retried) - 1);
     }
     if (fill_mode_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "     Filled: %10lld (%f%%)\n", total_filled_ccc, filled_percent);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Filled: %10lld (%f%%)\n", total_filled_ccc, filled_percent);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%f%%)", total_filled_ccc, filled_percent);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%f%%)", total_filled_ccc, filled_percent);
       strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
     }
     else if (current_status_ccc == RETRYING)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "    Retried: %10lld        Remaining retry passes: %d\n", retried_lba_count_ccc, retries_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "    Retried: %10lld        Remaining retry passes: %d\n", retried_lba_count_ccc, retries_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld", retried_lba_count_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", retried_lba_count_ccc);
       strncpy(display_output_ccc.retried, tempmessage_ccc, sizeof(display_output_ccc.retried) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", retries_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", retries_ccc);
       strncpy(display_output_ccc.retrypasses, tempmessage_ccc, sizeof(display_output_ccc.retrypasses) - 1);
     }
     else
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "  Skip size: %10lld  Skips: %d  Slow: %d  Runs: %d  Resets: %d  Run size: %lld\n", min_skip_size_ccc, total_skip_count_ccc, total_slow_skips_ccc, total_skip_runs_ccc, total_skip_resets_ccc, last_total_skip_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Skip size: %10lld  Skips: %d  Slow: %d  Runs: %d  Resets: %d  Run size: %lld\n", min_skip_size_ccc, total_skip_count_ccc, total_slow_skips_ccc, total_skip_runs_ccc, total_skip_resets_ccc, last_total_skip_size_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fMB)", min_skip_size_ccc, (double)(min_skip_size_ccc * sector_size_ccc) / 1000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", min_skip_size_ccc, (double)(min_skip_size_ccc * sector_size_ccc) / 1000000);
       strncpy(display_output_ccc.skipsize, tempmessage_ccc, sizeof(display_output_ccc.skipsize) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", total_skip_count_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_count_ccc);
       strncpy(display_output_ccc.skips, tempmessage_ccc, sizeof(display_output_ccc.skips) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", total_slow_skips_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_slow_skips_ccc);
       strncpy(display_output_ccc.slowskips, tempmessage_ccc, sizeof(display_output_ccc.skips) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", total_skip_runs_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_runs_ccc);
       strncpy(display_output_ccc.skipruns, tempmessage_ccc, sizeof(display_output_ccc.skipruns) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", total_skip_resets_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_resets_ccc);
       strncpy(display_output_ccc.skipresets, tempmessage_ccc, sizeof(display_output_ccc.skipresets) - 1);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fMB)", last_total_skip_size_ccc, (double)(last_total_skip_size_ccc * sector_size_ccc) / 1000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", last_total_skip_size_ccc, (double)(last_total_skip_size_ccc * sector_size_ccc) / 1000000);
       strncpy(display_output_ccc.runsize, tempmessage_ccc, sizeof(display_output_ccc.runsize) - 1);
     }
     // fprintf (stdout, "  Skip hist: %10lld   %lld   %lld   %lld   %lld    \n", skip_history_ccc[0], skip_history_ccc[1], skip_history_ccc[2], skip_history_ccc[3], skip_history_ccc[4]);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "   Position: %10lld        Status: %10s\n", current_position_ccc, current_status_string_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Position: %10lld        Status: %10s\n", current_position_ccc, current_status_string_ccc);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB)", current_position_ccc, (double)(current_position_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", current_position_ccc, (double)(current_position_ccc * sector_size_ccc) / 1000000000);
     strncpy(display_output_ccc.currentposition, tempmessage_ccc, sizeof(display_output_ccc.currentposition) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s", current_status_string_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", current_status_string_ccc);
     strncpy(display_output_ccc.currentstatus, tempmessage_ccc, sizeof(display_output_ccc.currentstatus) - 1);
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "   Finished: %10lld (%d areas %f%%)\n", finished_size_ccc, finished_count_ccc, finished_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Finished: %10lld (%d areas %f%%)\n", finished_size_ccc, finished_count_ccc, finished_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", finished_size_ccc, (double)(finished_size_ccc * sector_size_ccc) / 1000000000, finished_count_ccc, finished_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", finished_size_ccc, (double)(finished_size_ccc * sector_size_ccc) / 1000000000, finished_count_ccc, finished_percent);
     strncpy(display_output_ccc.finished, tempmessage_ccc, sizeof(display_output_ccc.finished) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "  Non-tried: %10lld (%d areas %f%%)\n", nontried_size_ccc, nontried_count_ccc, nontried_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Non-tried: %10lld (%d areas %f%%)\n", nontried_size_ccc, nontried_count_ccc, nontried_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", nontried_size_ccc, (double)(nontried_size_ccc * sector_size_ccc) / 1000000000, nontried_count_ccc, nontried_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontried_size_ccc, (double)(nontried_size_ccc * sector_size_ccc) / 1000000000, nontried_count_ccc, nontried_percent);
     strncpy(display_output_ccc.nontried, tempmessage_ccc, sizeof(display_output_ccc.nontried) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Non-trimmed: %10lld (%d areas %f%%)\n", nontrimmed_size_ccc, nontrimmed_count_ccc, nontrimmed_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-trimmed: %10lld (%d areas %f%%)\n", nontrimmed_size_ccc, nontrimmed_count_ccc, nontrimmed_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", nontrimmed_size_ccc, (double)(nontrimmed_size_ccc * sector_size_ccc) / 1000000000, nontrimmed_count_ccc, nontrimmed_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontrimmed_size_ccc, (double)(nontrimmed_size_ccc * sector_size_ccc) / 1000000000, nontrimmed_count_ccc, nontrimmed_percent);
     strncpy(display_output_ccc.nontrimmed, tempmessage_ccc, sizeof(display_output_ccc.nontrimmed) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Non-divided: %10lld (%d areas %f%%)\n", nondivided_size_ccc, nondivided_count_ccc, nondivided_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-divided: %10lld (%d areas %f%%)\n", nondivided_size_ccc, nondivided_count_ccc, nondivided_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", nondivided_size_ccc, (double)(nondivided_size_ccc * sector_size_ccc) / 1000000000, nondivided_count_ccc, nondivided_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nondivided_size_ccc, (double)(nondivided_size_ccc * sector_size_ccc) / 1000000000, nondivided_count_ccc, nondivided_percent);
     strncpy(display_output_ccc.nondivided, tempmessage_ccc, sizeof(display_output_ccc.nondivided) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Non-scraped: %10lld (%d areas %f%%)\n", nonscraped_size_ccc, nonscraped_count_ccc, nonscraped_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-scraped: %10lld (%d areas %f%%)\n", nonscraped_size_ccc, nonscraped_count_ccc, nonscraped_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", nonscraped_size_ccc, (double)(nonscraped_size_ccc * sector_size_ccc) / 1000000000, nonscraped_count_ccc, nonscraped_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nonscraped_size_ccc, (double)(nonscraped_size_ccc * sector_size_ccc) / 1000000000, nonscraped_count_ccc, nonscraped_percent);
     strncpy(display_output_ccc.nonscraped, tempmessage_ccc, sizeof(display_output_ccc.nonscraped) - 1);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "        Bad: %10lld (%d areas %f%%)\n", error_size_ccc, error_count_ccc, bad_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "        Bad: %10lld (%d areas %f%%)\n", error_size_ccc, error_count_ccc, bad_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%lld (%.2fGB) (%d / %f%%)", error_size_ccc, (double)(error_size_ccc * sector_size_ccc) / 1000000000, error_count_ccc, bad_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", error_size_ccc, (double)(error_size_ccc * sector_size_ccc) / 1000000000, error_count_ccc, bad_percent);
     strncpy(display_output_ccc.bad, tempmessage_ccc, sizeof(display_output_ccc.bad) - 1);
 
     rate_modifier_ccc = 0;
@@ -5557,7 +5557,7 @@ int change_chunk_status_ccc(long long position, long long size, long long status
   {
     strcpy(tempmessage_ccc, _("Error changing chunk status, block not found"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -5568,7 +5568,7 @@ int change_chunk_status_ccc(long long position, long long size, long long status
   {
     strcpy(tempmessage_ccc, _("Error changing chunk status, is not within the block"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -5694,7 +5694,7 @@ int add_to_domain_ccc(long long position, long long size)
     {
       strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\nposition=%06llx  size=0x%06llx", position, size);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx", position, size);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -5799,7 +5799,7 @@ int add_to_domain_ccc(long long position, long long size)
         critical_process_ccc = false;
         strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\nposition=%06llx  size=0x%06llx", position, size);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx", position, size);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -6057,12 +6057,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Phase 3"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 3"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Phase 3"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 3"), _("(Bad Head)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6089,12 +6088,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Phase 4"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 4"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Phase 4"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 4"), _("(Bad Head)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6118,12 +6116,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Trimming"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Trimming"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Trimming"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Trimming"), _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6147,12 +6144,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Dividing 1"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Dividing 1"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Dividing 1"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Dividing 1"), _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -6180,12 +6176,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Dividing 2"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Dividing 2"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Dividing 2"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Dividing 2"), _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -6213,12 +6208,11 @@ int clone_forward_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Scraping"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Scraping"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Scraping"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Scraping"), _("(Bad Head)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6291,7 +6285,7 @@ int clone_forward_ccc(void)
     update_display_ccc(0);
     strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", ret);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", ret);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6366,8 +6360,7 @@ int clone_reverse_ccc(void)
       {
         current_position_ccc = end_position_ccc;
       }
-      strcpy(current_status_string_ccc, _("Phase 1"));
-      strcat(current_status_string_ccc, _("(Reverse)"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 1"), _("(Reverse)"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6389,8 +6382,7 @@ int clone_reverse_ccc(void)
       {
         current_position_ccc = start_position_ccc;
       }
-      strcpy(current_status_string_ccc, _("Phase 2"));
-      strcat(current_status_string_ccc, _("(Reverse)"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 2"), _("(Reverse)"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6443,14 +6435,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Phase 3"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 3"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Phase 3"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Phase 3"), _("(Bad Head)"), _("(Reverse)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6477,14 +6466,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Phase 4"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Phase 4"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Phase 4"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Phase 4"), _("(Bad Head)"), _("(Reverse)"));
         }
         cluster_size_ccc = original_cluster_size_ccc;
         skip_ccc = false;
@@ -6508,14 +6494,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Trimming"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Trimming"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Trimming"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Trimming"), _("(Bad Head)"), _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6539,14 +6522,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Dividing 1"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Dividing 1"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Dividing 1"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Dividing 1"), _("(Bad Head)"), _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -6574,14 +6554,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Dividing 2"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Dividing 2"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Dividing 2"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Dividing 2"), _("(Bad Head)"), _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -6609,14 +6586,11 @@ int clone_reverse_ccc(void)
         }
         if (head_pass == 0)
         {
-          strcpy(current_status_string_ccc, _("Scraping"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Scraping"), _("(Reverse)"));
         }
         else
         {
-          strcpy(current_status_string_ccc, _("Scraping"));
-          strcat(current_status_string_ccc, _("(Bad Head)"));
-          strcat(current_status_string_ccc, _("(Reverse)"));
+          snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s %s", _("Scraping"), _("(Bad Head)"), _("(Reverse)"));
         }
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -6655,8 +6629,7 @@ int clone_reverse_ccc(void)
         current_position_ccc = end_position_ccc;
         retried_lba_count_ccc = 0;
       }
-      strcpy(current_status_string_ccc, _("Retrying"));
-      strcat(current_status_string_ccc, _("(Reverse)"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s %s", _("Retrying"), _("(Reverse)"));
       skip_ccc = false;
       cluster_size_ccc = block_size_ccc;
       set_soft_timer_ccc(RETRYING);
@@ -6689,7 +6662,7 @@ int clone_reverse_ccc(void)
     update_display_ccc(0);
     strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%d", ret);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", ret);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6828,7 +6801,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -6885,7 +6858,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       {
         strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -6896,7 +6869,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       {
         strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -6906,7 +6879,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       {
         strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s", disk_2_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -6969,8 +6942,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     current_position_ccc = start_position_ccc;
     if (ret == 0 && !complete && keep_going)
     {
-      strcpy(current_status_string_ccc, _("Reading: "));
-      strcat(current_status_string_ccc, _("Phase 4"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Phase 4"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = false;
       set_soft_timer_ccc(PHASE4);
@@ -6986,8 +6958,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_trim_ccc)
       {
-        strcpy(current_status_string_ccc, _("Reading: "));
-        strcat(current_status_string_ccc, _("Trimming"));
+        snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Trimming"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -7000,8 +6971,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_divide1_ccc)
       {
-        strcpy(current_status_string_ccc, _("Reading: "));
-        strcat(current_status_string_ccc, _("Dividing 1"));
+        snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Dividing 1"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / (do_divide2_ccc ? DIVIDE1_VALUE : DIVIDE_VALUE);
@@ -7018,8 +6988,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_divide1_ccc && do_divide2_ccc)
       {
-        strcpy(current_status_string_ccc, _("Reading: "));
-        strcat(current_status_string_ccc, _("Dividing 2"));
+        snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Dividing 2"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = original_cluster_size_ccc / DIVIDE2_VALUE;
@@ -7036,8 +7005,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       if (!no_scrape_ccc)
       {
-        strcpy(current_status_string_ccc, _("Reading: "));
-        strcat(current_status_string_ccc, _("Scraping"));
+        snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Scraping"));
         current_position_ccc = start_position_ccc;
         skip_ccc = false;
         cluster_size_ccc = block_size_ccc;
@@ -7050,8 +7018,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     {
       while (retries_ccc > 0)
       {
-        strcpy(current_status_string_ccc, _("Reading: "));
-        strcat(current_status_string_ccc, _("Retrying"));
+        snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "%s%s", _("Reading: "), _("Retrying"));
         retry_error_size_ccc = 0;
         current_position_ccc = start_position_ccc;
         retried_lba_count_ccc = 0;
@@ -7163,7 +7130,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
       {
         strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -7221,7 +7188,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
         int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret1=%d\n", ret);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret1=%d\n", ret);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         // if the return is 0 then no data to be read so adjust position before setting read size to 0
@@ -7229,7 +7196,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
         {
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "cposition=0x%llx rsize=0x%x\n", current_position_ccc, rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "cposition=0x%llx rsize=0x%x\n", current_position_ccc, rsize);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           current_position_ccc += rsize;
@@ -7246,7 +7213,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
             strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
@@ -7578,7 +7545,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
       {
         strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -7658,7 +7625,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
         int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret2=%d\n", ret);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret2=%d\n", ret);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         // if the return is 0 then no data to be read so adjust position before setting read size to 0
@@ -7678,7 +7645,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -7927,7 +7894,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
     {
       strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -7993,7 +7960,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
         int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret3=%d\n", ret);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret3=%d\n", ret);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         // if the return is 0 then no data to be read so adjust read size to 0
@@ -8008,7 +7975,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8213,7 +8180,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret4=%d\n", ret);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret4=%d\n", ret);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           // if the return is 0 then no data to be read so adjust read size to 0
@@ -8228,7 +8195,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             // sanity check
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
               strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8431,7 +8398,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
     {
       strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -8524,7 +8491,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
         int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret5=%d\n", ret);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret5=%d\n", ret);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         // if the return is 0 then no data to be read so adjust read size to 0
@@ -8539,7 +8506,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8740,7 +8707,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           int ret = process_domain_ccc(current_position_ccc, rsize, domain_status_ccc, STATUS_MASK);
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "ret6=%d\n", ret);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ret6=%d\n", ret);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           // if the return is 0 then no data to be read so adjust read size to 0
@@ -8755,7 +8722,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             // sanity check
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
               strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -9012,7 +8979,7 @@ int analyze_drive_ccc(int sections, int extended)
       {
         strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " 0x%llx", current_position_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -9956,7 +9923,7 @@ int read_chunk_ccc(long long position, int size)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error: Unable to seek source"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_1_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -9968,7 +9935,7 @@ int read_chunk_ccc(long long position, int size)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Error: Unable to read source"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_1_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -9977,7 +9944,7 @@ int read_chunk_ccc(long long position, int size)
     else if (read_ret != size * sector_size_ccc)
     {
       // fprintf (stdout, "return read size was %d\n", ret);    //debug
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "error %d reading sector %lld size %d (%s)\n", ret, position * sector_size_ccc, size * sector_size_ccc, strerror(errno)); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error %d reading sector %lld size %d (%s)\n", ret, position * sector_size_ccc, size * sector_size_ccc, strerror(errno)); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG16);
       ret = 1;
     }
@@ -10091,7 +10058,7 @@ int read_chunk_ccc(long long position, int size)
         check_message_ccc = true;
         strcpy(tempmessage_ccc, _("Host IO error during reading source"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -10100,7 +10067,7 @@ int read_chunk_ccc(long long position, int size)
       if (1)
       {
         // some usb devices can give a host io error during normal good reading, so this will cause them to fail
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Host IO error %d during read (%s)\n", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Host IO error %d during read (%s)\n", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
         message_console_log_ccc(tempmessage_ccc, 0);
         return io_host_status_bak;
       }
@@ -10136,7 +10103,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\ninternal program sector size error");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\ninternal program sector size error");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10168,7 +10135,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10178,7 +10145,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10188,7 +10155,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10200,7 +10167,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n %lldms", elapsed_time / 1000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %lldms", elapsed_time / 1000);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10214,7 +10181,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10225,7 +10192,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10235,7 +10202,7 @@ int write_chunk_ccc(long long position, int size)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s", disk_2_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s", disk_2_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10673,7 +10640,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
     {
       if (0 && verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
       // check if any part of the chunk is in the domain
@@ -10697,7 +10664,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
     {
       if (verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
       // check if chunk fits in domain
@@ -10709,7 +10676,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           // status matches so read the whole chunk
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "chunk fits in domain\n");
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "chunk fits in domain\n");
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           return size;
@@ -10745,7 +10712,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                 found_domain = 1;
                 if (verbosedebug_ccc)
                 {
-                  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "best1=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best1=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
                   message_debug_ccc(tempmessage_ccc, DEBUG10);
                 }
               }
@@ -10784,7 +10751,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                   found_domain = 1;
                   if (verbosedebug_ccc)
                   {
-                    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "best2=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best2=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
                     message_debug_ccc(tempmessage_ccc, DEBUG10);
                   }
                   // we found the next best so break;
@@ -10828,7 +10795,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                 found_domain = 1;
                 if (verbosedebug_ccc)
                 {
-                  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "best3=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best3=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
                   message_debug_ccc(tempmessage_ccc, DEBUG10);
                 }
               }
@@ -10867,7 +10834,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                   found_domain = 1;
                   if (verbosedebug_ccc)
                   {
-                    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "best4=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best4=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
                     message_debug_ccc(tempmessage_ccc, DEBUG10);
                   }
                   // we found a previous domain so break
@@ -10892,7 +10859,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
       middle = best_domain;
       if (verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "best domain dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle], dsize_ccc[middle]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best domain dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle], dsize_ccc[middle]);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
 
@@ -10915,7 +10882,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
             }
             if (verbosedebug_ccc)
             {
-              snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "newsize1=0x%llx\n", new_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "newsize1=0x%llx\n", new_size);
               message_debug_ccc(tempmessage_ccc, DEBUG10);
             }
             return new_size;
@@ -10931,7 +10898,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           current_position_ccc = new_position;
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "newposition2=0x%llx newsize2=0x%llx\n", current_position_ccc, new_size);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "newposition2=0x%llx newsize2=0x%llx\n", current_position_ccc, new_size);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           return new_size;
@@ -10947,7 +10914,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           current_position_ccc = new_position;
           if (verbosedebug_ccc)
           {
-            snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "newposition3=0x%llx newsize3=0x%llx\n", current_position_ccc, new_size);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "newposition3=0x%llx newsize3=0x%llx\n", current_position_ccc, new_size);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
           }
           return new_size;
@@ -10963,7 +10930,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
         // domain is not of proper status type
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "domain wrong status dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle], dsize_ccc[middle]);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "domain wrong status dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle], dsize_ccc[middle]);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         return not_in_domain;
@@ -10974,7 +10941,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
       // no matching domain block found
       if (verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "no matching domain position=0x%llx size=0x%x \n", position, size);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "no matching domain position=0x%llx size=0x%x \n", position, size);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
       return not_in_domain;
@@ -11755,7 +11722,7 @@ int process_chs_ccc(long long position)
     check_message_ccc = true;
     strcpy(tempmessage_ccc, _("Error calculating CHS, value out of bounds"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " C=%lld H=%lld S=%lld\n", chs_ccc.cylinder, chs_ccc.head, chs_ccc.sector);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " C=%lld H=%lld S=%lld\n", chs_ccc.cylinder, chs_ccc.head, chs_ccc.sector);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -11785,10 +11752,10 @@ int check_buffer_limit_ccc(void)
     max_size = max_dma_size_ccc / sector_size_ccc;
     if (cluster_size_ccc * sector_size_ccc > (long long)max_dma_size_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
       message_now_ccc(tempmessage_ccc);
       cluster_size_ccc = max_dma_size_ccc / sector_size_ccc;
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Using a new cluster size of %d\n", cluster_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", cluster_size_ccc);
       message_now_ccc(tempmessage_ccc);
     }
   }
@@ -11806,11 +11773,11 @@ int check_buffer_limit_ccc(void)
     if (file_pointer == NULL)
     {
       max_size = DEFAULT_CLUSTER_SIZE;
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Warning: Cannot open %s for reading (%s)\n", file_name, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: Cannot open %s for reading (%s)\n", file_name, strerror(errno));
       message_now_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Source must be whole disk and not partition\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Source must be whole disk and not partition\n");
       message_now_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Unable to determine maximum cluster size, using default of %d\n", max_size);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Unable to determine maximum cluster size, using default of %d\n", max_size);
       message_now_ccc(tempmessage_ccc);
     }
     else
@@ -11825,10 +11792,10 @@ int check_buffer_limit_ccc(void)
       max_size = (max_sectors_kb * 1024) / sector_size_ccc;
       if (cluster_size_ccc * sector_size_ccc > max_sectors_kb * 1024)
       {
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Warning: The cluster limit is %lld and you chose %d.\n", (max_sectors_kb * 1024) / sector_size_ccc, cluster_size_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %lld and you chose %d.\n", (max_sectors_kb * 1024) / sector_size_ccc, cluster_size_ccc);
         message_now_ccc(tempmessage_ccc);
         cluster_size_ccc = (max_sectors_kb * 1024) / sector_size_ccc;
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Using a new cluster size of %d\n", cluster_size_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", cluster_size_ccc);
         message_now_ccc(tempmessage_ccc);
       }
     }
@@ -11852,7 +11819,7 @@ int disk_reopen_ccc(void)
   {
     if (superclone_ccc)
     {
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "disk reopen\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "disk reopen\n");
       message_console_log_ccc(tempmessage_ccc, 0);
     }
     close(disk1_fd_ccc);
@@ -11883,7 +11850,7 @@ int disk_reopen_ccc(void)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Unable to reopen source device"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)\n", disk_1_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       return -1;
     }
@@ -11899,7 +11866,7 @@ int call_command_on_error_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s %s\n", _("Call command:"), command_to_call_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s\n", _("Call command:"), command_to_call_ccc);
     message_console_log_ccc(tempmessage_ccc, 0);
     int ret = system(command_to_call_ccc);
     if (ret)
@@ -11908,7 +11875,7 @@ int call_command_on_error_ccc(void)
       int signal = WTERMSIG(ret);
       strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%d / %d)", signal, status);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11958,7 +11925,7 @@ int call_command_on_error_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "cycle primary relay\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "cycle primary relay\n");
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
@@ -12016,7 +11983,7 @@ int call_command_on_power_cycle_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s %s\n", _("Call command:"), power_command_to_call_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s\n", _("Call command:"), power_command_to_call_ccc);
     message_console_log_ccc(tempmessage_ccc, 0);
     int ret = system(power_command_to_call_ccc);
     if (ret)
@@ -12025,13 +11992,13 @@ int call_command_on_power_cycle_ccc(void)
       int signal = WTERMSIG(ret);
       strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%d / %d)", signal, status);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
       return 2;
     }
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "%s\n", _("The command completed normally"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s\n", _("The command completed normally"));
     message_console_log_ccc(tempmessage_ccc, 0);
 
     // reconnect devices after command completes
@@ -12057,7 +12024,7 @@ int call_command_on_power_cycle_ccc(void)
     // disconnect devices before calling command
     release_devices_ccc();
 
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "cycle primary relay\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "cycle primary relay\n");
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
@@ -12241,7 +12208,7 @@ int check_device_ccc(void)
       check_message_ccc = true;
       strcpy(tempmessage_ccc, _("Host IO error during source drive identify"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12281,7 +12248,7 @@ int check_device_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -12295,7 +12262,7 @@ int check_device_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -12319,7 +12286,7 @@ int check_device_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
           message_error_ccc(tempmessage_ccc);
           strcpy(tempmessage_ccc, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
@@ -12340,7 +12307,7 @@ int check_device_ccc(void)
           check_message_ccc = true;
           strcpy(tempmessage_ccc, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
           message_error_ccc(tempmessage_ccc);
           strcpy(tempmessage_ccc, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
@@ -12358,7 +12325,7 @@ int check_device_ccc(void)
         check_message_ccc = true;
         strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12369,7 +12336,7 @@ int check_device_ccc(void)
         check_message_ccc = true;
         strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12388,7 +12355,7 @@ int check_device_ccc(void)
         check_message_ccc = true;
         strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12399,7 +12366,7 @@ int check_device_ccc(void)
         check_message_ccc = true;
         strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12550,7 +12517,7 @@ int open_target_destination_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Error: Destination is detected to be the host OS drive"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", disk_2_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12602,7 +12569,7 @@ int open_target_destination_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to open destination"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12614,7 +12581,7 @@ int open_target_destination_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12626,13 +12593,13 @@ int open_target_destination_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_2_ccc, strerror(errno));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Target size in bytes = %lld\n", target_total_size_ccc); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Target size in bytes = %lld\n", target_total_size_ccc); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG1);
       target_total_size_ccc = target_total_size_ccc / sector_size_ccc;
     }
@@ -12682,7 +12649,7 @@ int open_source_disk_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Error: Source is detected to be mounted"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s).\n", disk_1_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s).\n", disk_1_ccc);
         message_error_ccc(tempmessage_ccc);
         strcpy(tempmessage_ccc, _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
         message_error_ccc(tempmessage_ccc);
@@ -12723,7 +12690,7 @@ int open_source_disk_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error: Unable to open source"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %s (%s)", disk_1_ccc, strerror(errno));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12840,7 +12807,7 @@ int process_source_ccc(void)
       message_error_ccc(tempmessage_ccc);
       strcpy(tempmessage_ccc, _("\nStatus / Error"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %02x / %02x", ata_status_ccc, ata_error_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %02x / %02x", ata_status_ccc, ata_error_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12850,7 +12817,7 @@ int process_source_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Host IO error during identify"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -13261,7 +13228,7 @@ int process_source_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -13271,7 +13238,7 @@ int process_source_ccc(void)
       {
         strcpy(tempmessage_ccc, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -13298,15 +13265,15 @@ int process_source_ccc(void)
       {
         if (sense_key_ccc > 1)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "read capacity 16 failed: bad sense %d\n", sense_key_ccc);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "read capacity 16 failed: bad sense %d\n", sense_key_ccc);
         }
         else if (io_host_status_ccc)
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "read capacity 16 failed: bad host status %d\n", io_host_status_ccc);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "read capacity 16 failed: bad host status %d\n", io_host_status_ccc);
         }
         else
         {
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "read capacity 16 failed: bad return\n");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "read capacity 16 failed: bad return\n");
         }
         message_console_log_ccc(tempmessage_ccc, 0);
         // if read capacity 16 failed then try read capacity 10
@@ -13314,7 +13281,7 @@ int process_source_ccc(void)
         {
           strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -13324,7 +13291,7 @@ int process_source_ccc(void)
         {
           strcpy(tempmessage_ccc, _("Host IO error during capacity"));
           message_error_ccc(tempmessage_ccc);
-          snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -13437,7 +13404,7 @@ int process_source_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %lld", size);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", size);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -13470,7 +13437,7 @@ int process_source_ccc(void)
     {
       strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %lld", generic_source_total_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", generic_source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -13482,7 +13449,7 @@ int process_source_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error: Source size is invalid"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " %lld", source_total_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", source_total_size_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -13905,7 +13872,7 @@ int extract_smart_data_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error: Unable to read SMART data from device"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "return=%d status=0x%x sense=0x%x", retsmart, ata_status_ccc, sense_key_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "return=%d status=0x%x sense=0x%x", retsmart, ata_status_ccc, sense_key_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -14395,7 +14362,7 @@ long long block_align_up_ccc(long long value)
 
 void quit_and_exit_ccc(void)
 {
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Terminated by user\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Terminated by user\n");
   message_exit_ccc(tempmessage_ccc);
   cleanup_ccc();
   exit(exitcode_ccc);
@@ -14917,7 +14884,7 @@ void reset_current_status_ccc(void)
 
   current_status_ccc = PHASE1;
   current_position_ccc = 0;
-  snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "Resetting the skip data\n");
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Resetting the skip data\n");
   message_now_ccc(tempmessage_ccc);
   int i;
   for (i = 0; i < total_lines_ccc - 1; i++)
@@ -14965,12 +14932,12 @@ void invoke_soft_reset_ccc(void)
 
   if (do_soft_reset_ccc(disk1_fd_ccc))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "reset failed\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "reset failed\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
   else
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "reset success\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "reset success\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
 
@@ -15003,12 +14970,12 @@ void invoke_hard_reset_ccc(void)
 
   if (do_hard_reset_ccc(disk1_fd_ccc))
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "reset failed\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "reset failed\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
   else
   {
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), "reset success\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "reset success\n");
     message_console_log_ccc(tempmessage_ccc, 0);
   }
 
@@ -15047,8 +15014,7 @@ void disable_ports_ccc(void)
   system("cp -f /etc/default/grub /etc/default/grub_hddsc_last_bakup");
   if (access("/boot/grub/grub_hddsc_original_bakup.cfg", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/boot/grub/grub_hddsc_original_bakup.cfg");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/boot/grub/grub_hddsc_original_bakup.cfg");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15057,8 +15023,7 @@ void disable_ports_ccc(void)
   }
   if (access("/etc/default/grub_hddsc_original_bakup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/etc/default/grub_hddsc_original_bakup");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/etc/default/grub_hddsc_original_bakup");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15069,8 +15034,7 @@ void disable_ports_ccc(void)
   FILE *readfile = fopen("/etc/default/grub", "r");
   if (readfile == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error: Unable to open file"));
-    strcat(tempmessage_ccc, "\n/etc/default/grub");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: Unable to open file"), "\n/etc/default/grub");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15080,8 +15044,7 @@ void disable_ports_ccc(void)
   FILE *writefile = fopen("/etc/default/grub_tmp", "w");
   if (writefile == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error: Unable to open file"));
-    strcat(tempmessage_ccc, "\n/etc/default/grub_tmp");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: Unable to open file"), "\n/etc/default/grub_tmp");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15176,8 +15139,7 @@ void disable_ports_ccc(void)
 
   if (!found_default_line)
   {
-    strcpy(tempmessage_ccc, _("Error: Unable to locate the line in GRUB"));
-    strcat(tempmessage_ccc, "\nGRUB_CMDLINE_LINUX_DEFAULT=");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: Unable to locate the line in GRUB"), "\nGRUB_CMDLINE_LINUX_DEFAULT=");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15191,8 +15153,7 @@ void disable_ports_ccc(void)
       if (system("cp -f /etc/default/grub_tmp /etc/default/grub"))
       {
         // error copying
-        strcpy(tempmessage_ccc, _("Error: File copying failed"));
-        strcat(tempmessage_ccc, "\ncp -f /etc/default/grub_tmp /etc/default/grub");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\ncp -f /etc/default/grub_tmp /etc/default/grub");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15203,8 +15164,7 @@ void disable_ports_ccc(void)
         if (system("update-grub"))
         {
           // error updating
-          strcpy(tempmessage_ccc, _("Error: Updating GRUB failed"));
-          strcat(tempmessage_ccc, "\nupdate-grub");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: Updating GRUB failed"), "\nupdate-grub");
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -15225,8 +15185,7 @@ void restore_ports_ccc(void)
 {
   if (access("/boot/grub/grub_hddsc_original_bakup.cfg", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/boot/grub/grub.cfg (/boot/grub/grub_hddsc_original_bakup.cfg)");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/boot/grub/grub.cfg (/boot/grub/grub_hddsc_original_bakup.cfg)");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15234,8 +15193,7 @@ void restore_ports_ccc(void)
   }
   if (access("/etc/default/grub_hddsc_original_bakup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/etc/default/grub (/etc/default/grub_hddsc_original_bakup)");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/etc/default/grub (/etc/default/grub_hddsc_original_bakup)");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15248,8 +15206,7 @@ void restore_ports_ccc(void)
     if (system("cp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub"))
     {
       // error copying
-      strcpy(tempmessage_ccc, _("Error: File copying failed"));
-      strcat(tempmessage_ccc, "\ncp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\ncp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15260,8 +15217,7 @@ void restore_ports_ccc(void)
       if (system("update-grub"))
       {
         // error updating
-        strcpy(tempmessage_ccc, _("Error: Updating GRUB failed"));
-        strcat(tempmessage_ccc, "\nupdate-grub");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: Updating GRUB failed"), "\nupdate-grub");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15284,8 +15240,7 @@ void disable_usb_mass_storage_ccc(void)
 
   if (access("/root/usb-storage.ko.original", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/root/usb-storage.ko.original");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.original");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15294,8 +15249,7 @@ void disable_usb_mass_storage_ccc(void)
   }
   if (access("/root/usb-storage.ko.backup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/root/usb-storage.ko.backup");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.backup");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15309,8 +15263,7 @@ void disable_usb_mass_storage_ccc(void)
     if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko"))
     {
       // error copying
-      strcpy(tempmessage_ccc, _("Error: File copying failed"));
-      strcat(tempmessage_ccc, "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15327,8 +15280,7 @@ void restore_usb_mass_storage_ccc(void)
 {
   if (access("/root/usb-storage.ko.original", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/root/usb-storage.ko.original");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.original");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15336,8 +15288,7 @@ void restore_usb_mass_storage_ccc(void)
   }
   if (access("/root/usb-storage.ko.backup", F_OK) == -1)
   {
-    strcpy(tempmessage_ccc, _("Error: No backup file"));
-    strcat(tempmessage_ccc, "\n/root/usb-storage.ko.backup");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.backup");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15349,8 +15300,7 @@ void restore_usb_mass_storage_ccc(void)
     if (system("mv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
     {
       // error copying
-      strcpy(tempmessage_ccc, _("Error: File copying failed"));
-      strcat(tempmessage_ccc, "\nmv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15630,7 +15580,7 @@ int initialize_head_map_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15643,7 +15593,7 @@ int initialize_head_map_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15656,7 +15606,7 @@ int initialize_head_map_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15669,7 +15619,7 @@ int initialize_head_map_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15682,7 +15632,7 @@ int initialize_head_map_memory_ccc(void)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15701,7 +15651,7 @@ int increase_head_map_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15714,7 +15664,7 @@ int increase_head_map_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15727,7 +15677,7 @@ int increase_head_map_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15740,7 +15690,7 @@ int increase_head_map_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15753,7 +15703,7 @@ int increase_head_map_memory_ccc(int new_lines)
   {
     strcpy(tempmessage_ccc, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, sizeof(tempmessage_ccc), " (%s)", strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
