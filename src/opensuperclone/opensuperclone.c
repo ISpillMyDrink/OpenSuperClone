@@ -737,7 +737,7 @@ int begin_driver_ccc(void)
   // if output offset is not default of -1 then this is a short trip, that is not allowed with the driver
   if (output_offset_ccc != -1)
   {
-    strcpy(tempmessage_ccc, _("Error: Offset not allowed in driver mode"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Offset not allowed in driver mode"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -746,7 +746,7 @@ int begin_driver_ccc(void)
   // if sector size is not evenly dividable by kernel sector size of 512 that wont work either
   if (sector_size_ccc % KERNEL_SECTOR_SIZE || output_sector_size_adjustment_ccc != 0)
   {
-    strcpy(tempmessage_ccc, _("Error: Odd sector size not allowed in driver mode"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Odd sector size not allowed in driver mode"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -826,7 +826,7 @@ int begin_driver_ccc(void)
   while (1)
   {
     n++;
-    strcpy(current_status_string_ccc, _("Idle"));
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Idle"));
 
     if (aggressive_driver_ccc)
     {
@@ -928,7 +928,7 @@ int begin_driver_ccc(void)
   if (ret && ret != STOP_SIGNAL_RETURN_CODE)
   {
     error = 1;
-    strcpy(tempmessage_ccc, _("Error: Driver timeout or error"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Driver timeout or error"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1193,7 +1193,7 @@ void fix_driver_memory_driver_ccc(void)
   system("sync");
   system("echo 3 > /proc/sys/vm/drop_caches");
   system("echo 1 > /proc/sys/vm/compact_memory");
-  strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
   message_error_ccc(tempmessage_ccc);
   print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   clear_error_message_ccc();
@@ -1226,7 +1226,7 @@ int initialize_logfile_memory_ccc(void)
   lposition_ccc = malloc(sizeof(*lposition_ccc) * log_rows_ccc);
   if (lposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1238,7 +1238,7 @@ int initialize_logfile_memory_ccc(void)
   lsize_ccc = malloc(sizeof(*lsize_ccc) * log_rows_ccc);
   if (lsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1250,7 +1250,7 @@ int initialize_logfile_memory_ccc(void)
   lstatus_ccc = malloc(sizeof(*lstatus_ccc) * log_rows_ccc);
   if (lstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1270,7 +1270,7 @@ int initialize_domainfile_memory_ccc(void)
   dposition_ccc = malloc(sizeof(*dposition_ccc) * domain_rows_ccc);
   if (dposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1282,7 +1282,7 @@ int initialize_domainfile_memory_ccc(void)
   dsize_ccc = malloc(sizeof(*dsize_ccc) * domain_rows_ccc);
   if (dsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1294,7 +1294,7 @@ int initialize_domainfile_memory_ccc(void)
   dstatus_ccc = malloc(sizeof(*dstatus_ccc) * domain_rows_ccc);
   if (dstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -1352,7 +1352,7 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1370,7 +1370,7 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1385,7 +1385,7 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1416,7 +1416,7 @@ int initialize_memory_ccc(void)
         free(ccc_buffer_ccc);
         if (posix_memalign(&ccc_buffer_ccc, align, real_buffer_size_ccc))
         {
-          strcpy(tempmessage_ccc, _("posix_memalign failed"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("posix_memalign failed"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -1480,7 +1480,7 @@ int set_main_scratchpad_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, _("ERROR: Maximum scratchpad size exceeded"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("ERROR: Maximum scratchpad size exceeded"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1497,7 +1497,7 @@ int set_main_scratchpad_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error allocating memory"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -1520,7 +1520,7 @@ int set_sense_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, _("ERROR: Maximum sensebuffer size exceeded"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("ERROR: Maximum sensebuffer size exceeded"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1537,7 +1537,7 @@ int set_sense_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error allocating memory"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -1560,7 +1560,7 @@ int set_main_usb_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, "ERROR: Maximum USB buffer size exceeded.\n"); // TODO make a language entry for this
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum USB buffer size exceeded.\n"); // TODO make a language entry for this
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1577,7 +1577,7 @@ int set_main_usb_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error allocating memory"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -1684,51 +1684,51 @@ int read_log_file_ccc(char *log_file)
           {
             if (current_status_ccc == PHASE1)
             {
-              strcpy(current_status_string_ccc, _("Phase 1"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 1"));
             }
             else if (current_status_ccc == PHASE2)
             {
-              strcpy(current_status_string_ccc, _("Phase 2"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 2"));
             }
             else if (current_status_ccc == PHASE3)
             {
-              strcpy(current_status_string_ccc, _("Phase 3"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 3"));
             }
             else if (current_status_ccc == PHASE4)
             {
-              strcpy(current_status_string_ccc, _("Phase 4"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 4"));
             }
             else if (current_status_ccc == TRIMMING)
             {
-              strcpy(current_status_string_ccc, _("Trimming"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Trimming"));
             }
             else if (current_status_ccc == DIVIDING1)
             {
-              strcpy(current_status_string_ccc, _("Dividing 1"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Dividing 1"));
             }
             else if (current_status_ccc == DIVIDING2)
             {
-              strcpy(current_status_string_ccc, _("Dividing 2"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Dividing 2"));
             }
             else if (current_status_ccc == SCRAPING)
             {
-              strcpy(current_status_string_ccc, _("Scraping"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Scraping"));
             }
             else if (current_status_ccc == FINISHED)
             {
-              strcpy(current_status_string_ccc, _("Finished"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
             }
             else if (current_status_ccc == RETRYING)
             {
-              strcpy(current_status_string_ccc, _("Retrying"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Retrying"));
             }
             else if (current_status_ccc == FILLING)
             {
-              strcpy(current_status_string_ccc, _("Filling"));
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Filling"));
             }
             else
             {
-              strcpy(current_status_string_ccc, "");
+              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "");
             }
           }
           found_current = 1;
@@ -3285,7 +3285,7 @@ int increase_log_memory_ccc(int new_lines)
   temp_lposition_ccc = realloc(lposition_ccc, log_rows_ccc * sizeof(*lposition_ccc));
   if (temp_lposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3298,7 +3298,7 @@ int increase_log_memory_ccc(int new_lines)
   temp_lsize_ccc = realloc(lsize_ccc, log_rows_ccc * sizeof(*lsize_ccc));
   if (temp_lsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3311,7 +3311,7 @@ int increase_log_memory_ccc(int new_lines)
   temp_lstatus_ccc = realloc(lstatus_ccc, log_rows_ccc * sizeof(*lstatus_ccc));
   if (temp_lstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3330,7 +3330,7 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dposition_ccc = realloc(dposition_ccc, domain_rows_ccc * sizeof(*dposition_ccc));
   if (temp_dposition_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3343,7 +3343,7 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dsize_ccc = realloc(dsize_ccc, domain_rows_ccc * sizeof(*dsize_ccc));
   if (temp_dsize_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3356,7 +3356,7 @@ int increase_domain_memory_ccc(int new_lines)
   temp_dstatus_ccc = realloc(dstatus_ccc, domain_rows_ccc * sizeof(*dstatus_ccc));
   if (temp_dstatus_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -3373,7 +3373,7 @@ int update_logfile_ccc(int time_sec)
   return_value_ccc = write_logfile_ccc(log_file_ccc, time_sec);
   if (return_value_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error writing progress log file"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3664,7 +3664,7 @@ int update_domainfile_ccc(int time_sec)
     return_value_ccc = write_domainfile_ccc(domain_file_ccc, time_sec);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error writing progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -3955,15 +3955,15 @@ int check_log_ccc(void)
     // check that last position ends with total size
     if (lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1] != source_total_size_ccc)
     {
-      strcpy(tempmessage_ccc, _("The end does not equal the drive size!\nLogfile reports size of "));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The end does not equal the drive size!\nLogfile reports size of "));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1]);
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, _(",\nbut source has a size of "));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _(",\nbut source has a size of "));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, _(".\nAre you sure this is the correct progress log file for this drive?\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _(".\nAre you sure this is the correct progress log file for this drive?\n"));
       message_error_ccc(tempmessage_ccc);
       fail = fail | 0x20;
     }
@@ -4026,7 +4026,7 @@ int check_and_repair_log_ccc(void)
     disable_log_backup_ccc = false;
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error writing backup log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing backup log file"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4608,7 +4608,7 @@ int do_fill_ccc(int status, long long mask)
       long long destination_size = lseek(disk2_fd_ccc, 0, SEEK_END);
       if (destination_size == -1)
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
@@ -4636,7 +4636,7 @@ int do_fill_ccc(int status, long long mask)
       start_position_ccc = 0;
       end_position_ccc = destination_sectors;
       source_total_size_ccc = destination_sectors;
-      strcpy(current_status_string_ccc, _("Erasing"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Erasing"));
       while (current_position_ccc < destination_sectors)
       {
         int write_size = original_cluster_size_ccc;
@@ -4662,7 +4662,7 @@ int do_fill_ccc(int status, long long mask)
       }
 
       update_display_ccc(0);
-      strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
@@ -4702,7 +4702,7 @@ int do_fill_ccc(int status, long long mask)
   current_position_ccc = start_position_ccc;
   start_position_ccc = input_offset_ccc;
   current_status_ccc = FILLING;
-  strcpy(current_status_string_ccc, _("Filling"));
+  snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Filling"));
   update_display_ccc(0);
   if (stop_signal_ccc)
   {
@@ -4822,10 +4822,10 @@ int do_fill_ccc(int status, long long mask)
     }
   }
   current_status_ccc = FINISHED;
-  strcpy(current_status_string_ccc, _("Finished"));
+  snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
   logfile_changed_ccc = true;
   update_display_ccc(0);
-  strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
   message_error_ccc(tempmessage_ccc);
   print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
   clear_error_message_ccc();
@@ -5555,7 +5555,7 @@ int change_chunk_status_ccc(long long position, long long size, long long status
   int block = find_block_ccc(position);
   if (block == -1)
   {
-    strcpy(tempmessage_ccc, _("Error changing chunk status, block not found"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error changing chunk status, block not found"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
@@ -5566,7 +5566,7 @@ int change_chunk_status_ccc(long long position, long long size, long long status
   // make sure chunk fits within the block
   if (position < lposition_ccc[block] || (position + size) > (lposition_ccc[block] + lsize_ccc[block]))
   {
-    strcpy(tempmessage_ccc, _("Error changing chunk status, is not within the block"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error changing chunk status, is not within the block"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx  status=0x%llx  mask=0x%llx", position, size, status, mask);
     message_error_ccc(tempmessage_ccc);
@@ -5692,7 +5692,7 @@ int add_to_domain_ccc(long long position, long long size)
     block = find_domain_block_ccc(position);
     if (block == -1)
     {
-      strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in domain"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx", position, size);
       message_error_ccc(tempmessage_ccc);
@@ -5797,7 +5797,7 @@ int add_to_domain_ccc(long long position, long long size)
       else
       {
         critical_process_ccc = false;
-        strcpy(tempmessage_ccc, _("Internal program error, Position not found in domain"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in domain"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nposition=%06llx  size=0x%06llx", position, size);
         message_error_ccc(tempmessage_ccc);
@@ -5959,7 +5959,7 @@ int clone_forward_ccc(void)
   {
     if (rebuild_assist_ccc)
     {
-      strcpy(current_status_string_ccc, _("Rebuild Assist"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Rebuild Assist"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -5982,7 +5982,7 @@ int clone_forward_ccc(void)
       {
         current_position_ccc = start_position_ccc;
       }
-      strcpy(current_status_string_ccc, _("Phase 1"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 1"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6004,7 +6004,7 @@ int clone_forward_ccc(void)
       {
         current_position_ccc = end_position_ccc - 1;
       }
-      strcpy(current_status_string_ccc, _("Phase 2"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Phase 2"));
       cluster_size_ccc = original_cluster_size_ccc;
       skip_ccc = true;
       skip_size_ccc = min_skip_size_ccc;
@@ -6021,7 +6021,7 @@ int clone_forward_ccc(void)
 
   if (0)
   {
-    strcpy(current_status_string_ccc, "mapping");
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Mapping"));
     process_bad_head_ccc();
   }
 
@@ -6252,7 +6252,7 @@ int clone_forward_ccc(void)
         current_position_ccc = start_position_ccc;
         retried_lba_count_ccc = 0;
       }
-      strcpy(current_status_string_ccc, _("Retrying"));
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Retrying"));
       skip_ccc = false;
       cluster_size_ccc = block_size_ccc;
       set_soft_timer_ccc(RETRYING);
@@ -6272,9 +6272,9 @@ int clone_forward_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    strcpy(current_status_string_ccc, _("Finished"));
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6283,7 +6283,7 @@ int clone_forward_ccc(void)
   else if (ret)
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", ret);
     message_error_ccc(tempmessage_ccc);
@@ -6293,7 +6293,7 @@ int clone_forward_ccc(void)
   else
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue failed to finish"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue failed to finish"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6399,7 +6399,7 @@ int clone_reverse_ccc(void)
 
   if (0)
   {
-    strcpy(current_status_string_ccc, "mapping");
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Mapping"));
     process_bad_head_ccc();
   }
 
@@ -6649,9 +6649,9 @@ int clone_reverse_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    strcpy(current_status_string_ccc, _("Finished"));
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue is finished using the current settings"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6660,7 +6660,7 @@ int clone_reverse_ccc(void)
   else if (ret)
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue has stopped before completion.\nStop code = "));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue has stopped before completion.\nStop code = "));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", ret);
     message_error_ccc(tempmessage_ccc);
@@ -6670,7 +6670,7 @@ int clone_reverse_ccc(void)
   else
   {
     update_display_ccc(0);
-    strcpy(tempmessage_ccc, _("The rescue failed to finish"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue failed to finish"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -6799,7 +6799,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -6831,8 +6831,8 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
         {
           break;
         }
-      }
-      strcpy(current_status_string_ccc, _("Reading destination"));
+      }   
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Reading destination"));
       update_display_ccc(DISPLAY_UPDATE_TIME);
 
       int rsize = end_position_ccc - current_position_ccc;
@@ -6846,7 +6846,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       // sanity check
       if (rsize * sector_size_ccc > DRIVER_TRANSFER_BUFFER_SIZE)
       {
-        strcpy(tempmessage_ccc, _("Internal driver buffer error"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal driver buffer error"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -6856,7 +6856,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       ret = lseek(disk2_fd_ccc, current_position_ccc * sector_size_ccc, SEEK_SET);
       if (ret == -1)
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
@@ -6867,7 +6867,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       ret = read(disk2_fd_ccc, ccc_buffer_ccc, rsize * sector_size_ccc);
       if (ret == -1)
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
@@ -6877,7 +6877,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
       }
       else if (ret != rsize * sector_size_ccc)
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to read from destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read from destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -7052,7 +7052,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -7101,7 +7101,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
       int ret = call_command_on_error_ccc();
       if (ret)
       {
-        strcpy(tempmessage_ccc, _("Exiting due to slow read speed"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Exiting due to slow read speed"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
         clear_error_message_ccc();
@@ -7128,7 +7128,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -7215,7 +7215,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           {
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
-            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -7418,7 +7418,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -7467,7 +7467,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -7518,7 +7518,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
       int ret = call_command_on_error_ccc();
       if (ret)
       {
-        strcpy(tempmessage_ccc, _("Exiting due to slow read speed"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Exiting due to slow read speed"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
         clear_error_message_ccc();
@@ -7543,7 +7543,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -7646,7 +7646,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -7809,7 +7809,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -7849,7 +7849,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -7892,7 +7892,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -7976,7 +7976,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -8107,7 +8107,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad && retstat > 0xff)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8196,7 +8196,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-              strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8284,7 +8284,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad && retstat > 0xff)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8351,7 +8351,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -8396,7 +8396,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
     int line = find_block_ccc(current_position_ccc);
     if (line == -1)
     {
-      strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -8507,7 +8507,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-            strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -8638,7 +8638,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad && retstat > 0xff)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8723,7 +8723,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
-              strcpy(tempmessage_ccc, _("Internal program error, domain check returned position out of range"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8811,7 +8811,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 #ifdef DEBUG
             if (fake_bad && retstat > 0xff)
             {
-              strcpy(tempmessage_ccc, "fakebad error");
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "fakebad error");
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -8879,7 +8879,7 @@ int analyze_drive_ccc(int sections, int extended)
 {
   if (drive_locked_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error! The disk is security locked!"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error! The disk is security locked!"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -8895,7 +8895,7 @@ int analyze_drive_ccc(int sections, int extended)
   long long current_position_bak = current_position_ccc;
   start_position_ccc = 0;
   end_position_ccc = source_total_size_ccc;
-  strcpy(current_status_string_ccc, _("Analyzing"));
+  snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Analyzing"));
 
   int dont_mark = 1;
   if (td_soft_reset_time_ccc >= sc_soft_reset_time_ccc)
@@ -8977,7 +8977,7 @@ int analyze_drive_ccc(int sections, int extended)
       int line = find_block_ccc(current_position_ccc);
       if (line == -1)
       {
-        strcpy(tempmessage_ccc, _("Internal program error, Position not found in progress log file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, Position not found in progress log file"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " 0x%llx", current_position_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -9169,7 +9169,7 @@ int analyze_drive_ccc(int sections, int extended)
   if (1)
   {
     // perform slow test
-    strcpy(current_status_string_ccc, _("Detecting Variance"));
+    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Detecting Variance"));
     update_display_ccc(0);
     maxruntime = ANALYZESLOWTIME;
     if (extended)
@@ -9402,7 +9402,7 @@ int process_skip_ccc(void)
     min_skip_size_ccc = original_min_skip_size_ccc;
     total_skip_resets_ccc++;
     reset_skip_ccc();
-    strcpy(tempmessage_ccc, _("Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -9921,7 +9921,7 @@ int read_chunk_ccc(long long position, int size)
     if (read_ret == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error: Unable to seek source"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to seek source"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -9933,7 +9933,7 @@ int read_chunk_ccc(long long position, int size)
     if (0 && read_ret == -1) // this is disabled as bad sectors cause simple I/O errors
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error: Unable to read source"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read source"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -10028,7 +10028,7 @@ int read_chunk_ccc(long long position, int size)
     if (sense_key_ccc == 0x4 && asc_ccc == 0x44 && ascq_ccc == 0 && check_device_ccc())
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error: Device fault detected on source"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Device fault detected on source"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10040,7 +10040,7 @@ int read_chunk_ccc(long long position, int size)
     if ((ata_status_ccc & 1) && (ata_error_ccc & 0x20) && check_device_ccc())
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error: Device fault detected on source"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Device fault detected on source"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -10056,7 +10056,7 @@ int read_chunk_ccc(long long position, int size)
       if (check_device_ccc())
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, _("Host IO error during reading source"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during reading source"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
         message_error_ccc(tempmessage_ccc);
@@ -10101,7 +10101,7 @@ int write_chunk_ccc(long long position, int size)
     // sanity check
     if (size * sector_size_ccc != (int)ccc_main_buffer_size_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\ninternal program sector size error");
       message_error_ccc(tempmessage_ccc);
@@ -10133,7 +10133,7 @@ int write_chunk_ccc(long long position, int size)
     int ret = scsi_write_ccc(position, size);
     if (ret)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -10143,7 +10143,7 @@ int write_chunk_ccc(long long position, int size)
     }
     else if (sense_key_ccc > 1)
     {
-      strcpy(tempmessage_ccc, _("Error writing data to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -10153,7 +10153,7 @@ int write_chunk_ccc(long long position, int size)
     }
     else if (io_host_status_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error writing data to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
@@ -10165,7 +10165,7 @@ int write_chunk_ccc(long long position, int size)
     long long elapsed_time = end_time - start_time;
     if (elapsed_time > (SCSI_WRITE_TIMEOUT * 1000))
     {
-      strcpy(tempmessage_ccc, _("Error writing data to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing data to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n %lldms", elapsed_time / 1000);
       message_error_ccc(tempmessage_ccc);
@@ -10179,7 +10179,7 @@ int write_chunk_ccc(long long position, int size)
     int ret = lseek(disk2_fd_ccc, position * sector_size_ccc, SEEK_SET);
     if (ret == -1)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to seek destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -10190,7 +10190,7 @@ int write_chunk_ccc(long long position, int size)
     ret = write(disk2_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
     if (ret == -1)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -10200,7 +10200,7 @@ int write_chunk_ccc(long long position, int size)
     }
     else if (ret != size * sector_size_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s", disk_2_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -10919,7 +10919,7 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           }
           return new_size;
         }
-        strcpy(tempmessage_ccc, _("Internal program error processing domain check"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error processing domain check"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -11443,7 +11443,7 @@ int scsi_write_ccc(long long position, int size)
     if (!scsi_write16_supported_ccc && !scsi_write12_supported_ccc && !scsi_write10_supported_ccc && !scsi_write6_supported_ccc)
     {
       fprintf(stdout, "ERROR: No supported write modes found!\n");
-      strcpy(tempmessage_ccc, _("Error: Unable to write to destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11720,7 +11720,7 @@ int process_chs_ccc(long long position)
   if (chs_ccc.cylinder >= chs_ccc.total_cylinders || chs_ccc.head >= chs_ccc.total_heads || chs_ccc.sector > chs_ccc.sectors_per_track || chs_ccc.cylinder > 65535 || chs_ccc.head > 15 || chs_ccc.sector > 256)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, _("Error calculating CHS, value out of bounds"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error calculating CHS, value out of bounds"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " C=%lld H=%lld S=%lld\n", chs_ccc.cylinder, chs_ccc.head, chs_ccc.sector);
     message_error_ccc(tempmessage_ccc);
@@ -11848,7 +11848,7 @@ int disk_reopen_ccc(void)
     if (disk1_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Unable to reopen source device"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to reopen source device"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -11873,7 +11873,7 @@ int call_command_on_error_ccc(void)
     {
       int status = WEXITSTATUS(ret);
       int signal = WTERMSIG(ret);
-      strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
@@ -11886,7 +11886,7 @@ int call_command_on_error_ccc(void)
     // reconnect devices after command completes
     if (connect_source_disk_ccc() || open_target_destination_ccc())
     {
-      strcpy(tempmessage_ccc, _("Unable to connect devices"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11901,7 +11901,7 @@ int call_command_on_error_ccc(void)
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
-        strcpy(tempmessage_ccc, _("Unable to connect devices"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -11911,7 +11911,7 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now
     if (check_device_ccc())
     {
-      strcpy(tempmessage_ccc, _("The drive is still unresponsive after the command call"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The drive is still unresponsive after the command call"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11929,7 +11929,7 @@ int call_command_on_error_ccc(void)
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11939,7 +11939,7 @@ int call_command_on_error_ccc(void)
     // reconnect devices after command completes
     if (connect_source_disk_ccc() || open_target_destination_ccc())
     {
-      strcpy(tempmessage_ccc, _("Unable to connect devices"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11954,7 +11954,7 @@ int call_command_on_error_ccc(void)
       do_nanosleep_ccc((reset_wait_time_ccc * 1000));
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
-        strcpy(tempmessage_ccc, _("Unable to connect devices"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -11964,7 +11964,7 @@ int call_command_on_error_ccc(void)
     // check device to see if it is good now
     if (check_device_ccc())
     {
-      strcpy(tempmessage_ccc, _("The drive is still unresponsive after the command call"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The drive is still unresponsive after the command call"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -11990,7 +11990,7 @@ int call_command_on_power_cycle_ccc(void)
     {
       int status = WEXITSTATUS(ret);
       int signal = WTERMSIG(ret);
-      strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The called command failed with exit signal / status"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
       message_error_ccc(tempmessage_ccc);
@@ -12028,7 +12028,7 @@ int call_command_on_power_cycle_ccc(void)
     message_console_log_ccc(tempmessage_ccc, 0);
     if (cycle_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12188,7 +12188,7 @@ int check_device_ccc(void)
     {
       update_display_status_buttons_ccc(0);
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Source drive did not respond properly to identify command"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Source drive did not respond properly to identify command"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12197,7 +12197,7 @@ int check_device_ccc(void)
     else if (ata_status_ccc & 1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Source drive responded with error to identify command"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Source drive responded with error to identify command"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12206,7 +12206,7 @@ int check_device_ccc(void)
     else if (ata_passthrough_ccc && io_host_status_ccc)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Host IO error during source drive identify"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during source drive identify"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
@@ -12246,7 +12246,7 @@ int check_device_ccc(void)
         if (usb_identify_ccc(initial_busy_wait_time_ccc / 1000))
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
@@ -12260,7 +12260,7 @@ int check_device_ccc(void)
         if (identify_device_ccc())
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed to perform identify device command"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
@@ -12284,11 +12284,11 @@ int check_device_ccc(void)
         if (ret)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Failed checking of source device size"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
           message_error_ccc(tempmessage_ccc);
-          strcpy(tempmessage_ccc, _("Unable to reopen source device"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -12305,11 +12305,11 @@ int check_device_ccc(void)
         if (ret)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Failed checking of source device size"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed checking of source device size"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n");
           message_error_ccc(tempmessage_ccc);
-          strcpy(tempmessage_ccc, _("Unable to reopen source device"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to reopen source device"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -12323,7 +12323,7 @@ int check_device_ccc(void)
       if (read_capacity_16_ccc() || sense_key_ccc > 1)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -12334,7 +12334,7 @@ int check_device_ccc(void)
       else if (io_host_status_ccc)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
@@ -12353,7 +12353,7 @@ int check_device_ccc(void)
       if (read_capacity_10_ccc() || sense_key_ccc > 1)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -12364,7 +12364,7 @@ int check_device_ccc(void)
       else if (io_host_status_ccc)
       {
         check_message_ccc = true;
-        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
@@ -12395,7 +12395,7 @@ int check_device_ccc(void)
   {
     fprintf(stdout, "original size = %lld reported size = %lld\n", source_total_size_ccc, drive_size);
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, _("Source drive reports wrong size / size changed"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Source drive reports wrong size / size changed"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -12515,7 +12515,7 @@ int open_target_destination_ccc(void)
       pclose(fp);
       if (strncmp(disk_2_ccc, line, 8) == 0)
       {
-        strcpy(tempmessage_ccc, _("Error: Destination is detected to be the host OS drive"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Destination is detected to be the host OS drive"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", disk_2_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -12567,7 +12567,7 @@ int open_target_destination_ccc(void)
     }
     if (disk2_fd_ccc == -1)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to open destination"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to open destination"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -12579,7 +12579,7 @@ int open_target_destination_ccc(void)
     {
       if (lseek(disk2_fd_ccc, 0, SEEK_SET))
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to seek destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to seek destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
@@ -12591,7 +12591,7 @@ int open_target_destination_ccc(void)
       target_total_size_ccc = lseek(disk2_fd_ccc, 0, SEEK_END);
       if (target_total_size_ccc == -1)
       {
-        strcpy(tempmessage_ccc, _("Error: Unable to get size of destination"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to get size of destination"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_2_ccc, strerror(errno));
         message_error_ccc(tempmessage_ccc);
@@ -12606,7 +12606,7 @@ int open_target_destination_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, _("No destination chosen\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("No destination chosen\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -12647,11 +12647,11 @@ int open_source_disk_ccc(void)
       pclose(fp);
       if (strncmp(disk_1_ccc, line, 8) == 0)
       {
-        strcpy(tempmessage_ccc, _("Error: Source is detected to be mounted"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Source is detected to be mounted"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s).\n", disk_1_ccc);
         message_error_ccc(tempmessage_ccc);
-        strcpy(tempmessage_ccc, _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -12688,7 +12688,7 @@ int open_source_disk_ccc(void)
     }
     if (disk1_fd_ccc == -1)
     {
-      strcpy(tempmessage_ccc, _("Error: Unable to open source"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to open source"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)", disk_1_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -12795,7 +12795,7 @@ int process_source_ccc(void)
     do_soft_reset_ccc(current_disk_ccc);
     if (identify_device_ccc())
     {
-      strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed to perform identify device command"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -12803,9 +12803,9 @@ int process_source_ccc(void)
     }
     else if (ata_status_ccc & 1)
     {
-      strcpy(tempmessage_ccc, _("Failed to perform identify device command"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Failed to perform identify device command"));
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, _("\nStatus / Error"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("\nStatus / Error"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %02x / %02x", ata_status_ccc, ata_error_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -12815,7 +12815,7 @@ int process_source_ccc(void)
     }
     else if ((scsi_passthrough_ccc || ata_passthrough_ccc) && io_host_status_ccc)
     {
-      strcpy(tempmessage_ccc, _("Host IO error during identify"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during identify"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
       message_error_ccc(tempmessage_ccc);
@@ -13226,7 +13226,7 @@ int process_source_ccc(void)
       allow16 = 0;
       if (read_capacity_10_ccc() || sense_key_ccc > 1)
       {
-        strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Read Capacity command failed with sense data"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
         message_error_ccc(tempmessage_ccc);
@@ -13236,7 +13236,7 @@ int process_source_ccc(void)
       }
       else if (io_host_status_ccc)
       {
-        strcpy(tempmessage_ccc, _("Host IO error during capacity"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during capacity"));
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
         message_error_ccc(tempmessage_ccc);
@@ -13279,7 +13279,7 @@ int process_source_ccc(void)
         // if read capacity 16 failed then try read capacity 10
         if (read_capacity_10_ccc() || sense_key_ccc > 1)
         {
-          strcpy(tempmessage_ccc, _("Error: Read Capacity command failed with sense data"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Read Capacity command failed with sense data"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %x %x %x.\n", sense_key_ccc, asc_ccc, ascq_ccc);
           message_error_ccc(tempmessage_ccc);
@@ -13289,7 +13289,7 @@ int process_source_ccc(void)
         }
         else if (io_host_status_ccc)
         {
-          strcpy(tempmessage_ccc, _("Host IO error during capacity"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Host IO error during capacity"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %d (%s)", io_host_status_ccc, host_error_code_ccc(io_host_status_ccc));
           message_error_ccc(tempmessage_ccc);
@@ -13402,7 +13402,7 @@ int process_source_ccc(void)
     }
     if (remainder)
     {
-      strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", size);
       message_error_ccc(tempmessage_ccc);
@@ -13435,7 +13435,7 @@ int process_source_ccc(void)
     long long remainder = generic_source_total_size_ccc % sector_size_ccc;
     if (remainder)
     {
-      strcpy(tempmessage_ccc, _("Error: Source size is not divisable by sector size,\nsource size is"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Source size is not divisable by sector size,\nsource size is"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", generic_source_total_size_ccc);
       message_error_ccc(tempmessage_ccc);
@@ -13447,7 +13447,7 @@ int process_source_ccc(void)
 
   if (source_total_size_ccc <= 0)
   {
-    strcpy(tempmessage_ccc, _("Error: Source size is invalid"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Source size is invalid"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %lld", source_total_size_ccc);
     message_error_ccc(tempmessage_ccc);
@@ -13464,7 +13464,7 @@ int process_source_ccc(void)
   end_position_ccc = input_offset_ccc + read_size_ccc;
   if (end_position_ccc > source_total_size_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: Read size extends past end of device"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Read size extends past end of device"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -13476,7 +13476,7 @@ int process_source_ccc(void)
     if ((scsi_passthrough_ccc || usb_mode_ccc) && !ata_identify_success_ccc)
     {
       size = IDENTIFY_BUFFER_SIZE / 4;
-      strcat(identify_device_raw_text_ccc, "# scsi inquiry\n");
+      strncat(identify_device_raw_text_ccc, "# scsi inquiry\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
     }
     unsigned char idbuffer[IDENTIFY_BUFFER_SIZE];
     if (ata_identify_success_ccc)
@@ -13492,50 +13492,50 @@ int process_source_ccc(void)
     for (i = 0; i < size; i += 16)
     {
       snprintf(tempstring, sizeof(tempstring), "# %x: ", i);
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       unsigned char *c;
       int n;
       for (n = 0; n < 16 && i + n < size; n++)
       {
         c = (unsigned char *)idbuffer + i + n;
         snprintf(tempstring, sizeof(tempstring), "%02x ", *c);
-        strcat(identify_device_raw_text_ccc, tempstring);
+        strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       }
       snprintf(tempstring, sizeof(tempstring), "   ");
       for (n = 0; n < 16 && i + n < size; n++)
       {
         c = (unsigned char *)idbuffer + i + n;
         snprintf(tempstring, sizeof(tempstring), "%c", isprint(*c) ? *c : '.');
-        strcat(identify_device_raw_text_ccc, tempstring);
+        strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       }
-      strcat(identify_device_raw_text_ccc, "\n");
+      strncat(identify_device_raw_text_ccc, "\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
     }
     if ((scsi_passthrough_ccc || usb_mode_ccc) && !ata_identify_success_ccc)
     {
-      strcat(identify_device_raw_text_ccc, "# scsi read capacity\n");
+      strncat(identify_device_raw_text_ccc, "# scsi read capacity\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       size = 32;
       memcpy(&idbuffer, &read_capacity_buffer_ccc, size);
       int i;
       for (i = 0; i < size; i += 16)
       {
         snprintf(tempstring, sizeof(tempstring), "# %x: ", i);
-        strcat(identify_device_raw_text_ccc, tempstring);
+        strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
         unsigned char *c;
         int n;
         for (n = 0; n < 16 && i + n < size; n++)
         {
           c = (unsigned char *)idbuffer + i + n;
           snprintf(tempstring, sizeof(tempstring), "%02x ", *c);
-          strcat(identify_device_raw_text_ccc, tempstring);
+          strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
         }
         snprintf(tempstring, sizeof(tempstring), "   ");
         for (n = 0; n < 16 && i + n < size; n++)
         {
           c = (unsigned char *)idbuffer + i + n;
           snprintf(tempstring, sizeof(tempstring), "%c", isprint(*c) ? *c : '.');
-          strcat(identify_device_raw_text_ccc, tempstring);
+          strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
         }
-        strcat(identify_device_raw_text_ccc, "\n");
+        strncat(identify_device_raw_text_ccc, "\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       }
     }
     else
@@ -13569,23 +13569,23 @@ int process_source_ccc(void)
       identify_flags_ccc.ultra_dma_mode4_selected = get_flag_data_from_identify_ccc(88, 12, 12);
       identify_flags_ccc.ultra_dma_mode5_selected = get_flag_data_from_identify_ccc(88, 13, 13);
       identify_flags_ccc.ultra_dma_mode6_selected = get_flag_data_from_identify_ccc(88, 14, 14);
-      strcat(identify_device_raw_text_ccc, "#\n");
+      strncat(identify_device_raw_text_ccc, "#\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       snprintf(tempstring, sizeof(tempstring), "# lba supported = %s\n", identify_flags_ccc.lba_supported ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       snprintf(tempstring, sizeof(tempstring), "# 48 bit supported = %s\n", identify_flags_ccc.extended_support ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       snprintf(tempstring, sizeof(tempstring), "# smart supported = %s\n", identify_flags_ccc.smart_supported ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       snprintf(tempstring, sizeof(tempstring), "# smart enabled = %s\n", identify_flags_ccc.smart_enabled ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       snprintf(tempstring, sizeof(tempstring), "# security locked = %s\n", identify_flags_ccc.drive_locked ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       // snprintf (tempstring, sizeof(tempstring), "# sct error recovery control supported = %s\n", identify_flags_ccc.sct_error_recovery_control ? "yes" : "no");
       // strcat (identify_device_raw_text_ccc, tempstring);
       // snprintf (tempstring, sizeof(tempstring), "# ncq supported = %s\n", identify_flags_ccc.ncq_supported ? "yes" : "no");
       // strcat (identify_device_raw_text_ccc, tempstring);
       snprintf(tempstring, sizeof(tempstring), "# rebuild assist supported = %s\n", identify_flags_ccc.rebuild_assist_supported ? "yes" : "no");
-      strcat(identify_device_raw_text_ccc, tempstring);
+      strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       // snprintf (tempstring, sizeof(tempstring), "# hpa supported = %s\n", identify_flags_ccc.hpa_supported ? "yes" : "no");
       // strcat (identify_device_raw_text_ccc, tempstring);
       strcat(identify_device_raw_text_ccc, "#\n");
@@ -13824,7 +13824,7 @@ int extract_smart_data_ccc(void)
 {
   if (!smart_supported_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: SMART not supported on this device"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: SMART not supported on this device"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -13832,7 +13832,7 @@ int extract_smart_data_ccc(void)
   }
   if (!smart_enabled_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: SMART not enabled on this device"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: SMART not enabled on this device"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -13870,7 +13870,7 @@ int extract_smart_data_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, _("Error: Unable to read SMART data from device"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read SMART data from device"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "return=%d status=0x%x sense=0x%x", retsmart, ata_status_ccc, sense_key_ccc);
     message_error_ccc(tempmessage_ccc);
@@ -14992,14 +14992,14 @@ void invoke_hba_reset_ccc(void)
 {
   if (do_hba_reset_ccc())
   {
-    strcpy(tempmessage_ccc, "hba reset error");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "hba reset error");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else
   {
-    strcpy(tempmessage_ccc, "hba reset complete");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "hba reset complete");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -15171,7 +15171,7 @@ void disable_ports_ccc(void)
           return;
         }
       }
-      strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
@@ -15224,7 +15224,7 @@ void restore_ports_ccc(void)
         return;
       }
     }
-    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -15269,7 +15269,7 @@ void disable_usb_mass_storage_ccc(void)
       clear_error_message_ccc();
       return;
     }
-    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -15306,7 +15306,7 @@ void restore_usb_mass_storage_ccc(void)
       clear_error_message_ccc();
       return;
     }
-    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -15578,7 +15578,7 @@ int initialize_head_map_memory_ccc(void)
   head_map_position_ccc = malloc(sizeof(*head_map_position_ccc) * head_map_rows_ccc);
   if (head_map_position_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15591,7 +15591,7 @@ int initialize_head_map_memory_ccc(void)
   head_map_size_ccc = malloc(sizeof(*head_map_size_ccc) * head_map_rows_ccc);
   if (head_map_size_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15604,7 +15604,7 @@ int initialize_head_map_memory_ccc(void)
   head_map_final_ccc = malloc(sizeof(*head_map_final_ccc) * head_map_rows_ccc);
   if (head_map_final_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15617,7 +15617,7 @@ int initialize_head_map_memory_ccc(void)
   head_map_head_ccc = malloc(sizeof(*head_map_head_ccc) * head_map_rows_ccc);
   if (head_map_head_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15630,7 +15630,7 @@ int initialize_head_map_memory_ccc(void)
   head_map_status_ccc = malloc(sizeof(*head_map_status_ccc) * head_map_rows_ccc);
   if (head_map_status_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15649,7 +15649,7 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_position_ccc = realloc(head_map_position_ccc, head_map_rows_ccc * sizeof(*head_map_position_ccc));
   if (temp_head_map_position_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15662,7 +15662,7 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_size_ccc = realloc(head_map_size_ccc, head_map_rows_ccc * sizeof(*head_map_size_ccc));
   if (temp_head_map_size_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15675,7 +15675,7 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_final_ccc = realloc(head_map_final_ccc, head_map_rows_ccc * sizeof(*head_map_final_ccc));
   if (temp_head_map_final_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15688,7 +15688,7 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_head_ccc = realloc(head_map_head_ccc, head_map_rows_ccc * sizeof(*head_map_head_ccc));
   if (temp_head_map_head_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15701,7 +15701,7 @@ int increase_head_map_memory_ccc(int new_lines)
   temp_head_map_status_ccc = realloc(head_map_status_ccc, head_map_rows_ccc * sizeof(*head_map_status_ccc));
   if (temp_head_map_status_ccc == NULL)
   {
-    strcpy(tempmessage_ccc, _("Error allocating memory"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error allocating memory"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s)", strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -15718,7 +15718,7 @@ int set_rebuild_assist_enabled_ccc(void)
 {
   if (!ahci_mode_ccc)
   {
-    strcpy(tempmessage_ccc, _("Rebuild assist only works in direct ahci mode"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Rebuild assist only works in direct ahci mode"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15726,7 +15726,7 @@ int set_rebuild_assist_enabled_ccc(void)
   }
   if (!ncq_supported_ccc || !rebuild_assist_supported_ccc)
   {
-    strcpy(tempmessage_ccc, _("Rebuild assist is not supported on this device"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Rebuild assist is not supported on this device"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15736,7 +15736,7 @@ int set_rebuild_assist_enabled_ccc(void)
   // first disable rebuild assist to make sure it is cleared
   if (disable_rebuild_assist_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error disabling rebuild assist"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error disabling rebuild assist"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15747,7 +15747,7 @@ int set_rebuild_assist_enabled_ccc(void)
   // now enable rebuild assist
   if (enable_rebuild_assist_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error enabling rebuild assist"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error enabling rebuild assist"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15836,7 +15836,7 @@ int rebuild_assist_map_heads_ccc(void)
   memcpy(rebuild_assist_working_mask_ccc, rebuild_assist_element_mask_ccc, REBUILD_ASSIST_FIELD_LENGTH);
   if (!ncq_supported_ccc || !rebuild_assist_supported_ccc)
   {
-    strcpy(tempmessage_ccc, "rebuild assist is not supported on this device");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "rebuild assist is not supported on this device");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15844,7 +15844,7 @@ int rebuild_assist_map_heads_ccc(void)
   }
   if (!ahci_mode_ccc)
   {
-    strcpy(tempmessage_ccc, "rebuild assist only works in direct ahci mode");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "rebuild assist only works in direct ahci mode");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15859,9 +15859,9 @@ int rebuild_assist_map_heads_ccc(void)
   // first disable rebuild assist to make sure it is cleared
   if (disable_rebuild_assist_ccc())
   {
-    strcpy(tempmessage_ccc, "error disabling rebuild assist\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error disabling rebuild assist\n");
     message_error_ccc(tempmessage_ccc);
-    strcpy(tempmessage_ccc, "error mapping heads");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15883,9 +15883,9 @@ int rebuild_assist_map_heads_ccc(void)
     current_head = rebuild_assist_get_next_head_ccc(current_head);
     if (current_head < 0)
     {
-      strcpy(tempmessage_ccc, "error getting next head\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error getting next head\n");
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15896,9 +15896,9 @@ int rebuild_assist_map_heads_ccc(void)
   int number_of_heads = rebuild_assist_get_number_of_heads_ccc();
   if (number_of_heads < 1)
   {
-    strcpy(tempmessage_ccc, "error getting number of heads\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error getting number of heads\n");
     message_error_ccc(tempmessage_ccc);
-    strcpy(tempmessage_ccc, "error mapping heads");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15908,9 +15908,9 @@ int rebuild_assist_map_heads_ccc(void)
   int highest_head = rebuild_assist_get_highest_head_ccc();
   if (highest_head < 1)
   {
-    strcpy(tempmessage_ccc, "error getting highest head\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error getting highest head\n");
     message_error_ccc(tempmessage_ccc);
-    strcpy(tempmessage_ccc, "error mapping heads");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15954,9 +15954,9 @@ int rebuild_assist_map_heads_ccc(void)
     failed = 0;
     if (disable_rebuild_assist_ccc())
     {
-      strcpy(tempmessage_ccc, "error disabling rebuild assist\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error disabling rebuild assist\n");
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15964,9 +15964,9 @@ int rebuild_assist_map_heads_ccc(void)
     }
     if (rebuild_assist_disable_head_ccc(current_head))
     {
-      strcpy(tempmessage_ccc, "error disabling head\n");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error disabling head\n");
       message_error_ccc(tempmessage_ccc);
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15980,7 +15980,7 @@ int rebuild_assist_map_heads_ccc(void)
     if (retstat)
     {
       fprintf(stdout, "read chunk failure, return=0x%x status=%02x error=%02x\n", retstat, ata_status_ccc, ata_error_ccc);
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15999,7 +15999,7 @@ int rebuild_assist_map_heads_ccc(void)
       if (ret || (ata_status_ccc & 1))
       {
         fprintf(stdout, "failed to read ncq log, return=0x%x status=%02x error=%02x\n", ret, ata_status_ccc, ata_error_ccc);
-        strcpy(tempmessage_ccc, "error mapping heads");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -16057,7 +16057,7 @@ int rebuild_assist_map_heads_ccc(void)
       else if (failcount > number_of_heads)
       {
         fprintf(stdout, "unable to find pattern\n");
-        strcpy(tempmessage_ccc, "error mapping heads");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -16080,7 +16080,7 @@ int rebuild_assist_map_heads_ccc(void)
     current_head = rebuild_assist_get_next_head_ccc(current_head);
     if (current_head < 0)
     {
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -16274,9 +16274,9 @@ int rebuild_assist_map_heads_ccc(void)
       int too_far = 0;
       if (disable_rebuild_assist_ccc())
       {
-        strcpy(tempmessage_ccc, "error disabling rebuild assist\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error disabling rebuild assist\n");
         message_error_ccc(tempmessage_ccc);
-        strcpy(tempmessage_ccc, "error mapping heads");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -16285,9 +16285,9 @@ int rebuild_assist_map_heads_ccc(void)
       do_soft_reset_ccc(0);
       if (rebuild_assist_disable_head_ccc(current_head))
       {
-        strcpy(tempmessage_ccc, "error disabling head\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error disabling head\n");
         message_error_ccc(tempmessage_ccc);
-        strcpy(tempmessage_ccc, "error mapping heads");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -16304,7 +16304,7 @@ int rebuild_assist_map_heads_ccc(void)
         if (retstat)
         {
           fprintf(stdout, "read chunk failure, return=0x%x status=%02x error=%02x\n", retstat, ata_status_ccc, ata_error_ccc);
-          strcpy(tempmessage_ccc, "error mapping heads");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -16323,7 +16323,7 @@ int rebuild_assist_map_heads_ccc(void)
           if (ret || (ata_status_ccc & 1))
           {
             fprintf(stdout, "failed to read ncq log, return=0x%x status=%02x error=%02x\n", ret, ata_status_ccc, ata_error_ccc);
-            strcpy(tempmessage_ccc, "error mapping heads");
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -16402,7 +16402,7 @@ int rebuild_assist_map_heads_ccc(void)
         else if (failed)
         {
           fprintf(stdout, "head %d failed position=%08llx\n", current_head, current_position);
-          strcpy(tempmessage_ccc, "error mapping heads");
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();

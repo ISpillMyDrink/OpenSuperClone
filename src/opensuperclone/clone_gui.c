@@ -520,7 +520,7 @@ void select_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -553,7 +553,7 @@ void new_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -586,7 +586,7 @@ void new_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -617,14 +617,14 @@ void select_ddrescue_file_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (!new_project_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must start a new project before importing a ddrescue log file"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must start a new project before importing a ddrescue log file"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -654,7 +654,7 @@ void save_file_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -664,7 +664,7 @@ void save_file_ccc(void)
     return_value_ccc = write_logfile_ccc(log_file_ccc, 0);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error writing progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -676,7 +676,7 @@ void save_file_as_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -699,7 +699,7 @@ void save_file_as_ccc(void)
       return_value_ccc = write_logfile_ccc(filename, 0);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, _("Error writing progress log file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -714,7 +714,7 @@ void save_domain_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -724,7 +724,7 @@ void save_domain_ccc(void)
     return_value_ccc = write_domainfile_ccc(domain_file_ccc, 0);
     if (return_value_ccc)
     {
-      strcpy(tempmessage_ccc, _("Error writing progress log file"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -736,7 +736,7 @@ void save_domain_as_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -759,7 +759,7 @@ void save_domain_as_ccc(void)
       return_value_ccc = write_domainfile_ccc(filename, 0);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, _("Error writing progress log file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error writing progress log file"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -774,7 +774,7 @@ void export_ddrescue_file_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -797,7 +797,7 @@ void export_ddrescue_file_ccc(void)
       return_value_ccc = write_ddrescue_logfile_ccc(filename);
       if (return_value_ccc)
       {
-        strcpy(tempmessage_ccc, _("Error exporting ddrescue log (map) file"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error exporting ddrescue log (map) file"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -812,7 +812,7 @@ void select_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -842,14 +842,14 @@ void add_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (1 && !do_domain_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: Domain is not active or no domain file loaded"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Domain is not active or no domain file loaded"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -899,7 +899,7 @@ static void load_log_file_ccc(char *log_file)
     int ret2 = 0;
     if (ret != 0)
     {
-      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -918,7 +918,7 @@ static void load_log_file_ccc(char *log_file)
       check_log_size_ccc = 1;
       if (ret != 0 || ret2 != 0)
       {
-        strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
         clear_error_message_ccc();
@@ -960,7 +960,7 @@ static void load_ddrescue_log_file_ccc(char *log_file)
     int ret2 = 0;
     if (ret != 0)
     {
-      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -979,7 +979,7 @@ static void load_ddrescue_log_file_ccc(char *log_file)
         ret = check_log_ccc();
         if (ret != 0 || ret2 != 0)
         {
-          strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
           clear_error_message_ccc();
@@ -1020,7 +1020,7 @@ static void load_domain_file_ccc(char *log_file)
     int ret = read_domain_file_ccc(domain_file_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1045,7 +1045,7 @@ static void add_domain_file_ccc(char *log_file)
   int ret = read_domain_add_file_ccc(log_file);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1057,7 +1057,7 @@ void clear_domain_ccc(void)
 {
   if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1138,21 +1138,21 @@ void choose_source_ccc(void)
   use_rebuild_assist_ccc = false;
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (memory_failed_ccc)
   {
-    strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1175,8 +1175,8 @@ void choose_source_ccc(void)
       disk_1_ccc = malloc(strlen(filename) + 2);
       strcpy(disk_1_ccc, filename);
       g_free(filename);
-      strcpy(current_source_model_ccc, "");
-      strcpy(current_source_serial_ccc, "");
+      current_source_model_ccc[0] = "\0";
+      current_source_serial_ccc[0] = "\0";
       update_display_ccc(0);
 
       if (!connect_source_disk_ccc() && !process_source_ccc() && !check_and_adjust_variables_after_choosing_source_ccc(new_project_ccc))
@@ -1198,7 +1198,7 @@ void choose_source_ccc(void)
           int ret = read_domain_file_ccc(domain_file_ccc);
           if (ret < 0)
           {
-            strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -1217,8 +1217,8 @@ void choose_source_ccc(void)
       {
         fprintf(stdout, "error selecting source\n");
         clear_source_ccc();
-        strcpy(current_source_model_ccc, "");
-        strcpy(current_source_serial_ccc, "");
+        current_source_model_ccc[0] = "\0";
+        current_source_serial_ccc[0] = "\0";
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1262,15 +1262,15 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, sizeof(button_label), "%s %s %s %s %llx %d %llx (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %d %llx (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, sizeof(button_label), "%s %s %llx %d %llx (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %d %llx (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else
         {
-          snprintf(button_label, sizeof(button_label), "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -1285,15 +1285,15 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, sizeof(button_label), "%s %s %s %s %llx %llx %llx %d (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %llx %llx %d (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, sizeof(button_label), "%s %s %llx %llx %llx %d (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %llx %llx %d (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else
         {
-          snprintf(button_label, sizeof(button_label), "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -1308,15 +1308,15 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, sizeof(button_label), "%d:%d %04x:%04x %02x %02x %d %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i], usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %02x %02x %d %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i], usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, sizeof(button_label), "%d:%d %04x:%04x %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
         }
         else
         {
-          snprintf(button_label, sizeof(button_label), "%d:%d %04x:%04x %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -1329,7 +1329,7 @@ void choose_source_ccc(void)
       for (i = 0; i < device_count_ccc; i++)
       {
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
-        snprintf(button_label, sizeof(button_label), "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+        snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
         g_signal_connect(button[i], "clicked", G_CALLBACK(get_source_from_button_ccc), GINT_TO_POINTER(i));
@@ -1379,8 +1379,8 @@ void choose_source_ccc(void)
         if (ret == -100)
         {
           clear_source_ccc();
-          strcpy(current_source_model_ccc, "");
-          strcpy(current_source_serial_ccc, "");
+          current_source_model_ccc[0] = "\0";
+          current_source_serial_ccc[0] = "\0";
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1390,8 +1390,8 @@ void choose_source_ccc(void)
         {
           fprintf(stdout, "error selecting source, ret=%d\n", ret);
           clear_source_ccc();
-          strcpy(current_source_model_ccc, "");
-          strcpy(current_source_serial_ccc, "");
+          current_source_model_ccc[0] = "\0";
+          current_source_serial_ccc[0] = "\0";
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1401,8 +1401,8 @@ void choose_source_ccc(void)
         {
           fprintf(stdout, "error selecting source, ret=%d\n", ret);
           clear_source_ccc();
-          strcpy(current_source_model_ccc, "");
-          strcpy(current_source_serial_ccc, "");
+          current_source_model_ccc[0] = "\0";
+          current_source_serial_ccc[0] = "\0";
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1428,7 +1428,7 @@ void choose_source_ccc(void)
           int ret = read_domain_file_ccc(domain_file_ccc);
           if (ret < 0)
           {
-            strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
             clear_error_message_ccc();
@@ -1447,8 +1447,8 @@ void choose_source_ccc(void)
       {
         fprintf(stdout, "error selecting source\n");
         clear_source_ccc();
-        strcpy(current_source_model_ccc, "");
-        strcpy(current_source_serial_ccc, "");
+        current_source_model_ccc[0] = "\0";
+        current_source_serial_ccc[0] = "\0";
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1488,14 +1488,14 @@ void choose_destination_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1594,7 +1594,7 @@ void choose_destination_ccc(void)
             int ret = read_domain_file_ccc(domain_file_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -1626,14 +1626,14 @@ void choose_image_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1669,8 +1669,8 @@ void choose_image_ccc(void)
         strcpy(disk_2_ccc, filename);
         destination_chosen_ccc = 1;
         destination_size_valid_ccc = 0;
-        strcpy(current_destination_model_ccc, "");
-        strcpy(current_destination_serial_ccc, "");
+        current_destination_model_ccc[0] = "\0";
+        current_destination_serial_ccc[0] = "\0";
         logfile_changed_ccc = true;
 
         if (driver_only_ccc)
@@ -1684,7 +1684,7 @@ void choose_image_ccc(void)
             int ret = read_domain_file_ccc(domain_file_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, _("Error processing log file!\nThe log file was not loaded.\n"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error processing log file!\nThe log file was not loaded.\n"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -1713,14 +1713,14 @@ void choose_null_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
   }
   else if (connected_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must disconnect first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1750,7 +1750,7 @@ void connect_devices_ccc(void)
   }
   if (memory_failed_ccc)
   {
-    strcpy(tempmessage_ccc, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1769,7 +1769,7 @@ void connect_devices_ccc(void)
     }
     if (new_project_ccc && !fill_mode_ccc)
     {
-      strcpy(tempmessage_ccc, _("No source chosen\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("No source chosen\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1777,7 +1777,7 @@ void connect_devices_ccc(void)
     }
     else if (ret || ret2)
     {
-      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1785,7 +1785,7 @@ void connect_devices_ccc(void)
     }
     else if (driver_only_ccc && !driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1796,7 +1796,7 @@ void connect_devices_ccc(void)
       if (open_target_destination_ccc())
       {
         release_devices_ccc();
-        strcpy(tempmessage_ccc, _("Unable to connect devices"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1827,7 +1827,7 @@ void connect_devices_ccc(void)
     }
     if (check_same_device_ccc())
     {
-      strcpy(tempmessage_ccc, _("Source and Destination cannot be the same device"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Source and Destination cannot be the same device"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1835,7 +1835,7 @@ void connect_devices_ccc(void)
     }
     else if (ret || ret2)
     {
-      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1846,7 +1846,7 @@ void connect_devices_ccc(void)
       if (connect_source_disk_ccc() || open_target_destination_ccc())
       {
         release_devices_ccc();
-        strcpy(tempmessage_ccc, _("Unable to connect devices"));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to connect devices"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1863,7 +1863,7 @@ void connect_devices_ccc(void)
           fprintf(stdout, "Warning! Destination is smaller than souce.\n");
           fprintf(stdout, "Source size= %lld\n", source_total_size_ccc);
           fprintf(stdout, "Target size= %lld\n", target_total_size_ccc);
-          strcpy(tempmessage_ccc, _("Warning! The destination is smaller than the source.\nSome data may not be copied."));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Warning! The destination is smaller than the source.\nSome data may not be copied."));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
           clear_error_message_ccc();
@@ -1878,26 +1878,26 @@ void connect_devices_ccc(void)
   {
     if (!project_chosen_ccc)
     {
-      strcpy(tempmessage_ccc, _("No project chosen\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("No project chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
     if (!source_chosen_ccc && !(fill_mode_ccc || driver_only_ccc))
     {
-      strcpy(tempmessage_ccc, _("No source chosen\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("No source chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
     if (!destination_chosen_ccc)
     {
-      strcpy(tempmessage_ccc, _("No destination chosen\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("No destination chosen\n"));
       message_error_ccc(tempmessage_ccc);
     }
-    strcpy(tempmessage_ccc, _("You must choose a project, source, and destination before connecting."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project, source, and destination before connecting."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
     if (!relaycheck)
     {
-      strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -1960,7 +1960,7 @@ void set_connected_ccc(void)
   if (driver_mode_ccc && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    strcpy(tempmessage_ccc, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
@@ -2017,8 +2017,8 @@ void clear_source_ccc(void)
 {
   source_chosen_ccc = 0;
   disk_1_ccc = NULL;
-  strcpy(current_source_model_ccc, "");
-  strcpy(current_source_serial_ccc, "");
+  current_source_model_ccc[0] = '\0';
+  current_source_serial_ccc[0] = '\0';
   source_total_size_ccc = 0;
 }
 
@@ -2026,8 +2026,8 @@ void clear_destination_ccc(void)
 {
   destination_chosen_ccc = 0;
   disk_2_ccc = NULL;
-  strcpy(current_destination_model_ccc, "");
-  strcpy(current_destination_serial_ccc, "");
+  current_destination_model_ccc[0] = '\0';
+  current_destination_serial_ccc[0] = '\0';
 }
 
 void update_gui_display_ccc(void)
@@ -2156,7 +2156,7 @@ void check_driver_null_condition_ccc(void)
   if (disk_2_ccc != NULL && driver_mode_ccc == 0 && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    strcpy(tempmessage_ccc, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
@@ -3116,7 +3116,7 @@ int open_ports_dialog_ccc(char *current_ports)
   update_ports_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "update_ports_button"));
   g_object_unref(builder);
 
-  strcpy(new_ports_ccc, "");
+  new_ports_ccc[0] = '\0';
   char portsinfo[4096] = "";
   snprintf(portsinfo, sizeof(portsinfo), "%s%s", _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"),
            _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
@@ -3310,7 +3310,7 @@ void do_test_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3342,7 +3342,7 @@ void do_test_primary_relay_ccc(void)
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3363,7 +3363,7 @@ void do_test_primary_relay_ccc(void)
     g_print("deactivate primary relay\n");
     if (deactivate_primary_relay_ccc())
     {
-      strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -3384,7 +3384,7 @@ void do_test_primary_relay_ccc(void)
     }
     g_print("\n");
     g_print("relay test complete\n");
-    strcpy(tempmessage_ccc, _("Operation completed successfully\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -3415,7 +3415,7 @@ int cycle_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3425,7 +3425,7 @@ int cycle_primary_relay_ccc(void)
   g_print("activate primary relay ");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3443,7 +3443,7 @@ int cycle_primary_relay_ccc(void)
   g_print("deactivate and wait ");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -3529,7 +3529,7 @@ void test_command_ccc(void)
   {
     int status = WEXITSTATUS(ret);
     int signal = WTERMSIG(ret);
-    strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
@@ -3538,7 +3538,7 @@ void test_command_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, _("The command completed normally"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The command completed normally"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -3554,7 +3554,7 @@ void test_power_command_ccc(void)
   {
     int status = WEXITSTATUS(ret);
     int signal = WTERMSIG(ret);
-    strcpy(tempmessage_ccc, _("The called command failed with exit signal / status"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The called command failed with exit signal / status"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%d / %d)", signal, status);
     message_error_ccc(tempmessage_ccc);
@@ -3563,7 +3563,7 @@ void test_power_command_ccc(void)
   }
   else
   {
-    strcpy(tempmessage_ccc, _("The command completed normally"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The command completed normally"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
@@ -4379,7 +4379,7 @@ void do_reset_status_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4410,7 +4410,7 @@ void do_reset_log_status_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4459,7 +4459,7 @@ void do_repair_log_ccc(void)
 {
   if (!project_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("You must choose a project first."));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4492,7 +4492,7 @@ void do_repair_log_ccc(void)
     int ret = check_and_repair_log_ccc();
     if (check_log_ccc() || ret)
     {
-      strcpy(tempmessage_ccc, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4553,7 +4553,7 @@ void choose_primary_usb_ccc(void)
     if (usb_known_relay_ccc[i])
     {
       char button_label[MAX_BUTTON_LABEL_SIZE] = "";
-      snprintf(button_label, sizeof(button_label), "%04x:%04x %s %s %s\n", usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+      snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%04x:%04x %s %s %s\n", usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
       button[i] = gtk_button_new_with_label(button_label);
       gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
       g_signal_connect(button[i], "clicked", G_CALLBACK(get_usb_from_button_ccc), GINT_TO_POINTER(i));
@@ -4609,7 +4609,7 @@ void do_activate_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4640,7 +4640,7 @@ void do_activate_primary_relay_ccc(void)
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4671,7 +4671,7 @@ void do_deactivate_primary_relay_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4702,7 +4702,7 @@ void do_deactivate_primary_relay_ccc(void)
   g_print("deactivate primary relay\n");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4733,7 +4733,7 @@ void do_activate_primary_relay_main_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4742,7 +4742,7 @@ void do_activate_primary_relay_main_ccc(void)
   g_print("activate primary relay\n");
   if (activate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4753,7 +4753,7 @@ void do_deactivate_primary_relay_main_ccc(void)
 {
   if (!usbr1_chosen_ccc)
   {
-    strcpy(tempmessage_ccc, _("Error: No relay has been chosen"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4762,7 +4762,7 @@ void do_deactivate_primary_relay_main_ccc(void)
   g_print("deactivate primary relay\n");
   if (deactivate_primary_relay_ccc())
   {
-    strcpy(tempmessage_ccc, _("Error operating relay, see console for more information"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error operating relay, see console for more information"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4773,7 +4773,7 @@ void map_heads_ccc(void)
 {
   if (!connected_ccc)
   {
-    strcpy(tempmessage_ccc, "you must be connected to map heads");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "you must be connected to map heads");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4782,7 +4782,7 @@ void map_heads_ccc(void)
   {
     if (rebuild_assist_map_heads_ccc())
     {
-      strcpy(tempmessage_ccc, "error mapping heads");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();

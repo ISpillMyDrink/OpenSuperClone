@@ -2811,13 +2811,13 @@ int do_hba_reset_ccc(void)
   else if (!ahci_mode_ccc)
   {
     fprintf(stdout, "not ahci mode, hba reset not performed\n");
-    strcpy(tempmessage_ccc, "not ahci mode, hba reset not performed\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "not ahci mode, hba reset not performed\n");
     message_error_ccc(tempmessage_ccc);
   }
   else if (!enable_hba_reset_on_connect_source_ccc)
   {
     fprintf(stdout, "hba reset not enabled, hba reset not performed\n");
-    strcpy(tempmessage_ccc, "hba reset not enabled, hba reset not performed\n");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "hba reset not enabled, hba reset not performed\n");
     message_error_ccc(tempmessage_ccc);
   }
   return ret;
@@ -3506,7 +3506,7 @@ int hba_reset_ccc(void)
       if (hba_reset_address_ccc == 0)
       {
         fprintf(stderr, "hba address not valid, try choosing a source first\n");
-        strcpy(tempmessage_ccc, "hba address not valid, try choosing a source first\n");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "hba address not valid, try choosing a source first\n");
         message_error_ccc(tempmessage_ccc);
         return (-1);
       }
@@ -4082,7 +4082,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
 {
   if (!driver_installed_ccc)
   {
-    strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -4196,7 +4196,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4213,7 +4213,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4252,7 +4252,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4269,7 +4269,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4331,7 +4331,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -4347,7 +4347,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -4485,7 +4485,7 @@ int hba_test_ccc(void)
 
     if (!driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4505,7 +4505,7 @@ int hba_test_ccc(void)
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4522,7 +4522,7 @@ int hba_test_ccc(void)
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4552,7 +4552,7 @@ int hba_test_ccc(void)
 
     if (!driver_installed_ccc)
     {
-      strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -4572,7 +4572,7 @@ int hba_test_ccc(void)
     if (main_driver_fd_ccc == -1)
     {
       check_message_ccc = true;
-      strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4589,7 +4589,7 @@ int hba_test_ccc(void)
     int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
     if (ret < 0)
     {
-      strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
       message_error_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
       message_error_ccc(tempmessage_ccc);
@@ -4646,7 +4646,7 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -4666,7 +4666,7 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -4683,7 +4683,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5168,7 +5168,7 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -5188,7 +5188,7 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5205,7 +5205,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5235,7 +5235,7 @@ int hba_test_ccc(void)
 
         if (!driver_installed_ccc)
         {
-          strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
           clear_error_message_ccc();
@@ -5255,7 +5255,7 @@ int hba_test_ccc(void)
         if (main_driver_fd_ccc == -1)
         {
           check_message_ccc = true;
-          strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5272,7 +5272,7 @@ int hba_test_ccc(void)
         int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
         if (ret < 0)
         {
-          strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
           message_error_ccc(tempmessage_ccc);
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
           message_error_ccc(tempmessage_ccc);
@@ -5329,7 +5329,7 @@ int hba_test_ccc(void)
 
             if (!driver_installed_ccc)
             {
-              strcpy(tempmessage_ccc, _("The virtual disk device driver is not running"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The virtual disk device driver is not running"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
               clear_error_message_ccc();
@@ -5349,7 +5349,7 @@ int hba_test_ccc(void)
             if (main_driver_fd_ccc == -1)
             {
               check_message_ccc = true;
-              strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
@@ -5366,7 +5366,7 @@ int hba_test_ccc(void)
             int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
             if (ret < 0)
             {
-              strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
               message_error_ccc(tempmessage_ccc);
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
               message_error_ccc(tempmessage_ccc);
@@ -10506,7 +10506,7 @@ int start_driver_ccc(void)
   if (main_driver_fd_ccc == -1)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10530,7 +10530,7 @@ int start_driver_ccc(void)
   int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10553,7 +10553,7 @@ int start_driver_ccc(void)
   ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)
   {
-    strcpy(tempmessage_ccc, _("Error starting virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error starting virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10576,7 +10576,7 @@ int stop_driver_ccc(void)
   if (main_driver_fd_ccc == -1)
   {
     check_message_ccc = true;
-    strcpy(tempmessage_ccc, _("Error opening virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error opening virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10598,7 +10598,7 @@ int stop_driver_ccc(void)
   if (ret < 0)
   {
     error = 1;
-    strcpy(tempmessage_ccc, _("Error stoping virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error stoping virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
@@ -10616,7 +10616,7 @@ int stop_driver_ccc(void)
   if (ret < 0)
   {
     error = 1;
-    strcpy(tempmessage_ccc, _("Error closing virtual disk driver"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error closing virtual disk driver"));
     message_error_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " %s (%s)\n", driver_device_name_ccc, strerror(errno));
     message_error_ccc(tempmessage_ccc);
