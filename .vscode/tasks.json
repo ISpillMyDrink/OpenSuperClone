@@ -4,6 +4,28 @@
     "version": "2.0.0",
     "tasks": [
         {
+            //  Run OpenSuperClone (build it, if necessary).
+            "label": "▶️ Run OpenSuperClone",
+            "type": "shell",
+            "linux": {
+                "command": "[ -f ./Release/bin/opensuperclone ] || ./build.sh && sudo ./Release/bin/opensuperclone",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            //  Run OSCViewer (build it, if necessary).
+            "label": "▶️ Run OSCViewer",
+            "type": "shell",
+            "linux": {
+                "command": "[ -f ./Release/bin/oscviewer ] || ./build.sh && ./Release/bin/oscviewer",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             //  Build Release.
             "label": "🔧 Build Release",
             "type": "shell",
@@ -16,32 +38,10 @@
         },
         {
             //  Update PO files.
-            "label": "🔧 Update POs",
+            "label": "🌐 Update POs",
             "type": "shell",
             "linux": {
                 "command": "./update-pos.sh",
-            },
-            "presentation": {
-                "clear": true
-            }
-        },
-        {
-            //  Run OpenSuperClone.
-            "label": "▶️ Run OpenSuperClone",
-            "type": "shell",
-            "linux": {
-                "command": "sudo ./Release/bin/opensuperclone",
-            },
-            "presentation": {
-                "clear": true
-            }
-        },
-        {
-            //  Run OSCViewer.
-            "label": "▶️ Run OSCViewer",
-            "type": "shell",
-            "linux": {
-                "command": "./Release/bin/oscviewer",
             },
             "presentation": {
                 "clear": true

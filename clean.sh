@@ -1,3 +1,7 @@
+#!/bin/sh
+
+echo "Cleaning up..."
+
 if [ -d build ]; then
     rm -rf build
 fi

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 [ ! -d build ] && mkdir build
 
 echo "Configuring..."
@@ -25,7 +27,7 @@ else
     echo "Build succeeded."
 fi
 
-echo "Installing..."
+echo "Installing OpenSuperClone to /usr/local/..."
 sudo make install
 
 if [ $? -ne 0 ]; then

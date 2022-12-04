@@ -1,3 +1,7 @@
+#!/bin/sh
+
+echo "Uninstalling OpenSuperClone from /usr/local/..."
+
 if [ -f /usr/local/bin/opensuperclone ]; then
     sudo rm -f /usr/local/bin/opensuperclone
 fi

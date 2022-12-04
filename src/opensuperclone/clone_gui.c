@@ -305,6 +305,24 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_button_set_label(GTK_BUTTON(soft_reset_button_ccc), _("Soft\nReset"));
   gtk_button_set_label(GTK_BUTTON(hard_reset_button_ccc), _("Hard\nReset"));
 
+  // set button tooltips
+  gtk_widget_set_tooltip_text(connect_button_ccc, _("Connect to the drive"));
+  gtk_widget_set_tooltip_text(disconnect_button_ccc, _("Disconnect from the drive"));
+  gtk_widget_set_tooltip_text(start_button_ccc, _("Start the clone/virtual driver"));
+  gtk_widget_set_tooltip_text(stop_button_ccc, _("Stop the clone/virtual driver"));
+  gtk_widget_set_tooltip_text(analyze_button_ccc, _("Analyze the drive"));
+  gtk_widget_set_tooltip_text(analyze_long_button_ccc, _("Analyze the drive (extended)"));
+  gtk_widget_set_tooltip_text(smart_button_ccc, _("Retrieve SMART information"));
+  gtk_widget_set_tooltip_text(clone_mode_button_ccc, _("Switch to clone mode"));
+  gtk_widget_set_tooltip_text(agressive_driver_checkbutton_ccc, _("Activate slow driver"));
+  gtk_widget_set_tooltip_text(driver_mode1_button_ccc, _("Switch to virtual mode 1: This mode will use all available Phases (starting with Phase 4) when reading from the source"));
+  gtk_widget_set_tooltip_text(driver_mode2_button_ccc, _("Switch to virtual mode 2: This mode will only use Phase 4 and will not perform any further processing of a chunk"));
+  gtk_widget_set_tooltip_text(driver_mode3_button_ccc, _("Switch to virtual mode 3: This mode is the same as mode 3, but it will increase the read size (up to the cluster size) when it detects sequential reads"));
+  gtk_widget_set_tooltip_text(driver_mode4_button_ccc, _("Switch to virtual mode 4: This mode only reads from the destination, and will not read any data from the source"));
+  gtk_widget_set_tooltip_text(driver_mode5_button_ccc, _("Switch to virtual mode 5: This mode does not read any data and will instead return zeroed data"));
+  gtk_widget_set_tooltip_text(soft_reset_button_ccc, _("Soft reset the drive"));
+  gtk_widget_set_tooltip_text(hard_reset_button_ccc, _("Hard reset the drive"));
+
   gtk_label_set_text(GTK_LABEL(label_project_ccc), _("Project"));
   gtk_label_set_text(GTK_LABEL(label_domain_ccc), _("Domain"));
   gtk_label_set_text(GTK_LABEL(label_source_ccc), _("Source"));
@@ -338,6 +356,40 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), _("Remaining retry passes"));
   gtk_label_set_text(GTK_LABEL(label_drivermode_ccc), _("Clone/Driver Mode"));
   gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Clone"));
+
+  // add label tooltips
+  gtk_widget_set_tooltip_text(label_project_ccc, _("The project log file for the current recovery"));
+  gtk_widget_set_tooltip_text(label_domain_ccc, _("The domain file for the current recovery"));
+  gtk_widget_set_tooltip_text(label_source_ccc, _("The source drive to be recovered"));
+  gtk_widget_set_tooltip_text(label_destination_ccc, _("The destination drive or image file to be recovered to"));
+  gtk_widget_set_tooltip_text(label_totallba_ccc, _("The total number of LBAs in the source drive"));
+  gtk_widget_set_tooltip_text(label_lbatoread_ccc, _("The number of LBAs to be read from the source drive"));
+  gtk_widget_set_tooltip_text(label_domainsize_ccc, _("The size of the domain file in LBAs"));
+  gtk_widget_set_tooltip_text(label_runtime_ccc, _("The total time taken to recover the drive"));
+  gtk_widget_set_tooltip_text(label_remainingtime_ccc, _("The estimated time remaining to complete the recovery"));
+  gtk_widget_set_tooltip_text(label_currentposition_ccc, _("The current position in the source drive in LBAs"));
+  gtk_widget_set_tooltip_text(label_currentstatus_ccc, _("The current status of the recovery"));
+  gtk_widget_set_tooltip_text(label_currentrate_ccc, _("The current rate of the recovery"));
+  gtk_widget_set_tooltip_text(label_recentrate_ccc, _("The average rate of the last 5 minutes of the recovery"));
+  gtk_widget_set_tooltip_text(label_totalrate_ccc, _("The average rate of the entire recovery"));
+  gtk_widget_set_tooltip_text(label_skipsize_ccc, _("The base skip size"));
+  gtk_widget_set_tooltip_text(label_skips_ccc, _("The total number of skips so far"));
+  gtk_widget_set_tooltip_text(label_slowskips_ccc, _("The total number of skips due to slow reads so far"));
+  gtk_widget_set_tooltip_text(label_skipruns_ccc, _("The total number of skip runs so far"));
+  gtk_widget_set_tooltip_text(label_skipresets_ccc, _("The total number of times the skipping was reset due to exceeding the limit of 64 skips in a run"));
+  gtk_widget_set_tooltip_text(label_runsize_ccc, _("The size of the last skip run"));
+  gtk_widget_set_tooltip_text(label_finished_ccc, _("The total number of LBAs recovered so far"));
+  gtk_widget_set_tooltip_text(label_nontried_ccc, _("The total number of LBAs that have not been tried to be recovered"));
+  gtk_widget_set_tooltip_text(label_nontrimmed_ccc, _("The total number of LBAs that have not been trimmed"));
+  gtk_widget_set_tooltip_text(label_nondivided_ccc, _("The total number of LBAs that have not been divided"));
+  gtk_widget_set_tooltip_text(label_nonscraped_ccc, _("The total number of LBAs that have not been scraped"));
+  gtk_widget_set_tooltip_text(label_bad_ccc, _("The total number of LBAs that have been marked as bad"));
+  gtk_widget_set_tooltip_text(label_datapreview_ccc, _("A sample of data from the last good read since the last display update (will be all zeroes if no good reads have occurred since the last display update)"));
+  gtk_widget_set_tooltip_text(label_longestreadtime_ccc, _("The longest read time since the last display update / within the last 256 display updates / since the start of the recovery"));
+  gtk_widget_set_tooltip_text(label_filled_ccc, _("The total number of LBAs that have been filled either in Fill mode or Erase mode"));
+  gtk_widget_set_tooltip_text(label_retried_ccc, _("The total number of LBAs that have been retried"));
+  gtk_widget_set_tooltip_text(label_retrypasses_ccc, _("The total number of retry passes remaining"));
+  gtk_widget_set_tooltip_text(label_drivermode_ccc, _("The current mode of the recovery"));
 
   // set status buttons
   button_bbk_ccc = gtk_button_new_with_label("BBK");
@@ -375,6 +427,24 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_abrt_ccc, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_tk0nf_ccc, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_amnf_ccc, TRUE, TRUE, 0);
+
+  // set status buttons tooltips
+  gtk_widget_set_tooltip_text(button_bsy_ccc, _("Busy (The device is busy)"));
+  gtk_widget_set_tooltip_text(button_drdy_ccc, _("Device Ready (The device is ready to accept commands))"));
+  gtk_widget_set_tooltip_text(button_df_ccc, _("Device Fault (The device has detected a fault)"));
+  gtk_widget_set_tooltip_text(button_dsc_ccc, _("Device Seek Complete (Head is settled on the track)"));
+  gtk_widget_set_tooltip_text(button_drq_ccc, _("Data Request (The device is ready to transfer data)"));
+  gtk_widget_set_tooltip_text(button_corr_ccc, _("Corrected Data (The device has corrected data)"));
+  gtk_widget_set_tooltip_text(button_idx_ccc, _("Index (The device has reached the index mark)"));
+  gtk_widget_set_tooltip_text(button_err_ccc, _("Error (The device has detected an error)"));
+  gtk_widget_set_tooltip_text(button_bbk_ccc, _("Bad Block (The device has detected a bad block)"));
+  gtk_widget_set_tooltip_text(button_unc_ccc, _("Uncorrectable Data (The device has detected uncorrectable data)"));
+  gtk_widget_set_tooltip_text(button_mc_ccc, _("Media Change (The media has changed)"));
+  gtk_widget_set_tooltip_text(button_idnf_ccc, _("ID Not Found (The device could not find the sector's ID field)"));
+  gtk_widget_set_tooltip_text(button_mcr_ccc, _("Media Change Request (The device has requested a media change)"));
+  gtk_widget_set_tooltip_text(button_abrt_ccc, _("Command Aborted (The device has aborted the command)"));
+  gtk_widget_set_tooltip_text(button_tk0nf_ccc, _("Track 0 Not Found (The device could not find track 0)"));
+  gtk_widget_set_tooltip_text(button_amnf_ccc, _("Address Mark Not Found (The device could not find the address mark)"));
 
   // set intial button states
   set_disconnected_ccc();

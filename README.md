@@ -78,6 +78,7 @@ $ ./Release/bin/oscviewer
 * Switched from GTK2 to GTK3
 * Replaced localization system with gettext
 * Updated kernel driver to work on 5.15
+* Minor improvements to OSCViewer (color picker, minor graphical changes)
 
 ## 💵 Credits
 

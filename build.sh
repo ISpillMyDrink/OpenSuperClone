@@ -1,3 +1,5 @@
+#!/bin/sh
+
 [ ! -d build ] && mkdir build
 
 echo "Configuring..."
