@@ -159,7 +159,7 @@ msgstr "Schlechter Kopf"
 
 #: src/oscviewer/oscviewer.c:446
 msgid "Block Colors"
-msgstr ""
+msgstr "Block-Farben"
 
 #: src/oscviewer/oscviewer.c:440 src/oscviewer/oscviewer.c:728
 msgid "Current"
@@ -227,7 +227,7 @@ msgstr "Auflösung des Hauptpanels"
 
 #: src/oscviewer/oscviewer.c:447
 msgid "Marker Colors"
-msgstr ""
+msgstr "Markierungs-Farben"
 
 #: src/oscviewer/oscviewer.c:436 src/oscviewer/oscviewer.c:653
 #: src/oscviewer/oscviewer.c:2941

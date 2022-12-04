@@ -1,4 +1,7 @@
+# Find PkgConfig dependency
 find_package(PkgConfig REQUIRED)
+
+# Find Gettext dependency
 find_package(Gettext REQUIRED)
 
 # Find GTK dependency
@@ -9,4 +12,3 @@ pkg_check_modules(LIBUSB REQUIRED libusb)
 
 add_subdirectory(opensuperclone)
 add_subdirectory(oscviewer)
-#add_subdirectory(create_script_help)
