@@ -251,6 +251,10 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), _("Power Off"));
   gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), _("Power On"));
 
+  // add tooltips for relay buttons
+  gtk_widget_set_tooltip_text(activate_primary_relay_button_main_ccc, _("Power off the drive with the selected relay board"));
+  gtk_widget_set_tooltip_text(deactivate_primary_relay_button_main_ccc, _("Power on the drive with the selected relay board"));
+
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window_ccc), accel_group);

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSuperClone 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-04 19:48+0100\n"
+"POT-Creation-Date: 2022-12-05 00:49+0100\n"
 "PO-Revision-Date: 2022-11-28 09:48+0100\n"
 "Last-Translator: Julian Frohmüller <admin@socialz.de>\n"
 "Language-Team: German\n"
@@ -77,31 +77,45 @@ msgstr ""
 "Sind Sie sicher, dass dies die richtige Fortschrittsprotokolldatei für "
 "dieses Laufwerk ist?\n"
 
+#: src/opensuperclone/clone_gui.c:391
+msgid ""
+"A sample of data from the last good read since the last display update (will "
+"be all zeroes if no good reads have occurred since the last display update)"
+msgstr ""
+"Ein Beispiel für Daten aus dem letzten erfolgreichen Lesen seit der letzten "
+"Anzeigenaktualisierung (wird alles Nullen sein, wenn seit der letzten "
+"Anzeigenaktualisierung keine erfolgreiches Lesen erfolgt ist)"
+
 #: src/opensuperclone/clone_gui.c:232
 msgid "About"
 msgstr "Über"
 
-#: src/opensuperclone/clone_gui.c:2995
+#: src/opensuperclone/clone_gui.c:3069
 msgid "Action for reset timeout"
 msgstr "Aktion für Reset-Timeout"
 
-#: src/opensuperclone/clone_gui.c:2824
+#: src/opensuperclone/clone_gui.c:2898
 msgid "Action to perform on major drive error:"
 msgstr "Auszuführende Aktion bei schwerwiegendem Laufwerksfehler:"
 
-#: src/opensuperclone/clone_gui.c:3260
+#: src/opensuperclone/clone_gui.c:3334
 msgid "Activate (Power Off)"
 msgstr "Aktivieren (Ausschalten)"
 
-#: src/opensuperclone/clone_gui.c:2828 src/opensuperclone/clone_gui.c:2999
+#: src/opensuperclone/clone_gui.c:2902 src/opensuperclone/clone_gui.c:3073
 msgid "Activate primary relay"
 msgstr "Primäres Relais aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3239
+#: src/opensuperclone/clone_gui.c:321
+#, fuzzy
+msgid "Activate slow driver"
+msgstr "Aktivieren (Ausschalten)"
+
+#: src/opensuperclone/clone_gui.c:3313
 msgid "Activation condition"
 msgstr "Aktivierungsbedingung"
 
-#: src/opensuperclone/clone_gui.c:3257
+#: src/opensuperclone/clone_gui.c:3331
 msgid "Activation time (sec)"
 msgstr "Aktivierungszeit (Sek.)"
 
@@ -109,21 +123,33 @@ msgstr "Aktivierungszeit (Sek.)"
 msgid "Add to Domain from DMDE bytes file"
 msgstr "Domäne mit DMDE-Bytes-Datei erweitern"
 
-#: src/opensuperclone/clone_gui.c:216 src/opensuperclone/clone_gui.c:2904
+#: src/opensuperclone/clone_gui.c:451
+msgid "Address Mark Not Found (The device could not find the address mark)"
+msgstr "Address-Mark nicht gefunden (Das Gerät konnte die Address-Mark nicht finden)"
+
+#: src/opensuperclone/clone_gui.c:216 src/opensuperclone/clone_gui.c:2978
 msgid "Advanced Settings"
 msgstr "Erweiterte Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:2720
+#: src/opensuperclone/clone_gui.c:2794
 msgid "Alignment offset (LBA)"
 msgstr "Ausrichtungsoffset (LBA)"
 
-#: src/opensuperclone/clone_gui.c:3009
+#: src/opensuperclone/clone_gui.c:3083
 msgid "Always wait for reset timers"
 msgstr "Immer auf Reset-Timer warten"
 
-#: src/opensuperclone/clone_gui.c:295
+#: src/opensuperclone/clone_gui.c:299
 msgid "Analyze"
 msgstr "Analysieren"
+
+#: src/opensuperclone/clone_gui.c:317
+msgid "Analyze the drive"
+msgstr "Laufwerk analysieren"
+
+#: src/opensuperclone/clone_gui.c:318
+msgid "Analyze the drive (extended)"
+msgstr "Laufwerk analysieren (erweitert)"
 
 #: src/opensuperclone/opensuperclone.c:8898
 #, c-format
@@ -134,32 +160,40 @@ msgstr "Analysiere"
 msgid "Attribute name"
 msgstr "Attributname"
 
-#: src/opensuperclone/clone_gui.c:2516 src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2590 src/opensuperclone/clone_gui.c:2595
 msgid "Average"
 msgstr "Durchschnitt"
 
-#: src/opensuperclone/clone_gui.c:333 src/opensuperclone/clone_gui.c:2403
-#: src/opensuperclone/clone_gui.c:2516 src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:355 src/opensuperclone/clone_gui.c:2477
+#: src/opensuperclone/clone_gui.c:2590 src/opensuperclone/clone_gui.c:2595
 msgid "Bad"
 msgstr "Schlecht"
 
-#: src/opensuperclone/clone_gui.c:2485
+#: src/opensuperclone/clone_gui.c:444
+msgid "Bad Block (The device has detected a bad block)"
+msgstr "Bad Block (Das Gerät hat einen Bad Block erkannt)"
+
+#: src/opensuperclone/clone_gui.c:2559
 msgid "Bad Or Weak Head"
 msgstr "Schlechter oder schwacher Kopf"
 
-#: src/opensuperclone/clone_gui.c:322
+#: src/opensuperclone/clone_gui.c:344
 msgid "Base skip size"
 msgstr "Grundüberspringgröße"
 
-#: src/opensuperclone/clone_gui.c:2712
+#: src/opensuperclone/clone_gui.c:2786
 msgid "Block size (LBA)"
 msgstr "Blockgröße (LBA)"
 
-#: src/opensuperclone/clone_gui.c:2990
+#: src/opensuperclone/clone_gui.c:436
+msgid "Busy (The device is busy)"
+msgstr "Busy (Das Gerät ist beschäftigt)"
+
+#: src/opensuperclone/clone_gui.c:3064
 msgid "Busy wait time (ms)"
 msgstr "Wartezeit bei Auslastung (ms)"
 
-#: src/opensuperclone/clone_gui.c:2826 src/opensuperclone/clone_gui.c:2997
+#: src/opensuperclone/clone_gui.c:2900 src/opensuperclone/clone_gui.c:3071
 #: src/opensuperclone/opensuperclone.c:11869
 #: src/opensuperclone/opensuperclone.c:11986
 msgid "Call command:"
@@ -174,7 +208,7 @@ msgstr "Kann nicht zum Schreiben geöffnet werden"
 msgid "Choose Destination"
 msgstr "Ziel auswählen"
 
-#: src/opensuperclone/clone_gui.c:860
+#: src/opensuperclone/clone_gui.c:934
 msgid "Choose Destination Image"
 msgstr "Zielabbild auswählen"
 
@@ -182,15 +216,15 @@ msgstr "Zielabbild auswählen"
 msgid "Choose Primary Relay Board"
 msgstr "Primäres Relaisboard auswählen"
 
-#: src/opensuperclone/clone_gui.c:198 src/opensuperclone/clone_gui.c:1241
+#: src/opensuperclone/clone_gui.c:198 src/opensuperclone/clone_gui.c:1315
 msgid "Choose Source Drive"
 msgstr "Quelllaufwerk auswählen"
 
-#: src/opensuperclone/clone_gui.c:4535
+#: src/opensuperclone/clone_gui.c:4609
 msgid "Choose USB Relay"
 msgstr "USB-Relais auswählen"
 
-#: src/opensuperclone/clone_gui.c:1163 src/opensuperclone/clone_gui.c:1644
+#: src/opensuperclone/clone_gui.c:1237 src/opensuperclone/clone_gui.c:1718
 msgid "Choose image file"
 msgstr "Abbilddatei auswählen"
 
@@ -198,11 +232,11 @@ msgstr "Abbilddatei auswählen"
 msgid "Clear Domain"
 msgstr "Domäne leeren"
 
-#: src/opensuperclone/clone_gui.c:340 src/opensuperclone/clone_gui.c:2104
+#: src/opensuperclone/clone_gui.c:362 src/opensuperclone/clone_gui.c:2178
 msgid "Clone"
 msgstr "Klonen"
 
-#: src/opensuperclone/clone_gui.c:298
+#: src/opensuperclone/clone_gui.c:302
 msgid ""
 "Clone\n"
 "Mode"
@@ -210,67 +244,83 @@ msgstr ""
 "Klon\n"
 "Modus"
 
-#: src/opensuperclone/clone_gui.c:217 src/opensuperclone/clone_gui.c:2740
+#: src/opensuperclone/clone_gui.c:217 src/opensuperclone/clone_gui.c:2814
 msgid "Clone Settings"
 msgstr "Klon-Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:339
+#: src/opensuperclone/clone_gui.c:361
 msgid "Clone/Driver Mode"
 msgstr "Klon-/Treiber-Modus"
 
-#: src/opensuperclone/clone_gui.c:2709
+#: src/opensuperclone/clone_gui.c:2783
 msgid "Cluster Size (LBA)"
 msgstr "Clustergröße (LBA)"
 
-#: src/opensuperclone/clone_gui.c:3513
+#: src/opensuperclone/clone_gui.c:449
+msgid "Command Aborted (The device has aborted the command)"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:3587
 msgid "Confirm Operation"
 msgstr "Vorgang bestätigen"
 
-#: src/opensuperclone/clone_gui.c:291
+#: src/opensuperclone/clone_gui.c:295
 msgid "Connect"
 msgstr "Verbinden"
+
+#: src/opensuperclone/clone_gui.c:313
+msgid "Connect to the drive"
+msgstr "Mit dem Laufwerk verbinden"
+
+#: src/opensuperclone/clone_gui.c:441
+msgid "Corrected Data (The device has corrected data)"
+msgstr "Korrigierte Daten (Das Gerät hat Daten korrigiert)"
 
 #: src/opensuperclone/opensuperclone.c:13932
 msgid "Current"
 msgstr "Aktuell"
 
-#: src/opensuperclone/clone_gui.c:335
+#: src/opensuperclone/clone_gui.c:357
 msgid "Current / Recent / Longest"
 msgstr "Aktuell / Kürzlich / Längste"
 
-#: src/opensuperclone/clone_gui.c:3125
+#: src/opensuperclone/clone_gui.c:3199
 msgid "Current disabled ports (GRUB data)"
 msgstr "Aktuell deaktivierte Ports (GRUB-Daten)"
 
-#: src/opensuperclone/clone_gui.c:317 src/opensuperclone/clone_gui.c:2823
+#: src/opensuperclone/clone_gui.c:339 src/opensuperclone/clone_gui.c:2897
 msgid "Current position"
 msgstr "Aktuelle Position"
 
-#: src/opensuperclone/clone_gui.c:319
+#: src/opensuperclone/clone_gui.c:341
 msgid "Current rate"
 msgstr "Aktuelle Rate"
 
-#: src/opensuperclone/clone_gui.c:3237
+#: src/opensuperclone/clone_gui.c:3311
 msgid "Current relay board"
 msgstr "Aktuelles Relaisboard"
 
-#: src/opensuperclone/clone_gui.c:318
+#: src/opensuperclone/clone_gui.c:340
 msgid "Current status"
 msgstr "Aktueller Status"
 
-#: src/opensuperclone/clone_gui.c:334
+#: src/opensuperclone/clone_gui.c:440
+msgid "Data Request (The device is ready to transfer data)"
+msgstr "Datenanforderung (Das Gerät ist bereit, Daten zu übertragen)"
+
+#: src/opensuperclone/clone_gui.c:356
 msgid "Data preview"
 msgstr "Datenvorschau"
 
-#: src/opensuperclone/clone_gui.c:3261
+#: src/opensuperclone/clone_gui.c:3335
 msgid "Deactivate (Power On)"
 msgstr "Deaktivieren (Einschalten)"
 
-#: src/opensuperclone/clone_gui.c:3248
+#: src/opensuperclone/clone_gui.c:3322
 msgid "Deactivation condition"
 msgstr "Deaktivierungsbedingung"
 
-#: src/opensuperclone/clone_gui.c:311 src/opensuperclone/clone_gui.c:1530
+#: src/opensuperclone/clone_gui.c:333 src/opensuperclone/clone_gui.c:1604
 msgid "Destination (All data will be overwritten!)"
 msgstr "Ziel (Alle Daten werden überschrieben!)"
 
@@ -278,6 +328,18 @@ msgstr "Ziel (Alle Daten werden überschrieben!)"
 #, c-format
 msgid "Detecting Variance"
 msgstr "Varianz erkennen"
+
+#: src/opensuperclone/clone_gui.c:438
+msgid "Device Fault (The device has detected a fault)"
+msgstr "Gerätefehler (Das Gerät hat einen Fehler erkannt)"
+
+#: src/opensuperclone/clone_gui.c:437
+msgid "Device Ready (The device is ready to accept commands))"
+msgstr "Gerät bereit (Das Gerät ist bereit, Befehle zu akzeptieren)"
+
+#: src/opensuperclone/clone_gui.c:439
+msgid "Device Seek Complete (Head is settled on the track)"
+msgstr "Device Seek Complete (Kopf ist auf der Spur eingestellt)"
 
 #: src/opensuperclone/clone_gui.c:212
 msgid "Direct AHCI"
@@ -295,8 +357,8 @@ msgstr "Direkt USB"
 msgid "Direct USB ATA"
 msgstr "Direkt USB ATA"
 
-#: src/opensuperclone/clone_gui.c:242 src/opensuperclone/clone_gui.c:3124
-#: src/opensuperclone/clone_gui.c:3132
+#: src/opensuperclone/clone_gui.c:242 src/opensuperclone/clone_gui.c:3198
+#: src/opensuperclone/clone_gui.c:3206
 msgid "Disable Ports"
 msgstr "Ports deaktivieren"
 
@@ -304,7 +366,7 @@ msgstr "Ports deaktivieren"
 msgid "Disable USB mass storage driver"
 msgstr "USB Massenspeicher-Treiber deaktivieren"
 
-#: src/opensuperclone/clone_gui.c:3121
+#: src/opensuperclone/clone_gui.c:3195
 msgid ""
 "Disable ports for AHCI mode to hide a drive from the operating system.\n"
 "Warning! If you disable the port for the operating system drive,\n"
@@ -315,13 +377,17 @@ msgstr ""
 "Achtung! Wenn Sie den Port für das Betriebssystemlaufwerk deaktivieren,\n"
 "kann das System nicht mehr starten!\n"
 
-#: src/opensuperclone/clone_gui.c:2829
+#: src/opensuperclone/clone_gui.c:2903
 msgid "Disabled (safer if there is a power loss)"
 msgstr "Deaktiviert (sicherer, wenn es einen Stromausfall gibt)"
 
-#: src/opensuperclone/clone_gui.c:292
+#: src/opensuperclone/clone_gui.c:296
 msgid "Disconnect"
 msgstr "Trennen"
+
+#: src/opensuperclone/clone_gui.c:314
+msgid "Disconnect from the drive"
+msgstr "Vom Laufwerk trennen"
 
 #: src/opensuperclone/clone_gui.c:245
 msgid "Display Analyze Results"
@@ -335,15 +401,15 @@ msgstr "Identifizierungs-Ergebnisse anzeigen"
 msgid "Display SMART Results"
 msgstr "SMART-Ergebnisse anzeigen"
 
-#: src/opensuperclone/clone_gui.c:2699
+#: src/opensuperclone/clone_gui.c:2773
 msgid "Divide"
 msgstr "Teilen"
 
-#: src/opensuperclone/clone_gui.c:2700
+#: src/opensuperclone/clone_gui.c:2774
 msgid "Divide 2"
 msgstr "Teilen 2"
 
-#: src/opensuperclone/clone_gui.c:3006
+#: src/opensuperclone/clone_gui.c:3080
 msgid "Divide 2 reset time (ms)"
 msgstr "Teilen 2 Reset-Zeit (ms)"
 
@@ -367,23 +433,23 @@ msgstr "Teilen 1"
 msgid "Dividing 2"
 msgstr "Teilen 2"
 
-#: src/opensuperclone/clone_gui.c:2817
+#: src/opensuperclone/clone_gui.c:2891
 msgid "Do not create backup log"
 msgstr "Kein Backup-Protokoll erstellen"
 
-#: src/opensuperclone/clone_gui.c:2832
+#: src/opensuperclone/clone_gui.c:2906
 msgid "Do not perform identify when listing source devices"
 msgstr "Identifizierung nicht durchführen, wenn Quellgeräte aufgelistet werden"
 
-#: src/opensuperclone/clone_gui.c:2996
+#: src/opensuperclone/clone_gui.c:3070
 msgid "Do nothing"
 msgstr "Nichts tun"
 
-#: src/opensuperclone/clone_gui.c:309
+#: src/opensuperclone/clone_gui.c:331
 msgid "Domain"
 msgstr "Domäne"
 
-#: src/opensuperclone/clone_gui.c:314
+#: src/opensuperclone/clone_gui.c:336
 msgid "Domain size"
 msgstr "Domänengröße"
 
@@ -413,97 +479,97 @@ msgstr "FEHLER: Maximale Größe des Scratchpads überschritten"
 msgid "ERROR: Maximum sensebuffer size exceeded"
 msgstr "FEHLER: Maximale Größe des Sensebuffers überschritten"
 
-#: src/opensuperclone/clone_gui.c:2834
+#: src/opensuperclone/clone_gui.c:2908
 msgid "Enable Rebuild Assist"
 msgstr "Rebuild Assist aktivieren"
 
-#: src/opensuperclone/clone_gui.c:2838
+#: src/opensuperclone/clone_gui.c:2912
 msgid "Enable SCSI write to destination (for odd sector size)"
 msgstr "SCSI-Schreiben auf Ziel aktivieren (für ungerade Sektorgöße)"
 
-#: src/opensuperclone/clone_gui.c:3011
+#: src/opensuperclone/clone_gui.c:3085
 msgid "Enable USB bulk reset"
 msgstr "USB Bulk-Reset aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3013
+#: src/opensuperclone/clone_gui.c:3087
 msgid "Enable USB hard reset"
 msgstr "USB Hard-Reset aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3014
+#: src/opensuperclone/clone_gui.c:3088
 msgid "Enable USB port reset"
 msgstr "USB Port-Reset aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3012
+#: src/opensuperclone/clone_gui.c:3086
 msgid "Enable USB soft reset"
 msgstr "USB Soft-Reset aktivieren"
 
-#: src/opensuperclone/clone_gui.c:2822
+#: src/opensuperclone/clone_gui.c:2896
 msgid "Enable changing current position (can affect skipping algorithm)"
 msgstr ""
 "Ändern der aktuellen Position aktivieren (kann das Überspringen beeinflussen)"
 
-#: src/opensuperclone/clone_gui.c:2820
+#: src/opensuperclone/clone_gui.c:2894
 msgid "Enable changing output offset (use with caution)"
 msgstr "Ändern des Ausgangsversatzes aktivieren (mit Vorsicht verwenden)"
 
-#: src/opensuperclone/clone_gui.c:2840
+#: src/opensuperclone/clone_gui.c:2914
 msgid "Enable output sector size adjustment"
 msgstr "Ausgangssektorgröße anpassen"
 
-#: src/opensuperclone/clone_gui.c:2839
+#: src/opensuperclone/clone_gui.c:2913
 msgid "Enable phase logs"
 msgstr "Phasen-Protokolle aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3001
+#: src/opensuperclone/clone_gui.c:3075
 msgid "Enable phase timers"
 msgstr "Phasen-Timer aktivieren"
 
-#: src/opensuperclone/clone_gui.c:2836
+#: src/opensuperclone/clone_gui.c:2910
 msgid "Enable read twice on timeout"
 msgstr "Zweites Lesen bei Zeitüberschreitung aktivieren"
 
-#: src/opensuperclone/clone_gui.c:2835
+#: src/opensuperclone/clone_gui.c:2909
 msgid "Enable using ATA return to mark bad sectors"
 msgstr ""
 "Verwendung von ATA Return zum Markieren von fehlerhaften Sektoren aktivieren"
 
-#: src/opensuperclone/clone_gui.c:2830
+#: src/opensuperclone/clone_gui.c:2904
 msgid "Enabled (faster)"
 msgstr "Aktiviert (schneller)"
 
-#: src/opensuperclone/clone_gui.c:3240 src/opensuperclone/clone_gui.c:3249
+#: src/opensuperclone/clone_gui.c:3314 src/opensuperclone/clone_gui.c:3323
 msgid "Energize relay 1"
 msgstr "Relais 1 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3241 src/opensuperclone/clone_gui.c:3250
+#: src/opensuperclone/clone_gui.c:3315 src/opensuperclone/clone_gui.c:3324
 msgid "Energize relay 2"
 msgstr "Relais 2 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3242 src/opensuperclone/clone_gui.c:3251
+#: src/opensuperclone/clone_gui.c:3316 src/opensuperclone/clone_gui.c:3325
 msgid "Energize relay 3"
 msgstr "Relais 3 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3243 src/opensuperclone/clone_gui.c:3252
+#: src/opensuperclone/clone_gui.c:3317 src/opensuperclone/clone_gui.c:3326
 msgid "Energize relay 4"
 msgstr "Relais 4 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3244 src/opensuperclone/clone_gui.c:3253
+#: src/opensuperclone/clone_gui.c:3318 src/opensuperclone/clone_gui.c:3327
 msgid "Energize relay 5"
 msgstr "Relais 5 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3245 src/opensuperclone/clone_gui.c:3254
+#: src/opensuperclone/clone_gui.c:3319 src/opensuperclone/clone_gui.c:3328
 msgid "Energize relay 6"
 msgstr "Relais 6 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3246 src/opensuperclone/clone_gui.c:3255
+#: src/opensuperclone/clone_gui.c:3320 src/opensuperclone/clone_gui.c:3329
 msgid "Energize relay 7"
 msgstr "Relais 7 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3247 src/opensuperclone/clone_gui.c:3256
+#: src/opensuperclone/clone_gui.c:3321 src/opensuperclone/clone_gui.c:3330
 msgid "Energize relay 8"
 msgstr "Relais 8 aktivieren"
 
-#: src/opensuperclone/clone_gui.c:3122
+#: src/opensuperclone/clone_gui.c:3196
 msgid ""
 "Enter the ports you wish to be disabled as integers separated by spaces.\n"
 "It is best that the port numbers are in order from lowest to highest.\n"
@@ -523,6 +589,11 @@ msgstr "Ziel löschen"
 #, c-format
 msgid "Erasing"
 msgstr "Lösche"
+
+#: src/opensuperclone/clone_gui.c:443
+#, fuzzy
+msgid "Error (The device has detected an error)"
+msgstr "Fehler: Fehler auf dem Quelllaufwerk erkannt"
 
 #: src/opensuperclone/opensuperclone.c:1229
 #: src/opensuperclone/opensuperclone.c:1241
@@ -568,7 +639,7 @@ msgstr "Fehler beim Ändern des Chunk-Status, Block nicht gefunden"
 msgid "Error changing chunk status, is not within the block"
 msgstr "Fehler beim Ändern des Chunk-Status, ist nicht innerhalb des Blocks"
 
-#: src/opensuperclone/clone_gui.c:4576
+#: src/opensuperclone/clone_gui.c:4650
 msgid "Error choosing USB relay"
 msgstr "Fehler beim Auswählen des USB-Relais"
 
@@ -592,7 +663,7 @@ msgstr "Fehler beim Deaktivieren der Rebuild Assist"
 msgid "Error enabling rebuild assist"
 msgstr "Fehler beim Aktivieren der Rebuild Assist"
 
-#: src/opensuperclone/clone_gui.c:800
+#: src/opensuperclone/clone_gui.c:874
 #, c-format
 msgid "Error exporting ddrescue log (map) file"
 msgstr "Fehler beim Exportieren der ddrescue-Log (map)"
@@ -607,10 +678,10 @@ msgstr "Fehler beim Exportieren der ddrescue-Log (map)"
 msgid "Error opening virtual disk driver"
 msgstr "Fehler beim Öffnen des virtuellen Laufwerks-Treibers"
 
-#: src/opensuperclone/clone_gui.c:3345 src/opensuperclone/clone_gui.c:3366
-#: src/opensuperclone/clone_gui.c:3428 src/opensuperclone/clone_gui.c:3446
-#: src/opensuperclone/clone_gui.c:4643 src/opensuperclone/clone_gui.c:4705
-#: src/opensuperclone/clone_gui.c:4745 src/opensuperclone/clone_gui.c:4765
+#: src/opensuperclone/clone_gui.c:3419 src/opensuperclone/clone_gui.c:3440
+#: src/opensuperclone/clone_gui.c:3502 src/opensuperclone/clone_gui.c:3520
+#: src/opensuperclone/clone_gui.c:4717 src/opensuperclone/clone_gui.c:4779
+#: src/opensuperclone/clone_gui.c:4819 src/opensuperclone/clone_gui.c:4839
 #: src/opensuperclone/opensuperclone.c:11932
 #: src/opensuperclone/opensuperclone.c:12031
 #, c-format
@@ -618,10 +689,10 @@ msgid "Error operating relay, see console for more information"
 msgstr ""
 "Fehler beim Betreiben des Relais, siehe Konsole für weitere Informationen"
 
-#: src/opensuperclone/clone_gui.c:902 src/opensuperclone/clone_gui.c:963
-#: src/opensuperclone/clone_gui.c:1023 src/opensuperclone/clone_gui.c:1048
-#: src/opensuperclone/clone_gui.c:1201 src/opensuperclone/clone_gui.c:1431
-#: src/opensuperclone/clone_gui.c:1597 src/opensuperclone/clone_gui.c:1687
+#: src/opensuperclone/clone_gui.c:976 src/opensuperclone/clone_gui.c:1037
+#: src/opensuperclone/clone_gui.c:1097 src/opensuperclone/clone_gui.c:1122
+#: src/opensuperclone/clone_gui.c:1275 src/opensuperclone/clone_gui.c:1505
+#: src/opensuperclone/clone_gui.c:1671 src/opensuperclone/clone_gui.c:1761
 #, c-format
 msgid ""
 "Error processing log file!\n"
@@ -630,13 +701,13 @@ msgstr ""
 "Fehler beim Verarbeiten der Logdatei!\n"
 "Die Logdatei wurde nicht geladen.\n"
 
-#: src/opensuperclone/clone_gui.c:1575
+#: src/opensuperclone/clone_gui.c:1649
 msgid "Error selecting destination"
 msgstr "Fehler beim Auswählen des Ziels"
 
-#: src/opensuperclone/clone_gui.c:1222 src/opensuperclone/clone_gui.c:1384
-#: src/opensuperclone/clone_gui.c:1395 src/opensuperclone/clone_gui.c:1406
-#: src/opensuperclone/clone_gui.c:1452
+#: src/opensuperclone/clone_gui.c:1296 src/opensuperclone/clone_gui.c:1458
+#: src/opensuperclone/clone_gui.c:1469 src/opensuperclone/clone_gui.c:1480
+#: src/opensuperclone/clone_gui.c:1526
 msgid "Error selecting source"
 msgstr "Fehler beim Auswählen der Quelle"
 
@@ -667,53 +738,53 @@ msgstr "Fehler beim Schreiben der Backup-Logdatei"
 msgid "Error writing data to destination"
 msgstr "Fehler beim Schreiben der Daten auf das Ziel"
 
-#: src/opensuperclone/clone_gui.c:667 src/opensuperclone/clone_gui.c:702
-#: src/opensuperclone/clone_gui.c:727 src/opensuperclone/clone_gui.c:762
+#: src/opensuperclone/clone_gui.c:741 src/opensuperclone/clone_gui.c:776
+#: src/opensuperclone/clone_gui.c:801 src/opensuperclone/clone_gui.c:836
 #: src/opensuperclone/opensuperclone.c:3376
 #: src/opensuperclone/opensuperclone.c:3667
 #, c-format
 msgid "Error writing progress log file"
 msgstr "Fehler beim Schreiben der Fortschritts-Logdatei"
 
-#: src/opensuperclone/clone_gui.c:525 src/opensuperclone/clone_gui.c:558
-#: src/opensuperclone/clone_gui.c:591 src/opensuperclone/clone_gui.c:622
-#: src/opensuperclone/clone_gui.c:629 src/opensuperclone/clone_gui.c:659
-#: src/opensuperclone/clone_gui.c:669 src/opensuperclone/clone_gui.c:681
-#: src/opensuperclone/clone_gui.c:704 src/opensuperclone/clone_gui.c:719
-#: src/opensuperclone/clone_gui.c:729 src/opensuperclone/clone_gui.c:741
-#: src/opensuperclone/clone_gui.c:764 src/opensuperclone/clone_gui.c:779
-#: src/opensuperclone/clone_gui.c:802 src/opensuperclone/clone_gui.c:817
-#: src/opensuperclone/clone_gui.c:847 src/opensuperclone/clone_gui.c:854
-#: src/opensuperclone/clone_gui.c:904 src/opensuperclone/clone_gui.c:965
-#: src/opensuperclone/clone_gui.c:1025 src/opensuperclone/clone_gui.c:1050
-#: src/opensuperclone/clone_gui.c:1062 src/opensuperclone/clone_gui.c:1143
-#: src/opensuperclone/clone_gui.c:1150 src/opensuperclone/clone_gui.c:1157
-#: src/opensuperclone/clone_gui.c:1203 src/opensuperclone/clone_gui.c:1224
-#: src/opensuperclone/clone_gui.c:1386 src/opensuperclone/clone_gui.c:1397
-#: src/opensuperclone/clone_gui.c:1408 src/opensuperclone/clone_gui.c:1433
-#: src/opensuperclone/clone_gui.c:1454 src/opensuperclone/clone_gui.c:1493
-#: src/opensuperclone/clone_gui.c:1500 src/opensuperclone/clone_gui.c:1577
-#: src/opensuperclone/clone_gui.c:1599 src/opensuperclone/clone_gui.c:1631
-#: src/opensuperclone/clone_gui.c:1638 src/opensuperclone/clone_gui.c:1689
-#: src/opensuperclone/clone_gui.c:1718 src/opensuperclone/clone_gui.c:1725
-#: src/opensuperclone/clone_gui.c:1755 src/opensuperclone/clone_gui.c:1774
-#: src/opensuperclone/clone_gui.c:1782 src/opensuperclone/clone_gui.c:1790
-#: src/opensuperclone/clone_gui.c:1801 src/opensuperclone/clone_gui.c:1832
-#: src/opensuperclone/clone_gui.c:1840 src/opensuperclone/clone_gui.c:1851
-#: src/opensuperclone/clone_gui.c:1896 src/opensuperclone/clone_gui.c:1902
-#: src/opensuperclone/clone_gui.c:3315 src/opensuperclone/clone_gui.c:3347
-#: src/opensuperclone/clone_gui.c:3368 src/opensuperclone/clone_gui.c:3420
-#: src/opensuperclone/clone_gui.c:3430 src/opensuperclone/clone_gui.c:3448
-#: src/opensuperclone/clone_gui.c:3536 src/opensuperclone/clone_gui.c:3561
-#: src/opensuperclone/clone_gui.c:3940 src/opensuperclone/clone_gui.c:4050
-#: src/opensuperclone/clone_gui.c:4384 src/opensuperclone/clone_gui.c:4415
-#: src/opensuperclone/clone_gui.c:4464 src/opensuperclone/clone_gui.c:4497
-#: src/opensuperclone/clone_gui.c:4578 src/opensuperclone/clone_gui.c:4614
-#: src/opensuperclone/clone_gui.c:4645 src/opensuperclone/clone_gui.c:4676
-#: src/opensuperclone/clone_gui.c:4707 src/opensuperclone/clone_gui.c:4738
-#: src/opensuperclone/clone_gui.c:4747 src/opensuperclone/clone_gui.c:4758
-#: src/opensuperclone/clone_gui.c:4767 src/opensuperclone/clone_gui.c:4778
-#: src/opensuperclone/clone_gui.c:4787 src/opensuperclone/io.c:127
+#: src/opensuperclone/clone_gui.c:599 src/opensuperclone/clone_gui.c:632
+#: src/opensuperclone/clone_gui.c:665 src/opensuperclone/clone_gui.c:696
+#: src/opensuperclone/clone_gui.c:703 src/opensuperclone/clone_gui.c:733
+#: src/opensuperclone/clone_gui.c:743 src/opensuperclone/clone_gui.c:755
+#: src/opensuperclone/clone_gui.c:778 src/opensuperclone/clone_gui.c:793
+#: src/opensuperclone/clone_gui.c:803 src/opensuperclone/clone_gui.c:815
+#: src/opensuperclone/clone_gui.c:838 src/opensuperclone/clone_gui.c:853
+#: src/opensuperclone/clone_gui.c:876 src/opensuperclone/clone_gui.c:891
+#: src/opensuperclone/clone_gui.c:921 src/opensuperclone/clone_gui.c:928
+#: src/opensuperclone/clone_gui.c:978 src/opensuperclone/clone_gui.c:1039
+#: src/opensuperclone/clone_gui.c:1099 src/opensuperclone/clone_gui.c:1124
+#: src/opensuperclone/clone_gui.c:1136 src/opensuperclone/clone_gui.c:1217
+#: src/opensuperclone/clone_gui.c:1224 src/opensuperclone/clone_gui.c:1231
+#: src/opensuperclone/clone_gui.c:1277 src/opensuperclone/clone_gui.c:1298
+#: src/opensuperclone/clone_gui.c:1460 src/opensuperclone/clone_gui.c:1471
+#: src/opensuperclone/clone_gui.c:1482 src/opensuperclone/clone_gui.c:1507
+#: src/opensuperclone/clone_gui.c:1528 src/opensuperclone/clone_gui.c:1567
+#: src/opensuperclone/clone_gui.c:1574 src/opensuperclone/clone_gui.c:1651
+#: src/opensuperclone/clone_gui.c:1673 src/opensuperclone/clone_gui.c:1705
+#: src/opensuperclone/clone_gui.c:1712 src/opensuperclone/clone_gui.c:1763
+#: src/opensuperclone/clone_gui.c:1792 src/opensuperclone/clone_gui.c:1799
+#: src/opensuperclone/clone_gui.c:1829 src/opensuperclone/clone_gui.c:1848
+#: src/opensuperclone/clone_gui.c:1856 src/opensuperclone/clone_gui.c:1864
+#: src/opensuperclone/clone_gui.c:1875 src/opensuperclone/clone_gui.c:1906
+#: src/opensuperclone/clone_gui.c:1914 src/opensuperclone/clone_gui.c:1925
+#: src/opensuperclone/clone_gui.c:1970 src/opensuperclone/clone_gui.c:1976
+#: src/opensuperclone/clone_gui.c:3389 src/opensuperclone/clone_gui.c:3421
+#: src/opensuperclone/clone_gui.c:3442 src/opensuperclone/clone_gui.c:3494
+#: src/opensuperclone/clone_gui.c:3504 src/opensuperclone/clone_gui.c:3522
+#: src/opensuperclone/clone_gui.c:3610 src/opensuperclone/clone_gui.c:3635
+#: src/opensuperclone/clone_gui.c:4014 src/opensuperclone/clone_gui.c:4124
+#: src/opensuperclone/clone_gui.c:4458 src/opensuperclone/clone_gui.c:4489
+#: src/opensuperclone/clone_gui.c:4538 src/opensuperclone/clone_gui.c:4571
+#: src/opensuperclone/clone_gui.c:4652 src/opensuperclone/clone_gui.c:4688
+#: src/opensuperclone/clone_gui.c:4719 src/opensuperclone/clone_gui.c:4750
+#: src/opensuperclone/clone_gui.c:4781 src/opensuperclone/clone_gui.c:4812
+#: src/opensuperclone/clone_gui.c:4821 src/opensuperclone/clone_gui.c:4832
+#: src/opensuperclone/clone_gui.c:4841 src/opensuperclone/clone_gui.c:4852
+#: src/opensuperclone/clone_gui.c:4861 src/opensuperclone/io.c:127
 #: src/opensuperclone/io.c:643 src/opensuperclone/io.c:1660
 #: src/opensuperclone/io.c:1702 src/opensuperclone/io.c:1717
 #: src/opensuperclone/io.c:1790 src/opensuperclone/io.c:1834
@@ -925,7 +996,7 @@ msgstr "Fehler: Das Ziel ist das Host-OS-Laufwerk"
 msgid "Error: Device fault detected on source"
 msgstr "Fehler: Fehler auf dem Quelllaufwerk erkannt"
 
-#: src/opensuperclone/clone_gui.c:852
+#: src/opensuperclone/clone_gui.c:926
 #, c-format
 msgid "Error: Domain is not active or no domain file loaded"
 msgstr "Fehler: Die Domäne ist nicht aktiv oder keine Domänen-Datei geladen"
@@ -953,10 +1024,10 @@ msgstr "Fehler: Dateikopie fehlgeschlagen"
 msgid "Error: No backup file"
 msgstr "Fehler: Keine Backup-Datei"
 
-#: src/opensuperclone/clone_gui.c:1900 src/opensuperclone/clone_gui.c:3313
-#: src/opensuperclone/clone_gui.c:3418 src/opensuperclone/clone_gui.c:4612
-#: src/opensuperclone/clone_gui.c:4674 src/opensuperclone/clone_gui.c:4736
-#: src/opensuperclone/clone_gui.c:4756
+#: src/opensuperclone/clone_gui.c:1974 src/opensuperclone/clone_gui.c:3387
+#: src/opensuperclone/clone_gui.c:3492 src/opensuperclone/clone_gui.c:4686
+#: src/opensuperclone/clone_gui.c:4748 src/opensuperclone/clone_gui.c:4810
+#: src/opensuperclone/clone_gui.c:4830
 #, c-format
 msgid "Error: No relay has been chosen"
 msgstr "Fehler: Kein Relais wurde ausgewählt"
@@ -1099,11 +1170,11 @@ msgstr "Fehler: Ziel kann nicht geschrieben werden"
 msgid "Error: Updating GRUB failed"
 msgstr "Fehler: Aktualisierung von GRUB fehlgeschlagen"
 
-#: src/opensuperclone/clone_gui.c:2717
+#: src/opensuperclone/clone_gui.c:2791
 msgid "Exit on Slow (kB/s) phase-1-2"
 msgstr "Beenden bei langsamer Phase-1-2 (kB/s)"
 
-#: src/opensuperclone/clone_gui.c:2718
+#: src/opensuperclone/clone_gui.c:2792
 msgid "Exit on Slow Time (sec) phase-1-2"
 msgstr "Beenden bei langsamer Zeit (Sek) Phase-1-2"
 
@@ -1113,11 +1184,11 @@ msgstr "Beenden bei langsamer Zeit (Sek) Phase-1-2"
 msgid "Exiting due to slow read speed"
 msgstr "Beenden wegen langsamer Lesegeschwindigkeit"
 
-#: src/opensuperclone/clone_gui.c:229 src/opensuperclone/clone_gui.c:785
+#: src/opensuperclone/clone_gui.c:229 src/opensuperclone/clone_gui.c:859
 msgid "Export ddrescue log (map) file"
 msgstr "ddrescue-Logdatei (Map)-Datei exportieren"
 
-#: src/opensuperclone/clone_gui.c:296
+#: src/opensuperclone/clone_gui.c:300
 msgid ""
 "Extended\n"
 "Analyze"
@@ -1163,8 +1234,8 @@ msgstr "Füllen mit Markierung"
 msgid "Fill Zero"
 msgstr "Füllen mit Nullen"
 
-#: src/opensuperclone/clone_gui.c:336 src/opensuperclone/clone_gui.c:2236
-#: src/opensuperclone/clone_gui.c:2326
+#: src/opensuperclone/clone_gui.c:358 src/opensuperclone/clone_gui.c:2310
+#: src/opensuperclone/clone_gui.c:2400
 msgid "Filled"
 msgstr "Gefüllt"
 
@@ -1174,7 +1245,7 @@ msgstr "Gefüllt"
 msgid "Filling"
 msgstr "Fülle"
 
-#: src/opensuperclone/clone_gui.c:328 src/opensuperclone/opensuperclone.c:1719
+#: src/opensuperclone/clone_gui.c:350 src/opensuperclone/opensuperclone.c:1719
 #: src/opensuperclone/opensuperclone.c:4825
 #: src/opensuperclone/opensuperclone.c:6275
 #: src/opensuperclone/opensuperclone.c:6652
@@ -1190,15 +1261,15 @@ msgstr "Treiber-Speicherfehler beheben"
 msgid "Flags"
 msgstr "Flags"
 
-#: src/opensuperclone/clone_gui.c:2818
+#: src/opensuperclone/clone_gui.c:2892
 msgid "Force access of mounted disk (not recommended)"
 msgstr "Zugriff auf eingehängte Festplatte erzwingen (nicht empfohlen)"
 
-#: src/opensuperclone/clone_gui.c:2819
+#: src/opensuperclone/clone_gui.c:2893
 msgid "Force same controller / slave (not recommended)"
 msgstr "Gleichen Controller / Slave erzwingen (nicht empfohlen)"
 
-#: src/opensuperclone/clone_gui.c:2994
+#: src/opensuperclone/clone_gui.c:3068
 msgid "General timeout (ms)"
 msgstr "Allgemeine Zeitüberschreitung (ms)"
 
@@ -1214,12 +1285,12 @@ msgstr "Generisches Quellgerät"
 msgid "Generic source file"
 msgstr "Generische Quelldatei"
 
-#: src/opensuperclone/clone_gui.c:2401 src/opensuperclone/clone_gui.c:2516
-#: src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2475 src/opensuperclone/clone_gui.c:2590
+#: src/opensuperclone/clone_gui.c:2595
 msgid "Good"
 msgstr "Gut"
 
-#: src/opensuperclone/clone_gui.c:306
+#: src/opensuperclone/clone_gui.c:310
 msgid ""
 "Hard\n"
 "Reset"
@@ -1227,7 +1298,12 @@ msgstr ""
 "Hard-\n"
 "Reset"
 
-#: src/opensuperclone/clone_gui.c:2992
+#: src/opensuperclone/clone_gui.c:328
+#, fuzzy
+msgid "Hard reset the drive"
+msgstr "Hard-Reset-Zeit (ms)"
+
+#: src/opensuperclone/clone_gui.c:3066
 msgid "Hard reset time (ms)"
 msgstr "Hard-Reset-Zeit (ms)"
 
@@ -1235,7 +1311,7 @@ msgstr "Hard-Reset-Zeit (ms)"
 msgid "Help"
 msgstr "Hilfe"
 
-#: src/opensuperclone/clone_gui.c:2516 src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2590 src/opensuperclone/clone_gui.c:2595
 msgid "High"
 msgstr "Hoch"
 
@@ -1266,6 +1342,10 @@ msgstr "Host-IO-Fehler während der Identifizierung des Quellgeräts"
 msgid "ID"
 msgstr "ID"
 
+#: src/opensuperclone/clone_gui.c:447
+msgid "ID Not Found (The device could not find the sector's ID field)"
+msgstr "ID nicht gefunden (Das Gerät konnte das ID-Feld des Sektors nicht finden)"
+
 #: src/opensuperclone/opensuperclone.c:829
 #, c-format
 msgid "Idle"
@@ -1275,13 +1355,17 @@ msgstr "Leerlauf"
 msgid "Image file"
 msgstr "Abbild-Datei"
 
-#: src/opensuperclone/clone_gui.c:228 src/opensuperclone/clone_gui.c:635
+#: src/opensuperclone/clone_gui.c:228 src/opensuperclone/clone_gui.c:709
 msgid "Import ddrescue log (map) file"
 msgstr "ddrescue-Logdatei (Map) importieren"
 
-#: src/opensuperclone/clone_gui.c:3389 src/opensuperclone/clone_gui.c:3543
-#: src/opensuperclone/clone_gui.c:3568 src/opensuperclone/clone_gui.c:4329
-#: src/opensuperclone/clone_gui.c:4342 src/opensuperclone/clone_gui.c:4355
+#: src/opensuperclone/clone_gui.c:442
+msgid "Index (The device has reached the index mark)"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:3463 src/opensuperclone/clone_gui.c:3617
+#: src/opensuperclone/clone_gui.c:3642 src/opensuperclone/clone_gui.c:4403
+#: src/opensuperclone/clone_gui.c:4416 src/opensuperclone/clone_gui.c:4429
 #: src/opensuperclone/opensuperclone.c:1028
 #: src/opensuperclone/opensuperclone.c:1040
 #: src/opensuperclone/opensuperclone.c:1050
@@ -1306,11 +1390,11 @@ msgstr "ddrescue-Logdatei (Map) importieren"
 msgid "Information"
 msgstr "Information"
 
-#: src/opensuperclone/clone_gui.c:2989
+#: src/opensuperclone/clone_gui.c:3063
 msgid "Initial busy wait time (ms)"
 msgstr "Anfängliche Wartezeit (ms)"
 
-#: src/opensuperclone/clone_gui.c:2710
+#: src/opensuperclone/clone_gui.c:2784
 msgid "Input Offset (LBA)"
 msgstr "Eingabe-Offset (LBA)"
 
@@ -1338,9 +1422,7 @@ msgstr "Interner Programmfehler, Position nicht in Domäne gefunden"
 #: src/opensuperclone/opensuperclone.c:8980
 #, c-format
 msgid "Internal program error, Position not found in progress log file"
-msgstr ""
-"Interner Programmfehler, Position nicht in Fortschrittsprotokolldatei "
-"gefunden"
+msgstr "Interner Programmfehler, Position nicht in Fortschrittsprotokolldatei gefunden"
 
 #: src/opensuperclone/opensuperclone.c:7218
 #: src/opensuperclone/opensuperclone.c:7649
@@ -1350,9 +1432,7 @@ msgstr ""
 #: src/opensuperclone/opensuperclone.c:8726
 #, c-format
 msgid "Internal program error, domain check returned position out of range"
-msgstr ""
-"Interner Programmfehler, Domänenprüfung lieferte Position außerhalb des "
-"Bereichs"
+msgstr "Interner Programmfehler, Domänenprüfung lieferte Position außerhalb des Bereichs"
 
 #: src/opensuperclone/opensuperclone.c:12654
 #, c-format
@@ -1364,27 +1444,27 @@ msgstr ""
 "Sie können die Option --force verwenden, um die Quelle trotzdem zu verwenden "
 "(nicht empfohlen)."
 
-#: src/opensuperclone/clone_gui.c:313
+#: src/opensuperclone/clone_gui.c:335
 msgid "LBA to read"
 msgstr "Zu lesende LBA"
 
-#: src/opensuperclone/clone_gui.c:2234
+#: src/opensuperclone/clone_gui.c:2308
 msgid "Last read size"
 msgstr "Letzte Lese-Größe"
 
-#: src/opensuperclone/clone_gui.c:327
+#: src/opensuperclone/clone_gui.c:349
 msgid "Last run size"
 msgstr "Letzte Lauf-Größe"
 
-#: src/opensuperclone/clone_gui.c:227 src/opensuperclone/clone_gui.c:823
+#: src/opensuperclone/clone_gui.c:227 src/opensuperclone/clone_gui.c:897
 msgid "Load Domain File"
 msgstr "Lade Domänen-Datei"
 
-#: src/opensuperclone/clone_gui.c:531
+#: src/opensuperclone/clone_gui.c:605
 msgid "Load project (progress) file"
 msgstr "Lade Projektdatei (Fortschrittsdatei)"
 
-#: src/opensuperclone/clone_gui.c:2516 src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2590 src/opensuperclone/clone_gui.c:2595
 msgid "Low"
 msgstr "Niedrig"
 
@@ -1398,47 +1478,55 @@ msgstr "Make fehlgeschlagen, siehe Konsole für weitere Informationen"
 msgid "Mapping"
 msgstr "Scrape"
 
-#: src/opensuperclone/clone_gui.c:2703
+#: src/opensuperclone/clone_gui.c:2777
 msgid "Mark Bad Head"
 msgstr "Markiere schlechten Kopf"
 
-#: src/opensuperclone/clone_gui.c:2714
+#: src/opensuperclone/clone_gui.c:2788
 msgid "Max Skip Size (LBA) phase-1-2"
 msgstr "Max. Überspring-Größe (LBA) Phase-1-2"
 
-#: src/opensuperclone/clone_gui.c:2721
+#: src/opensuperclone/clone_gui.c:2795
 msgid "Max read rate (kB/s)"
 msgstr "Max. Lese-Rate (kB/s)"
+
+#: src/opensuperclone/clone_gui.c:446
+msgid "Media Change (The media has changed)"
+msgstr "Medienwechsel (Das Medium hat sich geändert)"
+
+#: src/opensuperclone/clone_gui.c:448
+msgid "Media Change Request (The device has requested a media change)"
+msgstr "Medienwechsel-Anforderung (Das Gerät hat einen Medienwechsel angefordert)"
 
 #: src/opensuperclone/clone_gui.c:205
 msgid "Mode"
 msgstr "Modus"
 
-#: src/opensuperclone/clone_gui.c:2113
+#: src/opensuperclone/clone_gui.c:2187
 msgid "Mode 1"
 msgstr "Modus 1"
 
-#: src/opensuperclone/clone_gui.c:2122
+#: src/opensuperclone/clone_gui.c:2196
 msgid "Mode 2"
 msgstr "Modus 2"
 
-#: src/opensuperclone/clone_gui.c:2131
+#: src/opensuperclone/clone_gui.c:2205
 msgid "Mode 3"
 msgstr "Modus 3"
 
-#: src/opensuperclone/clone_gui.c:2140
+#: src/opensuperclone/clone_gui.c:2214
 msgid "Mode 4"
 msgstr "Modus 4"
 
-#: src/opensuperclone/clone_gui.c:2149
+#: src/opensuperclone/clone_gui.c:2223
 msgid "Mode 5"
 msgstr "Modus 5"
 
-#: src/opensuperclone/clone_gui.c:204 src/opensuperclone/clone_gui.c:1734
+#: src/opensuperclone/clone_gui.c:204 src/opensuperclone/clone_gui.c:1808
 msgid "NULL (No destination)"
 msgstr "NULL (Kein Ziel)"
 
-#: src/opensuperclone/clone_gui.c:239 src/opensuperclone/clone_gui.c:597
+#: src/opensuperclone/clone_gui.c:239 src/opensuperclone/clone_gui.c:671
 msgid "New Domain File"
 msgstr "Neue Domänen-Datei"
 
@@ -1446,39 +1534,39 @@ msgstr "Neue Domänen-Datei"
 msgid "New Project"
 msgstr "Neues Projekt"
 
-#: src/opensuperclone/clone_gui.c:564
+#: src/opensuperclone/clone_gui.c:638
 msgid "New project (progress) file"
 msgstr "Neue Projektdatei (Fortschrittsdatei)"
 
-#: src/opensuperclone/clone_gui.c:1891
+#: src/opensuperclone/clone_gui.c:1965
 #: src/opensuperclone/opensuperclone.c:12609
 #, c-format
 msgid "No destination chosen\n"
 msgstr "Kein Ziel gewählt\n"
 
-#: src/opensuperclone/clone_gui.c:1881
+#: src/opensuperclone/clone_gui.c:1955
 #, c-format
 msgid "No project chosen\n"
 msgstr "Kein Projekt gewählt\n"
 
-#: src/opensuperclone/clone_gui.c:1772 src/opensuperclone/clone_gui.c:1886
+#: src/opensuperclone/clone_gui.c:1846 src/opensuperclone/clone_gui.c:1960
 #, c-format
 msgid "No source chosen\n"
 msgstr "Keine Quelle gewählt\n"
 
-#: src/opensuperclone/clone_gui.c:331
+#: src/opensuperclone/clone_gui.c:353
 msgid "Non-Divided"
 msgstr "Nicht-Geteilt"
 
-#: src/opensuperclone/clone_gui.c:332
+#: src/opensuperclone/clone_gui.c:354
 msgid "Non-Scraped"
 msgstr "Nicht-Gescraped"
 
-#: src/opensuperclone/clone_gui.c:329
+#: src/opensuperclone/clone_gui.c:351
 msgid "Non-Tried"
 msgstr "Nicht-Versucht"
 
-#: src/opensuperclone/clone_gui.c:330
+#: src/opensuperclone/clone_gui.c:352
 msgid "Non-Trimmed"
 msgstr "Nicht-Getrimmt"
 
@@ -1486,12 +1574,11 @@ msgstr "Nicht-Getrimmt"
 msgid "Open Project"
 msgstr "Öffne Projekt"
 
-#: src/opensuperclone/clone_gui.c:2831
+#: src/opensuperclone/clone_gui.c:2905
 msgid "Operating System write buffer (must disconnect to take effect)"
-msgstr ""
-"Betriebssystem-Schreibpuffer (muss getrennt werden, um wirksam zu werden)"
+msgstr "Betriebssystem-Schreibpuffer (muss getrennt werden, um wirksam zu werden)"
 
-#: src/opensuperclone/clone_gui.c:3387 src/opensuperclone/opensuperclone.c:1196
+#: src/opensuperclone/clone_gui.c:3461 src/opensuperclone/opensuperclone.c:1196
 #: src/opensuperclone/opensuperclone.c:15174
 #: src/opensuperclone/opensuperclone.c:15227
 #: src/opensuperclone/opensuperclone.c:15272
@@ -1500,19 +1587,19 @@ msgstr ""
 msgid "Operation completed successfully\n"
 msgstr "Operation erfolgreich abgeschlossen\n"
 
-#: src/opensuperclone/clone_gui.c:2821
+#: src/opensuperclone/clone_gui.c:2895
 msgid "Output Offset (default value is -1, follow input offset)"
 msgstr "Ausgabe-Offset (Standardwert ist -1, folge Eingabe-Offset)"
 
-#: src/opensuperclone/clone_gui.c:2841
+#: src/opensuperclone/clone_gui.c:2915
 msgid "Output sector size adjustment"
 msgstr "Ausgabe-Sektoren-Größen-Anpassung"
 
-#: src/opensuperclone/clone_gui.c:2833
+#: src/opensuperclone/clone_gui.c:2907
 msgid "PIO mode"
 msgstr "PIO-Modus"
 
-#: src/opensuperclone/clone_gui.c:2469
+#: src/opensuperclone/clone_gui.c:2543
 msgid "Partial Access Issue"
 msgstr "Teilweiser Zugriffsfehler"
 
@@ -1528,25 +1615,25 @@ msgstr "Passthrough SCSI"
 msgid "Passthrough auto detect"
 msgstr "Passthrough Auto-Erkennung"
 
-#: src/opensuperclone/clone_gui.c:2695 src/opensuperclone/opensuperclone.c:1687
+#: src/opensuperclone/clone_gui.c:2769 src/opensuperclone/opensuperclone.c:1687
 #: src/opensuperclone/opensuperclone.c:5985
 #: src/opensuperclone/opensuperclone.c:6363
 #, c-format
 msgid "Phase 1"
 msgstr "Phase 1"
 
-#: src/opensuperclone/clone_gui.c:3002
+#: src/opensuperclone/clone_gui.c:3076
 msgid "Phase 1-2 reset time (ms)"
 msgstr "Phase 1-2 Reset-Zeit (ms)"
 
-#: src/opensuperclone/clone_gui.c:2696 src/opensuperclone/opensuperclone.c:1691
+#: src/opensuperclone/clone_gui.c:2770 src/opensuperclone/opensuperclone.c:1691
 #: src/opensuperclone/opensuperclone.c:6007
 #: src/opensuperclone/opensuperclone.c:6385
 #, c-format
 msgid "Phase 2"
 msgstr "Phase 2"
 
-#: src/opensuperclone/clone_gui.c:2697 src/opensuperclone/opensuperclone.c:1695
+#: src/opensuperclone/clone_gui.c:2771 src/opensuperclone/opensuperclone.c:1695
 #: src/opensuperclone/opensuperclone.c:6060
 #: src/opensuperclone/opensuperclone.c:6064
 #: src/opensuperclone/opensuperclone.c:6438
@@ -1555,11 +1642,11 @@ msgstr "Phase 2"
 msgid "Phase 3"
 msgstr "Phase 3"
 
-#: src/opensuperclone/clone_gui.c:3003
+#: src/opensuperclone/clone_gui.c:3077
 msgid "Phase 3 reset time (ms)"
 msgstr "Phase 3 Reset-Zeit (ms)"
 
-#: src/opensuperclone/clone_gui.c:2698 src/opensuperclone/opensuperclone.c:1699
+#: src/opensuperclone/clone_gui.c:2772 src/opensuperclone/opensuperclone.c:1699
 #: src/opensuperclone/opensuperclone.c:6091
 #: src/opensuperclone/opensuperclone.c:6095
 #: src/opensuperclone/opensuperclone.c:6469
@@ -1569,23 +1656,23 @@ msgstr "Phase 3 Reset-Zeit (ms)"
 msgid "Phase 4"
 msgstr "Phase 4"
 
-#: src/opensuperclone/clone_gui.c:3004
+#: src/opensuperclone/clone_gui.c:3078
 msgid "Phase 4 reset time (ms)"
 msgstr "Phase 4 Reset-Zeit (ms)"
 
-#: src/opensuperclone/clone_gui.c:2694
+#: src/opensuperclone/clone_gui.c:2768
 msgid "Phase Control"
 msgstr "Phasenkontrolle"
 
-#: src/opensuperclone/clone_gui.c:3000
+#: src/opensuperclone/clone_gui.c:3074
 msgid "Phase timers (soft reset timers)"
 msgstr "Phasen-Timer (Soft-Reset-Timer)"
 
-#: src/opensuperclone/clone_gui.c:3167
+#: src/opensuperclone/clone_gui.c:3241
 msgid "Possible Logical Units"
 msgstr "Mögliche Logische Einheiten"
 
-#: src/opensuperclone/clone_gui.c:3258
+#: src/opensuperclone/clone_gui.c:3332
 msgid "Post activation delay time (sec)"
 msgstr "Nach-Aktivierungs-Verzögerungszeit (Sek.)"
 
@@ -1597,15 +1684,23 @@ msgstr "Ausschalten"
 msgid "Power On"
 msgstr "Einschalten"
 
-#: src/opensuperclone/clone_gui.c:247 src/opensuperclone/clone_gui.c:3271
+#: src/opensuperclone/clone_gui.c:255
+msgid "Power off the drive with the selected relay board"
+msgstr "Laufwerk mit dem ausgewählten Relais-Board ausschalten"
+
+#: src/opensuperclone/clone_gui.c:256
+msgid "Power on the drive with the selected relay board"
+msgstr "Laufwerk mit dem ausgewählten Relais-Board einschalten"
+
+#: src/opensuperclone/clone_gui.c:247 src/opensuperclone/clone_gui.c:3345
 msgid "Primary Relay Settings"
 msgstr "Primäre Relais-Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:3236
+#: src/opensuperclone/clone_gui.c:3310
 msgid "Primary relay board settings"
 msgstr "Primäre Relais-Board-Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:308
+#: src/opensuperclone/clone_gui.c:330
 msgid "Project"
 msgstr "Projekt"
 
@@ -1613,7 +1708,7 @@ msgstr "Projekt"
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/opensuperclone/clone_gui.c:2716
+#: src/opensuperclone/clone_gui.c:2790
 msgid "Rate Skip (kB/s) phase-3"
 msgstr "Rate Skip (kB/s) Phase-3"
 
@@ -1621,7 +1716,7 @@ msgstr "Rate Skip (kB/s) Phase-3"
 msgid "Raw data"
 msgstr "Rohdaten"
 
-#: src/opensuperclone/clone_gui.c:2704
+#: src/opensuperclone/clone_gui.c:2778
 msgid "Read Bad Head"
 msgstr "Lese schlechten Kopf"
 
@@ -1639,7 +1734,7 @@ msgstr "Lese Ziel"
 msgid "Reading: "
 msgstr "Lese: "
 
-#: src/opensuperclone/clone_gui.c:2705 src/opensuperclone/opensuperclone.c:5962
+#: src/opensuperclone/clone_gui.c:2779 src/opensuperclone/opensuperclone.c:5962
 #, c-format
 msgid "Rebuild Assist"
 msgstr "Rebuild Assist"
@@ -1654,35 +1749,35 @@ msgstr "Rebuild Assist wird von diesem Gerät nicht unterstützt"
 msgid "Rebuild assist only works in direct ahci mode"
 msgstr "Rebuild Assist funktioniert nur im direkten AHCI-Modus"
 
-#: src/opensuperclone/clone_gui.c:320
+#: src/opensuperclone/clone_gui.c:342
 msgid "Recent rate"
 msgstr "Letzte Rate"
 
-#: src/opensuperclone/clone_gui.c:3238
+#: src/opensuperclone/clone_gui.c:3312
 msgid "Relay board settings"
 msgstr "Relais-Board-Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:338
+#: src/opensuperclone/clone_gui.c:360
 msgid "Remaining retry passes"
 msgstr "Verbleibende Wiederholungsversuche"
 
-#: src/opensuperclone/clone_gui.c:316
+#: src/opensuperclone/clone_gui.c:338
 msgid "Remaining time"
 msgstr "Verbleibende Zeit"
 
-#: src/opensuperclone/clone_gui.c:223 src/opensuperclone/clone_gui.c:4469
+#: src/opensuperclone/clone_gui.c:223 src/opensuperclone/clone_gui.c:4543
 msgid "Repair Log"
 msgstr "Reparatur-Log"
 
-#: src/opensuperclone/clone_gui.c:220 src/opensuperclone/clone_gui.c:4389
+#: src/opensuperclone/clone_gui.c:220 src/opensuperclone/clone_gui.c:4463
 msgid "Reset Current Status"
 msgstr "Aktuellen Status zurücksetzen"
 
-#: src/opensuperclone/clone_gui.c:222 src/opensuperclone/clone_gui.c:4420
+#: src/opensuperclone/clone_gui.c:222 src/opensuperclone/clone_gui.c:4494
 msgid "Reset Log"
 msgstr "Log zurücksetzen"
 
-#: src/opensuperclone/clone_gui.c:2993
+#: src/opensuperclone/clone_gui.c:3067
 msgid "Reset timeout (ms)"
 msgstr "Reset-Timeout (ms)"
 
@@ -1694,24 +1789,28 @@ msgstr "USB Mass Storage-Treiber wiederherstellen"
 msgid "Restore original startup port configuration"
 msgstr "Ursprüngliche Startport-Konfiguration wiederherstellen"
 
-#: src/opensuperclone/clone_gui.c:2572 src/opensuperclone/clone_gui.c:2608
-#: src/opensuperclone/clone_gui.c:2629
+#: src/opensuperclone/clone_gui.c:2646 src/opensuperclone/clone_gui.c:2682
+#: src/opensuperclone/clone_gui.c:2703
 msgid "Results"
 msgstr "Ergebnisse"
 
-#: src/opensuperclone/clone_gui.c:337
+#: src/opensuperclone/clone_gui.c:359
 msgid "Retried"
 msgstr "Wiederholt"
 
-#: src/opensuperclone/clone_gui.c:2708
+#: src/opensuperclone/clone_gui.c:2782
 msgid "Retries"
 msgstr "Wiederholungen"
 
-#: src/opensuperclone/clone_gui.c:2837
+#: src/opensuperclone/clone_gui.c:319
+msgid "Retrieve SMART information"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:2911
 msgid "Retry connecting on failure after relay power cycle"
 msgstr "Wiederholte Verbindung bei Fehler nach Relais-Stromzyklus"
 
-#: src/opensuperclone/clone_gui.c:3008
+#: src/opensuperclone/clone_gui.c:3082
 msgid "Retry reset time (ms)"
 msgstr "Wiederholungs-Reset-Zeit (ms)"
 
@@ -1723,27 +1822,27 @@ msgstr "Wiederholungs-Reset-Zeit (ms)"
 msgid "Retrying"
 msgstr "Wiederhole"
 
-#: src/opensuperclone/clone_gui.c:2846
+#: src/opensuperclone/clone_gui.c:2920
 msgid "Return mark filled data"
 msgstr "Markierte Daten zurückgeben"
 
-#: src/opensuperclone/clone_gui.c:2844
+#: src/opensuperclone/clone_gui.c:2918
 msgid "Return read error (standard)"
 msgstr "Lese-Fehler zurückgeben (Standard)"
 
-#: src/opensuperclone/clone_gui.c:2845
+#: src/opensuperclone/clone_gui.c:2919
 msgid "Return zero filled data"
 msgstr "Null gefüllte Daten zurückgeben"
 
-#: src/opensuperclone/clone_gui.c:2706
+#: src/opensuperclone/clone_gui.c:2780
 msgid "Reverse"
 msgstr "Rückwärts"
 
-#: src/opensuperclone/clone_gui.c:315
+#: src/opensuperclone/clone_gui.c:337
 msgid "Run time"
 msgstr "Laufzeit"
 
-#: src/opensuperclone/clone_gui.c:297
+#: src/opensuperclone/clone_gui.c:301
 msgid "SMART"
 msgstr "SMART"
 
@@ -1755,7 +1854,7 @@ msgstr "SMART-Datenstruktur-Version"
 msgid "Save Domain File"
 msgstr "Domänen-Datei speichern"
 
-#: src/opensuperclone/clone_gui.c:241 src/opensuperclone/clone_gui.c:747
+#: src/opensuperclone/clone_gui.c:241 src/opensuperclone/clone_gui.c:821
 msgid "Save Domain File As"
 msgstr "Domänen-Datei speichern als"
 
@@ -1767,15 +1866,15 @@ msgstr "Projekt speichern"
 msgid "Save Project As"
 msgstr "Projekt speichern als"
 
-#: src/opensuperclone/clone_gui.c:687
+#: src/opensuperclone/clone_gui.c:761
 msgid "Save Project File As"
 msgstr "Projekt-Datei speichern als"
 
-#: src/opensuperclone/clone_gui.c:2702
+#: src/opensuperclone/clone_gui.c:2776
 msgid "Scrape"
 msgstr "Scrape"
 
-#: src/opensuperclone/clone_gui.c:3007
+#: src/opensuperclone/clone_gui.c:3081
 msgid "Scrape reset time (ms)"
 msgstr "Scrape-Reset-Zeit (ms)"
 
@@ -1789,19 +1888,19 @@ msgstr "Scrape-Reset-Zeit (ms)"
 msgid "Scraping"
 msgstr "Scrape"
 
-#: src/opensuperclone/clone_gui.c:2719
+#: src/opensuperclone/clone_gui.c:2793
 msgid "Sector size (bytes)"
 msgstr "Sektorgröße (Bytes)"
 
-#: src/opensuperclone/clone_gui.c:3165 src/opensuperclone/clone_gui.c:3175
+#: src/opensuperclone/clone_gui.c:3239 src/opensuperclone/clone_gui.c:3249
 msgid "Select Logical Unit"
 msgstr "Logische Einheit auswählen"
 
-#: src/opensuperclone/clone_gui.c:3169
+#: src/opensuperclone/clone_gui.c:3243
 msgid "Set Logical Unit"
 msgstr "Logische Einheit setzen"
 
-#: src/opensuperclone/clone_gui.c:3127
+#: src/opensuperclone/clone_gui.c:3201
 msgid "Set disabled ports"
 msgstr "Deaktivierte Ports setzen"
 
@@ -1809,40 +1908,40 @@ msgstr "Deaktivierte Ports setzen"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/opensuperclone/clone_gui.c:2711
+#: src/opensuperclone/clone_gui.c:2785
 msgid "Size (LBA)"
 msgstr "Größe (LBA)"
 
-#: src/opensuperclone/clone_gui.c:2707
+#: src/opensuperclone/clone_gui.c:2781
 msgid "Skip Fast"
 msgstr "Schnell überspringen"
 
-#: src/opensuperclone/clone_gui.c:2713
+#: src/opensuperclone/clone_gui.c:2787
 msgid "Skip Size (LBA) phase-1-2-3"
 msgstr "Überspringe Größe (LBA) Phase-1-2-3"
 
-#: src/opensuperclone/clone_gui.c:2715
+#: src/opensuperclone/clone_gui.c:2789
 msgid "Skip Threshold (ms) phase-1-2"
 msgstr "Überspringe Schwellenwert (ms) Phase-1-2"
 
-#: src/opensuperclone/clone_gui.c:326
+#: src/opensuperclone/clone_gui.c:348
 msgid "Skip resets"
 msgstr "Resets überspringen"
 
-#: src/opensuperclone/clone_gui.c:325
+#: src/opensuperclone/clone_gui.c:347
 msgid "Skip runs"
 msgstr "Runs überspringen"
 
-#: src/opensuperclone/clone_gui.c:323
+#: src/opensuperclone/clone_gui.c:345
 msgid "Skips"
 msgstr "Sprünge"
 
-#: src/opensuperclone/clone_gui.c:2405 src/opensuperclone/clone_gui.c:2516
-#: src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2479 src/opensuperclone/clone_gui.c:2590
+#: src/opensuperclone/clone_gui.c:2595
 msgid "Slow"
 msgstr "Langsam"
 
-#: src/opensuperclone/clone_gui.c:299
+#: src/opensuperclone/clone_gui.c:303
 msgid ""
 "Slow\n"
 "Driver"
@@ -1850,15 +1949,15 @@ msgstr ""
 "Langsamer\n"
 "Treiber"
 
-#: src/opensuperclone/clone_gui.c:2439
+#: src/opensuperclone/clone_gui.c:2513
 msgid "Slow Responding Firmware Issue"
 msgstr "Langsame Firmware-Antwort"
 
-#: src/opensuperclone/clone_gui.c:324
+#: src/opensuperclone/clone_gui.c:346
 msgid "Slow skips"
 msgstr "Langsame Sprünge"
 
-#: src/opensuperclone/clone_gui.c:305
+#: src/opensuperclone/clone_gui.c:309
 msgid ""
 "Soft\n"
 "Reset"
@@ -1866,15 +1965,20 @@ msgstr ""
 "Soft-\n"
 "Reset"
 
-#: src/opensuperclone/clone_gui.c:2991
+#: src/opensuperclone/clone_gui.c:327
+#, fuzzy
+msgid "Soft reset the drive"
+msgstr "Soft-Reset-Zeit (ms)"
+
+#: src/opensuperclone/clone_gui.c:3065
 msgid "Soft reset time (ms)"
 msgstr "Soft-Reset-Zeit (ms)"
 
-#: src/opensuperclone/clone_gui.c:310
+#: src/opensuperclone/clone_gui.c:332
 msgid "Source"
 msgstr "Quelle"
 
-#: src/opensuperclone/clone_gui.c:1830
+#: src/opensuperclone/clone_gui.c:1904
 #, c-format
 msgid "Source and Destination cannot be the same device"
 msgstr "Quelle und Ziel können nicht das gleiche Gerät sein"
@@ -1894,7 +1998,7 @@ msgstr "Quelllaufwerk meldet falsche Größe / Größe hat sich geändert"
 msgid "Source drive responded with error to identify command"
 msgstr "Quelllaufwerk hat mit Fehler auf Identify-Befehl reagiert"
 
-#: src/opensuperclone/clone_gui.c:293
+#: src/opensuperclone/clone_gui.c:297
 msgid "Start"
 msgstr "Start"
 
@@ -1902,7 +2006,12 @@ msgstr "Start"
 msgid "Start Virtual Disk Driver"
 msgstr "Starte virtuellen Laufwerktreiber"
 
-#: src/opensuperclone/clone_gui.c:294
+#: src/opensuperclone/clone_gui.c:315
+#, fuzzy
+msgid "Start the clone/virtual driver"
+msgstr "Starte virtuellen Laufwerktreiber"
+
+#: src/opensuperclone/clone_gui.c:298
 msgid "Stop"
 msgstr "Stop"
 
@@ -1910,31 +2019,108 @@ msgstr "Stop"
 msgid "Stop Virtual Disk Driver"
 msgstr "Stoppe virtuellen Laufwerktreiber"
 
-#: src/opensuperclone/clone_gui.c:2825
+#: src/opensuperclone/clone_gui.c:2899
 msgid "Stop cloning with error message"
 msgstr "Stoppe Klonen mit Fehlermeldung"
 
-#: src/opensuperclone/clone_gui.c:2827 src/opensuperclone/clone_gui.c:2998
+#: src/opensuperclone/clone_gui.c:316
+#, fuzzy
+msgid "Stop the clone/virtual driver"
+msgstr "Fehler beim Schließen des virtuellen Laufwerks-Treibers"
+
+#: src/opensuperclone/clone_gui.c:320
+msgid "Switch to clone mode"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:322
+msgid ""
+"Switch to virtual mode 1: This mode will use all available Phases (starting "
+"with Phase 4) when reading from the source"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:323
+msgid ""
+"Switch to virtual mode 2: This mode will only use Phase 4 and will not "
+"perform any further processing of a chunk"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:324
+msgid ""
+"Switch to virtual mode 3: This mode is the same as mode 3, but it will "
+"increase the read size (up to the cluster size) when it detects sequential "
+"reads"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:325
+msgid ""
+"Switch to virtual mode 4: This mode only reads from the destination, and "
+"will not read any data from the source"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:326
+msgid ""
+"Switch to virtual mode 5: This mode does not read any data and will instead "
+"return zeroed data"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:2901 src/opensuperclone/clone_gui.c:3072
 msgid "Test command"
 msgstr "Testbefehl"
 
-#: src/opensuperclone/clone_gui.c:3259
+#: src/opensuperclone/clone_gui.c:3333
 msgid "Test relay operation"
 msgstr "Teste Relaisbetrieb"
 
-#: src/opensuperclone/clone_gui.c:3532 src/opensuperclone/clone_gui.c:3557
+#: src/opensuperclone/clone_gui.c:378
+msgid "The average rate of the entire recovery"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:377
+msgid "The average rate of the last 5 minutes of the recovery"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:379
+#, fuzzy
+msgid "The base skip size"
+msgstr "Grundüberspringgröße"
+
+#: src/opensuperclone/clone_gui.c:3606 src/opensuperclone/clone_gui.c:3631
 #: src/opensuperclone/opensuperclone.c:11876
 #: src/opensuperclone/opensuperclone.c:11993
 #, c-format
 msgid "The called command failed with exit signal / status"
 msgstr "Der aufgerufene Befehl ist mit Exit-Signal / Status fehlgeschlagen"
 
-#: src/opensuperclone/clone_gui.c:3541 src/opensuperclone/clone_gui.c:3566
+#: src/opensuperclone/clone_gui.c:3615 src/opensuperclone/clone_gui.c:3640
 #: src/opensuperclone/opensuperclone.c:11884
 #: src/opensuperclone/opensuperclone.c:12001
 #, c-format
 msgid "The command completed normally"
 msgstr "Der Befehl wurde normal abgeschlossen"
+
+#: src/opensuperclone/clone_gui.c:396
+msgid "The current mode of the recovery"
+msgstr "Der aktuelle Modus der Wiederherstellung"
+
+#: src/opensuperclone/clone_gui.c:374
+msgid "The current position in the source drive in LBAs"
+msgstr "Die aktuelle Position im Quelllaufwerk in LBAs"
+
+#: src/opensuperclone/clone_gui.c:376
+msgid "The current rate of the recovery"
+msgstr "Die aktuelle Geschwindigkeit der Wiederherstellung"
+
+#: src/opensuperclone/clone_gui.c:375
+msgid "The current status of the recovery"
+msgstr "Der aktuelle Status der Wiederherstellung"
+
+#: src/opensuperclone/clone_gui.c:368
+msgid "The destination drive or image file to be recovered to"
+msgstr "Das Ziel-Laufwerk oder die Ziel-Abbild-Datei, in die wiederhergestellt werden soll"
+
+#: src/opensuperclone/clone_gui.c:366
+msgid "The domain file for the current recovery"
+msgstr "Die Domänen-Datei für die aktuelle Wiederherstellung"
 
 #: src/opensuperclone/opensuperclone.c:11914
 #: src/opensuperclone/opensuperclone.c:11967
@@ -1959,7 +2145,11 @@ msgstr ""
 "Das Ende ist nicht gleich der Laufwerksgröße!\n"
 "Logdatei meldet Größe von "
 
-#: src/opensuperclone/clone_gui.c:1658
+#: src/opensuperclone/clone_gui.c:373
+msgid "The estimated time remaining to complete the recovery"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:1732
 msgid ""
 "The image file currently exists.\n"
 "This will continue the recovery using this image file."
@@ -1967,9 +2157,9 @@ msgstr ""
 "Die Abbilddatei existiert bereits.\n"
 "Dies wird die Wiederherstellung mit dieser Abbilddatei fortsetzen."
 
-#: src/opensuperclone/clone_gui.c:921 src/opensuperclone/clone_gui.c:982
-#: src/opensuperclone/clone_gui.c:1780 src/opensuperclone/clone_gui.c:1838
-#: src/opensuperclone/clone_gui.c:4495
+#: src/opensuperclone/clone_gui.c:995 src/opensuperclone/clone_gui.c:1056
+#: src/opensuperclone/clone_gui.c:1854 src/opensuperclone/clone_gui.c:1912
+#: src/opensuperclone/clone_gui.c:4569
 #, c-format
 msgid ""
 "The log file has errors!\n"
@@ -1979,6 +2169,22 @@ msgstr ""
 "Das Logdatei enthält Fehler!\n"
 "Das Logdatei muss repariert werden, bevor sie verwendet werden kann.\n"
 "Bitte schauen Sie in die Konsole für weitere Informationen.\n"
+
+#: src/opensuperclone/clone_gui.c:392
+msgid ""
+"The longest read time since the last display update / within the last 256 "
+"display updates / since the start of the recovery"
+msgstr ""
+"Dauer der längsten Lesezeit seit dem letzten Anzeigendurchlauf / innerhalb "
+"der letzten 256 Anzeigendurchläufe / seit dem Start der Wiederherstellung"
+
+#: src/opensuperclone/clone_gui.c:370
+msgid "The number of LBAs to be read from the source drive"
+msgstr "Die Anzahl der LBAs, die vom Quelllaufwerk gelesen werden sollen"
+
+#: src/opensuperclone/clone_gui.c:365
+msgid "The project log file for the current recovery"
+msgstr "Die Projekt-Logdatei für die aktuelle Wiederherstellung"
 
 #: src/opensuperclone/opensuperclone.c:6296
 #: src/opensuperclone/opensuperclone.c:6673
@@ -2004,7 +2210,87 @@ msgstr ""
 msgid "The rescue is finished using the current settings"
 msgstr "Die Rettung ist mit den aktuellen Einstellungen abgeschlossen"
 
-#: src/opensuperclone/clone_gui.c:1788 src/opensuperclone/io.c:4085
+#: src/opensuperclone/clone_gui.c:371
+msgid "The size of the domain file in LBAs"
+msgstr "Die Größe der Domänen-Datei in LBAs"
+
+#: src/opensuperclone/clone_gui.c:384
+msgid "The size of the last skip run"
+msgstr "Die Größe des letzten Überspringens"
+
+#: src/opensuperclone/clone_gui.c:367
+msgid "The source drive to be recovered"
+msgstr "Das zu wiederherstellende Quelllaufwerk"
+
+#: src/opensuperclone/clone_gui.c:369
+msgid "The total number of LBAs in the source drive"
+msgstr "Die Gesamtzahl der LBAs im Quelllaufwerk"
+
+#: src/opensuperclone/clone_gui.c:385
+msgid "The total number of LBAs recovered so far"
+msgstr "Die Gesamtzahl der bislang wiederhergestellten LBAs"
+
+#: src/opensuperclone/clone_gui.c:393
+msgid ""
+"The total number of LBAs that have been filled either in Fill mode or Erase "
+"mode"
+msgstr ""
+"Die Gesamtzahl der LBAs, die entweder im Füllmodus oder im Löschenmodus "
+"gefüllt wurden"
+
+#: src/opensuperclone/clone_gui.c:390
+msgid "The total number of LBAs that have been marked as bad"
+msgstr "Die Gesamtzahl der als defekt markierten LBAs"
+
+#: src/opensuperclone/clone_gui.c:394
+msgid "The total number of LBAs that have been retried"
+msgstr "Die Gesamtzahl der wiederholten LBAs"
+
+#: src/opensuperclone/clone_gui.c:388
+msgid "The total number of LBAs that have not been divided"
+msgstr "Die Gesamtzahl der LBAs, die nicht geteilt wurden"
+
+#: src/opensuperclone/clone_gui.c:389
+msgid "The total number of LBAs that have not been scraped"
+msgstr "Die Gesamtzahl der LBAs, die nicht ge-scraped wurden"
+
+#: src/opensuperclone/clone_gui.c:386
+msgid "The total number of LBAs that have not been tried to be recovered"
+msgstr "Die Gesamtzahl der LBAs, die nicht versucht wurden, wiederhergestellt zu werden"
+
+#: src/opensuperclone/clone_gui.c:387
+msgid "The total number of LBAs that have not been trimmed"
+msgstr "Die Gesamtzahl der LBAs, die nicht getrimmt wurden"
+
+#: src/opensuperclone/clone_gui.c:395
+msgid "The total number of retry passes remaining"
+msgstr "Die Gesamtzahl der verbleibenden Wiederholungsdurchläufe"
+
+#: src/opensuperclone/clone_gui.c:382
+msgid "The total number of skip runs so far"
+msgstr "Die Gesamtzahl der bisherigen Sprünge"
+
+#: src/opensuperclone/clone_gui.c:381
+msgid "The total number of skips due to slow reads so far"
+msgstr "Die Gesamtzahl der bisherigen Sprünge aufgrund langsamer Lesevorgänge"
+
+#: src/opensuperclone/clone_gui.c:380
+msgid "The total number of skips so far"
+msgstr "Die Gesamtzahl der bisherigen Sprünge"
+
+#: src/opensuperclone/clone_gui.c:383
+msgid ""
+"The total number of times the skipping was reset due to exceeding the limit "
+"of 64 skips in a run"
+msgstr ""
+"Die Gesamtzahl der Wiederherstellungsversuche, die aufgrund des Überschreitens "
+"des Limits von 64 Sprüngen in einem Durchlauf zurückgesetzt wurden"
+
+#: src/opensuperclone/clone_gui.c:372
+msgid "The total time taken to recover the drive"
+msgstr "Die Gesamtzeit, die für die Wiederherstellung des Laufwerks benötigt wurde"
+
+#: src/opensuperclone/clone_gui.c:1862 src/opensuperclone/io.c:4085
 #: src/opensuperclone/io.c:4488 src/opensuperclone/io.c:4555
 #: src/opensuperclone/io.c:4649 src/opensuperclone/io.c:5171
 #: src/opensuperclone/io.c:5238 src/opensuperclone/io.c:5332
@@ -2012,7 +2298,7 @@ msgstr "Die Rettung ist mit den aktuellen Einstellungen abgeschlossen"
 msgid "The virtual disk device driver is not running"
 msgstr "Der virtuelle Laufwerktreiber ist nicht aktiv"
 
-#: src/opensuperclone/clone_gui.c:2988
+#: src/opensuperclone/clone_gui.c:3062
 msgid ""
 "These timer settings are only for Direct IDE and Direct AHCI modes.\n"
 "They have no effect with the passthrough modes.\n"
@@ -2020,7 +2306,7 @@ msgstr ""
 "Diese Timer-Einstellungen sind nur für Direct IDE und Direct AHCI-Modi.\n"
 "Sie haben keine Auswirkung auf die Passthrough-Modi.\n"
 
-#: src/opensuperclone/clone_gui.c:3166
+#: src/opensuperclone/clone_gui.c:3240
 msgid ""
 "This device has more than 1 logical unit.\n"
 "Please choose which logical unit."
@@ -2028,7 +2314,7 @@ msgstr ""
 "Dieses Gerät hat mehr als 1 logische Einheit.\n"
 "Bitte wählen Sie die logische Einheit."
 
-#: src/opensuperclone/clone_gui.c:4472
+#: src/opensuperclone/clone_gui.c:4546
 msgid ""
 "This will repair the current progress log in memory. \n"
 "It is recommended to make a backup copy of the log before repairing."
@@ -2036,7 +2322,7 @@ msgstr ""
 "Dies wird das aktuelle Fortschritts-Log im Speicher reparieren. \n"
 "Es wird empfohlen, eine Sicherungskopie des Logs vor der Reparatur zu machen."
 
-#: src/opensuperclone/clone_gui.c:4392
+#: src/opensuperclone/clone_gui.c:4466
 msgid ""
 "This will reset the current log status to Phase1,\n"
 " and current position to 0,\n"
@@ -2046,7 +2332,7 @@ msgstr ""
 " und die aktuelle Position auf 0,\n"
 " und alle Skip-Daten zurücksetzen"
 
-#: src/opensuperclone/clone_gui.c:4423
+#: src/opensuperclone/clone_gui.c:4497
 msgid ""
 "This will reset the position to 0, \n"
 "the current status to non-tried, \n"
@@ -2064,7 +2350,7 @@ msgstr ""
 msgid "Threshold"
 msgstr "Schwellenwert"
 
-#: src/opensuperclone/clone_gui.c:233 src/opensuperclone/clone_gui.c:3057
+#: src/opensuperclone/clone_gui.c:233 src/opensuperclone/clone_gui.c:3131
 msgid "Timer Settings"
 msgstr "Timer-Einstellungen"
 
@@ -2072,27 +2358,31 @@ msgstr "Timer-Einstellungen"
 msgid "Tools"
 msgstr "Tools"
 
-#: src/opensuperclone/clone_gui.c:2516 src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2590 src/opensuperclone/clone_gui.c:2595
 msgid "Total"
 msgstr "Gesamt"
 
-#: src/opensuperclone/clone_gui.c:312
+#: src/opensuperclone/clone_gui.c:334
 msgid "Total LBA"
 msgstr "Gesamt LBA"
 
-#: src/opensuperclone/clone_gui.c:321
+#: src/opensuperclone/clone_gui.c:343
 msgid "Total rate"
 msgstr "Gesamtgeschwindigkeit"
 
-#: src/opensuperclone/clone_gui.c:2324
+#: src/opensuperclone/clone_gui.c:2398
 msgid "Total, Good, Bad, Slow"
 msgstr "Gesamt, Gut, Schlecht, Langsam"
 
-#: src/opensuperclone/clone_gui.c:2701
+#: src/opensuperclone/clone_gui.c:450
+msgid "Track 0 Not Found (The device could not find track 0)"
+msgstr ""
+
+#: src/opensuperclone/clone_gui.c:2775
 msgid "Trim (overrides dividing)"
 msgstr "Trim (überschreibt Teilen)"
 
-#: src/opensuperclone/clone_gui.c:3005
+#: src/opensuperclone/clone_gui.c:3079
 msgid "Trim/Divide reset time (ms)"
 msgstr "Trim/Teilen-Zurücksetzungszeit (ms)"
 
@@ -2106,11 +2396,11 @@ msgstr "Trim/Teilen-Zurücksetzungszeit (ms)"
 msgid "Trimming"
 msgstr "Trimme"
 
-#: src/opensuperclone/clone_gui.c:3010
+#: src/opensuperclone/clone_gui.c:3084
 msgid "USB reset choices"
 msgstr "USB Zurücksetzungs-Optionen"
 
-#: src/opensuperclone/clone_gui.c:1799 src/opensuperclone/clone_gui.c:1849
+#: src/opensuperclone/clone_gui.c:1873 src/opensuperclone/clone_gui.c:1923
 #: src/opensuperclone/opensuperclone.c:11889
 #: src/opensuperclone/opensuperclone.c:11904
 #: src/opensuperclone/opensuperclone.c:11942
@@ -2119,7 +2409,7 @@ msgstr "USB Zurücksetzungs-Optionen"
 msgid "Unable to connect devices"
 msgstr "Geräte können nicht verbunden werden"
 
-#: src/opensuperclone/clone_gui.c:1155 src/opensuperclone/clone_gui.c:1753
+#: src/opensuperclone/clone_gui.c:1229 src/opensuperclone/clone_gui.c:1827
 #: src/opensuperclone/opensuperclone.c:1355
 #: src/opensuperclone/opensuperclone.c:1373
 #: src/opensuperclone/opensuperclone.c:1388
@@ -2145,28 +2435,32 @@ msgstr ""
 msgid "Unable to reopen source device"
 msgstr "Quellgerät kann nicht erneut geöffnet werden"
 
-#: src/opensuperclone/clone_gui.c:3130
+#: src/opensuperclone/clone_gui.c:445
+msgid "Uncorrectable Data (The device has detected uncorrectable data)"
+msgstr "Unkorrigierbare Daten (Das Gerät hat unkorrigierbare Daten erkannt)"
+
+#: src/opensuperclone/clone_gui.c:3204
 msgid "Update ports"
 msgstr "Ports aktualisieren"
 
-#: src/opensuperclone/clone_gui.c:3128
+#: src/opensuperclone/clone_gui.c:3202
 msgid "Updated disabled ports (GRUB data)"
 msgstr "Deaktivierte Ports aktualisiert (GRUB-Daten)"
 
-#: src/opensuperclone/clone_gui.c:2850
+#: src/opensuperclone/clone_gui.c:2924
 msgid "Use button colors in bottom status bar"
 msgstr "Verwenden Sie die Schaltflächenfarben in der unteren Statusleiste"
 
-#: src/opensuperclone/clone_gui.c:2843
+#: src/opensuperclone/clone_gui.c:2917
 msgid "Use physical sector size as logical for virtual disk"
 msgstr ""
 "Verwenden Sie die physische Sektorgröße als logische für virtuelle Laufwerke"
 
-#: src/opensuperclone/clone_gui.c:2493
+#: src/opensuperclone/clone_gui.c:2567
 msgid "Variance read times low/high:"
 msgstr "Varianz Lesedauer niedrig/hoch:"
 
-#: src/opensuperclone/clone_gui.c:300
+#: src/opensuperclone/clone_gui.c:304
 msgid ""
 "Virtual\n"
 "Mode 1"
@@ -2174,7 +2468,7 @@ msgstr ""
 "Virtual\n"
 "Modus 1"
 
-#: src/opensuperclone/clone_gui.c:301
+#: src/opensuperclone/clone_gui.c:305
 msgid ""
 "Virtual\n"
 "Mode 2"
@@ -2182,7 +2476,7 @@ msgstr ""
 "Virtual\n"
 "Modus 2"
 
-#: src/opensuperclone/clone_gui.c:302
+#: src/opensuperclone/clone_gui.c:306
 msgid ""
 "Virtual\n"
 "Mode 3"
@@ -2190,7 +2484,7 @@ msgstr ""
 "Virtual\n"
 "Modus 3"
 
-#: src/opensuperclone/clone_gui.c:303
+#: src/opensuperclone/clone_gui.c:307
 msgid ""
 "Virtual\n"
 "Mode 4"
@@ -2198,7 +2492,7 @@ msgstr ""
 "Virtual\n"
 "Modus 4"
 
-#: src/opensuperclone/clone_gui.c:304
+#: src/opensuperclone/clone_gui.c:308
 msgid ""
 "Virtual\n"
 "Mode 5"
@@ -2206,20 +2500,20 @@ msgstr ""
 "Virtual\n"
 "Modus 5"
 
-#: src/opensuperclone/clone_gui.c:2847
+#: src/opensuperclone/clone_gui.c:2921
 msgid "Virtual Disk Device Driver output options for read errors"
 msgstr ""
 "Optionen für die Ausgabe des virtuellen Laufwerktreibers für Lese-Fehler"
 
-#: src/opensuperclone/clone_gui.c:2842
+#: src/opensuperclone/clone_gui.c:2916
 msgid "Virtual Disk IO SCSI only"
 msgstr "Virtuelle Laufwerks-IO auf SCSI beschränken"
 
-#: src/opensuperclone/clone_gui.c:2849
+#: src/opensuperclone/clone_gui.c:2923
 msgid "Virtual Disk device name"
 msgstr "Name des virtuellen Laufwerks"
 
-#: src/opensuperclone/clone_gui.c:2848
+#: src/opensuperclone/clone_gui.c:2922
 msgid "Virtual Disk minimum cluster read size (mode 3)"
 msgstr "Minimale Cluster-Lese-Größe für virtuelle Laufwerke (Modus 3)"
 
@@ -2266,15 +2560,15 @@ msgstr ""
 "Bitte stellen Sie sicher, dass Sie die Anweisungen befolgen, wie das "
 "Laufwerk versteckt wird!\n"
 
-#: src/opensuperclone/clone_gui.c:923 src/opensuperclone/clone_gui.c:984
-#: src/opensuperclone/clone_gui.c:1868 src/opensuperclone/clone_gui.c:1965
-#: src/opensuperclone/clone_gui.c:2161 src/opensuperclone/io.c:8689
+#: src/opensuperclone/clone_gui.c:997 src/opensuperclone/clone_gui.c:1058
+#: src/opensuperclone/clone_gui.c:1942 src/opensuperclone/clone_gui.c:2039
+#: src/opensuperclone/clone_gui.c:2235 src/opensuperclone/io.c:8689
 #: src/opensuperclone/io.c:8727 src/opensuperclone/io.c:8765
 #: src/opensuperclone/io.c:8802
 msgid "Warning"
 msgstr "Warnung"
 
-#: src/opensuperclone/clone_gui.c:1866
+#: src/opensuperclone/clone_gui.c:1940
 #, c-format
 msgid ""
 "Warning! The destination is smaller than the source.\n"
@@ -2283,7 +2577,7 @@ msgstr ""
 "Warnung! Das Ziel ist kleiner als die Quelle.\n"
 "Einige Daten werden möglicherweise nicht kopiert."
 
-#: src/opensuperclone/clone_gui.c:1963 src/opensuperclone/clone_gui.c:2159
+#: src/opensuperclone/clone_gui.c:2037 src/opensuperclone/clone_gui.c:2233
 #, c-format
 msgid ""
 "Warning! Using driver mode with destination of null will clear the current "
@@ -2330,51 +2624,51 @@ msgstr ""
 msgid "You are about to restore the USB mass storage driver."
 msgstr "Sie sind dabei, den USB-Massenspeichertreiber wiederherzustellen."
 
-#: src/opensuperclone/clone_gui.c:657 src/opensuperclone/clone_gui.c:679
-#: src/opensuperclone/clone_gui.c:717 src/opensuperclone/clone_gui.c:739
-#: src/opensuperclone/clone_gui.c:777 src/opensuperclone/clone_gui.c:1141
-#: src/opensuperclone/clone_gui.c:1491 src/opensuperclone/clone_gui.c:1629
-#: src/opensuperclone/clone_gui.c:1716 src/opensuperclone/clone_gui.c:4382
-#: src/opensuperclone/clone_gui.c:4413 src/opensuperclone/clone_gui.c:4462
+#: src/opensuperclone/clone_gui.c:731 src/opensuperclone/clone_gui.c:753
+#: src/opensuperclone/clone_gui.c:791 src/opensuperclone/clone_gui.c:813
+#: src/opensuperclone/clone_gui.c:851 src/opensuperclone/clone_gui.c:1215
+#: src/opensuperclone/clone_gui.c:1565 src/opensuperclone/clone_gui.c:1703
+#: src/opensuperclone/clone_gui.c:1790 src/opensuperclone/clone_gui.c:4456
+#: src/opensuperclone/clone_gui.c:4487 src/opensuperclone/clone_gui.c:4536
 #, c-format
 msgid "You must choose a project first."
 msgstr "Sie müssen zuerst ein Projekt auswählen."
 
-#: src/opensuperclone/clone_gui.c:1894
+#: src/opensuperclone/clone_gui.c:1968
 #, c-format
 msgid "You must choose a project, source, and destination before connecting."
 msgstr ""
 "Sie müssen ein Projekt, eine Quelle und ein Ziel auswählen, bevor Sie sich "
 "verbinden."
 
-#: src/opensuperclone/clone_gui.c:523 src/opensuperclone/clone_gui.c:556
-#: src/opensuperclone/clone_gui.c:589 src/opensuperclone/clone_gui.c:620
-#: src/opensuperclone/clone_gui.c:815 src/opensuperclone/clone_gui.c:845
-#: src/opensuperclone/clone_gui.c:1060 src/opensuperclone/clone_gui.c:1148
-#: src/opensuperclone/clone_gui.c:1498 src/opensuperclone/clone_gui.c:1636
-#: src/opensuperclone/clone_gui.c:1723
+#: src/opensuperclone/clone_gui.c:597 src/opensuperclone/clone_gui.c:630
+#: src/opensuperclone/clone_gui.c:663 src/opensuperclone/clone_gui.c:694
+#: src/opensuperclone/clone_gui.c:889 src/opensuperclone/clone_gui.c:919
+#: src/opensuperclone/clone_gui.c:1134 src/opensuperclone/clone_gui.c:1222
+#: src/opensuperclone/clone_gui.c:1572 src/opensuperclone/clone_gui.c:1710
+#: src/opensuperclone/clone_gui.c:1797
 #, c-format
 msgid "You must disconnect first."
 msgstr "Sie müssen zuerst die Verbindung trennen."
 
-#: src/opensuperclone/clone_gui.c:4327 src/opensuperclone/clone_gui.c:4340
-#: src/opensuperclone/clone_gui.c:4353
+#: src/opensuperclone/clone_gui.c:4401 src/opensuperclone/clone_gui.c:4414
+#: src/opensuperclone/clone_gui.c:4427
 msgid "You must reopen the advanced setting for this change to take effect"
 msgstr ""
 "Sie müssen die erweiterten Einstellungen erneut öffnen, damit diese Änderung "
 "wirksam wird"
 
-#: src/opensuperclone/clone_gui.c:627
+#: src/opensuperclone/clone_gui.c:701
 #, c-format
 msgid "You must start a new project before importing a ddrescue log file"
 msgstr ""
 "Sie müssen ein neues Projekt starten, bevor Sie eine ddrescue-Log importieren"
 
-#: src/opensuperclone/clone_gui.c:2521
+#: src/opensuperclone/clone_gui.c:2595
 msgid "Zone"
 msgstr "Zone"
 
-#: src/opensuperclone/clone_gui.c:2516
+#: src/opensuperclone/clone_gui.c:2590
 msgid "Zones"
 msgstr "Zonen"
 
