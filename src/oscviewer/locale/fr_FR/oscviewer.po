@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSuperClone 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-04 19:48+0100\n"
+"POT-Creation-Date: 2022-12-04 20:46+0100\n"
 "PO-Revision-Date: 2022-11-28 09:47+0100\n"
 "Last-Translator: NULL <null@null>\n"
 "Language-Team: French\n"
@@ -282,7 +282,8 @@ msgstr "Montrer domaine"
 msgid "Show High-Time"
 msgstr "Montrer accès élevés"
 
-#: src/oscviewer/oscviewer.c:781 src/oscviewer/oscviewer.c:2947
+#: src/oscviewer/oscviewer.c:443 src/oscviewer/oscviewer.c:781
+#: src/oscviewer/oscviewer.c:2947
 msgid "Timing"
 msgstr "Temps d'accès"
 

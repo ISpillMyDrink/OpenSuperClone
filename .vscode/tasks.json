@@ -15,6 +15,17 @@
             }
         },
         {
+            //  Update PO files.
+            "label": "🔧 Update POs",
+            "type": "shell",
+            "linux": {
+                "command": "./update-pos.sh",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             //  Run OpenSuperClone.
             "label": "▶️ Run OpenSuperClone",
             "type": "shell",
