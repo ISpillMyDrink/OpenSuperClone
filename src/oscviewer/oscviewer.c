@@ -440,7 +440,7 @@ int main(int argc, char **argv)
   gtk_label_set_text(GTK_LABEL(current_color_label), _("Current"));
   gtk_label_set_text(GTK_LABEL(bad_head_color_label), _("Bad Head"));
   gtk_label_set_text(GTK_LABEL(selected_color_label), _("Selected"));
-  gtk_label_set_text(GTK_LABEL(time_color_label), _("Time"));
+  gtk_label_set_text(GTK_LABEL(time_color_label), _("Timing"));
   gtk_label_set_text(GTK_LABEL(domain_color_label), _("Domain"));
 
   gtk_label_set_text(GTK_LABEL(block_color_label), _("Block Colors"));

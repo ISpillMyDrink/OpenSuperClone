@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSuperClone 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-27 19:57+0100\n"
+"POT-Creation-Date: 2022-12-04 19:48+0100\n"
 "PO-Revision-Date: 2022-11-28 09:47+0100\n"
 "Last-Translator: NULL <null@null>\n"
 "Language-Team: French\n"
@@ -16,252 +16,276 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/oscviewer/oscviewer.c:332 src/oscviewer/oscviewer.c:1391
+#: src/oscviewer/oscviewer.c:340 src/oscviewer/oscviewer.c:1450
 msgid "1 minute"
 msgstr "1 minute"
 
-#: src/oscviewer/oscviewer.c:166
+#: src/oscviewer/oscviewer.c:174
 msgid "1 pt"
 msgstr "1 pt"
 
-#: src/oscviewer/oscviewer.c:201
+#: src/oscviewer/oscviewer.c:209
 msgid "10 pt"
 msgstr "10 pt"
 
-#: src/oscviewer/oscviewer.c:330 src/oscviewer/oscviewer.c:1383
+#: src/oscviewer/oscviewer.c:338 src/oscviewer/oscviewer.c:1442
 msgid "10 seconds"
 msgstr "10 secondes"
 
-#: src/oscviewer/oscviewer.c:202
+#: src/oscviewer/oscviewer.c:210
 msgid "12 pt"
 msgstr "12 pt"
 
-#: src/oscviewer/oscviewer.c:256
+#: src/oscviewer/oscviewer.c:264
 msgid "128K"
 msgstr "128k"
 
-#: src/oscviewer/oscviewer.c:203
+#: src/oscviewer/oscviewer.c:211
 msgid "14 pt"
 msgstr "14 pt"
 
-#: src/oscviewer/oscviewer.c:204
+#: src/oscviewer/oscviewer.c:212
 msgid "16 pt"
 msgstr "16 pt"
 
-#: src/oscviewer/oscviewer.c:253
+#: src/oscviewer/oscviewer.c:261
 msgid "16K"
 msgstr "16k"
 
-#: src/oscviewer/oscviewer.c:263
+#: src/oscviewer/oscviewer.c:271
 msgid "16M"
 msgstr "16M"
 
-#: src/oscviewer/oscviewer.c:259
+#: src/oscviewer/oscviewer.c:267
 msgid "1M"
 msgstr "1M"
 
-#: src/oscviewer/oscviewer.c:333 src/oscviewer/oscviewer.c:1395
+#: src/oscviewer/oscviewer.c:341 src/oscviewer/oscviewer.c:1454
 msgid "2 minutes"
 msgstr "2 minutes"
 
-#: src/oscviewer/oscviewer.c:167
+#: src/oscviewer/oscviewer.c:175
 msgid "2 pt"
 msgstr "2 pt"
 
-#: src/oscviewer/oscviewer.c:257
+#: src/oscviewer/oscviewer.c:265
 msgid "256K"
 msgstr "256k"
 
-#: src/oscviewer/oscviewer.c:260
+#: src/oscviewer/oscviewer.c:268
 msgid "2M"
 msgstr "2M"
 
-#: src/oscviewer/oscviewer.c:168
+#: src/oscviewer/oscviewer.c:176
 msgid "3 pt"
 msgstr "3 pt"
 
-#: src/oscviewer/oscviewer.c:331 src/oscviewer/oscviewer.c:1387
+#: src/oscviewer/oscviewer.c:339 src/oscviewer/oscviewer.c:1446
 msgid "30 seconds"
 msgstr "30 secondes"
 
-#: src/oscviewer/oscviewer.c:254
+#: src/oscviewer/oscviewer.c:262
 msgid "32K"
 msgstr "32k"
 
-#: src/oscviewer/oscviewer.c:169 src/oscviewer/oscviewer.c:198
+#: src/oscviewer/oscviewer.c:177 src/oscviewer/oscviewer.c:206
 msgid "4 pt"
 msgstr "4 pt"
 
-#: src/oscviewer/oscviewer.c:251
+#: src/oscviewer/oscviewer.c:259
 msgid "4K"
 msgstr "4k"
 
-#: src/oscviewer/oscviewer.c:261
+#: src/oscviewer/oscviewer.c:269
 msgid "4M"
 msgstr "4M"
 
-#: src/oscviewer/oscviewer.c:334 src/oscviewer/oscviewer.c:1399
+#: src/oscviewer/oscviewer.c:342 src/oscviewer/oscviewer.c:1458
 msgid "5 minutes"
 msgstr "5 minutes"
 
-#: src/oscviewer/oscviewer.c:329 src/oscviewer/oscviewer.c:1379
+#: src/oscviewer/oscviewer.c:337 src/oscviewer/oscviewer.c:1438
 msgid "5 seconds"
 msgstr "5 secondes"
 
-#: src/oscviewer/oscviewer.c:258
+#: src/oscviewer/oscviewer.c:266
 msgid "512K"
 msgstr "512k"
 
-#: src/oscviewer/oscviewer.c:199
+#: src/oscviewer/oscviewer.c:207
 msgid "6 pt"
 msgstr "6 pt"
 
-#: src/oscviewer/oscviewer.c:255
+#: src/oscviewer/oscviewer.c:263
 msgid "64K"
 msgstr "64k"
 
-#: src/oscviewer/oscviewer.c:200
+#: src/oscviewer/oscviewer.c:208
 msgid "8 pt"
 msgstr "8 pt"
 
-#: src/oscviewer/oscviewer.c:252
+#: src/oscviewer/oscviewer.c:260
 msgid "8K"
 msgstr "8k"
 
-#: src/oscviewer/oscviewer.c:262
+#: src/oscviewer/oscviewer.c:270
 msgid "8M"
 msgstr "8M"
 
-#: src/oscviewer/oscviewer.c:384
+#: src/oscviewer/oscviewer.c:392
 msgid "About"
 msgstr "A-propos"
 
-#: src/oscviewer/oscviewer.c:2886
+#: src/oscviewer/oscviewer.c:2945
 msgid "Areas"
 msgstr "Areas"
 
-#: src/oscviewer/oscviewer.c:150 src/oscviewer/oscviewer.c:327
-#: src/oscviewer/oscviewer.c:1375 src/oscviewer/oscviewer.c:1379
-#: src/oscviewer/oscviewer.c:1383 src/oscviewer/oscviewer.c:1387
-#: src/oscviewer/oscviewer.c:1391 src/oscviewer/oscviewer.c:1395
-#: src/oscviewer/oscviewer.c:1399
+#: src/oscviewer/oscviewer.c:158 src/oscviewer/oscviewer.c:335
+#: src/oscviewer/oscviewer.c:1434 src/oscviewer/oscviewer.c:1438
+#: src/oscviewer/oscviewer.c:1442 src/oscviewer/oscviewer.c:1446
+#: src/oscviewer/oscviewer.c:1450 src/oscviewer/oscviewer.c:1454
+#: src/oscviewer/oscviewer.c:1458
 msgid "Auto-Update"
 msgstr "MAJ auto"
 
-#: src/oscviewer/oscviewer.c:617 src/oscviewer/oscviewer.c:2876
+#: src/oscviewer/oscviewer.c:438 src/oscviewer/oscviewer.c:683
+#: src/oscviewer/oscviewer.c:2935
 msgid "Bad"
 msgstr "Bad"
 
-#: src/oscviewer/oscviewer.c:698
+#: src/oscviewer/oscviewer.c:441 src/oscviewer/oscviewer.c:763
 msgid "Bad Head"
 msgstr "Tête endomm"
 
-#: src/oscviewer/oscviewer.c:662
+#: src/oscviewer/oscviewer.c:446
+msgid "Block Colors"
+msgstr ""
+
+#: src/oscviewer/oscviewer.c:440 src/oscviewer/oscviewer.c:728
 msgid "Current"
 msgstr "Actuel"
 
-#: src/oscviewer/oscviewer.c:146 src/oscviewer/oscviewer.c:736
-#: src/oscviewer/oscviewer.c:1268 src/oscviewer/oscviewer.c:1313
+#: src/oscviewer/oscviewer.c:154 src/oscviewer/oscviewer.c:444
+#: src/oscviewer/oscviewer.c:799 src/oscviewer/oscviewer.c:1328
+#: src/oscviewer/oscviewer.c:1373
 msgid "Domain"
 msgstr "Domaine"
 
-#: src/oscviewer/oscviewer.c:2331 src/oscviewer/oscviewer.c:2433
+#: src/oscviewer/oscviewer.c:2390 src/oscviewer/oscviewer.c:2492
+#, c-format
 msgid "Domain block not found"
 msgstr "Bloc du domaine non trouvé"
 
-#: src/oscviewer/oscviewer.c:2335 src/oscviewer/oscviewer.c:2437
+#: src/oscviewer/oscviewer.c:2394 src/oscviewer/oscviewer.c:2496
 msgid "Error!"
 msgstr "Erreur!"
 
-#: src/oscviewer/oscviewer.c:136 src/oscviewer/oscviewer.c:1231
+#: src/oscviewer/oscviewer.c:143 src/oscviewer/oscviewer.c:1291
 msgid "File"
 msgstr "Fichier"
 
-#: src/oscviewer/oscviewer.c:647 src/oscviewer/oscviewer.c:2874
+#: src/oscviewer/oscviewer.c:439 src/oscviewer/oscviewer.c:713
+#: src/oscviewer/oscviewer.c:2933
 msgid "Finished"
 msgstr "Terminés"
 
-#: src/oscviewer/oscviewer.c:679
+#: src/oscviewer/oscviewer.c:745
 msgid "Good Data"
 msgstr "Données valides"
 
-#: src/oscviewer/oscviewer.c:383
+#: src/oscviewer/oscviewer.c:391
 msgid "Help"
 msgstr "Aide"
 
-#: src/oscviewer/oscviewer.c:338
+#: src/oscviewer/oscviewer.c:346
 msgid "Highlight Good Data"
 msgstr "Montrer données valides"
 
-#: src/oscviewer/oscviewer.c:165
+#: src/oscviewer/oscviewer.c:173
 msgid "Left Panel Resolution"
 msgstr "Résolution panneau gauche"
 
-#: src/oscviewer/oscviewer.c:140
+#: src/oscviewer/oscviewer.c:147
 msgid "Load DMDE Bytes File"
 msgstr "Charger fichier DMDE (bytes)"
 
-#: src/oscviewer/oscviewer.c:139
+#: src/oscviewer/oscviewer.c:146
 msgid "Load Domain"
 msgstr "Charger domaine"
 
-#: src/oscviewer/oscviewer.c:144
+#: src/oscviewer/oscviewer.c:152
 msgid "Log"
 msgstr "Journal"
 
-#: src/oscviewer/oscviewer.c:250
+#: src/oscviewer/oscviewer.c:258
 msgid "Main Grid Size"
 msgstr "Taille matrice principale"
 
-#: src/oscviewer/oscviewer.c:197
+#: src/oscviewer/oscviewer.c:205
 msgid "Main Panel Resolution"
 msgstr "Résolution panneau principal"
 
-#: src/oscviewer/oscviewer.c:587 src/oscviewer/oscviewer.c:2882
+#: src/oscviewer/oscviewer.c:447
+msgid "Marker Colors"
+msgstr ""
+
+#: src/oscviewer/oscviewer.c:436 src/oscviewer/oscviewer.c:653
+#: src/oscviewer/oscviewer.c:2941
 msgid "Non-Divided"
 msgstr "Non divisés"
 
-#: src/oscviewer/oscviewer.c:602 src/oscviewer/oscviewer.c:2884
+#: src/oscviewer/oscviewer.c:437 src/oscviewer/oscviewer.c:668
+#: src/oscviewer/oscviewer.c:2943
 msgid "Non-Scraped"
 msgstr "Non-Scraped"
 
-#: src/oscviewer/oscviewer.c:632 src/oscviewer/oscviewer.c:2878
+#: src/oscviewer/oscviewer.c:434 src/oscviewer/oscviewer.c:698
+#: src/oscviewer/oscviewer.c:2937
 msgid "Non-Tried"
 msgstr "Non-Tried"
 
-#: src/oscviewer/oscviewer.c:572 src/oscviewer/oscviewer.c:2880
+#: src/oscviewer/oscviewer.c:435 src/oscviewer/oscviewer.c:638
+#: src/oscviewer/oscviewer.c:2939
 msgid "Non-Trimmed"
 msgstr "Non-Trimmed"
 
-#: src/oscviewer/oscviewer.c:150 src/oscviewer/oscviewer.c:328
-#: src/oscviewer/oscviewer.c:1375
+#: src/oscviewer/oscviewer.c:158 src/oscviewer/oscviewer.c:336
+#: src/oscviewer/oscviewer.c:1434
 msgid "Off"
 msgstr "Désactivé"
 
-#: src/oscviewer/oscviewer.c:138
+#: src/oscviewer/oscviewer.c:145
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/oscviewer/oscviewer.c:137
+#: src/oscviewer/oscviewer.c:144
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/oscviewer/oscviewer.c:347
+#: src/oscviewer/oscviewer.c:442
+msgid "Selected"
+msgstr ""
+
+#: src/oscviewer/oscviewer.c:126 src/oscviewer/oscviewer.c:148
+msgid "Settings"
+msgstr ""
+
+#: src/oscviewer/oscviewer.c:355
 msgid "Show Bad Head"
 msgstr "Montrer têtes défectueuses"
 
-#: src/oscviewer/oscviewer.c:373
+#: src/oscviewer/oscviewer.c:381
 msgid "Show Domain"
 msgstr "Montrer domaine"
 
-#: src/oscviewer/oscviewer.c:370
+#: src/oscviewer/oscviewer.c:378
 msgid "Show High-Time"
 msgstr "Montrer accès élevés"
 
-#: src/oscviewer/oscviewer.c:717 src/oscviewer/oscviewer.c:2888
+#: src/oscviewer/oscviewer.c:781 src/oscviewer/oscviewer.c:2947
 msgid "Timing"
 msgstr "Temps d'accès"
 
-#: src/oscviewer/oscviewer.c:157
+#: src/oscviewer/oscviewer.c:165
 msgid "View"
 msgstr "Affichage"
