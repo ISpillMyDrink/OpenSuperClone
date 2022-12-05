@@ -55,7 +55,7 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 - `gcc`
 - `gettext`
 - `libgtk-3-dev`
-- `libconfig`
+- `libconfig-dev`
 - `libusb-dev`
 - `pkg-config`
 

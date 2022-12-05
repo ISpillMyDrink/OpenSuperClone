@@ -32,7 +32,7 @@ jobs:
         languages: ${{ matrix.language }}
     
     - name: Install prerequisites
-      run:  sudo apt-get -y install pkg-config libusb-dev libgtk-3-dev gettext libconfig
+      run:  sudo apt-get -y install pkg-config libusb-dev libgtk-3-dev gettext libconfig-dev
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
