@@ -531,28 +531,6 @@ void get_data_dump_filename_ccc(void)
   gtk_widget_destroy(dialog);
 }
 
-#ifdef DEBUG
-static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-  size_t realsize = size * nmemb;
-  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-  mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-  if (mem->memory == NULL)
-  {
-    /* out of memory! */
-    printf("not enough memory (realloc returned NULL)\n");
-    return 0;
-  }
-
-  memcpy(&(mem->memory[mem->size]), contents, realsize);
-  mem->size += realsize;
-  mem->memory[mem->size] = 0;
-
-  return realsize;
-}
-#endif
-
 int print_gui_error_message_ccc(char *message, char *title, int type)
 {
   if (!superclone_ccc)

@@ -25,26 +25,26 @@
 #define gettext_noop(str) (str)
 #define N_(str) gettext_noop(str)
 
-#define BLACK 0x000000   // (0,0,0)
-#define WHITE 0xFFFFFF   // (255,255,255)
-#define RED 0xFF0000     // (255,0,0)
-#define LIME 0x00FF00    // (0,255,0)
-#define BLUE 0x0000FF    // (0,0,255)
-#define YELLOW 0xFFFF00  // (255,255,0)
-#define CYAN 0x00FFFF    // (0,255,255)
-#define MAGENTA 0xFF00FF // (255,0,255)
-#define SILVER 0xC0C0C0  // (192,192,192)
-#define GRAY 0x808080    // (128,128,128)
-#define LIGHTGRAY 0xD3D3D3
-#define MAROON 0x800000   // (128,0,0)
-#define OLIVE 0x808000    // (128,128,0)
-#define GREEN 0x008000    // (0,128,0)
-#define PURPLE 0x800080   // (128,0,128)
-#define TEAL 0x008080     // (0,128,128)
-#define NAVY 0x000080     // (0,0,128)
-#define ORANGE 0xFFA500   // (255,165,0)
-#define MYBLUE 0x0080FF   // (0,128,255)
-#define MYORANGE 0xFF8000 // (255,128,0)
+#define BLACK 0x000000     // (0,0,0)
+#define WHITE 0xFFFFFF     // (255,255,255)
+#define RED 0xFF0000       // (255,0,0)
+#define LIME 0x00FF00      // (0,255,0)
+#define BLUE 0x0000FF      // (0,0,255)
+#define YELLOW 0xFFFF00    // (255,255,0)
+#define CYAN 0x00FFFF      // (0,255,255)
+#define MAGENTA 0xFF00FF   // (255,0,255)
+#define SILVER 0xC0C0C0    // (192,192,192)
+#define GRAY 0x808080      // (128,128,128)
+#define LIGHTGRAY 0xD3D3D3 // (211,211,211)
+#define MAROON 0x800000    // (128,0,0)
+#define OLIVE 0x808000     // (128,128,0)
+#define GREEN 0x008000     // (0,128,0)
+#define PURPLE 0x800080    // (128,0,128)
+#define TEAL 0x008080      // (0,128,128)
+#define NAVY 0x000080      // (0,0,128)
+#define ORANGE 0xFFA500    // (255,165,0)
+#define MYBLUE 0x0080FF    // (0,128,255)
+#define MYORANGE 0xFF8000  // (255,128,0)
 
 #define NONTRIED 0
 #define NONTRIMMED 0x10
@@ -79,20 +79,6 @@
 #define ERROR_MESSAGE_SIZE 1024
 #define MAX_LINE_LENGTH 256
 
-gint main_window_width = MAINWINDOWWIDTH;
-gint main_window_height = MAINWINDOWHEIGTH;
-gint main_vbox_width;
-gint main_vbox_height;
-gint main_hbox_width;
-gint main_hbox_height;
-gint left_vbox_width;
-gint left_vbox_height;
-gint right_vbox_width;
-gint right_vbox_height;
-gint top_hbox_width;
-gint top_hbox_height;
-gint top_info_width;
-gint top_info_height;
 gint top_drawing_area_width;
 gint top_drawing_area_height;
 gint main_drawing_area_width;
@@ -104,35 +90,51 @@ gint main_scrolled_window_height;
 gint main_drawing_vbox_width;
 gint main_drawing_vbox_height;
 
+// windows
 GtkWidget *main_window;
-GtkWidget *main_vbox;
-GtkWidget *main_hbox;
-GtkWidget *left_vbox;
-GtkWidget *right_vbox;
-GtkWidget *top_hbox;
-GtkWidget *top_info_box;
+GtkWidget *settings_window;
+
+// drawing areas
 GtkWidget *top_drawing_area;
 GtkWidget *main_drawing_area;
 GtkWidget *left_drawing_area;
+
+// misc widgets
 GtkWidget *main_scrolled_window;
 GtkWidget *main_drawing_vbox;
-GtkWidget *frame;
-GtkWidget *settings_window;
 
+// main window widgets
 GtkWidget *progress_log_label;
 GtkWidget *domain_log_label;
-
 GtkWidget *auto_update_label;
-
 GtkWidget *block_information_label;
 
-// menu items
-GtkWidget *menubar;
-GtkWidget *menuvbox;
-GtkWidget *menuseparater;
-// help menu
-GtkWidget *helpmi;
-GtkWidget *aboutmi;
+// settings window widgets
+GtkWidget *nontried_color_button;
+GtkWidget *nontrimmed_color_button;
+GtkWidget *nondivided_color_button;
+GtkWidget *nonscraped_color_button;
+GtkWidget *bad_color_button;
+GtkWidget *good_color_button;
+GtkWidget *current_color_button;
+GtkWidget *bad_head_color_button;
+GtkWidget *selected_color_button;
+GtkWidget *time_color_button;
+GtkWidget *domain_color_button;
+GtkWidget *nontried_color_label;
+GtkWidget *nontrimmed_color_label;
+GtkWidget *nondivided_color_label;
+GtkWidget *nonscraped_color_label;
+GtkWidget *bad_color_label;
+GtkWidget *good_color_label;
+GtkWidget *current_color_label;
+GtkWidget *bad_head_color_label;
+GtkWidget *selected_color_label;
+GtkWidget *time_color_label;
+GtkWidget *domain_color_label;
+GtkWidget *block_color_label;
+GtkWidget *marker_color_label;
+
 // file menu
 GtkWidget *filemenu;
 GtkWidget *filemi;
@@ -143,7 +145,8 @@ GtkWidget *dmdedomainmi;
 GtkWidget *settingsmi;
 GtkWidget *filew;
 GtkWidget *domainw;
-// options menu
+
+// view menu
 GtkWidget *optionsmenu;
 GtkWidget *optionsmi;
 GtkWidget *leftresmenu;
@@ -210,35 +213,13 @@ GtkWidget *showtimingbutton40;
 GtkWidget *showtimingbutton50;
 GtkWidget *showtimingbutton60;
 
-GtkWidget *nontried_color_button;
-GtkWidget *nontrimmed_color_button;
-GtkWidget *nondivided_color_button;
-GtkWidget *nonscraped_color_button;
-GtkWidget *bad_color_button;
-GtkWidget *good_color_button;
-GtkWidget *current_color_button;
-GtkWidget *bad_head_color_button;
-GtkWidget *selected_color_button;
-GtkWidget *time_color_button;
-GtkWidget *domain_color_button;
+// help menu
+GtkWidget *helpmi;
+GtkWidget *aboutmi;
 
-GtkWidget *nontried_color_label;
-GtkWidget *nontrimmed_color_label;
-GtkWidget *nondivided_color_label;
-GtkWidget *nonscraped_color_label;
-GtkWidget *bad_color_label;
-GtkWidget *good_color_label;
-GtkWidget *current_color_label;
-GtkWidget *bad_head_color_label;
-GtkWidget *selected_color_label;
-GtkWidget *time_color_label;
-GtkWidget *domain_color_label;
-
-GtkWidget *block_color_label;
-GtkWidget *marker_color_label;
-
+char *title = "OSCViewer";
+char window_title[256];
 int debug = 0;
-int translate = 0;
 char exit_message[EXIT_MESSAGE_SIZE];
 char display_message[DISPLAY_MESSAGE_SIZE];
 char tempmessage[TEMP_MESSAGE_SIZE];
@@ -316,23 +297,9 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
 
 static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
-static gboolean left_vbox_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
+static gboolean left_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
 static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
-
-void getsize_main_window(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_main_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_main_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_left_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_right_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_top_hbox(GtkWidget *widget, GtkAllocation *allocation, void *data);
-
-void getsize_top_info_box(GtkWidget *widget, GtkAllocation *allocation, void *data);
 
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data);
 

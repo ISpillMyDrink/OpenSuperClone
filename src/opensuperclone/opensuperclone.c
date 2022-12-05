@@ -961,24 +961,24 @@ void release_devices_ccc(void)
   if (ahci_address_changed_ccc)
   {
     // restore addresses
-    memcpy(port_virt_addr_ccc + 0x00, &command_list_address_backup_ccc, 8); 
-    memcpy(port_virt_addr_ccc + 0x08, &fis_address_backup_ccc, 8);          
+    memcpy(port_virt_addr_ccc + 0x00, &command_list_address_backup_ccc, 8);
+    memcpy(port_virt_addr_ccc + 0x08, &fis_address_backup_ccc, 8);
     ahci_address_changed_ccc = false;
   }
 
   if (ahci_interrupt_changed_ccc)
   {
     // restore the interrupt settings
-    memcpy(port_virt_addr_ccc + 0x14, &interrupt_backup_ccc, 4); 
+    memcpy(port_virt_addr_ccc + 0x14, &interrupt_backup_ccc, 4);
     ahci_interrupt_changed_ccc = false;
   }
 
   if (table_address_changed_ccc)
   {
-    outb(table_address_backup_ccc[0], bus_base_address_ccc + 0 + 0x04); 
-    outb(table_address_backup_ccc[1], bus_base_address_ccc + 1 + 0x04); 
-    outb(table_address_backup_ccc[2], bus_base_address_ccc + 2 + 0x04); 
-    outb(table_address_backup_ccc[3], bus_base_address_ccc + 3 + 0x04); 
+    outb(table_address_backup_ccc[0], bus_base_address_ccc + 0 + 0x04);
+    outb(table_address_backup_ccc[1], bus_base_address_ccc + 1 + 0x04);
+    outb(table_address_backup_ccc[2], bus_base_address_ccc + 2 + 0x04);
+    outb(table_address_backup_ccc[3], bus_base_address_ccc + 3 + 0x04);
     table_address_changed_ccc = false;
   }
 
@@ -6831,7 +6831,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
         {
           break;
         }
-      }   
+      }
       snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Reading destination"));
       update_display_ccc(DISPLAY_UPDATE_TIME);
 

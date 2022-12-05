@@ -144,7 +144,7 @@ int create_dma_table_ccc(void)
         table_entry_count_ccc = max_entries;
         break;
       }
-      int n = (i * 16) + 0x80; 
+      int n = (i * 16) + 0x80;
       uint32_t dword = buffer_physical_address_ccc[i];
       memcpy(table_buffer_ccc + n, &dword, 4);
       memset(table_buffer_ccc + n + 4, 0, 8);
@@ -240,11 +240,11 @@ int create_dma_table_ccc(void)
       // if last page then mark it
       if (i == page_count - 1)
       {
-        c = 0x80; 
+        c = 0x80;
       }
       else
       {
-        c = 0x00; 
+        c = 0x00;
       }
       memcpy(table_buffer_ccc + 7 + (i * 8), &c, 1);
 #ifdef DEBUG

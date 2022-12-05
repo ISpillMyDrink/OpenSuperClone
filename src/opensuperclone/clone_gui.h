@@ -4,9 +4,6 @@
 // This software is distributed WITHOUT ANY WARRANTY.
 
 #include <gtk/gtk.h>
-#ifdef DEBUG
-#include <curl/curl.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -428,8 +425,6 @@ GtkWidget *label_retrypasses_ccc;
 GtkWidget *data_retrypasses_ccc;
 GtkWidget *label_drivermode_ccc;
 GtkWidget *data_drivermode_ccc;
-// GtkWidget *label__ccc;
-// GtkWidget *data__ccc;
 
 GtkAdjustment *gtk_adjustment_ccc;
 
@@ -567,111 +562,3 @@ struct MemoryStruct
     char *memory;
     size_t size;
 };
-
-char *languages_ccc[] = {
-    //    "Afrikaans","af","Afrikaans",
-    //    "Albanian","sq","shqiptar",
-    //    "Amharic","am","አማርኛ",
-    "Arabic", "ar", "عربى",
-    //    "Armenian","hy","հայերեն",
-    //    "Azeerbaijani","az","Azeerbaijani",
-    //    "Basque","eu","Euskal",
-    //    "Belarusian","be","беларускі",
-    //    "Bengali","bn","বাঙালি",
-    //    "Bosnian","bs","bosanski",
-    //    "Bulgarian","bg","български",
-    //    "Catalan","ca","català",
-    //    "Cebuano","ceb","Cebuano",
-    //    "Chichewa","ny","Chichewa",
-    "Chinese (Simplified)", "zh-CN", "简体中文）",
-    //    "Chinese (Traditional)","zh-TW","中國傳統的）",
-    //    "Corsican","co","Corsu",
-    //    "Croatian","hr","hrvatski",
-    //    "Czech","cs","čeština",
-    //    "Danish","da","dansk",
-    //    "Dutch","nl","Nederlands",
-    //    "Esperanto","eo","Esperanto",
-    //    "Estonian","et","eesti",
-    //    "Filipino","tl","Pilipino",
-    //    "Finnish","fi","Suomalainen",
-    "French", "fr", "français",
-    //    "Frisian","fy","Frysk",
-    //    "Galician","gl","galego",
-    //    "Georgian","ka","ქართული",
-    "German", "de", "Deutsche",
-    //    "Greek","el","Ελληνικά",
-    //    "Gujarati","gu","ગુજરાતી",
-    //    "Haitian Creole","ht","kreyòl ayisyen",
-    //    "Hausa","ha","Hausa",
-    //    "Hawaiian","haw","ʻŌlelo Hawaiʻi",
-    //    "Hebrew","iw","עִברִית",
-    "Hindi", "hi", "हिंदी",
-    //    "Hmong","hmn","Hmong",
-    //    "Hungarian","hu","Magyar",
-    //    "Icelandic","is","icelandic",
-    //    "Igbo","ig","Igbo",
-    "Indonesian", "id", "bahasa Indonesia",
-    //    "Irish","ga","Gaeilge",
-    "Italian", "it", "italiano",
-    "Japanese", "ja", "日本語",
-    //    "Javanese","jw","Jawa",
-    //    "Kannada","kn","ಕನ್ನಡ",
-    //    "Kazakh","kk","Қазақ",
-    //    "Khmer","km","ភាសាខ្មែរ",
-    //    "Korean","ko","한국어",
-    //    "Kurdish","ku","Kurdî",
-    //    "Kyrgyz","ky","Кыргызча",
-    //    "Lao","lo","ລາວ",
-    //    "Latin","la","Latine",
-    //    "Latvian","lv","Latvijas",
-    //    "Lithuanian","lt","Lietuvos",
-    //    "Luxembourgish","lb","lëtzebuergesch",
-    //    "Macedonian","mk","Македонски",
-    //    "Malagasy","mg","Malagasy",
-    //    "Malay","ms","Malay",
-    //    "Malayalam","ml","മലയാളം",
-    //    "Maltese","mt","Malti",
-    //    "Maori","mi","Maori",
-    //    "Marathi","mr","मराठी",
-    //    "Mongolian","mn","Монгол",
-    //    "Burmese","my","မြန်မာ",
-    //    "Nepali","ne","नेपाली",
-    //    "Norwegian","no","norsk",
-    //    "Pashto","ps","پښتو",
-    //    "Persian","fa","فارسی",
-    //    "Polish","pl","Polskie",
-    "Portuguese", "pt", "Português",
-    //    "Punjabi","pa","ਪੰਜਾਬੀ",
-    //    "Romanian","ro","Română",
-    "Russian", "ru", "русский",
-    //    "Samoan","sm","Samoa",
-    //    "Scots Gaelic","gd","Gàidhlig",
-    //    "Serbian","sr","Српски",
-    //    "Sesotho","st","Sesotho",
-    //    "Shona","sn","Shona",
-    //    "Sindhi","sd","سنڌي",
-    //    "Sinhala","si","සිංහල",
-    //    "Slovak","sk","slovenský",
-    //    "Slovenian","sl","slovenski",
-    //    "Somali","so","Soomaali",
-    "Spanish", "es", "Español",
-    //    "Sundanese","su","Sunda",
-    //    "Swahili","sw","Kiswahili",
-    //    "Swedish","sv","svenska",
-    //    "Tajik","tg","Тоҷикистон",
-    //    "Tamil","ta","தமிழ்",
-    //    "Telugu","te","తెలుగు",
-    //    "Thai","th","ไทย",
-    //    "Turkish","tr","Türk",
-    //    "Ukrainian","uk","український",
-    //    "Urdu","ur","اردو",
-    //    "Uzbek","uz","O'zbekiston",
-    //    "Vietnamese","vi","Tiếng Việt",
-    //    "Welsh","cy","Cymraeg",
-    //    "Xhosa","xh","isiXhosa",
-    //    "Yiddish","yi","ייִדיש",
-    //    "Yoruba","yo","yorùbá",
-    //    "Zulu","zu","Zulu"
-};
-
-#define n_languages_ccc (sizeof(languages_ccc) / sizeof(const char *))

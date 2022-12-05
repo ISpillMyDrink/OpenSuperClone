@@ -1015,7 +1015,7 @@ int do_usb_receive_csw_ccc(int timeout)
     fprintf(stdout, "USB raw read short return %d\n", ret);
     reset_usb_endpoint_in_ccc();
   }
-  
+
   return ret;
 }
 
