@@ -12,5 +12,6 @@ Thank your for considering to contribute to OpenSuperClone! To get an overview o
 * Before submitting, please make sure the patch is stable and matches the coding and style conventions used in the source code
 
 ### Translations
-OpenSuperClone uses <a href="https://www.gnu.org/software/gettext/">gettext</a> for localization. Template files are located in `src/opensuperclone/locale` and `src/oscviewer/locale`.
+OpenSuperClone uses <a href="https://www.gnu.org/software/gettext/">gettext</a> for localization. Template files are located in `src/opensuperclone/locale` and `src/oscviewer/locale`. For more information on how to create a translation file, refer to the <a href="https://www.gnu.org/software/gettext/manual/gettext.html#Creating">gettext documentation</a>.
 * Open a new Github pull request with the translation file you have written
+* Before submitting, please make sure the translation file contains no syntactical errors (in terms of .po file syntax)
