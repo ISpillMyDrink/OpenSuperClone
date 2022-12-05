@@ -37,6 +37,17 @@
             }
         },
         {
+            //  Build Debug.
+            "label": "🔧 Build Debug",
+            "type": "shell",
+            "linux": {
+                "command": "./build.sh debug",
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             //  Update PO files.
             "label": "🌐 Update POs",
             "type": "shell",

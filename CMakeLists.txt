@@ -19,6 +19,14 @@ project(OpenSuperClone
         LANGUAGES C
 )
 
+# If the DEBUG option is enabled, set the build type to Debug and add the define DEBUG
+option(DEBUG "Enable Debugging" OFF)
+
+if(DEBUG)
+    set(CMAKE_BUILD_TYPE Debug)
+    add_definitions(-DDEBUG)
+endif()
+
 # Copyright year 2022
 set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
 
