@@ -3303,62 +3303,100 @@ void read_config_file(void)
   FILE *config_file = fopen(config_file_name, "r");
   if (config_file == NULL)
   {
+    // no config file, use defaults
     return;
   }
-  char line[256];
-  while (fgets(line, sizeof(line), config_file))
+
+  config_t config;
+  config_init(&config);
+
+  if (config_read(&config, config_file) == CONFIG_FALSE)
   {
-    if (line[0] == '#')
+    fprintf(stderr, "Error reading config file: %s", config_error_text(&config));
+    config_destroy(&config);
+    fclose(config_file);
+    return;
+  }
+
+  config_setting_t *root;
+  config_setting_t *setting;
+  config_setting_t *group;
+
+  root = config_root_setting(&config);
+
+  // color settings
+  group = config_setting_get_member(root, "colors");
+  if (group != NULL)
+  {
+
+    setting = config_setting_get_member(group, "good_color");
+    if (setting != NULL)
     {
-      continue;
+      good_color = config_setting_get_int(setting);
     }
-    char *key = strtok(line, "=");
-    char *value = strtok(NULL, "=");
-    if (strcmp(key, "good_color") == 0)
+
+    setting = config_setting_get_member(group, "bad_color");
+    if (setting != NULL)
     {
-      good_color = strtol(value, NULL, 16);
+      bad_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "bad_color") == 0)
+
+    setting = config_setting_get_member(group, "nontried_color");
+    if (setting != NULL)
     {
-      bad_color = strtol(value, NULL, 16);
+      nontried_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "nontried_color") == 0)
+
+    setting = config_setting_get_member(group, "nontrimmed_color");
+    if (setting != NULL)
     {
-      nontried_color = strtol(value, NULL, 16);
+      nontrimmed_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "nontrimmed_color") == 0)
+
+    setting = config_setting_get_member(group, "nondivided_color");
+    if (setting != NULL)
     {
-      nontrimmed_color = strtol(value, NULL, 16);
+      nondivided_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "nondivided_color") == 0)
+
+    setting = config_setting_get_member(group, "nonscraped_color");
+    if (setting != NULL)
     {
-      nondivided_color = strtol(value, NULL, 16);
+      nonscraped_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "nonscraped_color") == 0)
+
+    setting = config_setting_get_member(group, "domain_color");
+    if (setting != NULL)
     {
-      nonscraped_color = strtol(value, NULL, 16);
+      domain_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "domain_color") == 0)
+
+    setting = config_setting_get_member(group, "time_color");
+    if (setting != NULL)
     {
-      domain_color = strtol(value, NULL, 16);
+      time_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "time_color") == 0)
+
+    setting = config_setting_get_member(group, "bad_head_color");
+    if (setting != NULL)
     {
-      time_color = strtol(value, NULL, 16);
+      bad_head_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "bad_head_color") == 0)
+
+    setting = config_setting_get_member(group, "current_color");
+    if (setting != NULL)
     {
-      bad_head_color = strtol(value, NULL, 16);
+      current_color = config_setting_get_int(setting);
     }
-    else if (strcmp(key, "current_color") == 0)
+
+    setting = config_setting_get_member(group, "selected_color");
+    if (setting != NULL)
     {
-      current_color = strtol(value, NULL, 16);
-    }
-    else if (strcmp(key, "selected_color") == 0)
-    {
-      selected_color = strtol(value, NULL, 16);
+      selected_color = config_setting_get_int(setting);
     }
   }
+
+  config_destroy(&config);
 
   fclose(config_file);
 }
@@ -3371,19 +3409,69 @@ void write_config_file(void)
   FILE *config_file = fopen(config_file_name, "w");
   if (config_file == NULL)
   {
+    fprintf(stderr, "Error opening config file for writing: %s", strerror(errno));
     return;
   }
-  fprintf(config_file, "# oscviewer config file\n");
-  fprintf(config_file, "good_color=%06X\n", good_color);
-  fprintf(config_file, "bad_color=%06X\n", bad_color);
-  fprintf(config_file, "nontried_color=%06X\n", nontried_color);
-  fprintf(config_file, "nontrimmed_color=%06X\n", nontrimmed_color);
-  fprintf(config_file, "nondivided_color=%06X\n", nondivided_color);
-  fprintf(config_file, "nonscraped_color=%06X\n", nonscraped_color);
-  fprintf(config_file, "domain_color=%06X\n", domain_color);
-  fprintf(config_file, "time_color=%06X\n", time_color);
-  fprintf(config_file, "bad_head_color=%06X\n", bad_head_color);
-  fprintf(config_file, "current_color=%06X\n", current_color);
-  fprintf(config_file, "selected_color=%06X\n", selected_color);
+
+  config_t config;
+  config_init(&config);
+
+  config_setting_t *root;
+  config_setting_t *setting;
+  config_setting_t *group;
+
+  root = config_root_setting(&config);
+
+  // color settings
+  group = config_setting_add(root, "colors", CONFIG_TYPE_GROUP);
+
+  setting = config_setting_add(group, "good_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, good_color);
+
+  setting = config_setting_add(group, "bad_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, bad_color);
+
+  setting = config_setting_add(group, "nontried_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, nontried_color);
+
+  setting = config_setting_add(group, "nontrimmed_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, nontrimmed_color);
+
+  setting = config_setting_add(group, "nondivided_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, nondivided_color);
+
+  setting = config_setting_add(group, "nonscraped_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, nonscraped_color);
+
+  setting = config_setting_add(group, "domain_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, domain_color);
+
+  setting = config_setting_add(group, "time_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, time_color);
+
+  setting = config_setting_add(group, "bad_head_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, bad_head_color);
+
+  setting = config_setting_add(group, "current_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, current_color);
+
+  setting = config_setting_add(group, "selected_color", CONFIG_TYPE_INT);
+  config_setting_set_format(setting, CONFIG_FORMAT_HEX);
+  config_setting_set_int(setting, selected_color);
+
+  config_write(&config, config_file);
+
+  config_destroy(&config);
+
   fclose(config_file);
 }

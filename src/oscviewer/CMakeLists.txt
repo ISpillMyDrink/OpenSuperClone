@@ -39,6 +39,12 @@ target_link_directories(oscviewer PRIVATE ${GTK3_LIBRARY_DIRS})
 target_compile_options(oscviewer PRIVATE ${GTK3_CFLAGS_OTHER})
 target_link_libraries(oscviewer ${GTK3_LIBRARIES})
 
+# Add libconfig dependency
+target_include_directories(oscviewer PRIVATE ${LIBCONFIG_INCLUDE_DIRS})
+target_link_directories(oscviewer PRIVATE ${LIBCONFIG_LIBRARY_DIRS})
+target_compile_options(oscviewer PRIVATE ${LIBCONFIG_CFLAGS_OTHER})
+target_link_libraries(oscviewer ${LIBCONFIG_LIBRARIES})
+
 target_compile_options(oscviewer PRIVATE ${CC_OPTIONS})
 
 # Install executable

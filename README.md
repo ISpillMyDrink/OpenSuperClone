@@ -51,12 +51,13 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 
 💡 OpenSuperClone requires the following packages to be installed for a successful project build:
 
-- `gcc`
 - `cmake`
-- `pkg-config`
-- `libusb-dev`
-- `libgtk-3-dev`
+- `gcc`
 - `gettext`
+- `libgtk-3-dev`
+- `libconfig`
+- `libusb-dev`
+- `pkg-config`
 
 ```Bash
 # Build OpenSuperClone and OSCViewer for Release and install to ./Release
@@ -89,6 +90,7 @@ This project makes use of the following libraries/programs:
 * GLADE (https://glade.gnome.org/)
 * libusb (https://libusb.info/)
 * libintl (https://www.gnu.org/software/gettext/)
+* libconfig (https://hyperrealm.github.io/libconfig/)
 
 ## 📄 License
 

@@ -4,7 +4,6 @@
 // This software is distributed WITHOUT ANY WARRANTY.
 
 #include <stdio.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
@@ -20,6 +19,7 @@
 #include <sys/stat.h>
 #include <libintl.h>
 #include <locale.h>
+#include <libconfig.h>
 
 #define _(str) gettext(str)
 #define gettext_noop(str) (str)
