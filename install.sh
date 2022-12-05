@@ -36,3 +36,5 @@ if [ $? -ne 0 ]; then
 else
     echo "Install succeeded."
 fi
+
+echo "Done."

@@ -12,3 +12,5 @@ done
 for i in `find ./src/oscviewer/locale/ -name oscviewer.po`; do
     msgmerge -U $i ./src/oscviewer/locale/oscviewer.pot --backup=none
 done
+
+echo "Done."

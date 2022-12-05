@@ -36,3 +36,5 @@ if [ -d /usr/local/share/locale ]; then
         fi
     done
 fi
+
+echo "Done."

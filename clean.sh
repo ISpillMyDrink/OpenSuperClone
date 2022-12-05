@@ -17,3 +17,5 @@ fi
 if [ -d package ]; then
     rm -rf package
 fi
+
+echo "Done."

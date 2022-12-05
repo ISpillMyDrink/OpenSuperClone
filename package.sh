@@ -12,9 +12,13 @@ else
     echo "CMake succeeded."
 fi
 
-echo "Building..."
+if [ -z "$THREADS" ]; then
+    THREADS=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 1)
+fi
+
+echo "Building with $THREADS threads..."
 cd build
-make
+make -j$THREADS
 
 if [ $? -ne 0 ]; then
     echo "Build failed. Aborting."
@@ -32,3 +36,5 @@ if [ $? -ne 0 ]; then
 else
     echo "Packaging succeeded."
 fi
+
+echo "Done."

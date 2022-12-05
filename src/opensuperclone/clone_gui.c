@@ -321,7 +321,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(agressive_driver_checkbutton_ccc, _("Activate slow driver"));
   gtk_widget_set_tooltip_text(driver_mode1_button_ccc, _("Switch to virtual mode 1: This mode will use all available Phases (starting with Phase 4) when reading from the source"));
   gtk_widget_set_tooltip_text(driver_mode2_button_ccc, _("Switch to virtual mode 2: This mode will only use Phase 4 and will not perform any further processing of a chunk"));
-  gtk_widget_set_tooltip_text(driver_mode3_button_ccc, _("Switch to virtual mode 3: This mode is the same as mode 3, but it will increase the read size (up to the cluster size) when it detects sequential reads"));
+  gtk_widget_set_tooltip_text(driver_mode3_button_ccc, _("Switch to virtual mode 3: This mode is the same as mode 2, but it will increase the read size (up to the cluster size) when it detects sequential reads"));
   gtk_widget_set_tooltip_text(driver_mode4_button_ccc, _("Switch to virtual mode 4: This mode only reads from the destination, and will not read any data from the source"));
   gtk_widget_set_tooltip_text(driver_mode5_button_ccc, _("Switch to virtual mode 5: This mode does not read any data and will instead return zeroed data"));
   gtk_widget_set_tooltip_text(soft_reset_button_ccc, _("Soft reset the drive"));

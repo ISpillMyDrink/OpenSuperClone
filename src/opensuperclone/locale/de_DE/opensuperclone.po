@@ -2046,7 +2046,7 @@ msgstr ""
 
 #: src/opensuperclone/clone_gui.c:324
 msgid ""
-"Switch to virtual mode 3: This mode is the same as mode 3, but it will "
+"Switch to virtual mode 3: This mode is the same as mode 2, but it will "
 "increase the read size (up to the cluster size) when it detects sequential "
 "reads"
 msgstr ""
