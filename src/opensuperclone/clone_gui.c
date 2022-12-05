@@ -1621,7 +1621,7 @@ void choose_destination_ccc(void)
     for (i = 0; i < device_count_ccc; i++)
     {
       char button_label[MAX_BUTTON_LABEL_SIZE] = "";
-      snprintf(button_label, TEMP_MESSAGE_SIZE, "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+      snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s (%lld) %s %s", drive_list_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
       button[i] = gtk_button_new_with_label(button_label);
       gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
       g_signal_connect(button[i], "clicked", G_CALLBACK(get_destination_from_button_ccc), GINT_TO_POINTER(i));
