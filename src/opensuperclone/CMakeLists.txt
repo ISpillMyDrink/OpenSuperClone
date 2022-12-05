@@ -1,18 +1,11 @@
 set(SOURCES
     opensuperclone.c 
-    opensuperclone.h
     commands.c
-    commands.h
     io.c
-    io.h
     tool.c
-    tool.h
     usbrelay.c
-    usbrelay.h
     common.c
-    common.h
     clone_gui.c
-    clone_gui.h
 )
 
 # Generate header files from resources

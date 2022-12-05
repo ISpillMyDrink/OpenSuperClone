@@ -11,7 +11,6 @@ char *title = "OSCViewer";
 char *version_number = OSC_VERSION;
 int copyright_year = COPYRIGHT_YEAR;
 char window_title[256];
-char program_title[256];
 
 int main(int argc, char **argv)
 {
@@ -19,7 +18,6 @@ int main(int argc, char **argv)
   textdomain("oscviewer");
 
   snprintf(window_title, sizeof(window_title), "%s %s", title, version_number);
-  snprintf(program_title, sizeof(program_title), "_%s_%s_", title, version_number);
 
   // begin processing command line arguments
   int command_line_argument;
@@ -712,7 +710,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   cairo_move_to(cr, x + 15, y + 9);
   cairo_show_text(cr, _("Finished"));
 
-  get_rgb_color(current_color_outer);
+  get_rgb_color(current_color);
   r = rcolor;
   g = gcolor;
   b = bcolor;
@@ -722,7 +720,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
   l = 10;
   cairo_set_source_rgb(cr, r, g, b);
   cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
+  cairo_stroke(cr);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_move_to(cr, x + 15, y + 9);
   cairo_show_text(cr, _("Current"));
@@ -733,15 +731,15 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     r = rcolor;
     g = gcolor;
     b = bcolor;
-    x = 203;
-    y = 23;
-    w = 4;
-    l = 4;
+    x = 200;
+    y = 20;
+    w = 10;
+    l = 10;
     cairo_set_source_rgb(cr, r, g, b);
     cairo_rectangle(cr, x, y, w, l);
-    cairo_fill(cr);
+    cairo_stroke(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, x + 12, y + 6);
+    cairo_move_to(cr, x + 15, y + 9);
     cairo_show_text(cr, _("Good Data"));
   }
 
@@ -752,7 +750,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     g = gcolor;
     b = bcolor;
     x = 200;
-    y = 50;
+    y = 35;
     w = 10;
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
@@ -770,7 +768,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     g = gcolor;
     b = bcolor;
     x = 200;
-    y = 65;
+    y = 50;
     w = 10;
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
@@ -788,7 +786,7 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     g = gcolor;
     b = bcolor;
     x = 200;
-    y = 80;
+    y = 65;
     w = 10;
     l = 10;
     cairo_set_source_rgb(cr, r, g, b);
@@ -798,6 +796,21 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
     cairo_move_to(cr, x + 15, y + 9);
     cairo_show_text(cr, _("Domain"));
   }
+
+  get_rgb_color(selected_color);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 200;
+  y = 80;
+  w = 10;
+  l = 10;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_stroke(cr);
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_move_to(cr, x + 15, y + 9);
+  cairo_show_text(cr, _("Selected"));
 
   return 0;
 }
@@ -923,15 +936,15 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
         if (good_data && show_good_data)
         {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
           get_rgb_color(good_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
+          cairo_stroke(cr);
         }
 
         if ((time_bits >= show_timing) && show_timing)
@@ -989,23 +1002,15 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
       {
         if (position == count)
         {
-          get_rgb_color(current_color_outer);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, n * main_square_size + 2 + (square_adjust * 2), i * main_square_size + 2 + (square_adjust * 2), main_square_size - 3 - (square_adjust * 4), main_square_size - 3 - (square_adjust * 4));
-          cairo_fill(cr);
-
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
-          get_rgb_color(current_color_inner);
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(current_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
+          cairo_stroke(cr);
         }
 
         // int xl = (n * main_square_size) + 1 + square_adjust;
@@ -1018,15 +1023,15 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
         int yh = yl + main_square_size - (square_adjust * 2);
         if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
         {
-          int spot_size = (main_square_size / 4) + 1;
-          int spot_adjust = (main_square_size / 2) - (spot_size / 2);
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
           get_rgb_color(selected_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
           cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_fill(cr);
+          cairo_stroke(cr);
           get_block_information(blocks_per_square * count, blocks_per_square);
           mouse_x_old = mouse_x;
           mouse_y_old = mouse_y;
@@ -1139,7 +1144,7 @@ static gboolean left_vbox_expose_event(GtkWidget *self, cairo_t *cr, gpointer us
       {
         if (position == count)
         {
-          get_rgb_color(current_color_outer);
+          get_rgb_color(current_color);
           r = rcolor;
           g = gcolor;
           b = bcolor;
@@ -3307,9 +3312,9 @@ void show_settings_window(void)
   gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(bad_head_color_button), &bad_head_color_rgba);
 
   GdkRGBA current_color_rgba;
-  current_color_rgba.red = ((current_color_inner >> 16) & 0xFF) / 255.0;
-  current_color_rgba.green = ((current_color_inner >> 8) & 0xFF) / 255.0;
-  current_color_rgba.blue = (current_color_inner & 0xFF) / 255.0;
+  current_color_rgba.red = ((current_color >> 16) & 0xFF) / 255.0;
+  current_color_rgba.green = ((current_color >> 8) & 0xFF) / 255.0;
+  current_color_rgba.blue = (current_color & 0xFF) / 255.0;
   current_color_rgba.alpha = 1.0;
   gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(current_color_button), &current_color_rgba);
 
@@ -3364,8 +3369,7 @@ void set_color(GtkWidget *widget, gpointer data)
   }
   else if (data == (gpointer)10)
   {
-    current_color_inner = color_int;
-    current_color_outer = color_int;
+    current_color = color_int;
   }
   else if (data == (gpointer)11)
   {
@@ -3430,13 +3434,9 @@ void read_config_file(void)
     {
       bad_head_color = strtol(value, NULL, 16);
     }
-    else if (strcmp(key, "current_color_inner") == 0)
+    else if (strcmp(key, "current_color") == 0)
     {
-      current_color_inner = strtol(value, NULL, 16);
-    }
-    else if (strcmp(key, "current_color_outer") == 0)
-    {
-      current_color_outer = strtol(value, NULL, 16);
+      current_color = strtol(value, NULL, 16);
     }
     else if (strcmp(key, "selected_color") == 0)
     {
@@ -3467,8 +3467,7 @@ void write_config_file(void)
   fprintf(config_file, "domain_color=%06X\n", domain_color);
   fprintf(config_file, "time_color=%06X\n", time_color);
   fprintf(config_file, "bad_head_color=%06X\n", bad_head_color);
-  fprintf(config_file, "current_color_inner=%06X\n", current_color_inner);
-  fprintf(config_file, "current_color_outer=%06X\n", current_color_outer);
+  fprintf(config_file, "current_color=%06X\n", current_color);
   fprintf(config_file, "selected_color=%06X\n", selected_color);
   fclose(config_file);
 }

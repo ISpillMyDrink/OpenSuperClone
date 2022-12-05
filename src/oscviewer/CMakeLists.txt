@@ -1,6 +1,5 @@
 set(SOURCES
     oscviewer.c
-    oscviewer.h
 )
 
 # Generate header files from resources
