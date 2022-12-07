@@ -1227,8 +1227,8 @@ void choose_source_ccc(void)
       disk_1_ccc = malloc(strlen(filename) + 2);
       strcpy(disk_1_ccc, filename);
       g_free(filename);
-      current_source_model_ccc[0] = "\0";
-      current_source_serial_ccc[0] = "\0";
+      current_source_model_ccc[0] = '\0';
+      current_source_serial_ccc[0] = '\0';
       update_display_ccc(0);
 
       if (!connect_source_disk_ccc() && !process_source_ccc() && !check_and_adjust_variables_after_choosing_source_ccc(new_project_ccc))
@@ -1269,8 +1269,8 @@ void choose_source_ccc(void)
       {
         fprintf(stdout, "error selecting source\n");
         clear_source_ccc();
-        current_source_model_ccc[0] = "\0";
-        current_source_serial_ccc[0] = "\0";
+        current_source_model_ccc[0] = '\0';
+        current_source_serial_ccc[0] = '\0';
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1431,8 +1431,8 @@ void choose_source_ccc(void)
         if (ret == -100)
         {
           clear_source_ccc();
-          current_source_model_ccc[0] = "\0";
-          current_source_serial_ccc[0] = "\0";
+          current_source_model_ccc[0] = '\0';
+          current_source_serial_ccc[0] = '\0';
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1442,8 +1442,8 @@ void choose_source_ccc(void)
         {
           fprintf(stdout, "error selecting source, ret=%d\n", ret);
           clear_source_ccc();
-          current_source_model_ccc[0] = "\0";
-          current_source_serial_ccc[0] = "\0";
+          current_source_model_ccc[0] = '\0';
+          current_source_serial_ccc[0] = '\0';
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1453,8 +1453,8 @@ void choose_source_ccc(void)
         {
           fprintf(stdout, "error selecting source, ret=%d\n", ret);
           clear_source_ccc();
-          current_source_model_ccc[0] = "\0";
-          current_source_serial_ccc[0] = "\0";
+          current_source_model_ccc[0] = '\0';
+          current_source_serial_ccc[0] = '\0';
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1499,8 +1499,8 @@ void choose_source_ccc(void)
       {
         fprintf(stdout, "error selecting source\n");
         clear_source_ccc();
-        current_source_model_ccc[0] = "\0";
-        current_source_serial_ccc[0] = "\0";
+        current_source_model_ccc[0] = '\0';
+        current_source_serial_ccc[0] = '\0';
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error selecting source"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -1721,8 +1721,8 @@ void choose_image_ccc(void)
         strcpy(disk_2_ccc, filename);
         destination_chosen_ccc = 1;
         destination_size_valid_ccc = 0;
-        current_destination_model_ccc[0] = "\0";
-        current_destination_serial_ccc[0] = "\0";
+        current_destination_model_ccc[0] = '\0';
+        current_destination_serial_ccc[0] = '\0';
         logfile_changed_ccc = true;
 
         if (driver_only_ccc)
