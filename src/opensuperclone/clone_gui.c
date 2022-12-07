@@ -4561,15 +4561,17 @@ void about_ccc(void)
   GtkWidget *dialog = gtk_about_dialog_new();
   char temp[1024];
 
+  gtk_window_set_title(GTK_WINDOW(dialog), _("About OpenSuperClone"));
+
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title_ccc);
 
   snprintf(temp, sizeof(temp), "%s %s", version_number_ccc, GIT_REVISION);
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
 
-  snprintf(temp, sizeof(temp), "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors", copyright_year_ccc);
+  snprintf(temp, sizeof(temp), _("Copyright (C) %s Scott Dwyer and OpenSuperClone contributors"), copyright_year_ccc);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
-  snprintf(temp, sizeof(temp), "License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law.");
+  snprintf(temp, sizeof(temp), _("License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law."));
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);

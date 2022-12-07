@@ -3098,15 +3098,17 @@ void about(void)
   GtkWidget *dialog = gtk_about_dialog_new();
   char temp[1024];
 
+  gtk_window_set_title(GTK_WINDOW(dialog), _("About OSCViewer"));
+
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title);
 
   snprintf(temp, sizeof(temp), "%s %s", OSC_VERSION, GIT_REVISION);
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
 
-  snprintf(temp, sizeof(temp), "Copyright (C) %i Scott Dwyer and OpenSuperClone contributors", COPYRIGHT_YEAR);
+  snprintf(temp, sizeof(temp), _("Copyright (C) %i Scott Dwyer and OpenSuperClone contributors"), COPYRIGHT_YEAR);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), temp);
 
-  snprintf(temp, sizeof(temp), "License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law.");
+  snprintf(temp, sizeof(temp), _("License type: GPL2\nThere is NO WARRANTY, to the extent permitted by law."));
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), temp);
 
   gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), OSC_HOMEPAGE);
