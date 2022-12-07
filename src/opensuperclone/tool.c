@@ -15,7 +15,7 @@ int supertooltool_ccc(void)
     int keeptrying = 1;
     while (keeptrying)
     {
-      strcpy(raw_value, "");
+      raw_value[0] = '\0';
       fprintf(stdout, "\nQ) Quit\n");
       fprintf(stdout, "A) ATA Passthrough\n");
       fprintf(stdout, "S) SCSI Passthrough\n");
@@ -992,8 +992,8 @@ int process_lines_ccc(void)
   }
   for (line_number = 0; line_number < total_script_lines_ccc; line_number++)
   {
-    strcpy(command, "");
-    strcpy(rest_of_line, "");
+    command[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(script_line_pointer_ccc[line_number], "%s %[^\n]", command, rest_of_line);
 
     // if there is a command found
@@ -1187,8 +1187,8 @@ int process_lines_ccc(void)
     perform_check = false;
     for (line_number = 0; line_number < total_script_lines_ccc; line_number++)
     {
-      strcpy(command, "");
-      strcpy(rest_of_line, "");
+      command[0] = '\0';
+      rest_of_line[0] = '\0';
       scanline = sscanf(script_line_pointer_ccc[line_number], "%s %[^\n]", command, rest_of_line);
 
       // if there is a command found
@@ -1304,8 +1304,8 @@ int process_command_line_ccc(void)
     fflush(stdout);
     if (fgets(input_text, sizeof input_text, stdin) != NULL)
     {
-      strcpy(command, "");
-      strcpy(rest_of_line, "");
+      command[0] = '\0';
+      rest_of_line[0] = '\0';
       scanline = sscanf(input_text, "%s %[^\n]", command, rest_of_line);
       if (scanline > 0)
       {

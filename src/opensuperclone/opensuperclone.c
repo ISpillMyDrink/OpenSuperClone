@@ -87,7 +87,7 @@ int main(int argc, char **argv)
   driver_return_error_ccc = false;
   driver_return_zeros_ccc = false;
   driver_return_marked_ccc = false;
-  strcpy(command_to_call_ccc, "");
+  command_to_call_ccc[0] = '\0';
   check_log_size_ccc = 1;
   append_script_ccc = 0;
   exitcode_ccc = 0;
@@ -183,8 +183,8 @@ int main(int argc, char **argv)
   smart_supported_ccc = false;
   smart_enabled_ccc = false;
   enable_extended_analyze_ccc = false;
-  strcpy(analyze_text_ccc, "");
-  strcpy(smart_data_text_ccc, "");
+  analyze_text_ccc[0] = '\0';
+  smart_data_text_ccc[0] = '\0';
   usbr1_vendor_id_ccc = -1;
   usbr1_product_id_ccc = -1;
   usbd1_vendor_id_ccc = -1;
@@ -1628,8 +1628,8 @@ int read_log_file_ccc(char *log_file)
   int smart_data = 0;
   int analyze_line = 0;
   int smart_line = 0;
-  strcpy(analyze_text_ccc, "");
-  strcpy(smart_data_text_ccc, "");
+  analyze_text_ccc[0] = '\0';
+  smart_data_text_ccc[0] = '\0';
   while (fgets(line, sizeof line, readfile))
   {
     real_line_number++;
@@ -1647,10 +1647,10 @@ int read_log_file_ccc(char *log_file)
     char raw_info[MAX_LINE_LENGTH];
     char raw_errstat[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %s %s %[^\n]", raw_position, raw_size, raw_status, raw_info, raw_errstat, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2470,10 +2470,10 @@ int read_domain_file_ccc(char *domain_file)
     char raw_info[MAX_LINE_LENGTH];
     char raw_errstat[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %s %s %[^\n]", raw_position, raw_size, raw_status, raw_info, raw_errstat, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2736,9 +2736,9 @@ int read_domain_add_file_ccc(char *add_file)
     char raw_position[MAX_LINE_LENGTH];
     char raw_size[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %[^\n]", raw_position, raw_size, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -2865,10 +2865,10 @@ int read_ddrescue_log_ccc(char *log_file)
     char raw_size[MAX_LINE_LENGTH];
     char raw_status[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %[^\n]", raw_position, raw_size, raw_status, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -3130,10 +3130,10 @@ int read_ddrescue_domain_ccc(char *domain_file)
     char raw_size[MAX_LINE_LENGTH];
     char raw_status[MAX_LINE_LENGTH];
     char rest_of_line[MAX_LINE_LENGTH];
-    strcpy(raw_position, "");
-    strcpy(raw_size, "");
-    strcpy(raw_status, "");
-    strcpy(rest_of_line, "");
+    raw_position[0] = '\0';
+    raw_size[0] = '\0';
+    raw_status[0] = '\0';
+    rest_of_line[0] = '\0';
     scanline = sscanf(line, "%s %s %s %[^\n]", raw_position, raw_size, raw_status, rest_of_line);
     // ignore blank lines
     if (scanline > 0)
@@ -5249,9 +5249,9 @@ int update_display_ccc(int time_ms)
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", total_rate, total_modifier);
     strncpy(display_output_ccc.totalrate, tempmessage_ccc, sizeof(display_output_ccc.totalrate) - 1);
 
-    strcpy(display_output_ccc.totalfilled, "");
-    strcpy(display_output_ccc.retried, "");
-    strcpy(display_output_ccc.retrypasses, "");
+    display_output_ccc.totalfilled[0] = '\0';
+    display_output_ccc.retried[0] = '\0';
+    display_output_ccc.retrypasses[0] = '\0';
     if (driver_mode_ccc)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
@@ -12743,7 +12743,7 @@ int process_source_ccc(void)
   }
   // clear/initialize the passthrough structure
   memset(&passthrough_ccc, 0, sizeof(passthrough_ccc));
-  strcpy(identify_device_raw_text_ccc, "");
+  identify_device_raw_text_ccc[0] = '\0';
 
   drive_locked_ccc = false;
   smart_supported_ccc = false;
@@ -13372,12 +13372,12 @@ int process_source_ccc(void)
     char raw_bytes_per_log_sec[cols];
     char raw_bytes_per_phy_sec[cols];
     char raw_alignment[cols];
-    strcpy(name, "");
-    strcpy(model, "");
-    strcpy(raw_size, "");
-    strcpy(raw_bytes_per_log_sec, "");
-    strcpy(raw_bytes_per_phy_sec, "");
-    strcpy(raw_alignment, "");
+    name[0] = '\0';
+    model[0] = '\0';
+    raw_size[0] = '\0';
+    raw_bytes_per_log_sec[0] = '\0';
+    raw_bytes_per_phy_sec[0] = '\0';
+    raw_alignment[0] = '\0';
     sscanf(line, "%s %s %s %s %s %[^\n]", name, raw_size, raw_bytes_per_log_sec, raw_bytes_per_phy_sec, raw_alignment, model);
     fprintf(stdout, "model=%s\n", model);
     strncpy(current_model_ccc, model, sizeof(current_model_ccc));
@@ -15082,7 +15082,7 @@ void disable_ports_ccc(void)
         // fprintf (stdout, "end_of_data = %d\n", end_of_data);    //debug
         int found_current = 0;
         char current_ports[maxlinelen];
-        strcpy(current_ports, "");
+        current_ports[0] = '\0';
         char newline[maxlinelen];
         memset(newline, 0, maxlinelen);
         strncpy(newline, line, n);
@@ -15110,7 +15110,7 @@ void disable_ports_ccc(void)
         }
         if (!found_current)
         {
-          strcpy(newline, "");
+          newline[0] = '\0';
           confirm = open_ports_dialog_ccc(current_ports);
           strncat(newline, line, end_of_data);
           strcat(newline, " ");

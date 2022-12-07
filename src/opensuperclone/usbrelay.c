@@ -23,10 +23,10 @@ int find_all_usb_devices_ccc(void)
     usb_mass_storage_ccc[i] = 0;
     usb_bulk_in_endpoint_ccc[i] = 0;
     usb_bulk_out_endpoint_ccc[i] = 0;
-    strcpy(usb_vendor_string_ccc[i], "");
-    strcpy(usb_product_string_ccc[i], "");
-    strcpy(usb_serial_string_ccc[i], "");
-    strcpy(usb_extra_id_string_ccc[i], "");
+    usb_vendor_string_ccc[i][0] = '\0';
+    usb_product_string_ccc[i][0] = '\0';
+    usb_serial_string_ccc[i][0] = '\0';
+    usb_extra_id_string_ccc[i][0] = '\0';
   }
 
   // initialize the usb system
@@ -203,7 +203,7 @@ int choose_usb_relay_ccc(void)
   {
     while (keeptrying)
     {
-      strcpy(raw_value, "");
+      raw_value[0] = '\0';
       int i;
       fprintf(stdout, "\nQ) Quit\n");
       fprintf(stdout, "R) Refresh device list\n");
@@ -346,7 +346,7 @@ int choose_usb_device_ccc(void)
   {
     while (keeptrying)
     {
-      strcpy(raw_value, "");
+      raw_value[0] = '\0';
       int i;
       fprintf(stdout, "\nQ) Quit\n");
       fprintf(stdout, "R) Refresh device list\n");

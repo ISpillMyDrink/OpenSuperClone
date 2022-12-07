@@ -1302,7 +1302,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   else
   {
     int i;
-    strcpy(temp_var, "");
+    temp_var[0] = '\0';
     length = strlen(value);
     bool print = false;
     bool dquote;
@@ -1598,8 +1598,8 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
   while (1)
   {
     // fprintf (stdout, "line=%s\n", line);
-    strcpy(raw_byte, "");
-    strcpy(leftover, "");
+    raw_byte[0] = '\0';
+    leftover[0] = '\0';
     sscanf(line, "%s %[^\n]", raw_byte, leftover);
     // fprintf (stdout, "raw_byte=%s  leftover=%s\n", raw_byte, leftover);
     if ((strcmp(raw_byte, "endbuffer") == 0) || (strcmp(raw_byte, "ENDBUFFER") == 0))

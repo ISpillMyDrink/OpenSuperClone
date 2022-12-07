@@ -4654,8 +4654,8 @@ void get_usb_from_button_ccc(GtkWidget *w, gpointer data)
 void clear_usbr1_ccc(void)
 {
   usbr1_chosen_ccc = 0;
-  strcpy(primary_relay_settings_ccc.primary_relay_name, "");
-  strcpy(primary_relay_name_ccc, "");
+  primary_relay_settings_ccc.primary_relay_name[0] = '\0';
+  primary_relay_name_ccc[0] = '\0';
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), "");
 }
 

@@ -6093,13 +6093,13 @@ int find_all_devices_ccc(void)
     port_signature_ccc[i] = 0;
     drive_size_ccc[i] = 0;
     device_type_ccc[i] = 0;
-    strcpy(device_reference_ccc[i], "");
-    strcpy(device_name_ccc[i], "");
-    strcpy(device_driver_ccc[i], "");
-    strcpy(device_bus_ccc[i], "");
-    strcpy(model_ccc[i], "");
-    strcpy(serial_ccc[i], "");
-    strcpy(drive_list_ccc[i], "");
+    device_reference_ccc[i][0] = '\0';
+    device_name_ccc[i][0] = '\0';
+    device_driver_ccc[i][0] = '\0';
+    device_bus_ccc[i][0] = '\0';
+    model_ccc[i][0] = '\0';
+    serial_ccc[i][0] = '\0';
+    drive_list_ccc[i][0] = '\0';
   }
 
   device_count_ccc = 0;
