@@ -92,4 +92,12 @@ install(FILES
         EXCLUDE_FROM_ALL
 )
 
+# Add installation scripts to ZIP package
+install(DIRECTORY
+        "${CMAKE_CURRENT_SOURCE_DIR}/res/install/"
+        DESTINATION .
+        COMPONENT Scripts
+        EXCLUDE_FROM_ALL
+)
+
 Include(CPack)
