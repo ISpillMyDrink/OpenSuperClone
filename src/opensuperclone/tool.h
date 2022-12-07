@@ -27,6 +27,8 @@ char *string_variable_name_buffer_ccc;
 char **string_variable_name_pointer_ccc;
 char *string_variable_buffer_ccc;
 unsigned int total_string_variables_ccc;
+char full_line[MAX_LINE_LENGTH] = "";
+char rest_of_line[MAX_LINE_LENGTH] = "";
 
 void supertool_cleanup_ccc(void);
 
