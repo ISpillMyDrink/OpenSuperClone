@@ -26,7 +26,7 @@ int supertooltool_ccc(void)
       fflush(stdout);
       if (fgets(input_text, sizeof input_text, stdin) != NULL)
       {
-        sscanf(input_text, "%s", raw_value);
+        sscanf(input_text, "%31s", raw_value);
         if (strcasecmp(raw_value, "Q") == 0)
         {
           supertool_cleanup_ccc();

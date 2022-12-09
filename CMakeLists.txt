@@ -13,7 +13,7 @@ endif()
 
 # OpenSuperClone version 2.4
 project(OpenSuperClone
-        VERSION 2.4
+        VERSION 2.4.1
         DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C
