@@ -6,7 +6,7 @@ echo "Installing binaries..."
 if [ ! -f /usr/bin/opensuperclone ]; then
     sudo cp ./bin/opensuperclone /usr/bin/opensuperclone
 else
-    echo "Opensuperclone is already installed. Exiting..."
+    echo "OpenSuperClone is already installed. Exiting..."
     exit 1
 fi
 
