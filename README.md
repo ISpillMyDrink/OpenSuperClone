@@ -32,9 +32,9 @@
 ## ✨ Features
 
 * Advanced drive cloning capability akin to that of ddrescue
-* Virtual driver mode for targeted data extraction
+* Virtual drive mode for targeted data extraction
 * Direct AHCI and IDE capability to circumvent OS drivers completely
-* USB Relay control for automatic drive power-cycling
+* USB relay control for automatic power cycling of drives
 
 #### 📋 Planned Changes
 
@@ -54,8 +54,8 @@ Pre-built binaries aswell as Debian packages for OpenSuperClone can be found on 
 - `cmake`
 - `gcc`
 - `gettext`
-- `libgtk-3-dev`
 - `libconfig-dev`
+- `libgtk-3-dev`
 - `libusb-dev`
 - `pkg-config`
 
@@ -72,7 +72,11 @@ $ ./Release/bin/oscviewer
 
 ## ✏️ Changelog
 
-#### OpenSuperClone 2.4 [Pre-Release]
+#### OpenSuperClone 2.4.1
+
+* Fixed a bug where the UI labels would show bogus strings
+
+#### OpenSuperClone 2.4
 
 * Removal of licensing related code
 * Implemented CMake as build system
@@ -86,11 +90,11 @@ $ ./Release/bin/oscviewer
 All credit belongs to Scott Dwyer with his work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>.
 
 This project makes use of the following libraries/programs:
-* GTK (https://www.gtk.org/)
 * GLADE (https://glade.gnome.org/)
-* libusb (https://libusb.info/)
-* libintl (https://www.gnu.org/software/gettext/)
+* GTK (https://www.gtk.org/)
 * libconfig (https://hyperrealm.github.io/libconfig/)
+* libintl (https://www.gnu.org/software/gettext/)
+* libusb (https://libusb.info/)
 
 ## 📄 License
 
