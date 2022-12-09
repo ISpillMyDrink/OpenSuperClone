@@ -414,7 +414,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     else
     {
-      printk(KERN_INFO "hddsuperdrive: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
+      // printk(KERN_INFO "hddsuperdrive: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
       if (return_zeros_on_error == 1)
       {
         if (blockio)
