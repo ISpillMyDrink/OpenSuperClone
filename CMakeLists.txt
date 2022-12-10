@@ -19,6 +19,9 @@ project(OpenSuperClone
         LANGUAGES C
 )
 
+# OSCDriver version 2.6.1
+set(OSC_DRIVER_VERSION 2.6.1)
+
 # If the DEBUG option is enabled, set the build type to Debug and add the define DEBUG
 option(DEBUG "Enable Debugging" OFF)
 

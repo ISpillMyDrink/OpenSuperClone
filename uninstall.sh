@@ -1,40 +1,48 @@
 #!/bin/sh
 
-echo "Uninstalling OpenSuperClone from /usr/local/..."
+echo "Uninstalling OpenSuperClone from /usr/..."
 
-if [ -f /usr/local/bin/opensuperclone ]; then
-    sudo rm -f /usr/local/bin/opensuperclone
+if [ -f /usr/bin/opensuperclone ]; then
+    sudo rm -f /usr/bin/opensuperclone
 fi
 
-if [ -f /usr/local/bin/oscviewer ]; then
-    sudo rm -f /usr/local/bin/oscviewer
+if [ -f /usr/bin/oscviewer ]; then
+    sudo rm -f /usr/bin/oscviewer
 fi
 
-if [ -d /usr/local/bin/oscscripts ]; then
-    sudo rm -rf /usr/local/bin/oscscripts
+if [ -d /usr/bin/oscscripts ]; then
+    sudo rm -rf /usr/bin/oscscripts
 fi
 
-if [ -f /usr/local/share/applications/opensuperclone.desktop ]; then
-    sudo rm -f /usr/local/share/applications/opensuperclone.desktop
+if [ -f /usr/share/applications/opensuperclone.desktop ]; then
+    sudo rm -f /usr/share/applications/opensuperclone.desktop
 fi
 
-if [ -f /usr/local/share/applications/opensupertool.desktop ]; then
-    sudo rm -f /usr/local/share/applications/opensupertool.desktop
+if [ -f /usr/share/applications/opensupertool.desktop ]; then
+    sudo rm -f /usr/share/applications/opensupertool.desktop
 fi
 
-if [ -f /usr/local/share/applications/oscviewer.desktop ]; then
-    sudo rm -f /usr/local/share/applications/oscviewer.desktop
+if [ -f /usr/share/applications/oscviewer.desktop ]; then
+    sudo rm -f /usr/share/applications/oscviewer.desktop
 fi
 
-if [ -d /usr/local/share/locale ]; then
-    for locale in $(ls /usr/local/share/locale); do
-        if [ -f /usr/local/share/locale/$locale/LC_MESSAGES/opensuperclone.mo ]; then
-            sudo rm -f /usr/local/share/locale/$locale/LC_MESSAGES/opensuperclone.mo
+if [ -d /usr/share/locale ]; then
+    for locale in $(ls /usr/share/locale); do
+        if [ -f /usr/share/locale/$locale/LC_MESSAGES/opensuperclone.mo ]; then
+            sudo rm -f /usr/share/locale/$locale/LC_MESSAGES/opensuperclone.mo
         fi
-        if [ -f /usr/local/share/locale/$locale/LC_MESSAGES/oscviewer.mo ]; then
-            sudo rm -f /usr/local/share/locale/$locale/LC_MESSAGES/oscviewer.mo
+        if [ -f /usr/share/locale/$locale/LC_MESSAGES/oscviewer.mo ]; then
+            sudo rm -f /usr/share/locale/$locale/LC_MESSAGES/oscviewer.mo
         fi
     done
+fi
+
+VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' CMakeLists.txt)
+
+sudo dkms remove -m oscdriver/$VERSION --all
+
+if [ -d /usr/src/oscdriver-$VERSION ]; then
+    sudo rm -rf /usr/src/oscdriver-$VERSION
 fi
 
 echo "Done."

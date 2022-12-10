@@ -1039,6 +1039,10 @@ void install_driver_ccc(void)
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
+      if(superclone_ccc)
+      {
+        initialize_memory_ccc();
+      }
       driver_installed_ccc = 1;
       return;
     }
@@ -1053,76 +1057,93 @@ void install_driver_ccc(void)
       return;
     }
   }
-  char tempdir[128];
-  snprintf(tempdir, sizeof(tempdir), "/tmp/hddsctemp%d", process_id_ccc);
+
+  // try loading the driver with modprobe
   char command[256];
-  snprintf(command, sizeof(command), "rm -rf %s", tempdir);
-  system(command);
-  mkdir(tempdir, 0777);
-  char name[256];
-  snprintf(name, sizeof(name), "%s/%s.c", tempdir, DRIVER_FILE_NAME);
-  FILE *writefile;
-  writefile = fopen(name, "w");
-  if (writefile == NULL)
-  {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), name, strerror(errno));
-    message_now_ccc(tempmessage_ccc);
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    return;
-  }
-  unsigned int i;
-  for (i = 0; i < oscdriver_c_len; i++)
-  {
-    fprintf(writefile, "%c", oscdriver_c[i]);
-  }
-  int fp = fileno(writefile);
-  fsync(fp);
-  fclose(writefile);
+  snprintf(command, sizeof(command), "modprobe %s", DRIVER_FILE_NAME);
+  int result = system(command);
 
-  snprintf(command, sizeof(command), "%s/Makefile", tempdir);
-  writefile = fopen(command, "w");
-  if (writefile == NULL)
+  if(result != 0)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), command, strerror(errno));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error loading driver\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
-    return;
-  }
-  char obj[256];
-  snprintf(obj, sizeof(obj), "obj-m = %s.o", DRIVER_FILE_NAME);
-  fprintf(writefile, "%s", obj);
-  fp = fileno(writefile);
-  fsync(fp);
-  fclose(writefile);
-
-  snprintf(command, sizeof(command), "(cd %s; make -C/lib/modules/`uname -r`/build M=$PWD)", tempdir);
-  if (system(command))
-  {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Make failed, see the console for more information"));
-    message_now_ccc(tempmessage_ccc);
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
+    driver_installed_ccc = 0;
     return;
   }
 
-  snprintf(command, sizeof(command), "insmod %s/%s.ko ioctl=%s mmap_m=%s mmap_tb=%s mmap_mdb=%s", tempdir, DRIVER_FILE_NAME, MAIN_DRIVER_IOCTL_NAME, MAIN_DRIVER_MMAP_NAME, MAIN_DRIVER_MMAPTB_NAME, MAIN_DRIVER_MMAPMDB_NAME);
-  if (system(command))
-  {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to install driver module, see the console for more information"));
-    message_now_ccc(tempmessage_ccc);
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    return;
-  }
+  // char tempdir[128];
+  // snprintf(tempdir, sizeof(tempdir), "/tmp/hddsctemp%d", process_id_ccc);
+  // char command[256];
+  // snprintf(command, sizeof(command), "rm -rf %s", tempdir);
+  // system(command);
+  // mkdir(tempdir, 0777);
+  // char name[256];
+  // snprintf(name, sizeof(name), "%s/%s.c", tempdir, DRIVER_FILE_NAME);
+  // FILE *writefile;
+  // writefile = fopen(name, "w");
+  // if (writefile == NULL)
+  // {
+  //   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), name, strerror(errno));
+  //   message_now_ccc(tempmessage_ccc);
+  //   message_error_ccc(tempmessage_ccc);
+  //   print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+  //   clear_error_message_ccc();
+  //   return;
+  // }
+  // unsigned int i;
+  // for (i = 0; i < oscdriver_c_len; i++)
+  // {
+  //   fprintf(writefile, "%c", oscdriver_c[i]);
+  // }
+  // int fp = fileno(writefile);
+  // fsync(fp);
+  // fclose(writefile);
 
-  snprintf(command, sizeof(command), "rm -rf %s", tempdir);
-  system(command);
+  // snprintf(command, sizeof(command), "%s/Makefile", tempdir);
+  // writefile = fopen(command, "w");
+  // if (writefile == NULL)
+  // {
+  //   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s %s (%s).\n", _("Cannot open for writing"), command, strerror(errno));
+  //   message_now_ccc(tempmessage_ccc);
+  //   message_error_ccc(tempmessage_ccc);
+  //   print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+  //   clear_error_message_ccc();
+  //   return;
+  // }
+  // char obj[256];
+  // snprintf(obj, sizeof(obj), "obj-m = %s.o", DRIVER_FILE_NAME);
+  // fprintf(writefile, "%s", obj);
+  // fp = fileno(writefile);
+  // fsync(fp);
+  // fclose(writefile);
+
+  // snprintf(command, sizeof(command), "(cd %s; make -C/lib/modules/`uname -r`/build M=$PWD)", tempdir);
+  // if (system(command))
+  // {
+  //   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Make failed, see the console for more information"));
+  //   message_now_ccc(tempmessage_ccc);
+  //   message_error_ccc(tempmessage_ccc);
+  //   print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+  //   clear_error_message_ccc();
+  //   return;
+  // }
+
+  // snprintf(command, sizeof(command), "insmod %s/%s.ko ioctl=%s mmap_m=%s mmap_tb=%s mmap_mdb=%s", tempdir, DRIVER_FILE_NAME, MAIN_DRIVER_IOCTL_NAME, MAIN_DRIVER_MMAP_NAME, MAIN_DRIVER_MMAPTB_NAME, MAIN_DRIVER_MMAPMDB_NAME);
+  // if (system(command))
+  // {
+  //   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to install driver module, see the console for more information"));
+  //   message_now_ccc(tempmessage_ccc);
+  //   message_error_ccc(tempmessage_ccc);
+  //   print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+  //   clear_error_message_ccc();
+  //   return;
+  // }
+
+  // snprintf(command, sizeof(command), "rm -rf %s", tempdir);
+  // system(command);
 
   if (map_driver_memory_ccc())
   {

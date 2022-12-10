@@ -14,4 +14,5 @@ pkg_check_modules(LIBUSB REQUIRED libusb)
 pkg_check_modules(LIBCONFIG REQUIRED libconfig)
 
 add_subdirectory(opensuperclone)
+add_subdirectory(oscdriver)
 add_subdirectory(oscviewer)

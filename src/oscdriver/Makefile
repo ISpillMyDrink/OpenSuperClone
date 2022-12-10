@@ -1,6 +1,10 @@
-CONFIG_MODULE_SIG=n
-
 KMOD = oscdriver
+
+KVERSION = $(shell uname -r)
+
+obj-m = $(KMOD).o
+MAKE_FLAGS = -C
+KDIR = /lib/modules/$(KVERSION)/build
 
 IOCTL = oscdriverc
 MMAP_M = oscdrivermap_m
@@ -18,15 +22,8 @@ TMPS =  $(KMOD).mod \
         Module.symvers \
        .tmp_versions
 
-ifneq ($(KERNELRELEASE),)
-    obj-m = $(KMOD).o
-else
-    MAKE_FLAGS = -C
-    KDIR      ?= /lib/modules/`uname -r`/build
-
 default:
-	$(MAKE) $(MAKE_FLAGS)$(KDIR) M=$$PWD
-endif
+	$(MAKE) $(MAKE_FLAGS) $(KDIR) M=$$PWD
 
 .PHONY: all clean
 

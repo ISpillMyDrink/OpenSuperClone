@@ -3,6 +3,8 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#include "config.h"
+
 #include <linux/version.h>
 
 #include <linux/module.h>
@@ -97,8 +99,6 @@
       printk(KERN_NOTICE "At %s:%d\n", __FILE__, __LINE__); \
     }                                                       \
   } while (0)
-
-#define DRIVER_VERSION "2.6.1"
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Driver for OpenSuperClone");
