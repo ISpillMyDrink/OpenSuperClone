@@ -56,10 +56,10 @@
 #define ACTIVATE_DRIVE_COMMAND 555
 #define READ_MEMORY_DRIVE_COMMAND 777
 
-#define MAIN_DRIVER_IOCTL_NAME "hddscbdc"
-#define MAIN_DRIVER_MMAP_NAME "hddscmap_m"
-#define MAIN_DRIVER_MMAPTB_NAME "hddscmap_tb"
-#define MAIN_DRIVER_MMAPMDB_NAME "hddscmap_mdb"
+#define MAIN_DRIVER_IOCTL_NAME "oscdriverc"
+#define MAIN_DRIVER_MMAP_NAME "oscdrivermap_m"
+#define MAIN_DRIVER_MMAPTB_NAME "oscdrivermap_tb"
+#define MAIN_DRIVER_MMAPMDB_NAME "oscdrivermap_mdb"
 
 #define CTRL_STOP_SIGNAL 0
 #define CTRL_DATA_REQUEST 1

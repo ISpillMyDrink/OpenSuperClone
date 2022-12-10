@@ -87,7 +87,7 @@
 #define HEAD_AVERAGE_COUNT 6
 #define SCSI_WRITE_TIMEOUT 2000 // ms
 
-#define DRIVER_FILE_NAME "hddscbd"
+#define DRIVER_FILE_NAME "oscdriver"
 
 bool forced_exit_ccc = false;
 void cleanup_ccc(void);

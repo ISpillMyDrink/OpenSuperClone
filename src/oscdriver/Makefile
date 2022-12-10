@@ -2,10 +2,10 @@ CONFIG_MODULE_SIG=n
 
 KMOD = oscdriver
 
-IOCTL = hddscbdc
-MMAP_M = hddscmap_m
-MMAP_TB = hddscmap_tb
-MMAP_MDB = hddscmap_mdb
+IOCTL = oscdriverc
+MMAP_M = oscdrivermap_m
+MMAP_TB = oscdrivermap_tb
+MMAP_MDB = oscdrivermap_mdb
 
 RMFLAGS = -vR
 

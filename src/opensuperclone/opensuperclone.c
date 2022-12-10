@@ -1060,7 +1060,7 @@ void install_driver_ccc(void)
   system(command);
   mkdir(tempdir, 0777);
   char name[256];
-  snprintf(name, sizeof(name), "%s/%s%d.c", tempdir, DRIVER_FILE_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "%s/%s.c", tempdir, DRIVER_FILE_NAME);
   FILE *writefile;
   writefile = fopen(name, "w");
   if (writefile == NULL)
@@ -1093,7 +1093,7 @@ void install_driver_ccc(void)
     return;
   }
   char obj[256];
-  snprintf(obj, sizeof(obj), "obj-m = %s%d.o", DRIVER_FILE_NAME, process_id_ccc);
+  snprintf(obj, sizeof(obj), "obj-m = %s.o", DRIVER_FILE_NAME);
   fprintf(writefile, "%s", obj);
   fp = fileno(writefile);
   fsync(fp);
@@ -1110,7 +1110,7 @@ void install_driver_ccc(void)
     return;
   }
 
-  snprintf(command, sizeof(command), "insmod %s/%s%d.ko ioctl=%s%d mmap_m=%s%d mmap_tb=%s%d mmap_mdb=%s%d", tempdir, DRIVER_FILE_NAME, process_id_ccc, MAIN_DRIVER_IOCTL_NAME, process_id_ccc, MAIN_DRIVER_MMAP_NAME, process_id_ccc, MAIN_DRIVER_MMAPTB_NAME, process_id_ccc, MAIN_DRIVER_MMAPMDB_NAME, process_id_ccc);
+  snprintf(command, sizeof(command), "insmod %s/%s.ko ioctl=%s mmap_m=%s mmap_tb=%s mmap_mdb=%s", tempdir, DRIVER_FILE_NAME, MAIN_DRIVER_IOCTL_NAME, MAIN_DRIVER_MMAP_NAME, MAIN_DRIVER_MMAPTB_NAME, MAIN_DRIVER_MMAPMDB_NAME);
   if (system(command))
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to install driver module, see the console for more information"));
@@ -1165,7 +1165,7 @@ void uninstall_driver_ccc(void)
     return;
   }
   char name[256];
-  snprintf(name, sizeof(name), "rmmod %s%d", DRIVER_FILE_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "rmmod %s", DRIVER_FILE_NAME);
   if (system(name))
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Failed to remove driver module, see the console for more information"));
