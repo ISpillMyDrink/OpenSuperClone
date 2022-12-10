@@ -4187,7 +4187,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
     // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
     if (main_driver_fd_ccc > 0)
     {
       close(main_driver_fd_ccc);
@@ -4243,7 +4243,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
     memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
     // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
     if (main_driver_fd_ccc > 0)
     {
       close(main_driver_fd_ccc);
@@ -4322,7 +4322,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
         memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
         // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
         if (main_driver_fd_ccc > 0)
         {
           close(main_driver_fd_ccc);
@@ -4496,7 +4496,7 @@ int hba_test_ccc(void)
     memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
     // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
     if (main_driver_fd_ccc > 0)
     {
       close(main_driver_fd_ccc);
@@ -4563,7 +4563,7 @@ int hba_test_ccc(void)
     memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
     // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+    snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
     if (main_driver_fd_ccc > 0)
     {
       close(main_driver_fd_ccc);
@@ -4657,7 +4657,7 @@ int hba_test_ccc(void)
         memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
         // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
         if (main_driver_fd_ccc > 0)
         {
           close(main_driver_fd_ccc);
@@ -5179,7 +5179,7 @@ int hba_test_ccc(void)
         memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
         // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
         if (main_driver_fd_ccc > 0)
         {
           close(main_driver_fd_ccc);
@@ -5246,7 +5246,7 @@ int hba_test_ccc(void)
         memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
         // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+        snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
         if (main_driver_fd_ccc > 0)
         {
           close(main_driver_fd_ccc);
@@ -5340,7 +5340,7 @@ int hba_test_ccc(void)
             memset(driver_control_data_ccc.buffer, 0, sizeof(driver_control_data_ccc.buffer));
             // driver_control_data_ccc.buffer = driver_buffer_ccc;
 
-            snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+            snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
             if (main_driver_fd_ccc > 0)
             {
               close(main_driver_fd_ccc);
@@ -10496,7 +10496,7 @@ int write_rebuild_assist_log_ccc(unsigned char data[LOG_PAGE_SIZE])
 
 int start_driver_ccc(void)
 {
-  snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+  snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
   if (main_driver_fd_ccc > 0)
   {
     close(main_driver_fd_ccc);
@@ -10566,7 +10566,7 @@ int start_driver_ccc(void)
 
 int stop_driver_ccc(void)
 {
-  snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+  snprintf(driver_device_name_ccc, sizeof(driver_device_name_ccc), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
   if (main_driver_fd_ccc > 0)
   {
     close(main_driver_fd_ccc);
@@ -10643,7 +10643,7 @@ int reset_driver_timers_ccc(void)
 int check_driver_ccc(void)
 {
   char name[256];
-  snprintf(name, sizeof(name), "/proc/%s%d", MAIN_DRIVER_IOCTL_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "/proc/%s", MAIN_DRIVER_IOCTL_NAME);
   int fd = open(name, O_RDWR);
   if (fd == -1)
   {
@@ -10663,7 +10663,7 @@ int map_driver_memory_ccc(void)
   driver_memory_mapped_ccc = 0;
 
   char name[256];
-  snprintf(name, sizeof(name), "/proc/%s%d", MAIN_DRIVER_MMAP_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "/proc/%s", MAIN_DRIVER_MMAP_NAME);
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {
@@ -10714,7 +10714,7 @@ int map_driver_memory_ccc(void)
 
   close(configfd);
 
-  snprintf(name, sizeof(name), "/proc/%s%d", MAIN_DRIVER_MMAPTB_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "/proc/%s", MAIN_DRIVER_MMAPTB_NAME);
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {
@@ -10732,7 +10732,7 @@ int map_driver_memory_ccc(void)
   }
   close(configfd);
 
-  snprintf(name, sizeof(name), "/proc/%s%d", MAIN_DRIVER_MMAPMDB_NAME, process_id_ccc);
+  snprintf(name, sizeof(name), "/proc/%s", MAIN_DRIVER_MMAPMDB_NAME);
   configfd = open(name, O_RDWR);
   if (configfd < 0)
   {

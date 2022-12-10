@@ -1,11 +1,16 @@
-
-# Suppress module signature verification: Get rid of kernel messages like
-# >> module verification failed: signature and/or required key missing -
-# >> tainting kernel
 CONFIG_MODULE_SIG=n
 
-KMOD = opensuperclone_driver
-TMPS =  $(KMOD).mod.*  \
+KMOD = oscdriver
+
+IOCTL = hddscbdc
+MMAP_M = hddscmap_m
+MMAP_TB = hddscmap_tb
+MMAP_MDB = hddscmap_mdb
+
+RMFLAGS = -vR
+
+TMPS =  $(KMOD).mod \
+        $(KMOD).mod.*  \
        .$(KMOD).*.cmd  \
         built-in.o     \
        .built-in.*     \
@@ -23,9 +28,6 @@ default:
 	$(MAKE) $(MAKE_FLAGS)$(KDIR) M=$$PWD
 endif
 
-# Specify flags and other vars here.
-RMFLAGS = -vR
-
 .PHONY: all clean
 
 all: default
@@ -34,9 +36,7 @@ clean:
 	$(RM) $(RMFLAGS) $(KMOD).ko $(KMOD).o $(TMPS)
 
 install:
-	insmod $(KMOD).ko
+	insmod $(KMOD).ko ioctl=$(IOCTL) mmap_m=$(MMAP_M) mmap_tb=$(MMAP_TB) mmap_mdb=$(MMAP_MDB)
 
 uninstall:
 	rmmod $(KMOD)
-
-# vim:set nu:et:ts=4:sw=4:

@@ -5,6 +5,8 @@ CMakeFiles
 CMakeScripts
 Testing
 Makefile
+# exclude the oscdriver Makefile
+!src/oscdriver/Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json

@@ -8,7 +8,7 @@
 #include "clone_gui_common.h"
 #include "opensuperclone.h"
 #include "opensuperclone_help.h"
-#include "opensuperclone_driver.h"
+#include "oscdriver.h"
 
 // Function to handle ctrl-c
 void signal_callback_handler_ccc(int signum)
@@ -1073,9 +1073,9 @@ void install_driver_ccc(void)
     return;
   }
   unsigned int i;
-  for (i = 0; i < opensuperclone_driver_c_len; i++)
+  for (i = 0; i < oscdriver_c_len; i++)
   {
-    fprintf(writefile, "%c", opensuperclone_driver_c[i]);
+    fprintf(writefile, "%c", oscdriver_c[i]);
   }
   int fp = fileno(writefile);
   fsync(fp);

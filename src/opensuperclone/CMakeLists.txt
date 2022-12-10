@@ -24,11 +24,11 @@ add_custom_command(
 LIST(APPEND RESOURCES opensuperclone_glade.h)
 
 add_custom_command(
-    OUTPUT opensuperclone_driver.h
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/driver/opensuperclone_driver.c opensuperclone_driver.c
-    COMMAND xxd -i opensuperclone_driver.c opensuperclone_driver.h
+    OUTPUT oscdriver.h
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../oscdriver/oscdriver.c oscdriver.c
+    COMMAND xxd -i oscdriver.c oscdriver.h
 )
-LIST(APPEND RESOURCES opensuperclone_driver.h)
+LIST(APPEND RESOURCES oscdriver.h)
 
 # Compile language files
 file(GLOB PO_LANGS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/locale/*)
