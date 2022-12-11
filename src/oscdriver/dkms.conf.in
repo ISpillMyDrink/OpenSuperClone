@@ -1,5 +1,5 @@
 PACKAGE_NAME="oscdriver"
-PACKAGE_VERSION="2.6.1"
+PACKAGE_VERSION="@OSC_DRIVER_VERSION@"
 MAKE="make"
 INSTALL="make install"
 CLEAN="make clean"
