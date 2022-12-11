@@ -20,7 +20,12 @@ project(OpenSuperClone
 )
 
 # OSCDriver version 2.6.1
-set(OSC_DRIVER_VERSION 2.6.1)
+set(OSC_DRIVER_VERSION 2.6.1 CACHE STRING "OSCDriver Version")
+
+set(OSC_DRIVER_IOCTL_NAME "oscdriverc" CACHE STRING "OSCDriver IOCTL Name")
+set(OSC_DRIVER_MMAP_NAME "oscdrivermap_m" CACHE STRING "OSCDriver MMAP Name")
+set(OSC_DRIVER_MMAPTB_NAME "oscdrivermap_tb" CACHE STRING "OSCDriver MMAPTB Name")
+set(OSC_DRIVER_MMAPMDB_NAME "oscdrivermap_mdb" CACHE STRING "OSCDriver MMAPMDB Name")
 
 # If the DEBUG option is enabled, set the build type to Debug and add the define DEBUG
 option(DEBUG "Enable Debugging" OFF)
@@ -76,7 +81,7 @@ set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/package")
 
 set(CPACK_GENERATOR DEB ZIP CACHE STRING "CPack Generator")
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4, make, gcc")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4, dkms")
 set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")

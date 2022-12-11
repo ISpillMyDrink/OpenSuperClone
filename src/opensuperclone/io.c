@@ -3,6 +3,7 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#include "config.h"
 #include "common.h"
 #include "io.h"
 #include "clone_gui_common.h"

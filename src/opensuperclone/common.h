@@ -131,11 +131,6 @@
 #define DEBUG_MESSAGE_SIZE 4096
 #define REBUILD_ASSIST_FIELD_LENGTH 128
 
-#define MAIN_DRIVER_IOCTL_NAME "oscdriverc"
-#define MAIN_DRIVER_MMAP_NAME "oscdrivermap_m"
-#define MAIN_DRIVER_MMAPTB_NAME "oscdrivermap_tb"
-#define MAIN_DRIVER_MMAPMDB_NAME "oscdrivermap_mdb"
-
 #define FIRST_READ_TIMER 800000        // 0.8 sec
 #define SOFT_RESET_TIMER 8000000       // 8 sec
 #define HARD_RESET_TIMER 800000        // 0.8 sec

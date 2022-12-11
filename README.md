@@ -39,7 +39,6 @@
 #### 📋 Planned Changes
 
 * Refactoring of codebase (get rid of -fcommon flag)
-* Implement DKMS for driver (un-)installation
 * Remove requirement for running as root
 * Add configuration files and presets for settings
 
@@ -71,6 +70,10 @@ $ ./Release/bin/oscviewer
 ```
 
 ## ✏️ Changelog
+
+#### OpenSuperClone 2.5 [Work-In-Progress]
+
+* Implemented DKMS for driver installation
 
 #### OpenSuperClone 2.4.1
 
