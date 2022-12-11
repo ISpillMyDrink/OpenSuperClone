@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dkms remove oscdriver/@OSC_DRIVER_VERSION@ --all

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dkms install oscdriver/@OSC_DRIVER_VERSION@
