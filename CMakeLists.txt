@@ -81,7 +81,11 @@ set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/package")
 
 set(CPACK_GENERATOR DEB CACHE STRING "CPack Generator")
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4, dkms")
+# A choice has to be made here of either requiring DKMS, effectively making the driver a necessity
+# or not requiring DKMS, meaning the driver won't be installed automatically and the user will have
+# to install it manually, if they want to use the advanced features of OpenSuperClone.
+# set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4, dkms")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4")
 set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")

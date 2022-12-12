@@ -1,3 +1,8 @@
 #!/bin/sh
 
-dkms install oscdriver/@OSC_DRIVER_VERSION@
+if command -v dkms >/dev/null; then
+    dkms install oscdriver/@OSC_DRIVER_VERSION@
+else
+    echo "WARNING: DKMS is not installed, skipping driver installation."
+    echo "To use the advanced features of OpenSuperClone you will have to install the driver manually."
+fi
