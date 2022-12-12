@@ -1324,7 +1324,11 @@ static void unregister_data_drive(void)
   put_disk(data_device.gd);
   unregister_blkdev(data_major_num, data_device.device_name);
   data_major_num = 0;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 19, 12)
   blk_cleanup_queue(data_queue);
+#else
+  blk_mq_destroy_queue(data_queue);
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
   blk_mq_free_tag_set(&data_device.tag_set);
 #endif
@@ -1542,8 +1546,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
       data_device.gd = alloc_disk(16);
-#else
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(5, 19, 12)
       data_device.gd = __alloc_disk_node(data_queue, NUMA_NO_NODE, &hddsc_bio_compl_lkclass);
+#else
+      data_device.gd = blk_mq_alloc_disk_for_queue(data_queue, &hddsc_bio_compl_lkclass);
 #endif
       if (!data_device.gd)
       {
@@ -1560,7 +1566,17 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.gd->private_data = &data_device;
       strcpy(data_device.gd->disk_name, data_device.device_name);
       set_capacity(data_device.gd, (data_device.size / KERNEL_SECTOR_SIZE));
-      add_disk(data_device.gd);
+      if (add_disk(data_device.gd)) {
+        printk(KERN_WARNING "hddsuperdrive: unable to register disk\n");
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 14, 0)
+        blk_cleanup_queue(data_device.gd->queue);
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
+        blk_cleanup_disk(data_device.gd);
+#else
+        put_disk(data_device.gd);
+#endif
+        goto out_unregister;
+      }
 
       data_drive_active = 0;
       write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
