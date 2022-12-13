@@ -251,7 +251,7 @@ static void next_queue(void)
   if (queue_count < 0)
   {
     queue_count = 0;
-    printk(KERN_NOTICE "hddsuperdrive: internal error, queue count less than 0\n");
+    printk(KERN_NOTICE "oscdriver: internal error, queue count less than 0\n");
   }
 }
 
@@ -272,13 +272,13 @@ static int wait_for_queue(const int current_queue)
   queue_count++;
   if (queue_count > queue_limit)
   {
-    printk(KERN_NOTICE "hddsuperdrive: too many requests, queue full\n");
+    printk(KERN_NOTICE "oscdriver: too many requests, queue full\n");
     return -EBUSY;
   }
   // printk(KERN_INFO "hddsc wait_for_queue %d %d %d\n", current_queue, working_queue, queue_count);    //debug
   if (current_queue != working_queue)
   {
-    printk(KERN_INFO "hddsuperdrive: queue wait %d %d %d\n", current_queue, working_queue, queue_count);
+    printk(KERN_INFO "oscdriver: queue wait %d %d %d\n", current_queue, working_queue, queue_count);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
     do_gettimeofday(&tv1);
 #else
@@ -296,7 +296,7 @@ static int wait_for_queue(const int current_queue)
 #endif
       if (elapsed_usec > read_ctrl_data(CTRL_REQUEST_TIMEOUT))
       {
-        printk(KERN_NOTICE "hddsuperdrive: timeout waiting for queue time %lld\n", elapsed_usec);
+        printk(KERN_NOTICE "oscdriver: timeout waiting for queue time %lld\n", elapsed_usec);
         return -ETIME;
       }
     }
@@ -316,7 +316,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
   struct timespec64 tv1, tv2;
 #endif
 
-  // printk(KERN_INFO "hddsuperdrive: request %lld buffer sect %lld count %lld total %lld active %d stop %d\n", request_number, (unsigned long long)sect, nsect, tsect, data_drive_active, stop_signal);    //debug
+  // printk(KERN_INFO "oscdriver: request %lld buffer sect %lld count %lld total %lld active %d stop %d\n", request_number, (unsigned long long)sect, nsect, tsect, data_drive_active, stop_signal);    //debug
 
   if (io_scsi_only && !blockio)
   {
@@ -331,7 +331,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       memset(block_io_buffer, 0, nbytes);
       if (copy_to_user(buffer, block_io_buffer, nbytes))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
     }
     else
@@ -347,7 +347,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       memset(block_io_buffer, 0, nbytes);
       if (copy_to_user(buffer, block_io_buffer, nbytes))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
     }
     else
@@ -363,7 +363,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       memset(block_io_buffer, 0, nbytes);
       if (copy_to_user(buffer, block_io_buffer, nbytes))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
     }
     else
@@ -374,12 +374,12 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
   }
   if ((offset + nbytes) > dev->size)
   {
-    printk(KERN_NOTICE "hddsuperdrive: Beyond end of device (%lld %lld)\n", offset, nbytes);
+    printk(KERN_NOTICE "oscdriver: Beyond end of device (%lld %lld)\n", offset, nbytes);
     return -EINVAL;
   }
   if (write)
   {
-    printk(KERN_NOTICE "hddsuperdrive: Writing not allowed sect %lld count %lld\n", (unsigned long long)sect, nsect);
+    printk(KERN_NOTICE "oscdriver: Writing not allowed sect %lld count %lld\n", (unsigned long long)sect, nsect);
     return -EROFS;
   }
 
@@ -394,12 +394,12 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
 
     if (!check_io_error_bitmap(sect - read_ctrl_data(CTRL_KSECTOR_START), nsect))
     {
-      // printk(KERN_INFO "hddsuperdrive: request %lld buffer sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
+      // printk(KERN_INFO "oscdriver: request %lld buffer sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
       if (blockio)
       {
         if (copy_to_user(buffer, transfer_buffer + ((sect - read_ctrl_data(CTRL_KSECTOR_START)) * KERNEL_SECTOR_SIZE), nbytes))
         {
-          printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+          printk(KERN_WARNING "oscdriver: failed to copy user data\n");
         }
       }
       else
@@ -409,7 +409,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     else
     {
-      // printk(KERN_INFO "hddsuperdrive: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
+      // printk(KERN_INFO "oscdriver: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
       if (return_zeros_on_error == 1)
       {
         if (blockio)
@@ -417,7 +417,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
           memset(block_io_buffer, 0, nbytes);
           if (copy_to_user(buffer, block_io_buffer, nbytes))
           {
-            printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+            printk(KERN_WARNING "oscdriver: failed to copy user data\n");
           }
         }
         else
@@ -437,17 +437,17 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
           {
             if (copy_to_user(buffer + n, message, 16))
             {
-              printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+              printk(KERN_WARNING "oscdriver: failed to copy user data\n");
             }
             n += 16;
             if (copy_to_user(buffer + n, &quad_word, 8))
             {
-              printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+              printk(KERN_WARNING "oscdriver: failed to copy user data\n");
             }
             n += 8;
             if (copy_to_user(buffer + n, &quad_word, 8))
             {
-              printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+              printk(KERN_WARNING "oscdriver: failed to copy user data\n");
             }
             n += 8;
           }
@@ -468,7 +468,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
         {
           if (copy_to_user(buffer, transfer_buffer + ((sect - read_ctrl_data(CTRL_KSECTOR_START)) * KERNEL_SECTOR_SIZE), nbytes))
           {
-            printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+            printk(KERN_WARNING "oscdriver: failed to copy user data\n");
           }
         }
         else
@@ -483,7 +483,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
   else
   {
     read_number++;
-    // printk(KERN_INFO "hddsuperdrive: request %lld asking sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
+    // printk(KERN_INFO "oscdriver: request %lld asking sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
     write_ctrl_data(CTRL_DATA_VALID, 0);
     write_ctrl_data(CTRL_KSECTOR_START, sect);
     write_ctrl_data(CTRL_KSECTOR_COUNT, nsect);
@@ -521,21 +521,21 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
 #endif
       if (elapsed_usec > read_ctrl_data(CTRL_READ_TIMEOUT))
       {
-        printk(KERN_NOTICE "hddsuperdrive: timeout reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
+        printk(KERN_NOTICE "oscdriver: timeout reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
         write_ctrl_data(CTRL_DATA_REQUEST, 0);
         lockup_detected = 1;
         return -EAGAIN;
       }
       if (!read_ctrl_data(CTRL_ACK_REQUEST) && elapsed_usec > read_ctrl_data(CTRL_ACK_TIMEOUT))
       {
-        printk(KERN_NOTICE "hddsuperdrive: no ack reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
+        printk(KERN_NOTICE "oscdriver: no ack reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
         write_ctrl_data(CTRL_DATA_REQUEST, 0);
         lockup_detected = 1;
         return -EAGAIN;
       }
       if (stop_signal || read_ctrl_data(CTRL_STOP_SIGNAL))
       {
-        printk(KERN_NOTICE "hddsuperdrive: request stop\n");
+        printk(KERN_NOTICE "oscdriver: request stop\n");
         return -EIO;
       }
     }
@@ -553,12 +553,12 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     {
       if (!check_io_error_bitmap(sect - read_ctrl_data(CTRL_KSECTOR_START), nsect))
       {
-        // printk(KERN_INFO "hddsuperdrive: request %lld reading sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
+        // printk(KERN_INFO "oscdriver: request %lld reading sect %lld count %lld total %lld\n", request_number, (unsigned long long)sect, nsect, tsect);    //debug
         if (blockio)
         {
           if (copy_to_user(buffer, transfer_buffer + ((sect - read_ctrl_data(CTRL_KSECTOR_START)) * KERNEL_SECTOR_SIZE), nbytes))
           {
-            printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+            printk(KERN_WARNING "oscdriver: failed to copy user data\n");
           }
         }
         else
@@ -568,13 +568,13 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       }
       else
       {
-        // printk(KERN_INFO "hddsuperdrive: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
+        // printk(KERN_INFO "oscdriver: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
         // copy the buffer no matter what, zero filling and marking is being done in the main program
         if (blockio)
         {
           if (copy_to_user(buffer, transfer_buffer + ((sect - read_ctrl_data(CTRL_KSECTOR_START)) * KERNEL_SECTOR_SIZE), nbytes))
           {
-            printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+            printk(KERN_WARNING "oscdriver: failed to copy user data\n");
           }
         }
         else
@@ -613,13 +613,13 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     else
     {
-      printk(KERN_INFO "hddsuperdrive: out of range or invalid IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
+      printk(KERN_INFO "oscdriver: out of range or invalid IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
       if (blockio)
       {
         memset(block_io_buffer, 0, nbytes);
         if (copy_to_user(buffer, block_io_buffer, nbytes))
         {
-          printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+          printk(KERN_WARNING "oscdriver: failed to copy user data\n");
         }
       }
       else
@@ -649,12 +649,12 @@ static void main_data_request(struct request_queue *q)
   }
 
   request_number++;
-  // printk(KERN_INFO "hddsuperdrive: request %lld\n", request_number);  //debug
+  // printk(KERN_INFO "oscdriver: request %lld\n", request_number);  //debug
   req = blk_fetch_request(q);
   do_gettimeofday(&tv1);
   while (req != NULL)
   {
-    // printk(KERN_NOTICE "hddsuperdrive: pos=%lld cur=%d sect=%d\n", blk_rq_pos(req), blk_rq_cur_sectors(req), blk_rq_sectors(req));  //debug
+    // printk(KERN_NOTICE "oscdriver: pos=%lld cur=%d sect=%d\n", blk_rq_pos(req), blk_rq_cur_sectors(req), blk_rq_sectors(req));  //debug
     ret = data_transfer(&data_device, blk_rq_pos(req), blk_rq_cur_sectors(req), blk_rq_sectors(req), bio_data(req->bio), rq_data_dir(req), blockio);
     if (!__blk_end_request_cur(req, ret))
     {
@@ -671,10 +671,10 @@ static void main_data_request(struct request_queue *q)
     {
       stop_signal = 1;
       write_ctrl_data(CTRL_STOP_SIGNAL, 1);
-      printk(KERN_NOTICE "hddsuperdrive: request timeout, stop request\n");
+      printk(KERN_NOTICE "oscdriver: request timeout, stop request\n");
     }
   }
-  // printk(KERN_INFO "hddsuperdrive: request %lld\n", request_number);  //debug
+  // printk(KERN_INFO "oscdriver: request %lld\n", request_number);  //debug
   next_queue();
 }
 
@@ -702,12 +702,12 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
   }
 
   request_number++;
-  // printk(KERN_INFO "hddsuperdrive: request %lld\n", request_number);  //debug
+  // printk(KERN_INFO "oscdriver: request %lld\n", request_number);  //debug
 
   blk_mq_start_request(req);
   ktime_get_real_ts64(&tv1);
 
-  // printk(KERN_NOTICE "hddsuperdrive: request pos=%ld cur=%d sec=%d \n", blk_rq_pos(req), blk_rq_cur_sectors(req), blk_rq_sectors(req));  //debug
+  // printk(KERN_NOTICE "oscdriver: request pos=%ld cur=%d sec=%d \n", blk_rq_pos(req), blk_rq_cur_sectors(req), blk_rq_sectors(req));  //debug
 
   rq_for_each_segment(bvec, req, iter)
   {
@@ -715,7 +715,7 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
 
     void *b_buf = page_address(bvec.bv_page) + bvec.bv_offset;
 
-    // printk(KERN_NOTICE "hddsuperdrive: pos=%lld s_len=%ld sect=%lld\n", pos, s_len, sect);  //debug
+    // printk(KERN_NOTICE "oscdriver: pos=%lld s_len=%ld sect=%lld\n", pos, s_len, sect);  //debug
     ret = data_transfer(&data_device, pos, s_len, sect, b_buf, rq_data_dir(req), blockio);
     if (ret)
     {
@@ -736,7 +736,7 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
     {
       stop_signal = 1;
       write_ctrl_data(CTRL_STOP_SIGNAL, 1);
-      printk(KERN_NOTICE "hddsuperdrive: request timeout, stop request\n");
+      printk(KERN_NOTICE "oscdriver: request timeout, stop request\n");
     }
   }
   if (fail)
@@ -844,7 +844,7 @@ static void set_sense_buffer(const int transferred, struct sg_io_hdr *sgio_obj)
   sbuf[13] = ascq;
   if (copy_to_user(sgio_obj->sbp, sbuf, real_len))
   {
-    printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
   }
 }
 
@@ -926,7 +926,7 @@ static void set_sense_buffer_v4(const int transferred, struct sg_io_v4 *sgio4_ob
   sbuf[13] = ascq;
   if (copy_to_user((void *)(uintptr_t)sgio4_obj->response, sbuf, real_len))
   {
-    printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
   }
 }
 
@@ -949,7 +949,7 @@ static int process_inquiry(const unsigned char *cdb, unsigned char *buffer, cons
   // strncpy (ibuf + 36, data_device.device_name, 8);
   if (copy_to_user(buffer, ibuf, real_len))
   {
-    printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
   }
   return real_len;
 }
@@ -980,7 +980,7 @@ static int process_readcapacity10(const unsigned char *cdb, unsigned char *buffe
   }
   if (copy_to_user(buffer, cbuf, real_len))
   {
-    printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
   }
   return real_len;
 }
@@ -1013,7 +1013,7 @@ static int process_readcapacity16(const unsigned char *cdb, unsigned char *buffe
   cbuf[11] = data_device.block_size;
   if (copy_to_user(buffer, cbuf, real_len))
   {
-    printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
   }
   return real_len;
 }
@@ -1120,20 +1120,20 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     sgio4_obj = kmalloc(sizeof(struct sg_io_v4), GFP_KERNEL);
     if (copy_from_user(sgio_obj, (void *)arg, sizeof(struct sg_io_hdr)))
     {
-      printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+      printk(KERN_WARNING "oscdriver: failed to copy user data\n");
     }
     // SG_IO v4
     if (sgio_obj->interface_id == 'Q')
     {
       if (copy_from_user(sgio4_obj, (void *)arg, sizeof(struct sg_io_v4)))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
       // printk(KERN_INFO "hddsc_block_device interface_id %c\n", sgio4_obj->guard);    //debug
       // printk(KERN_INFO "hddsc_block_device cmd_len %d\n", sgio4_obj->request_len);    //debug
       if (copy_from_user(cdb, (const void *)(uintptr_t)sgio4_obj->request, sgio4_obj->request_len))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
       if (0)
       {
@@ -1198,13 +1198,13 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       }
       else
       {
-        printk(KERN_INFO "hddsuperdrive: unsupported SCSI command 0x%02x\n", cdb[0]);
+        printk(KERN_INFO "oscdriver: unsupported SCSI command 0x%02x\n", cdb[0]);
         set_sense_buffer_v4(-EINVAL, sgio4_obj);
       }
 
       if (copy_to_user((void *)arg, sgio4_obj, sizeof(struct sg_io_v4)))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
     }
     // SG_IO v3
@@ -1214,7 +1214,7 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       // printk(KERN_INFO "hddsc_block_device cmd_len %d\n", sgio_obj->cmd_len);    //debug
       if (copy_from_user(cdb, sgio_obj->cmdp, sgio_obj->cmd_len))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
       if (0)
       {
@@ -1278,19 +1278,19 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       }
       else
       {
-        printk(KERN_INFO "hddsuperdrive: unsupported SCSI command 0x%02x\n", cdb[0]);
+        printk(KERN_INFO "oscdriver: unsupported SCSI command 0x%02x\n", cdb[0]);
         set_sense_buffer(-EINVAL, sgio_obj);
       }
 
       if (copy_to_user((void *)arg, sgio_obj, sizeof(struct sg_io_hdr)))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
     }
     // SG_IO bad version
     else
     {
-      printk(KERN_INFO "hddsuperdrive: ioctl invalid SG_IO version %c\n", sgio_obj->interface_id);
+      printk(KERN_INFO "oscdriver: ioctl invalid SG_IO version %c\n", sgio_obj->interface_id);
       kfree(sgio_obj);
       kfree(sgio4_obj);
       next_queue();
@@ -1300,7 +1300,7 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     next_queue();
     return return_value;
   }
-  printk(KERN_INFO "hddsuperdrive: unsupported ioctl command 0x%04x\n", cmd); // debug???
+  printk(KERN_INFO "oscdriver: unsupported ioctl command 0x%04x\n", cmd); // debug???
   return -ENOIOCTLCMD;
 }
 
@@ -1344,7 +1344,7 @@ static int device_open(struct inode *inode, struct file *file)
   // printk(KERN_INFO "hddsc_device_open\n");    //debug
   if (device_is_open)
   {
-    printk(KERN_INFO "hddsuperdrive: device already open\n");
+    printk(KERN_INFO "oscdriver: device already open\n");
     return -EBUSY;
   }
   device_is_open = 1;
@@ -1356,7 +1356,7 @@ static int device_release(struct inode *inode, struct file *file)
   // printk(KERN_INFO "hddsc_device_release\n");    //debug
   if (!device_is_open)
   {
-    printk(KERN_INFO "hddsuperdrive: device was not open\n");
+    printk(KERN_INFO "oscdriver: device was not open\n");
   }
   device_is_open = 0;
   return 0;
@@ -1395,7 +1395,7 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t size, 
   long long position = 0;
   if (operation_in_progress)
   {
-    printk(KERN_INFO "hddsuperdrive: attempted operation while in use\n");
+    printk(KERN_INFO "oscdriver: attempted operation while in use\n");
     return -EBUSY;
   }
   sectors = size / KERNEL_SECTOR_SIZE;
@@ -1420,7 +1420,7 @@ static ssize_t device_write(struct file *file, const char __user *buffer, size_t
   long long position = 0;
   if (operation_in_progress)
   {
-    printk(KERN_INFO "hddsuperdrive: attempted operation while in use\n");
+    printk(KERN_INFO "oscdriver: attempted operation while in use\n");
     return -EBUSY;
   }
   sectors = size / KERNEL_SECTOR_SIZE;
@@ -1468,7 +1468,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
     if (copy_from_user(control_obj, (void *)arg, sizeof(struct control_data)))
     {
-      printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+      printk(KERN_WARNING "oscdriver: failed to copy user data\n");
     }
 
     if (control_obj->command == START_DRIVE_COMMAND)
@@ -1518,7 +1518,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
       if (blk_mq_alloc_tag_set(&data_device.tag_set))
       {
-        printk(KERN_WARNING "hddsuperdrive: unable to allocate tag set\n");
+        printk(KERN_WARNING "oscdriver: unable to allocate tag set\n");
         goto out;
       }
 
@@ -1526,7 +1526,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_queue = blk_mq_init_queue(&data_device.tag_set);
       if (IS_ERR(data_queue))
       {
-        printk(KERN_WARNING "hddsuperdrive: Failed to allocate queue\n");
+        printk(KERN_WARNING "oscdriver: Failed to allocate queue\n");
         goto out;
       }
 #endif
@@ -1539,7 +1539,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_major_num = register_blkdev(data_major_num, data_device.device_name);
       if (data_major_num < 0)
       {
-        printk(KERN_WARNING "hddsuperdrive: unable to get major number\n");
+        printk(KERN_WARNING "oscdriver: unable to get major number\n");
         data_major_num = 0;
         goto out;
       }
@@ -1567,7 +1567,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       strcpy(data_device.gd->disk_name, data_device.device_name);
       set_capacity(data_device.gd, (data_device.size / KERNEL_SECTOR_SIZE));
       if (add_disk(data_device.gd)) {
-        printk(KERN_WARNING "hddsuperdrive: unable to register disk\n");
+        printk(KERN_WARNING "oscdriver: unable to register disk\n");
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 14, 0)
         blk_cleanup_queue(data_device.gd->queue);
 #elif LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
@@ -1638,7 +1638,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
       if (data_major_num < 0)
       {
-        printk(KERN_ALERT "hddsuperdrive: Registering char device failed with %d\n", data_major_num);
+        printk(KERN_ALERT "oscdriver: Registering char device failed with %d\n", data_major_num);
         return data_major_num;
       }
 
@@ -1693,7 +1693,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       mapbuffer = NULL;
       if (copy_to_user((void *)arg, control_obj, sizeof(struct control_data)))
       {
-        printk(KERN_WARNING "hddsuperdrive: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
       kfree(control_obj);
       return 0;
@@ -2008,7 +2008,7 @@ static const struct file_operations ioctl_fops = {
 
 static int __init initialize_driver(void)
 {
-  printk(KERN_INFO "hddsuperdrive version %s\n", DRIVER_VERSION);
+  printk(KERN_INFO "oscdriver version %s\n", DRIVER_VERSION);
   main_buffer = NULL;
   transfer_buffer = NULL;
   main_data_buffer = NULL;
