@@ -11,16 +11,16 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# OpenSuperClone version 2.4
+# OpenSuperClone version 2.5
 project(OpenSuperClone
-        VERSION 2.4.1
+        VERSION 2.5
         DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C
 )
 
-# OSCDriver version 2.6.1
-set(OSC_DRIVER_VERSION 2.6.1 CACHE STRING "OSCDriver Version")
+# OSCDriver version 2.6.2
+set(OSC_DRIVER_VERSION 2.6.2 CACHE STRING "OSCDriver Version")
 
 set(OSC_DRIVER_IOCTL_NAME "oscdriverc" CACHE STRING "OSCDriver IOCTL Name")
 set(OSC_DRIVER_MMAP_NAME "oscdrivermap_m" CACHE STRING "OSCDriver MMAP Name")

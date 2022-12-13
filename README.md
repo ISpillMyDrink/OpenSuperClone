@@ -74,6 +74,7 @@ $ ./Release/bin/oscviewer
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
+* OSCDriver 2.6.2: add support for kernel 5.19.2 and 6.0.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
 
 #### OpenSuperClone 2.4.1
 
@@ -85,7 +86,7 @@ $ ./Release/bin/oscviewer
 * Implemented CMake as build system
 * Switched from GTK2 to GTK3
 * Replaced localization system with gettext
-* Updated kernel driver to work on 5.15
+* OSCDriver 2.6.1: add suport for kernel 5.15 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * Minor improvements to OSCViewer (color picker, minor graphical changes)
 
 ## 💵 Credits
