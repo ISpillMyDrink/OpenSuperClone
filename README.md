@@ -74,7 +74,7 @@ $ ./Release/bin/oscviewer
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.2: add support for kernel 5.19.2 and 6.0.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
+* OSCDriver 2.6.2: add support for kernel 5.19.12 and 6.0.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
 
 #### OpenSuperClone 2.4.1
 
