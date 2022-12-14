@@ -434,7 +434,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   // set status buttons tooltips
   gtk_widget_set_tooltip_text(button_bsy_ccc, _("Busy (The device is busy)"));
-  gtk_widget_set_tooltip_text(button_drdy_ccc, _("Device Ready (The device is ready to accept commands))"));
+  gtk_widget_set_tooltip_text(button_drdy_ccc, _("Device Ready (The device is ready to accept commands)"));
   gtk_widget_set_tooltip_text(button_df_ccc, _("Device Fault (The device has detected a fault)"));
   gtk_widget_set_tooltip_text(button_dsc_ccc, _("Device Seek Complete (Head is settled on the track)"));
   gtk_widget_set_tooltip_text(button_drq_ccc, _("Data Request (The device is ready to transfer data)"));
@@ -2757,6 +2757,7 @@ void open_clone_settings_dialog_ccc(void)
   gtk_button_set_label(GTK_BUTTON(rebuild_assist_check_button_ccc), _("Rebuild Assist"));
   gtk_button_set_label(GTK_BUTTON(reverse_check_button_ccc), _("Reverse"));
   gtk_button_set_label(GTK_BUTTON(skipfast_check_button_ccc), _("Skip Fast"));
+
   gtk_label_set_text(GTK_LABEL(retries_button_label_ccc), _("Retries"));
   gtk_label_set_text(GTK_LABEL(clustersize_button_label_ccc), _("Cluster Size (LBA)"));
   gtk_label_set_text(GTK_LABEL(inputoffset_button_label_ccc), _("Input Offset (LBA)"));
@@ -2771,6 +2772,36 @@ void open_clone_settings_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(sectorsize_button_label_ccc), _("Sector size (bytes)"));
   gtk_label_set_text(GTK_LABEL(alignment_button_label_ccc), _("Alignment offset (LBA)"));
   gtk_label_set_text(GTK_LABEL(maxreadrate_button_label_ccc), _("Max read rate (kB/s)"));
+
+  gtk_widget_set_tooltip_text(phase_control_label_ccc, _("Select the phases to be used for the clone operation"));
+  gtk_widget_set_tooltip_text(phase1_check_button_ccc, _("Enable Phase 1 (copy pass forward with skipping based on read errors)"));
+  gtk_widget_set_tooltip_text(phase2_check_button_ccc, _("Enable Phase 2 (copy pass backward with skipping based on read errors)"));
+  gtk_widget_set_tooltip_text(phase3_check_button_ccc, _("Enable Phase 3 (copy pass forward with skipping based on read speed)"));
+  gtk_widget_set_tooltip_text(phase4_check_button_ccc, _("Enable Phase 4 (copy pass forward without skipping)"));
+  gtk_widget_set_tooltip_text(divide_check_button_ccc, _("Enable Dividing (divide non-trimmed blocks into smaller blocks)"));
+  gtk_widget_set_tooltip_text(divide2_check_button_ccc, _("Perform two dividing passes instead of one"));
+  gtk_widget_set_tooltip_text(trim_check_button_ccc, _("Enable Trimming (read non-trimmed blocks one sector at a time forwards and backwards)"));
+  gtk_widget_set_tooltip_text(scrape_check_button_ccc, _("Enable Scrape (read non-scraped blocks one sector at a time forwards)"));
+  gtk_widget_set_tooltip_text(markbad_check_button_ccc, _("Enable Mark Bad Head (uses the skipping information during phases 1-2 to mark what is considered a bad head)"));
+  gtk_widget_set_tooltip_text(readbad_check_button_ccc, _("Enable Read Bad Head (read sectors from heads marked as bad)"));
+  gtk_widget_set_tooltip_text(rebuild_assist_check_button_ccc, _("Enable Rebuild Assist (use the Rebuild Assist phase instead of phase 1)"));
+  gtk_widget_set_tooltip_text(reverse_check_button_ccc, _("Enable Reverse (reverse the direction of all passes)"));
+  gtk_widget_set_tooltip_text(skipfast_check_button_ccc, _("Enable Skip Fast (use a more aggressive skipping algorithm)"));
+
+  gtk_widget_set_tooltip_text(retries_button_label_ccc, _("Number of retry passes to perform"));
+  gtk_widget_set_tooltip_text(clustersize_button_label_ccc, _("Number of sectors per read block in phases 1-4"));
+  gtk_widget_set_tooltip_text(inputoffset_button_label_ccc, _("Number of sectors to skip at the beginning"));
+  gtk_widget_set_tooltip_text(size_button_label_ccc, _("Number of sectors to copy"));
+  gtk_widget_set_tooltip_text(blocksize_button_label_ccc, _("Number of logical sectors per physical sector. All reads will be aligned to this value."));
+  gtk_widget_set_tooltip_text(skipsize_button_label_ccc, _("Number of sectors to skip in LBAs during phases 1-3. This number can grow during phases 1-2 to adjust to the head skipping algorithm."));
+  gtk_widget_set_tooltip_text(maxskipsize_button_label_ccc, _("Maximum number of sectors to skip in LBAs during phases 1-2. The default is calculated as drive size / 1000 or 1GB, whichever is smaller."));
+  gtk_widget_set_tooltip_text(skipthreshold_button_label_ccc, _("Number of milliseconds to wait for a read before triggering a skip in phases 1-2"));
+  gtk_widget_set_tooltip_text(rateskip_button_label_ccc, _("Lowest read rate in kB/s before triggering a skip in phase 3"));
+  gtk_widget_set_tooltip_text(exitonslow_button_label_ccc, _("Lowest read rate in kB/s before triggering an exit in phases 1-2"));
+  gtk_widget_set_tooltip_text(exitonslowtime_button_label_ccc, _("Number of seconds to wait for a slow read before triggering an exit in phases 1-2"));
+  gtk_widget_set_tooltip_text(sectorsize_button_label_ccc, _("Number of bytes per sector. This value will be detected automatically when choosing a source."));
+  gtk_widget_set_tooltip_text(alignment_button_label_ccc, _("Number of logical sectors to align the source to. This value will be detected automatically when choosing a source."));
+  gtk_widget_set_tooltip_text(maxreadrate_button_label_ccc, _("Limit for the maximum read rate in kB/s"));
 
   g_signal_connect(G_OBJECT(phase1_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASE1));
   g_signal_connect(G_OBJECT(phase2_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASE2));
