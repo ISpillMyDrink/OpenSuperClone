@@ -275,7 +275,7 @@ static int wait_for_queue(const int current_queue)
     printk(KERN_NOTICE "oscdriver: too many requests, queue full\n");
     return -EBUSY;
   }
-  // printk(KERN_INFO "hddsc wait_for_queue %d %d %d\n", current_queue, working_queue, queue_count);    //debug
+  // printk(KERN_INFO "osc wait_for_queue %d %d %d\n", current_queue, working_queue, queue_count);    //debug
   if (current_queue != working_queue)
   {
     printk(KERN_INFO "oscdriver: queue wait %d %d %d\n", current_queue, working_queue, queue_count);
@@ -1079,26 +1079,26 @@ static int process_read16(const unsigned char *cdb, unsigned char *buffer, const
 
 static int block_device_open(struct block_device *block_device, fmode_t mode)
 {
-  // printk(KERN_INFO "hddsc_block_device_open mode %d\n", mode);    //debug
+  // printk(KERN_INFO "osc_block_device_open mode %d\n", mode);    //debug
   return 0;
 }
 
 static void block_device_release(struct gendisk *gendisk, fmode_t mode)
 {
-  // printk(KERN_INFO "hddsc_block_device_release mode %d\n", mode);    //debug
+  // printk(KERN_INFO "osc_block_device_release mode %d\n", mode);    //debug
 }
 
 static int block_device_ioctl(struct block_device *block_device, fmode_t mode, unsigned cmd, unsigned long arg)
 {
   int ret = 0;
   int return_value = 0;
-  // printk(KERN_INFO "hddsc_block_device_ioctl mode %d cmd %x arg %lx\n", mode, cmd, arg);    //debug
+  // printk(KERN_INFO "osc_block_device_ioctl mode %d cmd %x arg %lx\n", mode, cmd, arg);    //debug
 
   if (cmd == SG_GET_VERSION_NUM)
   {
     void __user *p = (void __user *)arg;
     int __user *ip = p;
-    // printk(KERN_INFO "hddsc_block_device ioctl SG_GET_VERSION_NUM request\n");    //debug
+    // printk(KERN_INFO "osc_block_device ioctl SG_GET_VERSION_NUM request\n");    //debug
     return put_user(sg_version_num, ip);
   }
 
@@ -1115,7 +1115,7 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       return ret;
     }
 
-    // printk(KERN_INFO "hddsc_block_device ioctl SG_IO request\n");    //debug
+    // printk(KERN_INFO "osc_block_device ioctl SG_IO request\n");    //debug
     sgio_obj = kmalloc(sizeof(struct sg_io_hdr), GFP_KERNEL);
     sgio4_obj = kmalloc(sizeof(struct sg_io_v4), GFP_KERNEL);
     if (copy_from_user(sgio_obj, (void *)arg, sizeof(struct sg_io_hdr)))
@@ -1129,8 +1129,8 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
       }
-      // printk(KERN_INFO "hddsc_block_device interface_id %c\n", sgio4_obj->guard);    //debug
-      // printk(KERN_INFO "hddsc_block_device cmd_len %d\n", sgio4_obj->request_len);    //debug
+      // printk(KERN_INFO "osc_block_device interface_id %c\n", sgio4_obj->guard);    //debug
+      // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio4_obj->request_len);    //debug
       if (copy_from_user(cdb, (const void *)(uintptr_t)sgio4_obj->request, sgio4_obj->request_len))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
@@ -1139,29 +1139,29 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       {
         if (sgio4_obj->request_len == 6)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5]); // debug
         }
         else if (sgio4_obj->request_len == 10)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
         }
         else if (sgio4_obj->request_len == 12)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
         }
         else
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
         }
       }
-      // printk(KERN_INFO "hddsc_block_device din_xfer_len %d\n", sgio4_obj->din_xfer_len);    //debug
-      // printk(KERN_INFO "hddsc_block_device dout_xfer_len %d\n", sgio4_obj->dout_xfer_len);    //debug
-      // printk(KERN_INFO "hddsc_block_device max_response_len %d\n", sgio4_obj->max_response_len);    //debug
-      // printk(KERN_INFO "hddsc_block_device timeout %d\n", sgio4_obj->timeout);    //debug
-      // printk(KERN_INFO "hddsc_block_device flags 0x%x\n", sgio4_obj->flags);    //debug
-      // printk(KERN_INFO "hddsc_block_device din_iovec_count %d\n", sgio4_obj->din_iovec_count);    //debug
-      // printk(KERN_INFO "hddsc_block_device dout_iovec_count %d\n", sgio4_obj->dout_iovec_count);    //debug
-      // printk(KERN_INFO "hddsc_block_device %d\n", sgio4_obj->);    //debug
+      // printk(KERN_INFO "osc_block_device din_xfer_len %d\n", sgio4_obj->din_xfer_len);    //debug
+      // printk(KERN_INFO "osc_block_device dout_xfer_len %d\n", sgio4_obj->dout_xfer_len);    //debug
+      // printk(KERN_INFO "osc_block_device max_response_len %d\n", sgio4_obj->max_response_len);    //debug
+      // printk(KERN_INFO "osc_block_device timeout %d\n", sgio4_obj->timeout);    //debug
+      // printk(KERN_INFO "osc_block_device flags 0x%x\n", sgio4_obj->flags);    //debug
+      // printk(KERN_INFO "osc_block_device din_iovec_count %d\n", sgio4_obj->din_iovec_count);    //debug
+      // printk(KERN_INFO "osc_block_device dout_iovec_count %d\n", sgio4_obj->dout_iovec_count);    //debug
+      // printk(KERN_INFO "osc_block_device %d\n", sgio4_obj->);    //debug
 
       if (cdb[0] == SCSI_INQUIRY)
       {
@@ -1210,8 +1210,8 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     // SG_IO v3
     else if (sgio_obj->interface_id == 'S')
     {
-      // printk(KERN_INFO "hddsc_block_device interface_id %c\n", sgio_obj->interface_id);    //debug
-      // printk(KERN_INFO "hddsc_block_device cmd_len %d\n", sgio_obj->cmd_len);    //debug
+      // printk(KERN_INFO "osc_block_device interface_id %c\n", sgio_obj->interface_id);    //debug
+      // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio_obj->cmd_len);    //debug
       if (copy_from_user(cdb, sgio_obj->cmdp, sgio_obj->cmd_len))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
@@ -1220,28 +1220,28 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       {
         if (sgio_obj->cmd_len == 6)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5]); // debug
         }
         else if (sgio_obj->cmd_len == 10)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
         }
         else if (sgio_obj->cmd_len == 12)
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
         }
         else
         {
-          printk(KERN_INFO "hddsc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
         }
       }
-      // printk(KERN_INFO "hddsc_block_device dxfer_direction %d\n", sgio_obj->dxfer_direction);    //debug
-      // printk(KERN_INFO "hddsc_block_device dxfer_len %d\n", sgio_obj->dxfer_len);    //debug
-      // printk(KERN_INFO "hddsc_block_device mx_sb_len %d\n", sgio_obj->mx_sb_len);    //debug
-      // printk(KERN_INFO "hddsc_block_device timeout %d\n", sgio_obj->timeout);    //debug
-      // printk(KERN_INFO "hddsc_block_device flags 0x%x\n", sgio_obj->flags);    //debug
-      // printk(KERN_INFO "hddsc_block_device iovec_count %d\n", sgio_obj->iovec_count);    //debug
-      // printk(KERN_INFO "hddsc_block_device %d\n", sgio_obj->);    //debug
+      // printk(KERN_INFO "osc_block_device dxfer_direction %d\n", sgio_obj->dxfer_direction);    //debug
+      // printk(KERN_INFO "osc_block_device dxfer_len %d\n", sgio_obj->dxfer_len);    //debug
+      // printk(KERN_INFO "osc_block_device mx_sb_len %d\n", sgio_obj->mx_sb_len);    //debug
+      // printk(KERN_INFO "osc_block_device timeout %d\n", sgio_obj->timeout);    //debug
+      // printk(KERN_INFO "osc_block_device flags 0x%x\n", sgio_obj->flags);    //debug
+      // printk(KERN_INFO "osc_block_device iovec_count %d\n", sgio_obj->iovec_count);    //debug
+      // printk(KERN_INFO "osc_block_device %d\n", sgio_obj->);    //debug
 
       if (cdb[0] == SCSI_INQUIRY)
       {
