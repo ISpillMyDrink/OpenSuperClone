@@ -1684,9 +1684,9 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       // long long busmap;
       // physmap = phys_to_virt(control_obj->read_timeout);
       // busmap = bus_to_virt(control_obj->read_timeout);
-      printk(KERN_INFO "hddsuperdebug: memory location %llx size %llx\n", control_obj->read_timeout, control_obj->request_timeout); // debug
-      // printk(KERN_INFO "hddsuperdebug: physmap %llx\n", physmap);    //debug
-      // printk(KERN_INFO "hddsuperdebug: busmap %llx\n", busmap);    //debug
+      // printk(KERN_INFO "oscdriver: memory location %llx size %llx\n", control_obj->read_timeout, control_obj->request_timeout); // debug
+      // printk(KERN_INFO "oscdriver: physmap %llx\n", physmap);    //debug
+      // printk(KERN_INFO "oscdriver: busmap %llx\n", busmap);    //debug
       mapbuffer = phys_to_virt(control_obj->read_timeout);
       // mapbuffer = bus_to_virt(control_obj->read_timeout);
       memcpy(control_obj->buffer, mapbuffer, control_obj->request_timeout);

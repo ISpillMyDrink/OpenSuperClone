@@ -37,6 +37,10 @@ if [ -d /usr/share/locale ]; then
     done
 fi
 
+echo "Done uninstalling OpenSuperClone from /usr/..."
+
+echo "Uninstalling OSCDriver..."
+
 sudo rmmod oscdriver
 
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' CMakeLists.txt)
@@ -46,5 +50,7 @@ sudo dkms remove -m oscdriver/$VERSION --all
 if [ -d /usr/src/oscdriver-$VERSION ]; then
     sudo rm -rf /usr/src/oscdriver-$VERSION
 fi
+
+echo "Done uninstalling OSCDriver."
 
 echo "Done."

@@ -3,6 +3,7 @@
 [ ! -d build ] && mkdir build
 
 echo "Configuring..."
+
 cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
 
 if [ $? -ne 0 ]; then

@@ -176,7 +176,7 @@ int main(int argc, char **argv)
   driver_io_scsi_only_ccc = false;
   no_io_error_ccc = 0;
   aggressive_driver_ccc = true;
-  charater_device_driver_mode_ccc = false; // TODO make this an option normally false
+  charater_device_driver_mode_ccc = false;
   color_statusbar_ccc = false;
   running_analyze_ccc = 0;
   drive_locked_ccc = false;
@@ -1581,7 +1581,7 @@ int set_main_usb_buffer_ccc(void)
   {
     if (superclone_ccc)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "ERROR: Maximum USB buffer size exceeded.\n"); // TODO make a language entry for this
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("ERROR: Maximum USB buffer size exceeded.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();

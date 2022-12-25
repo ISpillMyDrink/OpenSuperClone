@@ -1414,7 +1414,6 @@ void choose_source_ccc(void)
     if (result == GTK_RESPONSE_ACCEPT)
     {
       // fprintf (stdout, "OK\n");
-      //  TODO it crashes here on scsi devices - fixed
 
       // disable the window while it is processing the source
       gtk_widget_set_sensitive(GTK_WIDGET(main_window_ccc), FALSE);
