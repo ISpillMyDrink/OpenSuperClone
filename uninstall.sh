@@ -37,6 +37,8 @@ if [ -d /usr/share/locale ]; then
     done
 fi
 
+sudo rmmod oscdriver
+
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' CMakeLists.txt)
 
 sudo dkms remove -m oscdriver/$VERSION --all

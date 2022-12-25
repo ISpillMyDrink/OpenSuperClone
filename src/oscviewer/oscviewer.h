@@ -396,9 +396,3 @@ void set_color(GtkWidget *widget, gpointer data);
 void read_config_file(void);
 
 void write_config_file(void);
-
-struct MemoryStruct
-{
-    char *memory;
-    size_t size;
-};

@@ -45,6 +45,7 @@ sudo dkms add -m oscdriver/$VERSION
 
 if [ $? -ne 0 ]; then
     echo "Failed to add OSCDriver to DKMS."
+    exit 1
 else
     echo "Added OSCDriver to DKMS."
 fi
@@ -54,6 +55,7 @@ sudo dkms build -m oscdriver -v $VERSION
 
 if [ $? -ne 0 ]; then
     echo "Failed to build OSCDriver."
+    exit 1
 else
     echo "Built OSCDriver."
 fi
@@ -63,28 +65,9 @@ sudo dkms install -m oscdriver -v $VERSION
 
 if [ $? -ne 0 ]; then
     echo "Failed to install OSCDriver."
+    exit 1
 else
     echo "Installed OSCDriver."
-fi
-
-echo "Loading OSCDriver..."
-sudo modprobe oscdriver
-
-if [ $? -ne 0 ]; then
-    echo "Failed to load OSCDriver."
-    exit 1
-else
-    echo "Loaded OSCDriver."
-fi
-
-echo "Disabling OSCDriver from loading on boot..."
-sudo sh -c 'echo "blacklist oscdriver" > /etc/modprobe.d/oscdriver.conf'
-
-if [ $? -ne 0 ]; then
-    echo "Failed to disable OSCDriver from loading on boot."
-    exit 1
-else
-    echo "Disabled OSCDriver from loading on boot."
 fi
 
 echo "Done."

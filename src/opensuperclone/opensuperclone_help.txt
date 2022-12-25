@@ -16,6 +16,6 @@ The following options are for CLI mode only
  -f, --file <file>             Script file to load and run
  -i, --indent <spaces>         Perform indentation adjustment on the script
  -t, --target <disk>           Disk to use for passthrough mode
-     --ata                     List drives via ata-passthrough (default)
-     --scsi                    List drives via scsi-passthrough
- -Q, --quiet                   Surpress some of the output
+     --ata                     List drives via ATA-passthrough (default)
+     --scsi                    List drives via SCSI-passthrough
+ -Q, --quiet                   Suppress some of the output

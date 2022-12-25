@@ -2932,6 +2932,41 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(virtual_disk_device_name_label_ccc), _("Virtual Disk device name"));
   gtk_button_set_label(GTK_BUTTON(use_color_statusbar_checkbutton_ccc), _("Use button colors in bottom status bar"));
 
+  gtk_widget_set_tooltip_text(GTK_WIDGET(no_log_backup_checkbutton_ccc), _("If checked, no log backups will be created when writing to the progess log (not recommended)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(force_mounted_checkbutton_ccc), _("Force working with the source even when it is mounted (not recommended)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(force_dangerous_checkbutton_ccc), _("Force working with the source even if it is detected that there is another drive on the same controller (not recommended)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_offset_checkbutton_ccc), _("Enable output offset adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(output_offset_button_label_ccc), _("Offset in LBAs to start writing to the destination (default -1 follows input offset)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_current_position_checkbutton_ccc), _("Enable current position adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(current_position_button_label_ccc), _("Current position in the recovery (it is not recommended to change this)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(action_on_error_label_ccc), _("A major driver error is something other than a typical read error. The Exit or Slow condition is considered a major error."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(stop_on_error_radio_button_ccc), _("Stop cloning and show an error message indicating the fault"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(call_command_radio_button_ccc), _("Call the specified command and continue cloning. If the command returns an error, the clone will be stopped."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(test_command_button_ccc), _("Test the specified command"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(primary_relay_on_error_radio_button_ccc), _("Activate the primary relay board and continue cloning"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_disable_radio_button_ccc), _("Disable the OS write buffer for writes to the destination. Safer in case of power loss, but slower."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_enable_radio_button_ccc), _("Enable the OS write buffer for writes to the destination. Faster, but may cause corruption in case of power loss."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_label_ccc), _("Enable or disable the OS write buffer for writes to the destination. Disabling it is safer in case of power loss, but slower."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(disable_identify_checkbutton_ccc), _("Disable the identify device command when listing source drives in Direct AHCI and IDE modes. This is to prevent a system lockup or error when listing possible source drives."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(pio_mode_checkbutton_ccc), _("Use PIO instead of DMA for reading the source drive."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_rebuild_assist_checkbutton_ccc), _("Enable Rebuild Assist. The Rebuild Assist selection in the Clone settings will have no effect if this is not checked."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_process_chunk_checkbutton_ccc), _("When a bad cluster is read in Passthrough ATA or Direct modes, the ATA return data can include the LBA of the first reported bad sector for the read. When this option is selected, data up to that LBA will be read, the problem sector marked as Bad, and the rest of the chunk marked as Non-Trimmed."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_read_twice_checkbutton_ccc), _("When enabled and the soft reset timeout is exceeded when reading, after the reset a second read attempt will be performed. The second read attempt will use the Retry reset time as the soft reset time for the this second read attempt."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_retry_connecting_checkbutton_ccc), _("If the device fails to identify after a relay power cycle, enabling this option will cause a second attempt to disconnect and reconnect the device."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_scsi_write_checkbutton_ccc), _("If the destination drive sector size is not a multiple of 512, you must enable this to be able to write to the drive."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_phase_log_checkbutton_ccc), _("When enabled a log with a time and phase stamp in the name will be created at the end of every phase."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_sector_size_checkbutton_ccc), _("Enable output sector size adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(output_sector_size_button_label_ccc), _("Output sector adjustment in bytes (relative to the source sector size)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_io_scsi_only_checkbutton_ccc), _("Only use IO SCSI for reading the virtual disk. Normal block reads will return all zeros when this is enabled."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(use_physical_sector_size_for_virtual_checkbutton_ccc), _("This will use the physical sector size as the logical sector size when presenting the virtual disk to the operating system. The physical size is determined by the Block size setting in the Clone Settings."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_error_radio_button_ccc), _("Read errors will return with a standard I/O error."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_zeros_radio_button_ccc), _("Read errors will return zero filled data."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_marked_radio_button_ccc), _("Read errors will return with mark filled data."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_error_options_label_ccc), _("Options for how the virtual disk handles read errors as presented by the recovery."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_minimum_cluster_size_button_label_ccc), _("When in virtual mode 3, this will be the minimum cluster read size. When cloning using a domain, this will also be the minimum cluster read size, so that small domain reads can be prevented if desired."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(virtual_disk_device_name_label_ccc), _("The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). Note that if you choose a name that is already in use, it will cause a system crash. Also, you should choose a conventional name with the SDx format, or some software will not find or list it."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(use_color_statusbar_checkbutton_ccc), _("This option will turn on using colors on the bottom status bar (may not work on some systems)."));
+
   if (!advanced_settings_ccc.enable_output_offset)
   {
     gtk_widget_set_sensitive(GTK_WIDGET(output_offset_spinbutton_ccc), FALSE);

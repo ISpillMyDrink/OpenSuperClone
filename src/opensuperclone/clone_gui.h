@@ -556,9 +556,3 @@ void get_data_dump_filename_ccc(void);
 void analyze_quick_ccc(void);
 
 void analyze_long_ccc(void);
-
-struct MemoryStruct
-{
-    char *memory;
-    size_t size;
-};
