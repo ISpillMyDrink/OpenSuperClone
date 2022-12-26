@@ -22,10 +22,12 @@ project(OpenSuperClone
 # OSCDriver version 2.6.2
 set(OSC_DRIVER_VERSION 2.6.2 CACHE STRING "OSCDriver Version")
 
-set(OSC_DRIVER_IOCTL_NAME "oscdriverc" CACHE STRING "OSCDriver IOCTL Name")
-set(OSC_DRIVER_MMAP_NAME "oscdrivermap_m" CACHE STRING "OSCDriver MMAP Name")
-set(OSC_DRIVER_MMAPTB_NAME "oscdrivermap_tb" CACHE STRING "OSCDriver MMAPTB Name")
-set(OSC_DRIVER_MMAPMDB_NAME "oscdrivermap_mdb" CACHE STRING "OSCDriver MMAPMDB Name")
+# Warning: Do not change the following variables unless you know what you are doing
+# and never set strings longer than 31 characters
+set(OSC_DRIVER_IOCTL_NAME "oscdriverc" CACHE STRING "OSCDriver IOCTL name, max 31 characters")
+set(OSC_DRIVER_MMAP_NAME "oscdrivermap_m" CACHE STRING "OSCDriver MMAP name, max 31 characters")
+set(OSC_DRIVER_MMAPTB_NAME "oscdrivermap_tb" CACHE STRING "OSCDriver MMAPTB name, max 31 characters")
+set(OSC_DRIVER_MMAPMDB_NAME "oscdrivermap_mdb" CACHE STRING "OSCDriver MMAPMDB name, max 31 characters")
 
 # If the DEBUG option is enabled, set the build type to Debug and add the define DEBUG
 option(DEBUG "Enable Debugging" OFF)
