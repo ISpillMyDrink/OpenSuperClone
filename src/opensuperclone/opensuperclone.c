@@ -1065,7 +1065,7 @@ void install_driver_ccc(void)
 
   if(result != 0)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error loading driver\n"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error loading driver, see the console for more information\n"));
     message_now_ccc(tempmessage_ccc);
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);

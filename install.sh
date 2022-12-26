@@ -38,6 +38,7 @@ else
 fi
 
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' ../CMakeLists.txt)
+VERSION=$(echo $VERSION | cut -d' ' -f1)
 echo "Found OSCDriver version $VERSION."
 
 echo "Adding OSCDriver to DKMS..."

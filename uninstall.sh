@@ -44,6 +44,8 @@ echo "Uninstalling OSCDriver..."
 sudo rmmod oscdriver
 
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' CMakeLists.txt)
+VERSION=$(echo $VERSION | cut -d' ' -f1)
+echo "Assuming OSCDriver version $VERSION."
 
 sudo dkms remove -m oscdriver/$VERSION --all
 
