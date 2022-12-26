@@ -79,15 +79,12 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_CONTACT "ISpillMyDrink")
 set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/package")
 
-set(CPACK_GENERATOR DEB CACHE STRING "CPack Generator")
+set(CPACK_GENERATOR DEB RPM CACHE STRING "CPack Generator")
 
-# A choice has to be made here of either requiring DKMS, effectively making the driver a necessity
-# or not requiring DKMS, meaning the driver won't be installed automatically and the user will have
-# to install it manually, if they want to use the advanced features of OpenSuperClone.
+# Set DEB package variables
 # set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4, dkms")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtk-3-0, libusb-0.1-4")
 set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "dkms")
-
 set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
@@ -96,5 +93,17 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_BINARY_DIR}/postinst;${CMAKE_BINARY_DIR}/prerm"
 )
+
+# Set RPM package variables
+set(CPACK_RPM_PACKAGE_REQUIRES "gtk3, libusb")
+set(CPACK_RPM_PACKAGE_SUGGESTS "dkms")
+set(CPACK_RPM_PACKAGE_RELEASE 1)
+set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
+set(CPACK_RPM_PACKAGE_GROUP "Applications/System")
+set(CPACK_RPM_PACKAGE_LICENSE "GPLv2")
+
+# Add postinst and prerm scripts for OSCDriver
+set(CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_BINARY_DIR}/postinst")
+set(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE "${CMAKE_BINARY_DIR}/prerm")
 
 Include(CPack)
