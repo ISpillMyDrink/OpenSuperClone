@@ -46,6 +46,18 @@
 
 Pre-built DEB and RPM packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
 
+Note that OpenSuperClone requires a kernel module to be installed for the virtual drive functionality and direct AHCI/IDE access. If `DKMS` is present,
+the module will be automatically built and installed. Otherwise, the module can be built and installed manually.
+
+```Bash
+
+# Build and install the kernel module manually
+$ cd /src/OSCDriver-x.x.x
+$ make
+$ sudo make install
+
+```
+
 #### Compiling from Source
 
 💡 OpenSuperClone requires the following packages to be installed for a successful project build:
