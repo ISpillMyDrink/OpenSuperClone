@@ -51,10 +51,16 @@ the module will be automatically built and installed. Otherwise, the module can 
 
 ```Bash
 
-# Build and install the kernel module manually
+# Build and install the kernel module manually (substitute x.x.x with the version number)
 $ cd /src/OSCDriver-x.x.x
 $ make
 $ sudo make install
+
+# Alternatively, build and install the kernel module using DKMS
+# after the package has been installed (requires DKMS to be installed)
+$ sudo dkms add OSCDriver/x.x.x
+$ sudo dkms build OSCDriver/x.x.x
+$ sudo dkms install OSCDriver/x.x.x
 
 ```
 
