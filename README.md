@@ -52,7 +52,7 @@ the module will be automatically built and installed. Otherwise, the module can 
 ```Bash
 
 # Build and install the kernel module manually (substitute x.x.x with the version number)
-$ cd /src/OSCDriver-x.x.x
+$ cd /usr/src/OSCDriver-x.x.x
 $ make
 $ sudo make install
 
