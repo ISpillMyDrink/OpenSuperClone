@@ -41,7 +41,9 @@ echo "Done uninstalling OpenSuperClone from /usr/..."
 
 echo "Uninstalling OSCDriver..."
 
-sudo rmmod oscdriver
+if lsmod | grep -q oscdriver; then
+    sudo rmmod oscdriver
+fi
 
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' CMakeLists.txt)
 VERSION=$(echo $VERSION | cut -d' ' -f1)

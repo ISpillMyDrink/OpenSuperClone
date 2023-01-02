@@ -2,8 +2,18 @@
 
 [ ! -d build ] && mkdir build
 
-echo "Configuring..."
-cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/ $@
+CMAKE_OPTIONS=""
+CMAKE_BUILD_TYPE=Release
+CMAKE_INSTALL_PREFIX=/usr
+
+if [ "$1" = "debug" ]; then
+    CMAKE_OPTIONS="-DDEBUG=ON"
+    CMAKE_BUILD_TYPE=Debug
+    CMAKE_INSTALL_PREFIX=./Debug
+fi
+
+echo "Configuring for $CMAKE_BUILD_TYPE..."
+cmake -S . -B ./build -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX $CMAKE_OPTIONS
 
 if [ $? -ne 0 ]; then
     echo "CMake failed. Aborting."
@@ -27,7 +37,7 @@ else
     echo "Build succeeded."
 fi
 
-echo "Installing OpenSuperClone to /usr/..."
+echo "Installing OpenSuperClone to $CMAKE_INSTALL_PREFIX..."
 sudo make install
 
 if [ $? -ne 0 ]; then

@@ -37,7 +37,7 @@ else
     echo "Build succeeded."
 fi
 
-echo "Installing..."
+echo "Installing OpenSuperClone to $CMAKE_INSTALL_PREFIX..."
 make install
 
 if [ $? -ne 0 ]; then
