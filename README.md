@@ -58,13 +58,11 @@ $ sudo make install
 
 # Alternatively, build and install the kernel module using DKMS
 # after the package has been installed (requires DKMS to be installed)
-$ sudo dkms add OSCDriver/x.x.x
-$ sudo dkms build OSCDriver/x.x.x
 $ sudo dkms install OSCDriver/x.x.x
 
 ```
 
-#### Compiling from Source
+### Compiling from Source
 
 💡 OpenSuperClone requires the following packages to be installed for a successful project build:
 
@@ -76,9 +74,16 @@ $ sudo dkms install OSCDriver/x.x.x
 - `libusb-dev`
 - `pkg-config`
 
+#### Building and running locally
+
 ```Bash
 # Build OpenSuperClone and OSCViewer for Release and install to ./Release
 $ ./build.sh
+
+# If you want to install the kernel module with DKMS, copy the source to the DKMS directory
+# and install the module (substitute x.x.x with the version number)
+sudo cp -r ./Release/src/OSCDriver-x.x.x /usr/src/OSCDriver-x.x.x
+sudo dkms install OSCDriver/x.x.x
 
 # Run OpenSuperClone
 $ sudo ./Release/bin/opensuperclone
@@ -87,12 +92,26 @@ $ sudo ./Release/bin/opensuperclone
 $ ./Release/bin/oscviewer
 ```
 
+#### Building and installing to /usr/
+
+```Bash
+# Build OpenSuperClone and OSCViewer for Release and install to /usr/
+# This will also attempt to install the kernel module if DKMS is installed
+$ ./install.sh
+
+# Run OpenSuperClone
+$ sudo opensuperclone
+
+# Run OSCViewer
+$ oscviewer
+```
+
 ## ✏️ Changelog
 
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.2: add support for kernel 5.19.12 and 6.0.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
+* OSCDriver 2.6.2: add support for kernel 5.19.12 to 6.1.1 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
 
 #### OpenSuperClone 2.4.1
 
@@ -104,7 +123,7 @@ $ ./Release/bin/oscviewer
 * Implemented CMake as build system
 * Switched from GTK2 to GTK3
 * Replaced localization system with gettext
-* OSCDriver 2.6.1: add suport for kernel 5.15 (thanks to <a href="https://github.com/piernov/">piernov</a>)
+* OSCDriver 2.6.1: add suport for kernel 5.15 to 5.19.11 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * Minor improvements to OSCViewer (color picker, minor graphical changes)
 
 ## 💵 Credits
