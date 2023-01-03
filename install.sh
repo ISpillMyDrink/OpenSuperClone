@@ -51,26 +51,6 @@ VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' ../CMakeLists.txt)
 VERSION=$(echo $VERSION | cut -d' ' -f1)
 echo "Found OSCDriver version $VERSION."
 
-echo "Adding OSCDriver to DKMS..."
-sudo dkms add -m oscdriver/$VERSION
-
-if [ $? -ne 0 ]; then
-    echo "Failed to add OSCDriver to DKMS."
-    exit 1
-else
-    echo "Added OSCDriver to DKMS."
-fi
-
-echo "Building OSCDriver..."
-sudo dkms build -m oscdriver -v $VERSION
-
-if [ $? -ne 0 ]; then
-    echo "Failed to build OSCDriver."
-    exit 1
-else
-    echo "Built OSCDriver."
-fi
-
 echo "Installing OSCDriver..."
 sudo dkms install -m oscdriver -v $VERSION
 
