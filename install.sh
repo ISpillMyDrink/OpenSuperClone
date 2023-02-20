@@ -47,6 +47,12 @@ else
     echo "Install succeeded."
 fi
 
+if ! command -v dkms >/dev/null; then
+    echo "WARNING: DKMS is not installed, skipping driver installation."
+    echo "To use the advanced features of OpenSuperClone you will have to install the driver manually."
+    exit 0
+fi
+
 VERSION=$(grep -oP '(?<=set\(OSC_DRIVER_VERSION ).*(?=\))' ../CMakeLists.txt)
 VERSION=$(echo $VERSION | cut -d' ' -f1)
 echo "Found OSCDriver version $VERSION."

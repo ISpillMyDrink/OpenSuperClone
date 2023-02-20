@@ -39,6 +39,12 @@ fi
 
 echo "Done uninstalling OpenSuperClone from /usr/..."
 
+if ! command -v dkms >/dev/null; then
+    echo "WARNING: DKMS is not installed, skipping driver removal."
+    echo "If the driver was installed manually, it will not be removed."
+    exit 0
+fi
+
 echo "Uninstalling OSCDriver..."
 
 if lsmod | grep -q oscdriver; then
