@@ -46,65 +46,7 @@
 
 Pre-built DEB and RPM packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
 
-Note that OpenSuperClone requires a kernel module to be installed for the virtual drive functionality and direct AHCI/IDE access. If `DKMS` is present,
-the module will be automatically built and installed. Otherwise, the module can be built and installed manually.
-
-```Bash
-
-# Build and install the kernel module manually (substitute x.x.x with the version number)
-$ cd /usr/src/OSCDriver-x.x.x
-$ make
-$ sudo make install
-
-# Alternatively, build and install the kernel module using DKMS
-# after the package has been installed (requires DKMS to be installed)
-$ sudo dkms install OSCDriver/x.x.x
-
-```
-
-### Compiling from Source
-
-💡 OpenSuperClone requires the following packages to be installed for a successful project build:
-
-- `cmake`
-- `gcc`
-- `gettext`
-- `libconfig-dev`
-- `libgtk-3-dev`
-- `libusb-dev`
-- `pkg-config`
-
-#### Building and running locally
-
-```Bash
-# Build OpenSuperClone and OSCViewer for Release and install to ./Release
-$ ./build.sh
-
-# If you want to install the kernel module with DKMS, copy the source to the DKMS directory
-# and install the module (substitute x.x.x with the version number)
-sudo cp -r ./Release/src/OSCDriver-x.x.x /usr/src/OSCDriver-x.x.x
-sudo dkms install OSCDriver/x.x.x
-
-# Run OpenSuperClone
-$ sudo ./Release/bin/opensuperclone
-
-# Run OSCViewer
-$ ./Release/bin/oscviewer
-```
-
-#### Building and installing to /usr/
-
-```Bash
-# Build OpenSuperClone and OSCViewer for Release and install to /usr/
-# This will also attempt to install the kernel module if DKMS is installed
-$ ./install.sh
-
-# Run OpenSuperClone
-$ sudo opensuperclone
-
-# Run OSCViewer
-$ oscviewer
-```
+Instructions for installing OpenSuperClone from source can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki">Wiki</a>.
 
 ## ✏️ Changelog
 
