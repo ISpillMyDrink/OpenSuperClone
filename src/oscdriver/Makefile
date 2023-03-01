@@ -1,10 +1,10 @@
 KMOD = oscdriver
 
-KVERSION = $(shell uname -r)
+KERNELRELEASE ?= $(shell uname -r)
 
 obj-m = $(KMOD).o
 MAKE_FLAGS = -C
-KDIR = /lib/modules/$(KVERSION)/build
+KDIR = /lib/modules/$(KERNELRELEASE)/build
 
 IOCTL = oscdriverc
 MMAP_M = oscdrivermap_m
