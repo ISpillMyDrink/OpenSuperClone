@@ -74,25 +74,22 @@ GtkWidget *main_window_ccc;
 GtkWidget *main_vbox_ccc;
 GtkWidget *main_hbox_ccc;
 
-GtkWidget *button_bbk_ccc;
-GtkWidget *button_unc_ccc;
-GtkWidget *button_mc_ccc;
-GtkWidget *button_idnf_ccc;
-GtkWidget *button_mcr_ccc;
-GtkWidget *button_abrt_ccc;
-GtkWidget *button_tk0nf_ccc;
-GtkWidget *button_amnf_ccc;
-GtkWidget *button_bsy_ccc;
-GtkWidget *button_drdy_ccc;
-GtkWidget *button_df_ccc;
-GtkWidget *button_dsc_ccc;
-GtkWidget *button_drq_ccc;
-GtkWidget *button_corr_ccc;
-GtkWidget *button_idx_ccc;
-GtkWidget *button_err_ccc;
-GtkWidget *button_status_separator_ccc;
-
-GdkRGBA button_color_ccc;
+GtkWidget *bsy_status_icon;
+GtkWidget *drdy_status_icon;
+GtkWidget *df_status_icon;
+GtkWidget *dsc_status_icon;
+GtkWidget *drq_status_icon;
+GtkWidget *corr_status_icon;
+GtkWidget *idx_status_icon;
+GtkWidget *err_status_icon;
+GtkWidget *bbk_status_icon;
+GtkWidget *unc_status_icon;
+GtkWidget *mc_status_icon;
+GtkWidget *idnf_status_icon;
+GtkWidget *mcr_status_icon;
+GtkWidget *abrt_status_icon;
+GtkWidget *tk0nf_status_icon;
+GtkWidget *amnf_status_icon;
 
 // file menu
 GtkWidget *topmenubar_ccc;

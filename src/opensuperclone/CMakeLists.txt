@@ -85,3 +85,8 @@ install(FILES ${CMAKE_SOURCE_DIR}/res/opensuperclone.desktop
 install(FILES ${CMAKE_SOURCE_DIR}/res/opensupertool.desktop
         DESTINATION share/applications
 )
+
+# Install resources
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/img
+        DESTINATION share/opensuperclone
+)

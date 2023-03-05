@@ -45,6 +45,7 @@ set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone
 set(OSC_SCRIPT_PATH "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/" CACHE STRING "OpenSuperClone Script Directory")
 set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
 set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/locale/" CACHE STRING "OpenSuperClone Language Directory")
+set(OSC_RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/opensuperclone/" CACHE STRING "OpenSuperClone Resource Directory")
 
 # If Git is installed, save the current revision number
 find_package(Git)

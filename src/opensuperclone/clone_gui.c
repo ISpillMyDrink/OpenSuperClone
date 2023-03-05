@@ -9,6 +9,10 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 
+char *status_icon_off_path = OSC_RESOURCE_PATH "/img/status_off.png";
+char *status_icon_on_path = OSC_RESOURCE_PATH "/img/status_on.png";
+char *error_icon_on_path = OSC_RESOURCE_PATH "/img/error_on.png";
+
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
   // initialize memory so it is ready
@@ -395,60 +399,59 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(label_retrypasses_ccc, _("The total number of retry passes remaining"));
   gtk_widget_set_tooltip_text(label_drivermode_ccc, _("The current mode of the recovery"));
 
-  // set status buttons
-  button_bbk_ccc = gtk_button_new_with_label("BBK");
-  button_unc_ccc = gtk_button_new_with_label("UNC");
-  button_mc_ccc = gtk_button_new_with_label("MC");
-  button_idnf_ccc = gtk_button_new_with_label("IDNF");
-  button_mcr_ccc = gtk_button_new_with_label("MCR");
-  button_abrt_ccc = gtk_button_new_with_label("ABRT");
-  button_tk0nf_ccc = gtk_button_new_with_label("TK0NF");
-  button_amnf_ccc = gtk_button_new_with_label("AMNF");
-  button_bsy_ccc = gtk_button_new_with_label("BSY");
-  button_drdy_ccc = gtk_button_new_with_label("DRDY");
-  button_df_ccc = gtk_button_new_with_label("DF");
-  button_dsc_ccc = gtk_button_new_with_label("DSC");
-  button_drq_ccc = gtk_button_new_with_label("DRQ");
-  button_corr_ccc = gtk_button_new_with_label("CORR");
-  button_idx_ccc = gtk_button_new_with_label("IDX");
-  button_err_ccc = gtk_button_new_with_label("ERR");
-  button_status_separator_ccc = gtk_button_new_with_label("|");
+  // set status and error registers
+  bsy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_icon"));
+  drdy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_icon"));
+  df_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "df_status_icon"));
+  dsc_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "dsc_status_icon"));
+  drq_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "drq_status_icon"));
+  corr_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "corr_status_icon"));
+  idx_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "idx_status_icon"));
+  err_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "err_status_icon"));
+  bbk_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "bbk_status_icon"));
+  unc_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "unc_status_icon"));
+  mc_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "mc_status_icon"));
+  idnf_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "idnf_status_icon"));
+  mcr_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "mcr_status_icon"));
+  abrt_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "abrt_status_icon"));
+  tk0nf_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "tk0nf_status_icon"));
+  amnf_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "amnf_status_icon"));
 
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_bsy_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_drdy_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_df_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_dsc_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_drq_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_corr_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_idx_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_err_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_status_separator_ccc, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_bbk_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_unc_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_mc_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_idnf_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_mcr_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_abrt_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_tk0nf_ccc, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(bottom_status_bar_ccc), button_amnf_ccc, TRUE, TRUE, 0);
+  gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
 
-  // set status buttons tooltips
-  gtk_widget_set_tooltip_text(button_bsy_ccc, _("Busy (The device is busy)"));
-  gtk_widget_set_tooltip_text(button_drdy_ccc, _("Device Ready (The device is ready to accept commands)"));
-  gtk_widget_set_tooltip_text(button_df_ccc, _("Device Fault (The device has detected a fault)"));
-  gtk_widget_set_tooltip_text(button_dsc_ccc, _("Device Seek Complete (Head is settled on the track)"));
-  gtk_widget_set_tooltip_text(button_drq_ccc, _("Data Request (The device is ready to transfer data)"));
-  gtk_widget_set_tooltip_text(button_corr_ccc, _("Corrected Data (The device has corrected data)"));
-  gtk_widget_set_tooltip_text(button_idx_ccc, _("Index (The device has reached the index mark)"));
-  gtk_widget_set_tooltip_text(button_err_ccc, _("Error (The device has detected an error)"));
-  gtk_widget_set_tooltip_text(button_bbk_ccc, _("Bad Block (The device has detected a bad block)"));
-  gtk_widget_set_tooltip_text(button_unc_ccc, _("Uncorrectable Data (The device has detected uncorrectable data)"));
-  gtk_widget_set_tooltip_text(button_mc_ccc, _("Media Change (The media has changed)"));
-  gtk_widget_set_tooltip_text(button_idnf_ccc, _("ID Not Found (The device could not find the sector's ID field)"));
-  gtk_widget_set_tooltip_text(button_mcr_ccc, _("Media Change Request (The device has requested a media change)"));
-  gtk_widget_set_tooltip_text(button_abrt_ccc, _("Command Aborted (The device has aborted the command)"));
-  gtk_widget_set_tooltip_text(button_tk0nf_ccc, _("Track 0 Not Found (The device could not find track 0)"));
-  gtk_widget_set_tooltip_text(button_amnf_ccc, _("Address Mark Not Found (The device could not find the address mark)"));
+  // set status and error register tooltips
+  gtk_widget_set_tooltip_text(bsy_status_icon, _("Busy (The device is busy)"));
+  gtk_widget_set_tooltip_text(drdy_status_icon, _("Device Ready (The device is ready to accept commands)"));
+  gtk_widget_set_tooltip_text(df_status_icon, _("Device Fault (The device has detected a fault)"));
+  gtk_widget_set_tooltip_text(dsc_status_icon, _("Device Seek Complete (Head is settled on the track)"));
+  gtk_widget_set_tooltip_text(drq_status_icon, _("Data Request (The device is ready to transfer data)"));
+  gtk_widget_set_tooltip_text(corr_status_icon, _("Corrected Data (The device has corrected data)"));
+  gtk_widget_set_tooltip_text(idx_status_icon, _("Index (The device has reached the index mark)"));
+  gtk_widget_set_tooltip_text(err_status_icon, _("Error (The device has detected an error)"));
+  gtk_widget_set_tooltip_text(bbk_status_icon, _("Bad Block (The device has detected a bad block)"));
+  gtk_widget_set_tooltip_text(unc_status_icon, _("Uncorrectable Data (The device has detected uncorrectable data)"));
+  gtk_widget_set_tooltip_text(mc_status_icon, _("Media Change (The media has changed)"));
+  gtk_widget_set_tooltip_text(idnf_status_icon, _("ID Not Found (The device could not find the sector's ID field)"));
+  gtk_widget_set_tooltip_text(mcr_status_icon, _("Media Change Request (The device has requested a media change)"));
+  gtk_widget_set_tooltip_text(abrt_status_icon, _("Command Aborted (The device has aborted the command)"));
+  gtk_widget_set_tooltip_text(tk0nf_status_icon, _("Track 0 Not Found (The device could not find track 0)"));
+  gtk_widget_set_tooltip_text(amnf_status_icon, _("Address Mark Not Found (The device could not find the address mark)"));
+
 
   // set intial button states
   set_disconnected_ccc();
@@ -3689,319 +3692,163 @@ void test_power_command_ccc(void)
 
 void activate_status_buttons_ccc(void)
 {
-  gtk_widget_set_sensitive(GTK_WIDGET(button_bsy_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_drdy_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_df_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_dsc_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_drq_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_corr_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_idx_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_err_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_status_separator_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_bbk_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_unc_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_mc_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_idnf_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_mcr_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_abrt_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_tk0nf_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_amnf_ccc), TRUE);
 
-  gdk_rgba_parse(&button_color_ccc, GTKCOLOR_GRAY);
-  gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-
-  gdk_rgba_parse(&button_color_ccc, GTKCOLOR_WHITE);
-  gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-
-  gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-
-  gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-  gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
 }
 
 void deactivate_status_buttons_ccc(void)
 {
-  gtk_widget_set_sensitive(GTK_WIDGET(button_bsy_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_drdy_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_df_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_dsc_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_drq_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_corr_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_idx_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_err_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_status_separator_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_bbk_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_unc_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_mc_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_idnf_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_mcr_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_abrt_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_tk0nf_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(button_amnf_ccc), FALSE);
+
 }
 
 void update_status_buttons_ccc(void)
 {
   if (!scsi_passthrough_ccc && !fill_mode_ccc && !generic_mode_ccc)
   {
-    if (color_statusbar_ccc)
+    activate_status_buttons_ccc();
+    if (connected_ccc)
     {
-      activate_status_buttons_ccc();
-      if (connected_ccc)
+      if (ata_status_ccc & 0x80)
       {
-        gdk_rgba_parse(&button_color_ccc, GTKCOLOR_LIME);
-        if (ata_status_ccc & 0x80)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_bsy_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x40)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_drdy_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x20)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_df_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x10)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_dsc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x08)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_drq_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x04)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_corr_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x02)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_idx_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_status_ccc & 0x01)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_err_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-
-        gdk_rgba_parse(&button_color_ccc, GTKCOLOR_RED);
-        if (ata_error_ccc & 0x80)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_bbk_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x40)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_unc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x20)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_mc_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x10)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_idnf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x08)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_mcr_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x04)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_abrt_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x02)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_tk0nf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (ata_error_ccc & 0x01)
-        {
-          gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-          gtk_widget_override_background_color(GTK_WIDGET(button_amnf_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
-        }
-        if (color_switch_flag_ccc == 0)
-        {
-          color_switch_flag_ccc = 1;
-          gdk_rgba_parse(&button_color_ccc, "#000");
-        }
-        else if (color_switch_flag_ccc == 1)
-        {
-          color_switch_flag_ccc = 2;
-          gdk_rgba_parse(&button_color_ccc, "#777");
-        }
-        else
-        {
-          color_switch_flag_ccc = 0;
-          gdk_rgba_parse(&button_color_ccc, "#fff");
-        }
-        gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_NORMAL, &button_color_ccc);
-        gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_PRELIGHT, &button_color_ccc);
-        gtk_widget_override_background_color(GTK_WIDGET(button_status_separator_ccc), GTK_STATE_FLAG_ACTIVE, &button_color_ccc);
+        gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_on_path);
       }
-    }
-    else
-    {
-      deactivate_status_buttons_ccc();
-      if (connected_ccc)
+      else
       {
-        if (ata_status_ccc & 0x80)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_bsy_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x40)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_drdy_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x20)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_df_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x10)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_dsc_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x08)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_drq_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x04)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_corr_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x02)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_idx_ccc), TRUE);
-        }
-        if (ata_status_ccc & 0x01)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_err_ccc), TRUE);
-        }
+        gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
+      }
 
-        if (ata_error_ccc & 0x80)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_bbk_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x40)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_unc_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x20)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_mc_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x10)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_idnf_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x08)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_mcr_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x04)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_abrt_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x02)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_tk0nf_ccc), TRUE);
-        }
-        if (ata_error_ccc & 0x01)
-        {
-          gtk_widget_set_sensitive(GTK_WIDGET(button_amnf_ccc), TRUE);
-        }
-        if (color_switch_flag_ccc == 0)
-        {
-          color_switch_flag_ccc = 1;
-          gtk_widget_set_sensitive(GTK_WIDGET(button_status_separator_ccc), TRUE);
-          gtk_button_set_label(GTK_BUTTON(button_status_separator_ccc), "\\");
-        }
-        else if (color_switch_flag_ccc == 1)
-        {
-          color_switch_flag_ccc = 2;
-          gtk_widget_set_sensitive(GTK_WIDGET(button_status_separator_ccc), FALSE);
-          gtk_button_set_label(GTK_BUTTON(button_status_separator_ccc), "|");
-        }
-        else
-        {
-          color_switch_flag_ccc = 0;
-          gtk_widget_set_sensitive(GTK_WIDGET(button_status_separator_ccc), TRUE);
-          gtk_button_set_label(GTK_BUTTON(button_status_separator_ccc), "/");
-        }
+      if (ata_status_ccc & 0x40)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_on_path);
+      }
+
+      if (ata_status_ccc & 0x20)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+      }
+
+      if (ata_status_ccc & 0x10)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_off_path);
+      }
+
+      if (ata_status_ccc & 0x08)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
+      }
+
+      if (ata_status_ccc & 0x04)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
+      }
+
+      if (ata_status_ccc & 0x02)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
+      }
+
+      if (ata_status_ccc & 0x01)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x80)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x40)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x20)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x10)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x08)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x04)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x02)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
+      }
+
+      if (ata_error_ccc & 0x01)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), error_icon_on_path);
+      }
+      else
+      {
+        gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
       }
     }
   }
