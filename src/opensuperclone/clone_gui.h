@@ -74,6 +74,9 @@ GtkWidget *main_window_ccc;
 GtkWidget *main_vbox_ccc;
 GtkWidget *main_hbox_ccc;
 
+// status and error register
+GtkWidget *status_register_label;
+GtkWidget *error_register_label;
 GtkWidget *bsy_status_icon;
 GtkWidget *drdy_status_icon;
 GtkWidget *df_status_icon;
@@ -90,6 +93,22 @@ GtkWidget *mcr_status_icon;
 GtkWidget *abrt_status_icon;
 GtkWidget *tk0nf_status_icon;
 GtkWidget *amnf_status_icon;
+GtkWidget *bsy_status_label;
+GtkWidget *drdy_status_label;
+GtkWidget *df_status_label;
+GtkWidget *dsc_status_label;
+GtkWidget *drq_status_label;
+GtkWidget *corr_status_label;
+GtkWidget *idx_status_label;
+GtkWidget *err_status_label;
+GtkWidget *bbk_status_label;
+GtkWidget *unc_status_label;
+GtkWidget *mc_status_label;
+GtkWidget *idnf_status_label;
+GtkWidget *mcr_status_label;
+GtkWidget *abrt_status_label;
+GtkWidget *tk0nf_status_label;
+GtkWidget *amnf_status_label;
 
 // file menu
 GtkWidget *topmenubar_ccc;

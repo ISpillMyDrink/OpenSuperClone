@@ -400,6 +400,12 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(label_drivermode_ccc, _("The current mode of the recovery"));
 
   // set status and error registers
+  status_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "status_register_label"));
+  error_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "error_register_label"));
+
+  gtk_label_set_text(status_register_label, _("Status Register"));
+  gtk_label_set_text(error_register_label, _("Error Register"));
+
   bsy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_icon"));
   drdy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_icon"));
   df_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "df_status_icon"));
@@ -452,6 +458,39 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(tk0nf_status_icon, _("Track 0 Not Found (The device could not find track 0)"));
   gtk_widget_set_tooltip_text(amnf_status_icon, _("Address Mark Not Found (The device could not find the address mark)"));
 
+  bsy_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_label"));
+  drdy_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_label"));
+  df_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "df_status_label"));
+  dsc_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "dsc_status_label"));
+  drq_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "drq_status_label"));
+  corr_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "corr_status_label"));
+  idx_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "idx_status_label"));
+  err_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "err_status_label"));
+  bbk_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "bbk_status_label"));
+  unc_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "unc_status_label"));
+  mc_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "mc_status_label"));
+  idnf_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "idnf_status_label"));
+  mcr_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "mcr_status_label"));
+  abrt_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "abrt_status_label"));
+  tk0nf_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "tk0nf_status_label"));
+  amnf_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "amnf_status_label"));
+
+  gtk_label_set_text(GTK_LABEL(bsy_status_label), _("BSY"));
+  gtk_label_set_text(GTK_LABEL(drdy_status_label), _("DRDY"));
+  gtk_label_set_text(GTK_LABEL(df_status_label), _("DF"));
+  gtk_label_set_text(GTK_LABEL(dsc_status_label), _("DSC"));
+  gtk_label_set_text(GTK_LABEL(drq_status_label), _("DRQ"));
+  gtk_label_set_text(GTK_LABEL(corr_status_label), _("CORR"));
+  gtk_label_set_text(GTK_LABEL(idx_status_label), _("IDX"));
+  gtk_label_set_text(GTK_LABEL(err_status_label), _("ERR"));
+  gtk_label_set_text(GTK_LABEL(bbk_status_label), _("BBK"));
+  gtk_label_set_text(GTK_LABEL(unc_status_label), _("UNC"));
+  gtk_label_set_text(GTK_LABEL(mc_status_label), _("MC"));
+  gtk_label_set_text(GTK_LABEL(idnf_status_label), _("IDNF"));
+  gtk_label_set_text(GTK_LABEL(mcr_status_label), _("MCR"));
+  gtk_label_set_text(GTK_LABEL(abrt_status_label), _("ABRT"));
+  gtk_label_set_text(GTK_LABEL(tk0nf_status_label), _("TK0NF"));
+  gtk_label_set_text(GTK_LABEL(amnf_status_label), _("AMNF"));
 
   // set intial button states
   set_disconnected_ccc();
@@ -469,7 +508,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1075, 775);
+  gtk_window_set_default_size(main_window_ccc, 1100, 750);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 

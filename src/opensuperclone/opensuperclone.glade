@@ -979,7 +979,7 @@ mode</property>
                                           <object class="GtkFrame" id="frame18">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="label-xalign">0</property>
+                                            <property name="label-xalign">0.009999999776482582</property>
                                             <property name="shadow-type">in</property>
                                             <child>
                                               <object class="GtkAlignment" id="alignment19">
@@ -1013,6 +1013,7 @@ mode</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
+                                            <property name="padding">1</property>
                                             <property name="position">0</property>
                                           </packing>
                                         </child>
@@ -1020,7 +1021,7 @@ mode</property>
                                           <object class="GtkFrame" id="frame19">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="label-xalign">0</property>
+                                            <property name="label-xalign">0.009999999776482582</property>
                                             <property name="shadow-type">in</property>
                                             <child>
                                               <object class="GtkAlignment" id="alignment20">
@@ -1054,6 +1055,7 @@ mode</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
+                                            <property name="padding">1</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
@@ -1061,7 +1063,7 @@ mode</property>
                                           <object class="GtkFrame" id="frame17">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="label-xalign">0</property>
+                                            <property name="label-xalign">0.009999999776482582</property>
                                             <property name="shadow-type">in</property>
                                             <child>
                                               <object class="GtkAlignment" id="alignment18">
@@ -1098,6 +1100,7 @@ mode</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
+                                            <property name="padding">1</property>
                                             <property name="position">2</property>
                                           </packing>
                                         </child>
@@ -1110,7 +1113,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame14">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.009999999776482582</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment15">
@@ -1145,6 +1148,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1164,7 +1168,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame20">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment21">
@@ -1196,6 +1200,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1203,7 +1208,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame21">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment22">
@@ -1235,6 +1240,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1242,7 +1248,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame41">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment42">
@@ -1274,6 +1280,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -1293,7 +1300,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame32">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment33">
@@ -1329,6 +1336,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1336,7 +1344,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame33">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment34">
@@ -1371,6 +1379,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1378,8 +1387,8 @@ mode</property>
                                               <object class="GtkFrame" id="frame46">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
-                                                <property name="shadow-type">none</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
+                                                <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment47">
                                                     <property name="visible">True</property>
@@ -1413,6 +1422,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -1432,7 +1442,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame22">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment23">
@@ -1468,6 +1478,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1475,7 +1486,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame23">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment24">
@@ -1511,6 +1522,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1518,7 +1530,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame45">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment46">
@@ -1554,6 +1566,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -1573,7 +1586,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame24">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment25">
@@ -1609,6 +1622,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1616,7 +1630,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame25">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment26">
@@ -1652,6 +1666,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1659,7 +1674,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame26">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment27">
@@ -1695,6 +1710,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -1714,7 +1730,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame42">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment43">
@@ -1750,6 +1766,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1757,7 +1774,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame43">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment44">
@@ -1793,6 +1810,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1800,7 +1818,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame44">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment45">
@@ -1836,6 +1854,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -1855,7 +1874,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame34">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment35">
@@ -1891,6 +1910,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1898,7 +1918,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame35">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment36">
@@ -1934,6 +1954,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1953,7 +1974,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame36">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment37">
@@ -1989,6 +2010,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -1996,7 +2018,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame37">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment38">
@@ -2032,6 +2054,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -2051,7 +2074,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame38">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment39">
@@ -2087,6 +2110,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -2094,7 +2118,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame39">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.019999999552965164</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment40">
@@ -2130,6 +2154,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -2149,7 +2174,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame28">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment29">
@@ -2185,6 +2210,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -2192,7 +2218,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame29">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment30">
@@ -2228,6 +2254,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -2235,7 +2262,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame30">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment31">
@@ -2271,6 +2298,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -2290,7 +2318,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame71">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment72">
@@ -2326,6 +2354,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -2333,7 +2362,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame75">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment76">
@@ -2369,6 +2398,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -2376,7 +2406,7 @@ mode</property>
                                               <object class="GtkFrame" id="frame77">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label-xalign">0</property>
+                                                <property name="label-xalign">0.029999999329447746</property>
                                                 <property name="shadow-type">in</property>
                                                 <child>
                                                   <object class="GtkAlignment" id="alignment78">
@@ -2412,6 +2442,7 @@ mode</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -2426,7 +2457,7 @@ mode</property>
                                           <object class="GtkFrame" id="frame40">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="label-xalign">0</property>
+                                            <property name="label-xalign">0.009999999776482582</property>
                                             <property name="shadow-type">in</property>
                                             <child>
                                               <object class="GtkAlignment" id="alignment41">
@@ -2460,6 +2491,7 @@ no data</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
+                                            <property name="padding">1</property>
                                             <property name="position">14</property>
                                           </packing>
                                         </child>
@@ -2813,17 +2845,17 @@ no data</property>
                                   </object>
                                 </child>
                                 <child type="label">
-                                  <object class="GtkLabel">
+                                  <object class="GtkLabel" id="status_register_label">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Status Register
-</property>
+                                    <property name="label" translatable="yes">status register</property>
                                   </object>
                                 </child>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
+                                <property name="padding">2</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -3144,17 +3176,17 @@ no data</property>
                                   </object>
                                 </child>
                                 <child type="label">
-                                  <object class="GtkLabel">
+                                  <object class="GtkLabel" id="error_register_label">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="label" translatable="yes">Error Register
-</property>
+                                    <property name="label" translatable="yes">error register</property>
                                   </object>
                                 </child>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
+                                <property name="padding">2</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
