@@ -2500,7 +2500,7 @@ no data</property>
                               <object class="GtkFrame">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label-xalign">0</property>
+                                <property name="label-xalign">0.05000000074505806</property>
                                 <property name="shadow-type">in</property>
                                 <child>
                                   <object class="GtkAlignment">
@@ -2511,11 +2511,13 @@ no data</property>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
+                                        <property name="homogeneous">True</property>
                                         <child>
                                           <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="bsy_status_icon">
                                                 <property name="visible">True</property>
@@ -2552,6 +2554,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="drdy_status_icon">
                                                 <property name="visible">True</property>
@@ -2588,6 +2591,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="df_status_icon">
                                                 <property name="visible">True</property>
@@ -2624,6 +2628,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="dsc_status_icon">
                                                 <property name="visible">True</property>
@@ -2660,6 +2665,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="drq_status_icon">
                                                 <property name="visible">True</property>
@@ -2696,6 +2702,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="corr_status_icon">
                                                 <property name="visible">True</property>
@@ -2732,6 +2739,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="idx_status_icon">
                                                 <property name="visible">True</property>
@@ -2768,6 +2776,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="err_status_icon">
                                                 <property name="visible">True</property>
@@ -2822,7 +2831,7 @@ no data</property>
                               <object class="GtkFrame">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label-xalign">0</property>
+                                <property name="label-xalign">0.05000000074505806</property>
                                 <property name="shadow-type">in</property>
                                 <child>
                                   <object class="GtkAlignment">
@@ -2833,11 +2842,13 @@ no data</property>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
+                                        <property name="homogeneous">True</property>
                                         <child>
                                           <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="bbk_status_icon">
                                                 <property name="visible">True</property>
@@ -2874,6 +2885,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="unc_status_icon">
                                                 <property name="visible">True</property>
@@ -2910,6 +2922,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="mc_status_icon">
                                                 <property name="visible">True</property>
@@ -2946,6 +2959,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="idnf_status_icon">
                                                 <property name="visible">True</property>
@@ -2982,6 +2996,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="mcr_status_icon">
                                                 <property name="visible">True</property>
@@ -3018,6 +3033,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="abrt_status_icon">
                                                 <property name="visible">True</property>
@@ -3054,6 +3070,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="tk0nf_status_icon">
                                                 <property name="visible">True</property>
@@ -3090,6 +3107,7 @@ no data</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="orientation">vertical</property>
+                                            <property name="homogeneous">True</property>
                                             <child>
                                               <object class="GtkImage" id="amnf_status_icon">
                                                 <property name="visible">True</property>
