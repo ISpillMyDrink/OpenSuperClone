@@ -3740,7 +3740,7 @@ void update_status_buttons_ccc(void)
 
       if (ata_status_ccc & 0x40)
       {
-        gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
+        gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_on_path);
       }
 
       if (ata_status_ccc & 0x20)
