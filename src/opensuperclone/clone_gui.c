@@ -3692,12 +3692,38 @@ void test_power_command_ccc(void)
 
 void activate_status_buttons_ccc(void)
 {
-
+  gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
 }
 
 void deactivate_status_buttons_ccc(void)
 {
-
+  gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
 }
 
 void update_status_buttons_ccc(void)
@@ -3711,144 +3737,80 @@ void update_status_buttons_ccc(void)
       {
         gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
-      }
 
       if (ata_status_ccc & 0x40)
       {
         gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_on_path);
       }
 
       if (ata_status_ccc & 0x20)
       {
         gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
-      }
 
       if (ata_status_ccc & 0x10)
       {
         gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_off_path);
       }
 
       if (ata_status_ccc & 0x08)
       {
         gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
-      }
 
       if (ata_status_ccc & 0x04)
       {
         gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
       }
 
       if (ata_status_ccc & 0x02)
       {
         gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
-      }
 
       if (ata_status_ccc & 0x01)
       {
         gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
       }
 
       if (ata_error_ccc & 0x80)
       {
         gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), error_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
-      }
 
       if (ata_error_ccc & 0x40)
       {
         gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), error_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
       }
 
       if (ata_error_ccc & 0x20)
       {
         gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), error_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
-      }
 
       if (ata_error_ccc & 0x10)
       {
         gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), error_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
       }
 
       if (ata_error_ccc & 0x08)
       {
         gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), error_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
-      }
 
       if (ata_error_ccc & 0x04)
       {
         gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), error_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), status_icon_off_path);
       }
 
       if (ata_error_ccc & 0x02)
       {
         gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), error_icon_on_path);
       }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
-      }
 
       if (ata_error_ccc & 0x01)
       {
         gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), error_icon_on_path);
-      }
-      else
-      {
-        gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
       }
     }
   }
