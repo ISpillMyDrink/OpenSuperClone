@@ -20,6 +20,7 @@
 <p align="center">
   <a href="#-features">✨ Features</a> •
   <a href="#-installation">💾 Installation</a> •
+  <a href="#-documentation">📖 Documentation</a> •
   <a href="#%EF%B8%8F-changelog">✏️ Changelog</a> •
   <a href="#-credits">💵 Credits</a> •
   <a href="#-license">📄 License</a>
@@ -33,20 +34,25 @@
 
 * Advanced drive cloning capability akin to that of ddrescue
 * Virtual drive mode for targeted data extraction
-* Direct AHCI and IDE capability to circumvent OS drivers completely
+* Direct AHCI and IDE capability to circumvent OS drivers
 * USB relay control for automatic power cycling of drives
 
 #### 📋 Planned Changes
 
-* Refactoring of codebase (get rid of -fcommon flag)
+* Refactoring of codebase
 * Remove requirement for running as root
-* Add configuration files and presets for settings
+* Add configuration files and presets
 
 ## 💾 Installation
 
 Pre-built DEB and RPM packages for OpenSuperClone can be found on the <a href=https://github.com/ISpillMyDrink/OpenSuperClone/releases>Release</a> page.
 
-Instructions for installing OpenSuperClone from source can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki">Wiki</a>.
+Instructions for installing OpenSuperClone from source can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Compiling-from-Source">Wiki</a>.
+
+## 📖 Documentation
+
+Documentation for OpenSuperClone can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki">Wiki</a>.
+Note that the Wiki is currently a work-in-progress and incomplete.
 
 ## ✏️ Changelog
 
@@ -54,6 +60,7 @@ Instructions for installing OpenSuperClone from source can be found on the <a hr
 
 * Implemented DKMS for driver installation
 * OSCDriver 2.6.2: add support for kernel 5.19.12 to 6.1.12 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
+* added tooltips to most UI elements
 
 #### OpenSuperClone 2.4.1
 
