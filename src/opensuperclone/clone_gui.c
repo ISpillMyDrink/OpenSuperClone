@@ -3734,6 +3734,7 @@ void activate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
@@ -3743,6 +3744,7 @@ void activate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
 }
@@ -3752,6 +3754,7 @@ void deactivate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(dsc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drq_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
@@ -3761,6 +3764,7 @@ void deactivate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idnf_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(mcr_status_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(abrt_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(tk0nf_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), status_icon_off_path);
 }
