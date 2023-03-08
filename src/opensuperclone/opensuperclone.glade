@@ -2474,7 +2474,6 @@ no data</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
-                                            <property name="padding">1</property>
                                             <property name="position">14</property>
                                           </packing>
                                         </child>
@@ -2804,7 +2803,7 @@ no data</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
-                                                <property name="padding">2</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -3130,30 +3129,15 @@ no data</property>
                                               <packing>
                                                 <property name="expand">True</property>
                                                 <property name="fill">True</property>
-                                                <property name="padding">2</property>
+                                                <property name="padding">1</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
                                           </object>
                                           <packing>
-                                            <property name="expand">True</property>
+                                            <property name="expand">False</property>
                                             <property name="fill">True</property>
                                             <property name="position">15</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkBox">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <property name="orientation">vertical</property>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">True</property>
-                                            <property name="fill">True</property>
-                                            <property name="position">16</property>
                                           </packing>
                                         </child>
                                       </object>

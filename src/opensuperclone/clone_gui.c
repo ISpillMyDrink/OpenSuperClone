@@ -361,7 +361,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_label_set_text(GTK_LABEL(label_longestreadtime_ccc), _("Current / Recent / Longest"));
   gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Filled"));
   gtk_label_set_text(GTK_LABEL(label_retried_ccc), _("Retried"));
-  gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), _("Remaining retry passes"));
+  gtk_label_set_text(GTK_LABEL(label_retrypasses_ccc), _("Remaining Retry Passes"));
   gtk_label_set_text(GTK_LABEL(label_drivermode_ccc), _("Clone/Driver Mode"));
   gtk_label_set_text(GTK_LABEL(data_drivermode_ccc), _("Clone"));
 
