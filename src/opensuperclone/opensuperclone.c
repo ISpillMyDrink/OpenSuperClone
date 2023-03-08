@@ -5128,7 +5128,7 @@ int update_display_ccc(int time_ms)
       for (n = 0; n < 16 && i + n < size; n++)
       {
         c = (unsigned char *)display_buffer_ccc + i + n + offset;
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%02x ", *c);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%02x\t", *c);
         message_display_ccc(tempmessage_ccc);
         strcat(data_preview, tempmessage_ccc);
       }

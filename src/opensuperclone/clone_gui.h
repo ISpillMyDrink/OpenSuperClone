@@ -66,7 +66,6 @@
 #define BUTTONID_DONTIDENTIFY 31
 
 GtkWidget *language_window_ccc;
-GtkWidget *main_label;
 GtkWidget *main_frame;
 GtkWidget *bottom_status_bar_ccc;
 
@@ -459,6 +458,10 @@ int disabled_ports_changed_ccc = 0;
 int usbr1_chosen_ccc = 0;
 
 bool button_labeled_start = true;
+
+char *status_icon_off_path = OSC_RESOURCE_PATH "/img/status_off.png";
+char *status_icon_on_path = OSC_RESOURCE_PATH "/img/status_on.png";
+char *error_icon_on_path = OSC_RESOURCE_PATH "/img/error_on.png";
 
 void select_file_ccc(void);
 

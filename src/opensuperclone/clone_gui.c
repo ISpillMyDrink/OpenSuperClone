@@ -9,10 +9,6 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 
-char *status_icon_off_path = OSC_RESOURCE_PATH "/img/status_off.png";
-char *status_icon_on_path = OSC_RESOURCE_PATH "/img/status_on.png";
-char *error_icon_on_path = OSC_RESOURCE_PATH "/img/error_on.png";
-
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
   // initialize memory so it is ready
@@ -277,8 +273,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   // gtk_widget_add_accelerator(adddomainmi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(savedomainmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
-  main_label = GTK_WIDGET(gtk_builder_get_object(builder, "main_label"));
-
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
   analyze_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_button"));
@@ -502,7 +496,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1155, 720);
+  gtk_window_set_default_size(main_window_ccc, 1150, 690);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -967,7 +961,6 @@ void add_domain_ccc(void)
 // Get the selected filename and load it
 static void load_log_file_ccc(char *log_file)
 {
-  gtk_label_set_text(GTK_LABEL(main_label), "");
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   log_file_ccc = malloc(1024);
   memset(log_file_ccc, 0, 1024);
@@ -1020,7 +1013,6 @@ static void load_log_file_ccc(char *log_file)
       set_initial_data_from_log_ccc(new_project_ccc);
       logfile_changed_ccc = true;
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     }
   }
 }
@@ -1028,7 +1020,6 @@ static void load_log_file_ccc(char *log_file)
 // Get the selected ddrescue filename and load it
 static void load_ddrescue_log_file_ccc(char *log_file)
 {
-  gtk_label_set_text(GTK_LABEL(main_label), "");
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   ddilog_file_ccc = malloc(1024);
   memset(ddilog_file_ccc, 0, 1024);
@@ -1082,7 +1073,6 @@ static void load_ddrescue_log_file_ccc(char *log_file)
       set_initial_data_from_log_ccc(new_project_ccc);
       logfile_changed_ccc = true;
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     }
   }
 }
@@ -1090,7 +1080,6 @@ static void load_ddrescue_log_file_ccc(char *log_file)
 // Get the selected domain and load it
 static void load_domain_file_ccc(char *log_file)
 {
-  gtk_label_set_text(GTK_LABEL(main_label), "");
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   clear_domain_ccc();
   strncpy(domain_file_ccc, log_file, 1024);
@@ -1118,7 +1107,6 @@ static void load_domain_file_ccc(char *log_file)
     {
       do_domain_ccc = true;
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     }
   }
 }
@@ -1126,7 +1114,6 @@ static void load_domain_file_ccc(char *log_file)
 // Get the selected domain and load it
 static void add_domain_file_ccc(char *log_file)
 {
-  gtk_label_set_text(GTK_LABEL(main_label), "");
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   printf("%s\n", log_file);
 
@@ -1196,7 +1183,6 @@ static void new_log_file_ccc(char *log_file)
   set_initial_data_from_log_ccc(new_project_ccc);
   logfile_changed_ccc = true;
   update_display_ccc(0);
-  // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
 }
 
 static void new_domain_file_ccc(char *log_file)
@@ -1215,7 +1201,6 @@ static void new_domain_file_ccc(char *log_file)
   do_domain_ccc = true;
   domainfile_changed_ccc = true;
   update_display_ccc(0);
-  // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
 }
 
 // open choose source dialog window
@@ -1314,7 +1299,6 @@ void choose_source_ccc(void)
       }
       release_devices_ccc();
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     }
     gtk_widget_destroy(dialog);
   }
@@ -1543,7 +1527,6 @@ void choose_source_ccc(void)
       }
       release_devices_ccc();
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
 
       // re-enable the window
       gtk_widget_set_sensitive(GTK_WIDGET(main_window_ccc), TRUE);
@@ -1698,7 +1681,6 @@ void choose_destination_ccc(void)
         }
       }
       update_display_ccc(0);
-      // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     }
   }
 }
@@ -1788,7 +1770,6 @@ void choose_image_ccc(void)
         }
 
         update_display_ccc(0);
-        // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
       }
       g_free(filename);
       gtk_widget_destroy(dialog);
@@ -1822,7 +1803,6 @@ void choose_null_ccc(void)
     strcpy(current_destination_serial_ccc, "");
     logfile_changed_ccc = true;
     update_display_ccc(0);
-    // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
     destination_chosen_ccc = 1;
     destination_size_valid_ccc = 0;
   }
@@ -2125,9 +2105,6 @@ void clear_destination_ccc(void)
 
 void update_gui_display_ccc(void)
 {
-  gtk_label_set_text(GTK_LABEL(main_label), "");
-  // gtk_label_set_text(GTK_LABEL(main_label), display_message_ccc);
-
   gtk_label_set_text(GTK_LABEL(data_project_ccc), display_output_ccc.logfile);
   gtk_label_set_text(GTK_LABEL(data_domain_ccc), display_output_ccc.domainfile);
   gtk_label_set_text(GTK_LABEL(data_source_ccc), display_output_ccc.source);
