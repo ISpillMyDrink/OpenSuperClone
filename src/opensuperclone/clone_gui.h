@@ -187,7 +187,6 @@ GtkWidget *choose_usb_scrolled_window_ccc;
 GtkWidget *choose_usb_vbox_ccc;
 
 GtkWidget *connect_button_ccc;
-GtkWidget *disconnect_button_ccc;
 GtkWidget *start_button_ccc;
 GtkWidget *stop_button_ccc;
 GtkWidget *analyze_button_ccc;

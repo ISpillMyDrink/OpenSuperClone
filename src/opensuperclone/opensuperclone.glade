@@ -5,8 +5,6 @@
   <object class="GtkWindow" id="window_main">
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
-    <property name="default-width">800</property>
-    <property name="default-height">700</property>
     <signal name="destroy" handler="quit_and_close_ccc" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">
@@ -663,20 +661,6 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="disconnect_button">
-                            <property name="label" translatable="yes">disconnect</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="receives-default">True</property>
-                            <signal name="clicked" handler="disconnect_devices_ccc" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkButton" id="start_button">
                             <property name="label" translatable="yes">start</property>
                             <property name="visible">True</property>
@@ -687,7 +671,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">2</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
@@ -701,7 +685,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">3</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                         <child>
@@ -715,7 +699,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">4</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                         <child>
@@ -729,7 +713,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">5</property>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                         <child>

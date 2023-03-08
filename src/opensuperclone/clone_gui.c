@@ -280,7 +280,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   main_label = GTK_WIDGET(gtk_builder_get_object(builder, "main_label"));
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
-  disconnect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disconnect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
   stop_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "stop_button"));
   analyze_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_button"));
@@ -297,7 +296,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   hard_reset_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "hard_reset_button"));
 
   gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Connect"));
-  gtk_button_set_label(GTK_BUTTON(disconnect_button_ccc), _("Disconnect"));
   gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Start"));
   gtk_button_set_label(GTK_BUTTON(stop_button_ccc), _("Stop"));
   gtk_button_set_label(GTK_BUTTON(analyze_button_ccc), _("Analyze"));
@@ -315,7 +313,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   // set button tooltips
   gtk_widget_set_tooltip_text(connect_button_ccc, _("Connect to the drive"));
-  gtk_widget_set_tooltip_text(disconnect_button_ccc, _("Disconnect from the drive"));
   gtk_widget_set_tooltip_text(start_button_ccc, _("Start the clone/virtual driver"));
   gtk_widget_set_tooltip_text(stop_button_ccc, _("Stop the clone/virtual driver"));
   gtk_widget_set_tooltip_text(analyze_button_ccc, _("Analyze the drive"));
@@ -508,7 +505,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1100, 750);
+  gtk_window_set_default_size(main_window_ccc, 1155, 755);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -1836,6 +1833,13 @@ void choose_null_ccc(void)
 
 void connect_devices_ccc(void)
 {
+  // check if we're already connected
+  if(connected_ccc)
+  {
+    disconnect_devices_ccc();
+    return;
+  }
+
   int relaycheck = 1;
   if ((activate_primary_relay_on_error_ccc || power_cycle_primary_relay_ccc) && !(fill_mode_ccc || driver_only_ccc) && !usbr1_chosen_ccc)
   {
@@ -2059,8 +2063,8 @@ void set_connected_ccc(void)
     clear_error_message_ccc();
   }
   connected_ccc = 1;
-  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), TRUE);
+  gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Disconnect"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(connect_button_ccc), _("Disconnect from the device"));
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(modemi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), FALSE);
@@ -2086,8 +2090,8 @@ void set_connected_ccc(void)
 void set_disconnected_ccc(void)
 {
   connected_ccc = 0;
-  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), FALSE);
+  gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Connect"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(connect_button_ccc), _("Connect to the device"));
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
@@ -2297,7 +2301,6 @@ void start_cloning_ccc(void)
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), FALSE);
@@ -2332,8 +2335,7 @@ void start_cloning_ccc(void)
   update_logfile_ccc(0);
   update_domainfile_ccc(0);
 
-  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), TRUE);
@@ -2370,7 +2372,6 @@ void start_analyzing_ccc(void)
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), FALSE);
@@ -2620,8 +2621,7 @@ void start_analyzing_ccc(void)
 
   update_logfile_ccc(0);
 
-  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), TRUE);
