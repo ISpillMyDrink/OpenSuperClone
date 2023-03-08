@@ -458,6 +458,8 @@ bool destination_is_generic_ccc = false;
 int disabled_ports_changed_ccc = 0;
 int usbr1_chosen_ccc = 0;
 
+bool button_labeled_start = true;
+
 void select_file_ccc(void);
 
 void select_ddrescue_file_ccc(void);

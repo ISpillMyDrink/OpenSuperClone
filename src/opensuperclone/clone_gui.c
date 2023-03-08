@@ -281,7 +281,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
-  stop_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "stop_button"));
   analyze_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_button"));
   analyze_long_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_long_button"));
   smart_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "smart_button"));
@@ -297,7 +296,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Connect"));
   gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Start"));
-  gtk_button_set_label(GTK_BUTTON(stop_button_ccc), _("Stop"));
   gtk_button_set_label(GTK_BUTTON(analyze_button_ccc), _("Analyze"));
   gtk_button_set_label(GTK_BUTTON(analyze_long_button_ccc), _("Extended\nAnalyze"));
   gtk_button_set_label(GTK_BUTTON(smart_button_ccc), _("SMART"));
@@ -314,7 +312,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   // set button tooltips
   gtk_widget_set_tooltip_text(connect_button_ccc, _("Connect to the drive"));
   gtk_widget_set_tooltip_text(start_button_ccc, _("Start the clone/virtual driver"));
-  gtk_widget_set_tooltip_text(stop_button_ccc, _("Stop the clone/virtual driver"));
   gtk_widget_set_tooltip_text(analyze_button_ccc, _("Analyze the drive"));
   gtk_widget_set_tooltip_text(analyze_long_button_ccc, _("Analyze the drive (extended)"));
   gtk_widget_set_tooltip_text(smart_button_ccc, _("Retrieve SMART information"));
@@ -505,7 +502,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1155, 755);
+  gtk_window_set_default_size(main_window_ccc, 1155, 720);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -2093,7 +2090,6 @@ void set_disconnected_ccc(void)
   gtk_button_set_label(GTK_BUTTON(connect_button_ccc), _("Connect"));
   gtk_widget_set_tooltip_text(GTK_WIDGET(connect_button_ccc), _("Connect to the device"));
   gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(smart_button_ccc), FALSE);
@@ -2297,15 +2293,22 @@ void set_driver_mode_button_status_ccc(bool active)
 
 void start_cloning_ccc(void)
 {
+  if(!button_labeled_start)
+  {
+    stop_signal_ccc = true;
+    return;
+  }
+
   int ret = 0;
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
+  gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Stop"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(start_button_ccc), _("Stop the clone/virtual driver"));
+  button_labeled_start = false;
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(smart_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), FALSE);
@@ -2336,8 +2339,9 @@ void start_cloning_ccc(void)
   update_domainfile_ccc(0);
 
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
+  gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Start"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(start_button_ccc), _("Start the clone/virtual driver"));
+  button_labeled_start = true;
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), driver_only_ccc ? FALSE : TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), TRUE);
@@ -2372,11 +2376,12 @@ void start_analyzing_ccc(void)
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), FALSE);
+  gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Stop"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(start_button_ccc), _("Stop the clone/virtual driver"));
+  button_labeled_start = false;
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(analyze_long_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(smart_button_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), FALSE);
@@ -2622,8 +2627,9 @@ void start_analyzing_ccc(void)
   update_logfile_ccc(0);
 
   gtk_widget_set_sensitive(GTK_WIDGET(connect_button_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(start_button_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(stop_button_ccc), FALSE);
+  gtk_button_set_label(GTK_BUTTON(start_button_ccc), _("Start"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(start_button_ccc), _("Start the clone/virtual driver"));
+  button_labeled_start = true;
   gtk_widget_set_sensitive(GTK_WIDGET(topmenubar_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), driver_only_ccc ? FALSE : TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), TRUE);
