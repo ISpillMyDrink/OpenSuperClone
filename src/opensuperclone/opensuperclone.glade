@@ -4279,45 +4279,6 @@ no data</property>
                             <property name="position">20</property>
                           </packing>
                         </child>
-                        <child>
-                          <object class="GtkFrame" id="frame91">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="label-xalign">0</property>
-                            <property name="shadow-type">in</property>
-                            <child>
-                              <object class="GtkAlignment" id="alignment92">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="left-padding">12</property>
-                                <child>
-                                  <object class="GtkCheckButton" id="use_color_statusbar_checkbutton">
-                                    <property name="label" translatable="yes">use colors in statusbar</property>
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="receives-default">False</property>
-                                    <property name="draw-indicator">True</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child type="label">
-                              <object class="GtkLabel" id="label18">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="use-markup">True</property>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">21</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
                       </object>
                     </child>
                   </object>

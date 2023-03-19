@@ -2918,7 +2918,6 @@ void open_advanced_settings_dialog_ccc(void)
   virtual_disk_device_name_text_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "virtual_disk_device_name_text"));
   driver_minimum_cluster_size_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_minimum_cluster_size_button_label"));
   driver_minimum_cluster_size_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_minimum_cluster_size_spinbutton"));
-  use_color_statusbar_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "use_color_statusbar_checkbutton"));
   g_object_unref(builder);
 
   gtk_button_set_label(GTK_BUTTON(no_log_backup_checkbutton_ccc), _("Do not create backup log"));
@@ -2954,7 +2953,6 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(driver_error_options_label_ccc), _("Virtual Disk Device Driver output options for read errors"));
   gtk_label_set_text(GTK_LABEL(driver_minimum_cluster_size_button_label_ccc), _("Virtual Disk minimum cluster read size (mode 3)"));
   gtk_label_set_text(GTK_LABEL(virtual_disk_device_name_label_ccc), _("Virtual Disk device name"));
-  gtk_button_set_label(GTK_BUTTON(use_color_statusbar_checkbutton_ccc), _("Use button colors in bottom status bar"));
 
   gtk_widget_set_tooltip_text(GTK_WIDGET(no_log_backup_checkbutton_ccc), _("If checked, no log backups will be created when writing to the progess log (not recommended)"));
   gtk_widget_set_tooltip_text(GTK_WIDGET(force_mounted_checkbutton_ccc), _("Force working with the source even when it is mounted (not recommended)"));
@@ -2989,8 +2987,7 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_error_options_label_ccc), _("Options for how the virtual disk handles read errors as presented by the recovery."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_minimum_cluster_size_button_label_ccc), _("When in virtual mode 3, this will be the minimum cluster read size. When cloning using a domain, this will also be the minimum cluster read size, so that small domain reads can be prevented if desired."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(virtual_disk_device_name_label_ccc), _("The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). Note that if you choose a name that is already in use, it will cause a system crash. Also, you should choose a conventional name with the SDx format, or some software will not find or list it."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(use_color_statusbar_checkbutton_ccc), _("This option will turn on using colors on the bottom status bar (may not work on some systems)."));
-
+  
   if (!advanced_settings_ccc.enable_output_offset)
   {
     gtk_widget_set_sensitive(GTK_WIDGET(output_offset_spinbutton_ccc), FALSE);
@@ -3023,9 +3020,6 @@ void open_advanced_settings_dialog_ccc(void)
   g_signal_connect(G_OBJECT(enable_output_sector_size_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEOUTPUTSECTOR));
   g_signal_connect(G_OBJECT(driver_io_scsi_only_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_IOSCSIONLY));
   g_signal_connect(G_OBJECT(use_physical_sector_size_for_virtual_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_USEPHYSICALSECTORSIZE));
-  g_signal_connect(G_OBJECT(use_color_statusbar_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_COLORSTATUSBAR));
-  // g_signal_connect(G_OBJECT(), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER());
-  // g_signal_connect(test_command_button_ccc, "clicked", G_CALLBACK(test_command_ccc), NULL);
 
   load_advanced_settings_ccc();
   gtk_entry_set_text(GTK_ENTRY(command_to_call_text_ccc), advanced_settings_ccc.command_to_call);
@@ -3979,7 +3973,6 @@ void update_advanced_button_settings_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_output_sector_size_checkbutton_ccc), advanced_settings_ccc.enable_output_sector_size);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(driver_io_scsi_only_checkbutton_ccc), advanced_settings_ccc.driver_io_scsi_only);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_physical_sector_size_for_virtual_checkbutton_ccc), advanced_settings_ccc.use_physical_sector_size_for_virtual);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_color_statusbar_checkbutton_ccc), advanced_settings_ccc.color_statusbar);
 
   gtk_adjustment_ccc = (GtkAdjustment *)gtk_adjustment_new(0, -1, 0x7fffffffffffffff, 1, 100, 0);
   gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(output_offset_spinbutton_ccc), gtk_adjustment_ccc);
