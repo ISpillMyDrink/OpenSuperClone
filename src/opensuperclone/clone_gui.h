@@ -340,7 +340,6 @@ GtkWidget *virtual_disk_device_name_text_ccc;
 GtkWidget *driver_minimum_cluster_size_button_label_ccc;
 GtkWidget *driver_minimum_cluster_size_spinbutton_ccc;
 GtkWidget *enable_extended_analyze_checkbutton_ccc;
-GtkWidget *use_color_statusbar_checkbutton_ccc;
 GtkWidget *primary_relay_settings_label_ccc;
 GtkWidget *primary_relay_settings_info_label_ccc;
 GtkWidget *label_current_primary_relay_board_ccc;
