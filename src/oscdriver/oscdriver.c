@@ -1769,7 +1769,11 @@ static struct vm_operations_struct mmap_vm_ops_m =
 static int op_mmap_m(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_m;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_m(vma);
   // printk("op_mmap\n");
@@ -1848,7 +1852,11 @@ static struct vm_operations_struct mmap_vm_ops_tb =
 static int op_mmap_tb(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_tb;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_tb(vma);
   // printk("op_mmap\n");
@@ -1927,7 +1935,11 @@ static struct vm_operations_struct mmap_vm_ops_mdb =
 int op_mmap_mdb(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_mdb;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_mdb(vma);
   // printk("op_mmap\n");
