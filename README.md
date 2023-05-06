@@ -59,7 +59,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.2: add support for kernel 5.19.12 to 6.1.12 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
+* OSCDriver 2.6.3: add support up to kernel 6.3.1 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * added tooltips to most UI elements
 
 #### OpenSuperClone 2.4.1
