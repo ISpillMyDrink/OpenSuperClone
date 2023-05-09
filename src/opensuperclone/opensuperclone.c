@@ -13931,6 +13931,11 @@ int extract_smart_data_ccc(void)
         snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reported Uncorrectable Errors = %llu", (unsigned long long)raw);
         strcat(smart_data_text_ccc, temp);
       }
+      else if (id == 188 && raw > 0)
+      {
+        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Command Timeout = %llu", (unsigned long long)raw);
+        strcat(smart_data_text_ccc, temp);
+      }
       else if (id == 197 && raw > 0)
       {
         snprintf(temp, sizeof(temp), "\n# *** WARNING *** Current Pending Sectors = %llu", (unsigned long long)raw);
