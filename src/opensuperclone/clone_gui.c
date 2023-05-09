@@ -3708,6 +3708,7 @@ void test_power_command_ccc(void)
 
 void activate_status_buttons_ccc(void)
 {
+  // status registers
   gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
@@ -3716,6 +3717,8 @@ void activate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+  
+  // error registers
   gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
@@ -3728,6 +3731,7 @@ void activate_status_buttons_ccc(void)
 
 void deactivate_status_buttons_ccc(void)
 {
+  // status registers
   gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(drdy_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(df_status_icon), status_icon_off_path);
@@ -3736,6 +3740,8 @@ void deactivate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
+
+  // error registers
   gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(mc_status_icon), status_icon_off_path);
@@ -3753,6 +3759,7 @@ void update_status_buttons_ccc(void)
     activate_status_buttons_ccc();
     if (connected_ccc)
     {
+      // status registers
       if (ata_status_ccc & 0x80)
       {
         gtk_image_set_from_file(GTK_IMAGE(bsy_status_icon), status_icon_on_path);
@@ -3793,6 +3800,7 @@ void update_status_buttons_ccc(void)
         gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_on_path);
       }
 
+      // error registers
       if (ata_error_ccc & 0x80)
       {
         gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), error_icon_on_path);
