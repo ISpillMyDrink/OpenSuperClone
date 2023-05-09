@@ -77,7 +77,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 
 ## 💵 Credits
 
-Credit belongs to Scott Dwyer for his excellent work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>
+Credit belongs to Scott Dwyer for his excellent work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>,
 and <a href="https://github.com/piernov/">piernov</a> for his work on updating the kernel module.
 
 This project makes use of the following libraries/programs:
