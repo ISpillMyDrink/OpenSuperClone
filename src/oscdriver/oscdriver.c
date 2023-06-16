@@ -1566,17 +1566,19 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.gd->private_data = &data_device;
       strcpy(data_device.gd->disk_name, data_device.device_name);
       set_capacity(data_device.gd, (data_device.size / KERNEL_SECTOR_SIZE));
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
+      add_disk(data_device.gd);
+#else
       if (add_disk(data_device.gd)) {
         printk(KERN_WARNING "oscdriver: unable to register disk\n");
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 14, 0)
-        blk_cleanup_queue(data_device.gd->queue);
-#elif LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
         blk_cleanup_disk(data_device.gd);
 #else
         put_disk(data_device.gd);
 #endif
         goto out_unregister;
       }
+#endif
 
       data_drive_active = 0;
       write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
