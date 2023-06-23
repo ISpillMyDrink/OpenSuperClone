@@ -6,4 +6,3 @@ package
 
 # Ignore IDE artifacts
 # .vscode
-.DS_Store
