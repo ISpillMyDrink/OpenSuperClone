@@ -8,7 +8,6 @@
 #include "clone_gui_common.h"
 #include "opensuperclone.h"
 #include "opensuperclone_help.h"
-#include "oscdriver.h"
 
 // Function to handle ctrl-c
 void signal_callback_handler_ccc(int signum)
