@@ -1566,17 +1566,19 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.gd->private_data = &data_device;
       strcpy(data_device.gd->disk_name, data_device.device_name);
       set_capacity(data_device.gd, (data_device.size / KERNEL_SECTOR_SIZE));
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
+      add_disk(data_device.gd);
+#else
       if (add_disk(data_device.gd)) {
         printk(KERN_WARNING "oscdriver: unable to register disk\n");
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 14, 0)
-        blk_cleanup_queue(data_device.gd->queue);
-#elif LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
         blk_cleanup_disk(data_device.gd);
 #else
         put_disk(data_device.gd);
 #endif
         goto out_unregister;
       }
+#endif
 
       data_drive_active = 0;
       write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
@@ -1769,7 +1771,11 @@ static struct vm_operations_struct mmap_vm_ops_m =
 static int op_mmap_m(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_m;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_m(vma);
   // printk("op_mmap\n");
@@ -1848,7 +1854,11 @@ static struct vm_operations_struct mmap_vm_ops_tb =
 static int op_mmap_tb(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_tb;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_tb(vma);
   // printk("op_mmap\n");
@@ -1927,7 +1937,11 @@ static struct vm_operations_struct mmap_vm_ops_mdb =
 int op_mmap_mdb(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_mdb;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
   vma->vm_flags |= VM_RESERVED;
+#else
+  vm_flags_set(vma, VM_RESERVED);
+#endif
   vma->vm_private_data = filp->private_data;
   mmap_open_mdb(vma);
   // printk("op_mmap\n");

@@ -8,7 +8,6 @@
 #include "clone_gui_common.h"
 #include "opensuperclone.h"
 #include "opensuperclone_help.h"
-#include "oscdriver.h"
 
 // Function to handle ctrl-c
 void signal_callback_handler_ccc(int signum)
@@ -13937,9 +13936,24 @@ int extract_smart_data_ccc(void)
         snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reallocated Sectors Count = %llu", (unsigned long long)raw);
         strcat(smart_data_text_ccc, temp);
       }
+      else if (id == 187 && raw > 0)
+      {
+        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reported Uncorrectable Errors = %llu", (unsigned long long)raw);
+        strcat(smart_data_text_ccc, temp);
+      }
+      else if (id == 188 && raw > 0)
+      {
+        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Command Timeout = %llu", (unsigned long long)raw);
+        strcat(smart_data_text_ccc, temp);
+      }
       else if (id == 197 && raw > 0)
       {
         snprintf(temp, sizeof(temp), "\n# *** WARNING *** Current Pending Sectors = %llu", (unsigned long long)raw);
+        strcat(smart_data_text_ccc, temp);
+      }
+      else if (id == 198 && raw > 0)
+      {
+        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Offline Uncorrectable = %llu", (unsigned long long)raw);
         strcat(smart_data_text_ccc, temp);
       }
     }
@@ -14010,6 +14024,22 @@ char *get_smart_attribute_name_ccc(int id)
 
   case 13:
     message = "Soft Read Error Rate";
+    break;
+
+  case 18:
+    message = "Head Health Self Assessment";
+    break;
+
+  case 22:
+    message = "Current Helium Level";
+    break;
+
+  case 23:
+    message = "Helium Condition Lower";
+    break;
+
+  case 24:
+    message = "Helium Condition Upper";
     break;
 
   case 100:

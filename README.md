@@ -59,7 +59,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.2: add support for kernel 5.19.12 to 6.1.12 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f59b24ae116fa284ab4f6c8d6b288f01370f88dc">piernov</a>)
+* OSCDriver 2.6.3: add support up to kernel 6.3.1 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * added tooltips to most UI elements
 
 #### OpenSuperClone 2.4.1
@@ -72,12 +72,13 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 * Implemented CMake as build system
 * Switched from GTK2 to GTK3
 * Replaced localization system with gettext
-* OSCDriver 2.6.1: add suport for kernel 5.15 to 5.19.11 (thanks to <a href="https://github.com/piernov/">piernov</a>)
+* OSCDriver 2.6.1: add support up to kernel 5.19.11 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * Minor improvements to OSCViewer (color picker, minor graphical changes)
 
 ## 💵 Credits
 
-All credit belongs to Scott Dwyer with his work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>.
+Credit belongs to Scott Dwyer for his excellent work on <a href="https://www.hddsuperclone.com/">HDDSuperClone</a>,
+and <a href="https://github.com/piernov/">piernov</a> for his work on updating the kernel module.
 
 This project makes use of the following libraries/programs:
 * GLADE (https://glade.gnome.org/)
