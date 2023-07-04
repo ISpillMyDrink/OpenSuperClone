@@ -2680,7 +2680,7 @@ void display_smart_data_ccc(void)
   GtkWidget *treeview;
 
   treeview = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_view"));
-  store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+  store = gtk_list_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
   g_object_unref(store);
 
@@ -2704,8 +2704,23 @@ void display_smart_data_ccc(void)
   {
     if (smart_data_ccc[i].id != 0)
     {
+      char id[128];
+      char name[128];
+      char flags[128];
+      char current[128];
+      char worst[128];
+      char threshold[128];
+      char raw[128];
+      sprintf(id, "%03d", smart_data_ccc[i].id);
+      sprintf(name, "%s", smart_data_ccc[i].name);
+      sprintf(flags, "0x%04x", smart_data_ccc[i].flags);
+      sprintf(current, "%03d", smart_data_ccc[i].current);
+      sprintf(worst, "%03d", smart_data_ccc[i].worst);
+      sprintf(threshold, "%03d", smart_data_ccc[i].threshold);
+      sprintf(raw, "0x%014llx", smart_data_ccc[i].raw);
+
       gtk_list_store_append(store, &iter);
-      gtk_list_store_set(store, &iter, 0, smart_data_ccc[i].id, 1, smart_data_ccc[i].name, 2, smart_data_ccc[i].flags, 3, smart_data_ccc[i].current, 4, smart_data_ccc[i].worst, 5, smart_data_ccc[i].threshold, 6, smart_data_ccc[i].raw, -1);
+      gtk_list_store_set(store, &iter, 0, id, 1, name, 2, flags, 3, current, 4, worst, 5, threshold, 6, raw, -1);
     }
   }
 

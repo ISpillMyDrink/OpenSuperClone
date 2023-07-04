@@ -13927,7 +13927,7 @@ int extract_smart_data_ccc(void)
       smart_data_ccc[smart_data_count_ccc].current = current;
       smart_data_ccc[smart_data_count_ccc].worst = worst;
       smart_data_ccc[smart_data_count_ccc].threshold = threshold;
-      smart_data_ccc[smart_data_count_ccc].raw = raw;
+      smart_data_ccc[smart_data_count_ccc].raw = (unsigned long long)raw;
       snprintf(smart_data_ccc[smart_data_count_ccc].name, sizeof(smart_data_ccc[smart_data_count_ccc].name), "%s", name);
       smart_data_count_ccc++;
 
