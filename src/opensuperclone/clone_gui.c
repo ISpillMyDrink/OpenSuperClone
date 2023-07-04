@@ -2711,13 +2711,14 @@ void display_smart_data_ccc(void)
       char worst[128];
       char threshold[128];
       char raw[128];
-      sprintf(id, "%03d", smart_data_ccc[i].id);
-      sprintf(name, "%s", smart_data_ccc[i].name);
-      sprintf(flags, "0x%04x", smart_data_ccc[i].flags);
-      sprintf(current, "%03d", smart_data_ccc[i].current);
-      sprintf(worst, "%03d", smart_data_ccc[i].worst);
-      sprintf(threshold, "%03d", smart_data_ccc[i].threshold);
-      sprintf(raw, "0x%014llx", smart_data_ccc[i].raw);
+
+      snprintf(id, sizeof(id), "%03d", smart_data_ccc[i].id);
+      snprintf(name, sizeof(name), "%s", smart_data_ccc[i].name);
+      snprintf(flags, sizeof(flags), "0x%04x", smart_data_ccc[i].flags);
+      snprintf(current, sizeof(current), "%03d", smart_data_ccc[i].current);
+      snprintf(worst, sizeof(worst), "%03d", smart_data_ccc[i].worst);
+      snprintf(threshold, sizeof(threshold), "%03d", smart_data_ccc[i].threshold);
+      snprintf(raw, sizeof(raw), "0x%014llx", smart_data_ccc[i].raw);
 
       gtk_list_store_append(store, &iter);
       gtk_list_store_set(store, &iter, 0, id, 1, name, 2, flags, 3, current, 4, worst, 5, threshold, 6, raw, -1);
