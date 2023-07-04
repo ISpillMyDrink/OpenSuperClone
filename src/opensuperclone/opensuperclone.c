@@ -13921,6 +13921,17 @@ int extract_smart_data_ccc(void)
     {
       snprintf(temp, sizeof(temp), "\n# %03d  \t0x%04x   \t%03d  \t%03d  \t%03d  \t0x%014llx    \t%s", id, flags, current, worst, threshold, (unsigned long long)raw, name);
       strcat(smart_data_text_ccc, temp);
+
+      // add the smart data to the smart data array
+      smart_data_ccc[smart_data_count_ccc].id = id;
+      smart_data_ccc[smart_data_count_ccc].flags = flags;
+      smart_data_ccc[smart_data_count_ccc].current = current;
+      smart_data_ccc[smart_data_count_ccc].worst = worst;
+      smart_data_ccc[smart_data_count_ccc].threshold = threshold;
+      smart_data_ccc[smart_data_count_ccc].raw = raw;
+      snprintf(smart_data_ccc[smart_data_count_ccc].name, sizeof(smart_data_ccc[smart_data_count_ccc].name), "%s", name);
+      smart_data_count_ccc++;
+
       if (id == 5 && raw > 0)
       {
         snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reallocated Sectors Count = %llu", (unsigned long long)raw);

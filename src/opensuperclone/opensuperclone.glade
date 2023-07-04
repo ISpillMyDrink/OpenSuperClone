@@ -2,6 +2,7 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
+  <object class="GtkTreeStore"/>
   <object class="GtkWindow" id="window_main">
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
@@ -7174,13 +7175,15 @@ no data</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="smart_results_data_label">
+          <object class="GtkTreeView" id="smart_results_view">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">smart results</property>
+            <property name="can-focus">True</property>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection"/>
+            </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>

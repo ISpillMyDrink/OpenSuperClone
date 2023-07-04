@@ -2673,15 +2673,45 @@ void display_smart_data_ccc(void)
   }
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_dialog"));
-  GtkWidget *smart_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_data_label"));
-  // GtkWidget *smart_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "smart_results_box_label"));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
+
+  GtkListStore *store;
+  GtkTreeIter iter;
+  GtkCellRenderer *renderer;
+  GtkWidget *treeview;
+
+  treeview = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_view"));
+  store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+  gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+  g_object_unref(store);
+
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("ID"), renderer, "text", 0, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Name"), renderer, "text", 1, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Flags"), renderer, "text", 2, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Current"), renderer, "text", 3, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Worst"), renderer, "text", 4, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Threshold"), renderer, "text", 5, NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Raw"), renderer, "text", 6, NULL);
+
+  int i;
+  for (i = 0; i < 256; i++)
+  {
+    if (smart_data_ccc[i].id != 0)
+    {
+      gtk_list_store_append(store, &iter);
+      gtk_list_store_set(store, &iter, 0, smart_data_ccc[i].id, 1, smart_data_ccc[i].name, 2, smart_data_ccc[i].flags, 3, smart_data_ccc[i].current, 4, smart_data_ccc[i].worst, 5, smart_data_ccc[i].threshold, 6, smart_data_ccc[i].raw, -1);
+    }
+  }
+
   g_object_unref(builder);
 
-  gtk_label_set_text(GTK_LABEL(smart_results_data_label), smart_data_text_ccc);
-
-  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
+  gtk_window_set_title(GTK_WINDOW(dialog), _("S.M.A.R.T."));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }

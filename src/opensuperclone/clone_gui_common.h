@@ -79,6 +79,17 @@ int analyze_slow_total_reads_ccc;
 long long skip_timeout_copy_ccc;
 int cluster_size_copy_ccc;
 char smart_data_text_ccc[MAX_SMART_DATA_TEXT_LENGTH];
+struct
+{
+  int id;
+  int flags;
+  int current;
+  int worst;
+  int threshold;
+  unsigned long long raw;
+  char name[256];
+} smart_data_ccc[256];
+int smart_data_count_ccc;
 bool aggressive_driver_ccc;
 bool color_statusbar_ccc;
 char primary_relay_name_ccc[MAX_RELAY_NAME_LENGTH];
