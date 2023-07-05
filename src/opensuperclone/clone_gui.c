@@ -1811,7 +1811,7 @@ void choose_null_ccc(void)
 void connect_devices_ccc(void)
 {
   // check if we're already connected
-  if(connected_ccc)
+  if (connected_ccc)
   {
     disconnect_devices_ccc();
     return;
@@ -2270,7 +2270,7 @@ void set_driver_mode_button_status_ccc(bool active)
 
 void start_cloning_ccc(void)
 {
-  if(!button_labeled_start)
+  if (!button_labeled_start)
   {
     stop_signal_ccc = true;
     return;
@@ -2654,7 +2654,7 @@ void get_smart_data_ccc(void)
 {
   stop_signal_ccc = false;
   memset(smart_data_text_ccc, 0, sizeof(smart_data_text_ccc));
-  for(int i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
   {
     smart_data_ccc[i].id = 0;
   }
@@ -2685,7 +2685,7 @@ void display_smart_data_ccc(void)
   GtkWidget *treeview;
 
   treeview = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_view"));
-  store = gtk_list_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  store = gtk_list_store_new(8, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, GDK_TYPE_PIXBUF);
   gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
   g_object_unref(store);
 
@@ -2703,6 +2703,8 @@ void display_smart_data_ccc(void)
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Threshold"), renderer, "text", 5, NULL);
   renderer = gtk_cell_renderer_text_new();
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Value"), renderer, "text", 6, NULL);
+  renderer = gtk_cell_renderer_pixbuf_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Status"), renderer, "pixbuf", 7, NULL);
 
   int i;
   for (i = 0; i < smart_data_count_ccc; i++)
@@ -2725,8 +2727,27 @@ void display_smart_data_ccc(void)
       snprintf(threshold, sizeof(threshold), "%03d", smart_data_ccc[i].threshold);
       snprintf(raw, sizeof(raw), "0x%014llx", smart_data_ccc[i].raw);
 
+      GdkPixbuf *pixbuf = NULL;
+
+      // placeholder
+      pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-information.png", 16, 16, NULL);
+
+      if (smart_data_ccc[i].raw != 0)
+      {
+        if (smart_data_ccc[i].id == 5 || smart_data_ccc[i].id == 197)
+        {
+          // placeholder
+          pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-error.png", 16, 16, NULL);
+        }
+        else if (smart_data_ccc[i].id == 187 || smart_data_ccc[i].id == 188 || smart_data_ccc[i].id == 198 || smart_data_ccc[i].id == 199)
+        {
+          // placeholder
+          pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-warning.png", 16, 16, NULL);
+        }
+      }
+
       gtk_list_store_append(store, &iter);
-      gtk_list_store_set(store, &iter, 0, id, 1, name, 2, flags, 3, current, 4, worst, 5, threshold, 6, raw, -1);
+      gtk_list_store_set(store, &iter, 0, id, 1, name, 2, flags, 3, current, 4, worst, 5, threshold, 6, raw, 7, pixbuf, -1);
     }
   }
 
@@ -3038,7 +3059,7 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_error_options_label_ccc), _("Options for how the virtual disk handles read errors as presented by the recovery."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_minimum_cluster_size_button_label_ccc), _("When in virtual mode 3, this will be the minimum cluster read size. When cloning using a domain, this will also be the minimum cluster read size, so that small domain reads can be prevented if desired."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(virtual_disk_device_name_label_ccc), _("The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). Note that if you choose a name that is already in use, it will cause a system crash. Also, you should choose a conventional name with the SDx format, or some software will not find or list it."));
-  
+
   if (!advanced_settings_ccc.enable_output_offset)
   {
     gtk_widget_set_sensitive(GTK_WIDGET(output_offset_spinbutton_ccc), FALSE);
@@ -3768,7 +3789,7 @@ void activate_status_buttons_ccc(void)
   gtk_image_set_from_file(GTK_IMAGE(corr_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(idx_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_off_path);
-  
+
   // error registers
   gtk_image_set_from_file(GTK_IMAGE(bbk_status_icon), status_icon_off_path);
   gtk_image_set_from_file(GTK_IMAGE(unc_status_icon), status_icon_off_path);
