@@ -13873,13 +13873,6 @@ int extract_smart_data_ccc(void)
     threshold_data_valid = 1;
   }
 
-  for(int i = 0; i < 256; i++)
-  {
-    smart_data_ccc[i].id = 0;
-  }
-
-  smart_data_count_ccc = 0;
-
   char temp[256];
   uint16_t version;
   memcpy(&version, smart_data, 2);

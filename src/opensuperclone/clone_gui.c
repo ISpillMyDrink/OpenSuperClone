@@ -2654,6 +2654,11 @@ void get_smart_data_ccc(void)
 {
   stop_signal_ccc = false;
   memset(smart_data_text_ccc, 0, sizeof(smart_data_text_ccc));
+  for(int i = 0; i < 256; i++)
+  {
+    smart_data_ccc[i].id = 0;
+  }
+  smart_data_count_ccc = 0;
   int ret = extract_smart_data_ccc();
   if (ret == 0)
   {
@@ -2697,10 +2702,10 @@ void display_smart_data_ccc(void)
   renderer = gtk_cell_renderer_text_new();
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Threshold"), renderer, "text", 5, NULL);
   renderer = gtk_cell_renderer_text_new();
-  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Raw"), renderer, "text", 6, NULL);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Value"), renderer, "text", 6, NULL);
 
   int i;
-  for (i = 0; i < 256; i++)
+  for (i = 0; i < smart_data_count_ccc; i++)
   {
     if (smart_data_ccc[i].id != 0)
     {
