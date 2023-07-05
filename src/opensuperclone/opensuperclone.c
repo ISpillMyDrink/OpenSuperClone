@@ -14123,7 +14123,7 @@ char *get_smart_attribute_name_ccc(int id)
     break;
 
   case 184:
-    message = "End-to-End error";
+    message = "End-to-End Error";
     break;
 
   case 185:
@@ -14263,7 +14263,7 @@ char *get_smart_attribute_name_ccc(int id)
     break;
 
   case 226:
-    message = "Load-in Time";
+    message = "Load-In Time";
     break;
 
   case 227:
