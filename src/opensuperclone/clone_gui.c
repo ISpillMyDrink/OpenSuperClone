@@ -2729,20 +2729,17 @@ void display_smart_data_ccc(void)
 
       GdkPixbuf *pixbuf = NULL;
 
-      // placeholder
-      pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-information.png", 16, 16, NULL);
+      pixbuf = gdk_pixbuf_new_from_file_at_size(smart_info_icon_path, 16, 16, NULL);
 
       if (smart_data_ccc[i].raw != 0)
       {
         if (smart_data_ccc[i].id == 5 || smart_data_ccc[i].id == 197)
         {
-          // placeholder
-          pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-error.png", 16, 16, NULL);
+          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
         }
         else if (smart_data_ccc[i].id == 187 || smart_data_ccc[i].id == 188 || smart_data_ccc[i].id == 198 || smart_data_ccc[i].id == 199)
         {
-          // placeholder
-          pixbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/16x16/status/dialog-warning.png", 16, 16, NULL);
+          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
         }
       }
 

@@ -86,6 +86,7 @@ This project makes use of the following libraries/programs:
 * libconfig (https://hyperrealm.github.io/libconfig/)
 * libintl (https://www.gnu.org/software/gettext/)
 * libusb (https://libusb.info/)
+* Font Awesome (https://fontawesome.com/)
 
 ## 📄 License
 
