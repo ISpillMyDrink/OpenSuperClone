@@ -461,9 +461,9 @@ bool button_labeled_start = true;
 char *status_icon_off_path = OSC_RESOURCE_PATH "/img/status_off.png";
 char *status_icon_on_path = OSC_RESOURCE_PATH "/img/status_on.png";
 char *error_icon_on_path = OSC_RESOURCE_PATH "/img/error_on.png";
-char *smart_info_icon_path = OSC_RESOURCE_PATH "/img/circle-info.svg";
-char *smart_warning_icon_path = OSC_RESOURCE_PATH "/img/triangle-exclamation.svg";
-char *smart_error_icon_path = OSC_RESOURCE_PATH "/img/xmark.svg";
+char *smart_info_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/circle-info.svg";
+char *smart_warning_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/triangle-exclamation.svg";
+char *smart_error_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/xmark.svg";
 
 void select_file_ccc(void);
 
