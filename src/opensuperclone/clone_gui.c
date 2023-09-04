@@ -2729,17 +2729,20 @@ void display_smart_data_ccc(void)
 
       GdkPixbuf *pixbuf = NULL;
 
+      // show an info icon if the raw value is 0
       pixbuf = gdk_pixbuf_new_from_file_at_size(smart_info_icon_path, 16, 16, NULL);
 
       if (smart_data_ccc[i].raw != 0)
       {
+        // show an error icon if there are reallocated sectors (005) or pending sectors (197)
         if (smart_data_ccc[i].id == 5 || smart_data_ccc[i].id == 197)
         {
-          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
+          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
         }
+        // show a warning icon if there are reported uncorrectable errors (187), command timeouts (188), UDMA CRC errors (199), or offline uncorrectable errors (198)
         else if (smart_data_ccc[i].id == 187 || smart_data_ccc[i].id == 188 || smart_data_ccc[i].id == 198 || smart_data_ccc[i].id == 199)
         {
-          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
+          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
         }
       }
 
