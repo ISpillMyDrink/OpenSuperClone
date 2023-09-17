@@ -6813,7 +6813,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
-      ret = (int)read(disk2_fd_ccc, ccc_buffer_ccc, rsize * sector_size_ccc);
+      ret = read(disk2_fd_ccc, ccc_buffer_ccc, (size_t)rsize * sector_size_ccc);
       if (ret == -1)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read from destination"));
@@ -9842,7 +9842,7 @@ int read_chunk_ccc(long long position, int size)
       do_nanosleep_ccc((time_left * 1000));
     }
     last_read_start_time_ccc = get_elapsed_usec_ccc();
-    last_read_size_ccc = size * sector_size_ccc;
+    last_read_size_ccc = (long long)size * sector_size_ccc;
   }
 
   ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
@@ -9878,7 +9878,7 @@ int read_chunk_ccc(long long position, int size)
       clear_error_message_ccc();
       return INPUT_DEVICE_ERROR_RETURN_CODE;
     }
-    read_ret = read(disk1_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
+    read_ret = read(disk1_fd_ccc, ccc_buffer_ccc, (size_t)size * sector_size_ccc);
     if (0 && read_ret == -1) // this is disabled as bad sectors cause simple I/O errors
     {
       check_message_ccc = true;
@@ -10061,7 +10061,7 @@ int write_chunk_ccc(long long position, int size)
     temp_buffer = malloc(main_buffer_size_bak);
     memcpy(temp_buffer, ccc_buffer_ccc, main_buffer_size_bak);
     sector_size_ccc = sector_size_ccc + output_sector_size_adjustment_ccc;
-    ccc_main_buffer_size_ccc = size * sector_size_ccc;
+    ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
     memset(ccc_buffer_ccc, 0, ccc_main_buffer_size_ccc);
     int copy_size = sector_size_bak;
     if (sector_size_ccc < sector_size_bak)
@@ -10136,7 +10136,7 @@ int write_chunk_ccc(long long position, int size)
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
-    ret = (int)write(disk2_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
+    ret = write(disk2_fd_ccc, ccc_buffer_ccc, (size_t)size * sector_size_ccc);
     if (ret == -1)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
