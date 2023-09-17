@@ -782,11 +782,11 @@ int begin_driver_ccc(void)
   // driver_buffer_ccc = malloc(DRIVER_TRANSFER_BUFFER_SIZE);
   // driver_control_data_ccc.buffer = driver_buffer_ccc;
   driver_control_data_ccc.logical_block_size = sector_size_ccc;
-  driver_control_data_ccc.physical_block_size = sector_size_ccc * block_size_ccc;
+  driver_control_data_ccc.physical_block_size = (int64_t)sector_size_ccc * block_size_ccc;
   driver_control_data_ccc.total_logical_sectors = source_total_size_ccc;
   if (use_physical_sector_size_for_virtual_ccc)
   {
-    driver_control_data_ccc.logical_block_size = sector_size_ccc * block_size_ccc;
+    driver_control_data_ccc.logical_block_size = (int64_t)sector_size_ccc * block_size_ccc;
     driver_control_data_ccc.total_logical_sectors = source_total_size_ccc / block_size_ccc;
   }
   driver_control_data_ccc.chs_heads = 255;
@@ -1038,7 +1038,7 @@ void install_driver_ccc(void)
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
       clear_error_message_ccc();
-      if(superclone_ccc)
+      if (superclone_ccc)
       {
         initialize_memory_ccc();
       }
@@ -1062,7 +1062,7 @@ void install_driver_ccc(void)
   snprintf(command, sizeof(command), "modprobe %s", DRIVER_FILE_NAME);
   int result = system(command);
 
-  if(result != 0)
+  if (result != 0)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("Error loading driver, see the console for more information.\n"));
     message_now_ccc(tempmessage_ccc);
@@ -1284,10 +1284,10 @@ int initialize_memory_ccc(void)
     {
       multiplier = 4;
     }
-    max_dma_size_ccc = ((pagesize_ccc * multiplier) / 16) * pagesize_ccc;
+    max_dma_size_ccc = (unsigned long long)((pagesize_ccc * multiplier) / 16) * pagesize_ccc;
     if (ahci_mode_ccc)
     {
-      max_dma_size_ccc = (((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
+      max_dma_size_ccc = (unsigned long long)(((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
     }
 
     padding_buffer_ccc = malloc(pagesize_ccc);
@@ -4576,7 +4576,7 @@ int do_fill_ccc(int status, long long mask)
       // long long end_position_bak = end_position_ccc;
       // total_filled_ccc = 0;
       total_filled_ccc = current_position_ccc;
-      ccc_main_buffer_size_ccc = original_cluster_size_ccc * sector_size_ccc;
+      ccc_main_buffer_size_ccc = (unsigned long long)original_cluster_size_ccc * sector_size_ccc;
       set_main_buffer_ccc();
       memset(ccc_buffer_ccc, 0, ccc_main_buffer_size_ccc);
       long long destination_sectors = destination_size / sector_size_ccc;
@@ -4701,7 +4701,7 @@ int do_fill_ccc(int status, long long mask)
           keep_filling = 0;
         }
 
-        ccc_main_buffer_size_ccc = write_size * sector_size_ccc;
+        ccc_main_buffer_size_ccc = (unsigned long long)write_size * sector_size_ccc;
         set_main_buffer_ccc();
         if (fill_mark_ccc)
         {
@@ -6813,7 +6813,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
         clear_error_message_ccc();
         return OUTPUT_DEVICE_ERROR_RETURN_CODE;
       }
-      ret = read(disk2_fd_ccc, ccc_buffer_ccc, rsize * sector_size_ccc);
+      ret = (int)read(disk2_fd_ccc, ccc_buffer_ccc, rsize * sector_size_ccc);
       if (ret == -1)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to read from destination"));
@@ -6837,7 +6837,7 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
 
       long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-      long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+      long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
       {
         // fprintf (stdout, "read from destination position%lld offset%lld size%lld\n", kposition, koffset, ksize);    //debug
@@ -7336,7 +7336,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
             {
               long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
               long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-              long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+              long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
               if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
               {
                 memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -7733,7 +7733,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
             {
               long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
               long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-              long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+              long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
               if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
               {
                 memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -8013,7 +8013,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           {
             long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
             long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-            long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+            long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
             if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
             {
               memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -8544,7 +8544,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           {
             long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
             long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-            long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+            long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
             if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
             {
               memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -9845,7 +9845,7 @@ int read_chunk_ccc(long long position, int size)
     last_read_size_ccc = size * sector_size_ccc;
   }
 
-  ccc_main_buffer_size_ccc = size * sector_size_ccc;
+  ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
   set_main_buffer_ccc();
   memset(ccc_buffer_ccc, 0, ccc_main_buffer_size_ccc);
   skip_time_triggered_ccc = false;
@@ -10136,7 +10136,7 @@ int write_chunk_ccc(long long position, int size)
       clear_error_message_ccc();
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
-    ret = write(disk2_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
+    ret = (int)write(disk2_fd_ccc, ccc_buffer_ccc, size * sector_size_ccc);
     if (ret == -1)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
@@ -10172,7 +10172,7 @@ int write_chunk_ccc(long long position, int size)
   {
     long long kposition = position * (sector_size_ccc / KERNEL_SECTOR_SIZE);
     long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-    long long ksize = size * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+    long long ksize = (long long)size * (sector_size_ccc / KERNEL_SECTOR_SIZE);
     // fprintf (stdout, "source accessed position%lld offset%lld size%lld ", kposition, koffset, ksize);    //debug
     if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
     {
@@ -10222,7 +10222,7 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       {
         long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10281,7 +10281,7 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       {
         long long kposition = (current_position_ccc + rsize2) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = (rsize3) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)(rsize3) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10355,7 +10355,7 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       {
         long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10422,7 +10422,7 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       {
         long long kposition = (current_position_ccc + rsize2) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = (rsize3 + block_size_ccc) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)(rsize3 + block_size_ccc) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10458,7 +10458,7 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
     {
       long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-      long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+      long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
       {
         memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10489,7 +10489,7 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
     {
       long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-      long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+      long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
       if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
       {
         memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10542,7 +10542,7 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
       {
         long long kposition = (current_position_ccc + rsize2) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = (rsize3 + block_size_ccc) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)(rsize3 + block_size_ccc) * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -10563,7 +10563,7 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
       {
         long long kposition = current_position_ccc * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         long long koffset = kposition - read_ctrl_data_ccc(CTRL_KSECTOR_START);
-        long long ksize = rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
+        long long ksize = (long long)rsize * (sector_size_ccc / KERNEL_SECTOR_SIZE);
         if (koffset >= 0 && koffset + ksize <= DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE)
         {
           memset(driver_transfer_buffer_address_ccc + (koffset * KERNEL_SECTOR_SIZE), 0, ksize * KERNEL_SECTOR_SIZE);
@@ -11690,16 +11690,16 @@ int check_buffer_limit_ccc(void)
     multiplier = 4;
   }
   // max_dma_size_ccc = (pagesize_ccc / 8) * pagesize_ccc;
-  max_dma_size_ccc = ((pagesize_ccc * multiplier) / 16) * pagesize_ccc; // limited to this to more match the ahci limit
+  max_dma_size_ccc = (unsigned long long)((pagesize_ccc * multiplier) / 16) * pagesize_ccc; // limited to this to more match the ahci limit
   if (ahci_mode_ccc)
   {
-    max_dma_size_ccc = (((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
+    max_dma_size_ccc = (unsigned long long)(((pagesize_ccc * multiplier) - 128) / 16) * pagesize_ccc;
   }
   int max_size = 0;
   if (direct_mode_ccc)
   {
     max_size = max_dma_size_ccc / sector_size_ccc;
-    if (cluster_size_ccc * sector_size_ccc > (long long)max_dma_size_ccc)
+    if ((long long)cluster_size_ccc * sector_size_ccc > (long long)max_dma_size_ccc)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
       message_now_ccc(tempmessage_ccc);
@@ -11739,7 +11739,7 @@ int check_buffer_limit_ccc(void)
       fclose(file_pointer);
       long long max_sectors_kb = strtoull(line, NULL, 0);
       max_size = (max_sectors_kb * 1024) / sector_size_ccc;
-      if (cluster_size_ccc * sector_size_ccc > max_sectors_kb * 1024)
+      if ((long long)cluster_size_ccc * sector_size_ccc > max_sectors_kb * 1024)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %lld and you chose %d.\n", (max_sectors_kb * 1024) / sector_size_ccc, cluster_size_ccc);
         message_now_ccc(tempmessage_ccc);
