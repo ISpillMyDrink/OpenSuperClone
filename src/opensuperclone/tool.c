@@ -72,10 +72,10 @@ int supertooltool_ccc(void)
     }
   }
 
-  max_dma_size_ccc = (pagesize_ccc / 8) * pagesize_ccc;
+  max_dma_size_ccc = (unsigned long long)(pagesize_ccc / 8) * pagesize_ccc;
   if (ahci_mode_ccc)
   {
-    max_dma_size_ccc = ((pagesize_ccc - 128) / 16) * pagesize_ccc;
+    max_dma_size_ccc = (unsigned long long)((pagesize_ccc - 128) / 16) * pagesize_ccc;
   }
 
   return_value_ccc = initialize_tool_memory_ccc();
@@ -1594,7 +1594,7 @@ int find_command_plus1_ccc(char *search_command, char *search_command_cap, char 
 // function to return a full line
 char *get_full_line_ccc(unsigned int line_number)
 {
-  //char full_line[MAX_LINE_LENGTH] = "";
+  // char full_line[MAX_LINE_LENGTH] = "";
   full_line[0] = '\0';
   sscanf(script_line_pointer_ccc[line_number], "%[^\n]", full_line);
   char *return_data = full_line;
@@ -1605,7 +1605,7 @@ char *get_full_line_ccc(unsigned int line_number)
 char *get_rest_of_line(unsigned int line_number)
 {
   char command[MAX_COMMAND_LENGTH] = "";
-  //char rest_of_line[MAX_LINE_LENGTH] = "";
+  // char rest_of_line[MAX_LINE_LENGTH] = "";
   rest_of_line[0] = '\0';
   sscanf(script_line_pointer_ccc[line_number], "%s %[^\n]", command, rest_of_line);
   char *return_data = rest_of_line;
