@@ -13,6 +13,7 @@ add_custom_command(
     OUTPUT opensuperclone_help.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone_help.txt opensuperclone_help.txt
     COMMAND xxd -i opensuperclone_help.txt opensuperclone_help.h
+    DEPENDS opensuperclone_help.txt
 )
 LIST(APPEND RESOURCES opensuperclone_help.h)
 
@@ -20,6 +21,7 @@ add_custom_command(
     OUTPUT opensuperclone_glade.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/opensuperclone.glade opensuperclone.glade
     COMMAND xxd -i opensuperclone.glade opensuperclone_glade.h
+    DEPENDS opensuperclone.glade
 )
 LIST(APPEND RESOURCES opensuperclone_glade.h)
 

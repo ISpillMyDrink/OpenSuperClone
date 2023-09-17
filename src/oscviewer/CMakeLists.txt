@@ -7,6 +7,7 @@ add_custom_command(
     OUTPUT oscviewer_glade.h
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/oscviewer.glade oscviewer.glade
     COMMAND xxd -i oscviewer.glade oscviewer_glade.h
+    DEPENDS oscviewer.glade
 )
 LIST(APPEND RESOURCES oscviewer_glade.h)
 
