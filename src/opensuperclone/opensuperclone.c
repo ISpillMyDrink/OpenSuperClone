@@ -15248,8 +15248,47 @@ void disable_usb_mass_storage_ccc(void)
     return;
   }
 
+  if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
+  {
+    system("cp -n /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko.original");
+    system("cp -f /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko.backup");
+
+    if (access("/root/uas.ko.original", F_OK) == -1)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/uas.ko.original");
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      fprintf(stdout, "Error: no backup of /root/uas.ko.original\n");
+      return;
+    }
+    if (access("/root/uas.ko.backup", F_OK) == -1)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/uas.ko.backup");
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      fprintf(stdout, "Error: no backup of /root/uas.ko.backup\n");
+      return;
+    }
+  }
+
   if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver,\nafter which no USB storage devices will be detected by the operating system.")))
   {
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
+    {
+      system("modprobe -r uas");
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+
     system("modprobe -r usb-storage");
     if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko"))
     {
@@ -15260,6 +15299,7 @@ void disable_usb_mass_storage_ccc(void)
       clear_error_message_ccc();
       return;
     }
+
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
@@ -15297,6 +15337,20 @@ void restore_usb_mass_storage_ccc(void)
       clear_error_message_ccc();
       return;
     }
+    
+    if (access("/root/uas.ko.original", F_OK) == 0)
+    {
+      if (system("mv -fv /root/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /root/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
