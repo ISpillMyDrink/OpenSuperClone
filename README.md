@@ -61,6 +61,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 * Implemented DKMS for driver installation
 * OSCDriver 2.6.3: add support up to kernel 6.3.1 (thanks to <a href="https://github.com/piernov/">piernov</a>)
 * added tooltips to most UI elements
+* disabling the USB Mass Storage driver now also disables the UAS driver
 
 #### OpenSuperClone 2.4.1
 
