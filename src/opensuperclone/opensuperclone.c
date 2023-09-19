@@ -15228,15 +15228,15 @@ void disable_usb_mass_storage_ccc(void)
 {
   if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver and the USB attached SCSI driver,\nafter which no USB storage devices will be detected by the operating system.")))
   {
-    system("modprobe -r usb-storage");
     system("modprobe -r uas");
+    system("modprobe -r usb-storage");
 
-    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK) == 0)
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist"))
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15244,12 +15244,12 @@ void disable_usb_mass_storage_ccc(void)
       }
     }
 
-    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK) == 0)
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist"))
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15268,7 +15268,7 @@ void restore_usb_mass_storage_ccc(void)
 {
   if (open_confirmation_dialog_ccc(_("You are about to restore the USB mass storage driver and USB attached SCSI driver.")))
   {
-    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist", F_OK) == 0)
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist", F_OK))
     {
       if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
       {
@@ -15281,7 +15281,7 @@ void restore_usb_mass_storage_ccc(void)
       }
     }
 
-    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist", F_OK) == 0)
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist", F_OK))
     {
       if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
       {
