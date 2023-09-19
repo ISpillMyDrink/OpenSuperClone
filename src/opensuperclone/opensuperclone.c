@@ -15226,62 +15226,17 @@ void restore_ports_ccc(void)
 
 void disable_usb_mass_storage_ccc(void)
 {
-  system("cp -n /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko.original");
-  system("cp -f /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko.backup");
-
-  if (access("/root/usb-storage.ko.original", F_OK) == -1)
+  if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver and the USB attached SCSI driver,\nafter which no USB storage devices will be detected by the operating system.")))
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.original");
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    fprintf(stdout, "Error: no backup of /root/usb-storage.ko.original\n");
-    return;
-  }
-  if (access("/root/usb-storage.ko.backup", F_OK) == -1)
-  {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.backup");
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    fprintf(stdout, "Error: no backup of /root/usb-storage.ko.backup\n");
-    return;
-  }
+    system("modprobe -r usb-storage");
+    system("modprobe -r uas");
 
-  if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
-  {
-    system("cp -n /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko.original");
-    system("cp -f /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko.backup");
-
-    if (access("/root/uas.ko.original", F_OK) == -1)
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK) == 0)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/uas.ko.original");
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-      clear_error_message_ccc();
-      fprintf(stdout, "Error: no backup of /root/uas.ko.original\n");
-      return;
-    }
-    if (access("/root/uas.ko.backup", F_OK) == -1)
-    {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/uas.ko.backup");
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-      clear_error_message_ccc();
-      fprintf(stdout, "Error: no backup of /root/uas.ko.backup\n");
-      return;
-    }
-  }
-
-  if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver,\nafter which no USB storage devices will be detected by the operating system.")))
-  {
-    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
-    {
-      system("modprobe -r uas");
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko"))
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15289,15 +15244,17 @@ void disable_usb_mass_storage_ccc(void)
       }
     }
 
-    system("modprobe -r usb-storage");
-    if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko"))
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK) == 0)
     {
-      // error copying
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /root/usb-storage.ko");
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-      clear_error_message_ccc();
-      return;
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /root/uas.ko");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
     }
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Operation completed successfully\n"));
@@ -15309,41 +15266,27 @@ void disable_usb_mass_storage_ccc(void)
 
 void restore_usb_mass_storage_ccc(void)
 {
-  if (access("/root/usb-storage.ko.original", F_OK) == -1)
+  if (open_confirmation_dialog_ccc(_("You are about to restore the USB mass storage driver and USB attached SCSI driver.")))
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.original");
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    fprintf(stdout, "Warning: no backup of /root/usb-storage.ko.original\n");
-  }
-  if (access("/root/usb-storage.ko.backup", F_OK) == -1)
-  {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/root/usb-storage.ko.backup");
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-    clear_error_message_ccc();
-    fprintf(stdout, "Warning: no backup of /root/usb-storage.ko.backup\n");
-  }
-
-  if (open_confirmation_dialog_ccc(_("You are about to restore the USB mass storage driver.")))
-  {
-    if (system("mv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist", F_OK) == 0)
     {
-      // error copying
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /root/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
-      message_error_ccc(tempmessage_ccc);
-      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
-      clear_error_message_ccc();
-      return;
-    }
-    
-    if (access("/root/uas.ko.original", F_OK) == 0)
-    {
-      if (system("mv -fv /root/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\nmv -fv /root/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+
+    if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist", F_OK) == 0)
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
