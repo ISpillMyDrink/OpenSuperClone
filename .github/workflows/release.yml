@@ -3,14 +3,14 @@ name: "Create Release"
 on:
     push:
         branches:
-            - master
+            - main
         tags:
             - v*
 
 jobs:
     build:
         name: Create Release
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         steps:
             - name: Checkout
               uses: actions/checkout@v2
