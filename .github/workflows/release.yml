@@ -39,6 +39,6 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ./package/*.deb
-                asset_name: OpenSuperClone-${{ github.ref }}_amd64.deb
-                asset_content_type: application/zip
+                asset_path: ./packages/opensuperclone_${{ github.ref }}-1_amd64.deb
+                asset_name: opencuperclone_${{ github.ref }}-1_amd64.deb
+                asset_content_type: application/x-deb

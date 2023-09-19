@@ -11,9 +11,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# OpenSuperClone version 2.5
+# OpenSuperClone version 2.5.0
 project(OpenSuperClone
-        VERSION 2.5
+        VERSION 2.5.0
         DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C
@@ -38,7 +38,7 @@ if(DEBUG)
 endif()
 
 # Copyright year 2022
-set(COPYRIGHT_YEAR 2022 CACHE STRING "Copyright Year")
+set(COPYRIGHT_YEAR 2023 CACHE STRING "Copyright Year")
 
 # Path variables for language and script files
 set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
