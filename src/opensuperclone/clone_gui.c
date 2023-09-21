@@ -2077,8 +2077,16 @@ void set_disconnected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
+  if(usbr1_chosen_ccc)
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
+  }
+  else
+  {
+    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
+  }
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(hard_reset_button_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), FALSE);
@@ -4613,6 +4621,8 @@ void choose_primary_usb_ccc(void)
       snprintf(name, MAX_RELAY_NAME_LENGTH, "%04x:%04x %s %s %s\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc, usbr1_vendor_string_ccc, usbr1_product_string_ccc, usbr1_extra_id_string_ccc);
       strcpy(primary_relay_settings_ccc.primary_relay_name, name);
       strcpy(primary_relay_name_ccc, name);
+      gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+      gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
     }
     update_display_ccc(0);
   }
@@ -4630,6 +4640,8 @@ void clear_usbr1_ccc(void)
   primary_relay_settings_ccc.primary_relay_name[0] = '\0';
   primary_relay_name_ccc[0] = '\0';
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), "");
+  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
 
 void do_activate_primary_relay_ccc(void)

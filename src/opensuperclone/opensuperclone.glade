@@ -860,6 +860,7 @@ reset</property>
                             <property name="label" translatable="yes">power
 on</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
                             <signal name="clicked" handler="do_deactivate_primary_relay_main_ccc" swapped="no"/>
@@ -875,6 +876,7 @@ on</property>
                             <property name="label" translatable="yes">power
 off</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
                             <signal name="clicked" handler="do_activate_primary_relay_main_ccc" swapped="no"/>
