@@ -3877,7 +3877,7 @@ void update_status_buttons_ccc(void)
 
       if (ata_status_ccc & 0x01)
       {
-        gtk_image_set_from_file(GTK_IMAGE(err_status_icon), status_icon_on_path);
+        gtk_image_set_from_file(GTK_IMAGE(err_status_icon), error_icon_on_path);
       }
 
       // error registers
