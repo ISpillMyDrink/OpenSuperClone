@@ -201,7 +201,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(drivemi_ccc), _("Drive"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(drivesmi_ccc), _("Drives"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(imagemi_ccc), _("Image File"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(devnullmi_ccc), _("NULL (No destination)"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(devnullmi_ccc), _("NULL (No Destination)"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(modemi_ccc), _("Mode"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(copyimagemi_ccc), _("Generic Source File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(genericmi_ccc), _("Generic Source Device"));
@@ -239,7 +239,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(newdomainmi_ccc), _("New Domain File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainmi_ccc), _("Save Domain File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(savedomainasmi_ccc), _("Save Domain File As"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), _("Disable Ports"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), _("Disable SATA Ports"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreportsmi_ccc), _("Restore Original Startup Port Configuration"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(displayidentifymi_ccc), _("Display Identify Results"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), _("Display Analyze Results"));
@@ -3201,7 +3201,7 @@ void open_timer_settings_dialog_ccc(void)
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(timer_settings_label_ccc), "");
-  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc), _("These timer settings are only for Direct IDE and Direct AHCI modes.\nThey have no effect with the passthrough modes.\n"));
+  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc), _("These timer settings are only for the Direct modes.\nThey have no effect with the Passthrough modes.\n"));
   gtk_label_set_text(GTK_LABEL(initial_busy_wait_time_button_label_ccc), _("Initial busy wait time (ms)"));
   gtk_label_set_text(GTK_LABEL(busy_wait_time_button_label_ccc), _("Busy wait time (ms)"));
   gtk_label_set_text(GTK_LABEL(soft_reset_time_button_label_ccc), _("Soft reset time (ms)"));
