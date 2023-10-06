@@ -1077,13 +1077,21 @@ static int process_read16(const unsigned char *cdb, unsigned char *buffer, const
   return data_transfer(&data_device, position, size, size, buffer, write, blockio);
 }
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 5, 0)
 static int block_device_open(struct block_device *block_device, fmode_t mode)
+#else
+static int block_device_open(struct gendisk *disk, blk_mode_t mode)
+#endif
 {
   // printk(KERN_INFO "osc_block_device_open mode %d\n", mode);    //debug
   return 0;
 }
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 5, 0)
 static void block_device_release(struct gendisk *gendisk, fmode_t mode)
+#else
+static void block_device_release(struct gendisk *gendisk)
+#endif
 {
   // printk(KERN_INFO "osc_block_device_release mode %d\n", mode);    //debug
 }
