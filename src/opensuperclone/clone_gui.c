@@ -242,7 +242,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableportsmi_ccc), _("Disable SATA Ports"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreportsmi_ccc), _("Restore Original Startup Port Configuration"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(displayidentifymi_ccc), _("Display Identify Results"));
-  gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), _("Display Analyze Results"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(displayanalyzemi_ccc), _("Display Analysis Results"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(displaysmartmi_ccc), _("Display SMART Results"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), _("Primary Relay Settings"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
@@ -2384,6 +2384,8 @@ void start_analyzing_ccc(void)
     sections = MAXANALYZESECTIONS;
   }
 
+  analyze_data_ccc.sections = sections;
+
   memset(analyze_read_attempts_ccc, 0, sizeof(analyze_read_attempts_ccc));
   memset(analyze_good_reads_ccc, 0, sizeof(analyze_good_reads_ccc));
   memset(analyze_bad_reads_ccc, 0, sizeof(analyze_bad_reads_ccc));
@@ -2410,23 +2412,24 @@ void start_analyzing_ccc(void)
   gtk_label_set_text(GTK_LABEL(label_filled_ccc), _("Filled"));
   running_analyze_ccc = 0;
 
-  long long average_read_time[MAXANALYZESECTIONS];
-  memset(average_read_time, 0, sizeof(average_read_time));
+  memset(analyze_data_ccc.average_read_time, 0, sizeof(analyze_data_ccc.average_read_time));
   for (i = 0; i < sections; i++)
   {
     // prevent divid by 0 error
     if (analyze_read_attempts_ccc[i] != 0)
     {
-      average_read_time[i] = analyze_read_time_ccc[i] / analyze_read_attempts_ccc[i];
+      analyze_data_ccc.average_read_time[i] = analyze_read_time_ccc[i] / analyze_read_attempts_ccc[i];
     }
   }
 
   long long total_average_read_time = 0;
   for (i = 0; i < sections; i++)
   {
-    total_average_read_time = total_average_read_time + average_read_time[i];
+    total_average_read_time = total_average_read_time + analyze_data_ccc.average_read_time[i];
   }
   total_average_read_time = total_average_read_time / sections;
+
+  analyze_data_ccc.total_average_read_time = total_average_read_time;
 
   long long total_low_time = analyze_low_time_ccc[0];
   for (i = 0; i < sections; i++)
@@ -2437,6 +2440,8 @@ void start_analyzing_ccc(void)
     }
   }
 
+  analyze_data_ccc.total_low_time = total_low_time;
+
   long long total_high_time = analyze_high_time_ccc[0];
   for (i = 0; i < sections; i++)
   {
@@ -2446,11 +2451,15 @@ void start_analyzing_ccc(void)
     }
   }
 
+  analyze_data_ccc.total_high_time = total_high_time;
+
   int total_read_attempts = 0;
   for (i = 0; i < sections; i++)
   {
     total_read_attempts = total_read_attempts + analyze_read_attempts_ccc[i];
   }
+
+  analyze_data_ccc.total_read_attempts = total_read_attempts;
 
   int total_good_reads = 0;
   for (i = 0; i < sections; i++)
@@ -2458,11 +2467,15 @@ void start_analyzing_ccc(void)
     total_good_reads = total_good_reads + analyze_good_reads_ccc[i];
   }
 
+  analyze_data_ccc.total_good_reads = total_good_reads;
+
   int total_bad_reads = 0;
   for (i = 0; i < sections; i++)
   {
     total_bad_reads = total_bad_reads + analyze_bad_reads_ccc[i];
   }
+
+  analyze_data_ccc.total_bad_reads = total_bad_reads;
 
   int total_slow_reads = 0;
   for (i = 0; i < sections; i++)
@@ -2470,11 +2483,15 @@ void start_analyzing_ccc(void)
     total_slow_reads = total_slow_reads + analyze_slow_reads_ccc[i];
   }
 
+  analyze_data_ccc.total_slow_reads = total_slow_reads;
+
   int total_timeouts = 0;
   for (i = 0; i < sections; i++)
   {
     total_timeouts = total_timeouts + analyze_timeouts_ccc[i];
   }
+
+  analyze_data_ccc.total_timeouts = total_timeouts;
 
   float good_percent;
   float bad_percent;
@@ -2520,6 +2537,9 @@ void start_analyzing_ccc(void)
     slow_variance_percent = 100.0f * slow_variance_count / slowsections;
   }
   slow_issue_percent = slow_issue_percent + slow_variance_percent;
+
+  analyze_data_ccc.slow_issue_percent = slow_issue_percent;
+
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow Responding Firmware Issue"), slow_issue_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
@@ -2550,6 +2570,9 @@ void start_analyzing_ccc(void)
   {
     partial_access_percent = partial_access_percent * 2.0f;
   }
+
+  analyze_data_ccc.partial_access_percent = partial_access_percent;
+
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Partial Access Issue"), partial_access_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
@@ -2566,6 +2589,9 @@ void start_analyzing_ccc(void)
     }
   }
   float bad_head_percent = 100.0f * bad_sections / sections;
+
+  analyze_data_ccc.bad_head_percent = bad_head_percent;
+
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad Or Weak Head"), bad_head_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
@@ -2581,6 +2607,9 @@ void start_analyzing_ccc(void)
     {
       slowsections = MAXANALYZESLOW;
     }
+
+    analyze_data_ccc.slowsections = slowsections;
+
     for (i = 0; i < slowsections; i++)
     {
       if ((i % 8) == 0)
@@ -2602,7 +2631,7 @@ void start_analyzing_ccc(void)
 
   for (i = 0; i < sections; i++)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), average_read_time[i] / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), analyze_data_ccc.average_read_time[i] / 1000);
     strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
   }
   fprintf(stdout, "%s", analyze_text_ccc);
@@ -2645,15 +2674,160 @@ void display_analyze_results_ccc(void)
   }
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_results_dialog"));
-  GtkWidget *analyze_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_results_data_label"));
-  // GtkWidget *analyze_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "analyze_results_box_label"));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
-  //  = GTK_WIDGET (gtk_builder_get_object (builder, ""));
+  GtkWidget *analyze_reads_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_reads_label"));
+  GtkWidget *analyze_good_reads_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_good_reads_label"));
+  GtkWidget *analyze_bad_reads_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_bad_reads_label"));
+  GtkWidget *analyze_slow_reads_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_slow_reads_label"));
+  GtkWidget *analyze_issues_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_issues_label"));
+  GtkWidget *analyze_slow_issue_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_slow_issue_label"));
+  GtkWidget *analyze_partial_access_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_partial_access_label"));
+  GtkWidget *analyze_bad_head_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_bad_head_label"));
+  GtkWidget *analyze_variance_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_variance_label"));
+  GtkWidget *analyze_zones_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_zones_label"));
+  GtkWidget *analyze_slow_total_reads_label = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_slow_total_reads_label"));
+
+  GtkListStore *store;
+  GtkCellRenderer *renderer;
+
+  GtkTreeIter variance_iter;
+  GtkTreeIter zones_iter;
+
+  GtkWidget *analyze_variance_view = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_variance_view"));
+  GtkWidget *analyze_zone_view = GTK_WIDGET(gtk_builder_get_object(builder, "analyze_zones_view"));
+
+  gtk_label_set_text(GTK_LABEL(analyze_reads_label), _("Read Statistics"));
+
+  char temp[256];
+  snprintf(temp, sizeof(temp), _("Good Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_good_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_good_reads, analyze_data_ccc.total_read_attempts);
+  gtk_label_set_text(GTK_LABEL(analyze_good_reads_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_good_reads_label), _("Percentage of good reads"));
+
+  snprintf(temp, sizeof(temp), _("Bad Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_bad_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_bad_reads, analyze_data_ccc.total_read_attempts);
+  gtk_label_set_text(GTK_LABEL(analyze_bad_reads_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_bad_reads_label), _("Percentage of bad reads"));
+
+  snprintf(temp, sizeof(temp), _("Slow Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_slow_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_slow_reads, analyze_data_ccc.total_read_attempts);
+  gtk_label_set_text(GTK_LABEL(analyze_slow_reads_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_reads_label), _("Percentage of slow reads"));
+
+  gtk_label_set_text(GTK_LABEL(analyze_issues_label), _("Common Issues"));
+
+  snprintf(temp, sizeof(temp), _("Slow Responding Firmware Issue: %f%%"), analyze_data_ccc.slow_issue_percent);
+  gtk_label_set_text(GTK_LABEL(analyze_slow_issue_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_issue_label), _("Chance of an issue that causes good reads to be slow due to a firmware background operation. Values below 50% are not likely to be an issue. Values above 50% are a possible indication of an issue. Values above 100% are a likely indication of an issue."));
+
+  snprintf(temp, sizeof(temp), _("Partial Access Issue: %f%%"), analyze_data_ccc.partial_access_percent);
+  gtk_label_set_text(GTK_LABEL(analyze_partial_access_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_partial_access_label), _("Chance of an issue with reads after a certain point, likely caused by a translator issue. Any value above 0% is a possible indication of this issue."));
+
+  snprintf(temp, sizeof(temp), _("Bad Or Weak Head: %f%%"), analyze_data_ccc.bad_head_percent);
+  gtk_label_set_text(GTK_LABEL(analyze_bad_head_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_bad_head_label), _("Chance of a bad or weak head. Values are between 0% and 100% and are an indication of how widespread the damage across the drive is."));
+
+  gtk_label_set_text(GTK_LABEL(analyze_variance_label), _("Variance Statistics"));
+
+
+  snprintf(temp, sizeof(temp), _("Total Reads: %d"), analyze_slow_total_reads_ccc);
+  gtk_label_set_text(GTK_LABEL(analyze_slow_total_reads_label), temp);
+
+  store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  gtk_tree_view_set_model(GTK_TREE_VIEW(analyze_variance_view), GTK_TREE_MODEL(store));
+  g_object_unref(store);
+
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("Section"), renderer, "text", 0, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("Low"), renderer, "text", 1, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("High"), renderer, "text", 2, NULL);
+
+  for (int i = 0; i < analyze_data_ccc.slowsections; i++)
+  {
+    char zone[128];
+    char low[128];
+    char high[128];
+
+    snprintf(zone, sizeof(zone), "%d", i);
+    snprintf(low, sizeof(low), "%lld", analyze_slow_low_ccc[i] / 1000);
+    snprintf(high, sizeof(high), "%lld", analyze_slow_high_ccc[i] / 1000);
+
+    gtk_list_store_append(store, &variance_iter);
+    gtk_list_store_set(store, &variance_iter, 0, zone, 1, low, 2, high, -1);
+  }
+
+  gtk_label_set_text(GTK_LABEL(analyze_zones_label), _("Zone Statistics"));
+
+  store = gtk_list_store_new(9, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  gtk_tree_view_set_model(GTK_TREE_VIEW(analyze_zone_view), GTK_TREE_MODEL(store));
+  g_object_unref(store);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Zone"), analyze_data_ccc.sections);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 0, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Total"), analyze_data_ccc.total_read_attempts);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 1, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Good"), analyze_data_ccc.total_good_reads);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 2, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Bad"), analyze_data_ccc.total_bad_reads);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 3, NULL);
+
+    renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Timeout"), analyze_data_ccc.total_timeouts);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 4, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Slow"), analyze_data_ccc.total_slow_reads);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 5, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%lld)", _("Low"), analyze_data_ccc.total_low_time / 1000);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 6, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%lld)", _("High"), analyze_data_ccc.total_high_time / 1000);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 7, NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  snprintf(temp, sizeof(temp), "%s (%lld)", _("Average"), analyze_data_ccc.total_average_read_time / 1000);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 8, NULL);
+
+  for (int i = 0; i < analyze_data_ccc.sections; i++)
+  {
+    char zone[128];
+    char total[128];
+    char good[128];
+    char bad[128];
+    char timeout[128];
+    char slow[128];
+    char low[128];
+    char high[128];
+    char average[128];
+
+    snprintf(zone, sizeof(zone), "%d", i);
+    snprintf(total, sizeof(total), "%d", analyze_read_attempts_ccc[i]);
+    snprintf(good, sizeof(good), "%d", analyze_good_reads_ccc[i]);
+    snprintf(bad, sizeof(bad), "%d", analyze_bad_reads_ccc[i]);
+    snprintf(timeout, sizeof(timeout), "%d", analyze_timeouts_ccc[i]);
+    snprintf(slow, sizeof(slow), "%d", analyze_slow_reads_ccc[i]);
+    snprintf(low, sizeof(low), "%lld", analyze_low_time_ccc[i] / 1000);
+    snprintf(high, sizeof(high), "%lld", analyze_high_time_ccc[i] / 1000);
+    snprintf(average, sizeof(average), "%lld", analyze_data_ccc.average_read_time[i] / 1000);
+
+    gtk_list_store_append(store, &zones_iter);
+    gtk_list_store_set(store, &zones_iter, 0, zone, 1, total, 2, good, 3, bad, 4, timeout, 5, slow, 6, low, 7, high, 8, average, -1);
+  }
+
   g_object_unref(builder);
 
-  gtk_label_set_text(GTK_LABEL(analyze_results_data_label), analyze_text_ccc);
-
-  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Analysis Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }

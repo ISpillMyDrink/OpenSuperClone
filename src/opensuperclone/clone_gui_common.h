@@ -61,6 +61,23 @@ char new_ports_ccc[256];
 int running_analyze_ccc;
 long long analyze_stoptime_ccc;
 char analyze_text_ccc[MAX_ANALYZE_TEXT_LENGTH];
+struct
+{
+  int sections;
+  int slowsections;
+  long long total_average_read_time;
+  long long total_low_time;
+  long long total_high_time;
+  int total_read_attempts;
+  int total_good_reads;
+  int total_bad_reads;
+  int total_slow_reads;
+  int total_timeouts;
+  float slow_issue_percent;
+  float partial_access_percent;
+  float bad_head_percent;
+  long long average_read_time[MAXANALYZESECTIONS];
+} analyze_data_ccc;
 int analyze_read_attempts_ccc[MAXANALYZESECTIONS];
 int analyze_good_reads_ccc[MAXANALYZESECTIONS];
 int analyze_bad_reads_ccc[MAXANALYZESECTIONS];
