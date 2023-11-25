@@ -14285,7 +14285,7 @@ char *get_smart_attribute_name_ccc(int id)
     break;
 
   case 231:
-    message = "Temperature";
+    message = "SSD Life Left/Temperature";
     break;
 
   case 232:
@@ -14316,12 +14316,44 @@ char *get_smart_attribute_name_ccc(int id)
     message = "Total LBAs Read";
     break;
 
+  case 243:
+    message = "Total LBAs Written Expanded";
+    break;
+
+  case 244:
+    message = "Total LBAs Read Expanded";
+    break;
+
+  case 245:
+    message = "Remaining Rated Write Endurance";
+    break;
+
+  case 246:
+    message = "Cumulative Host Sectors Written";
+    break;
+
+  case 247:
+    message = "Host Program NAND Pages Count";
+    break;
+
+  case 248:
+    message = "FTL Program NAND Pages Count";
+    break;
+
   case 249:
     message = "NAND_Writes_1GiB";
     break;
 
   case 250:
     message = "Read Error Retry Rate";
+    break;
+
+  case 251:
+    message = "Minimum Spares Remaining";
+    break;
+
+  case 252:
+    message = "Newly Added Bad Flash Block";
     break;
 
   case 254:
@@ -14341,14 +14373,20 @@ int get_smart_attribute_level_ccc(int id, long long value, int current, int wors
 
   switch (id)
   {
+    // Reallocated Sectors Count
     case 5:
+    // Current Pending Sectors
     case 197:
       if (value > 0) level = 2;
       break;
 
+  	// Reported Uncorrectable Errors
     case 187:
+    // Command Timeout
     case 188:
+    // Off-line Uncorrectable
     case 198:
+    // UDMA CRC Error Rate
     case 199:
       if (value > 0) level = 1;
       break;
