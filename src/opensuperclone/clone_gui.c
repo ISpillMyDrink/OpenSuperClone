@@ -2664,9 +2664,9 @@ void get_smart_data_ccc(void)
   memset(smart_data_text_ccc, 0, sizeof(smart_data_text_ccc));
   for (int i = 0; i < 256; i++)
   {
-    smart_data_ccc[i].id = 0;
+    smart_data_ccc.id[i] = 0;
   }
-  smart_data_count_ccc = 0;
+  smart_data_ccc.value_count = 0;
   int ret = extract_smart_data_ccc();
   if (ret == 0)
   {
@@ -2715,9 +2715,9 @@ void display_smart_data_ccc(void)
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(treeview), -1, _("Status"), renderer, "pixbuf", 7, NULL);
 
   int i;
-  for (i = 0; i < smart_data_count_ccc; i++)
+  for (i = 0; i < smart_data_ccc.value_count; i++)
   {
-    if (smart_data_ccc[i].id != 0)
+    if (smart_data_ccc.id[i] != 0)
     {
       char id[128];
       char name[128];
@@ -2727,28 +2727,28 @@ void display_smart_data_ccc(void)
       char threshold[128];
       char raw[128];
 
-      snprintf(id, sizeof(id), "%03d", smart_data_ccc[i].id);
-      snprintf(name, sizeof(name), "%s", smart_data_ccc[i].name);
-      snprintf(flags, sizeof(flags), "0x%04x", smart_data_ccc[i].flags);
-      snprintf(current, sizeof(current), "%03d", smart_data_ccc[i].current);
-      snprintf(worst, sizeof(worst), "%03d", smart_data_ccc[i].worst);
-      snprintf(threshold, sizeof(threshold), "%03d", smart_data_ccc[i].threshold);
-      snprintf(raw, sizeof(raw), "0x%014llx", smart_data_ccc[i].raw);
+      snprintf(id, sizeof(id), "%03d", smart_data_ccc.id[i]);
+      snprintf(name, sizeof(name), "%s", smart_data_ccc.name[i]);
+      snprintf(flags, sizeof(flags), "0x%04x", smart_data_ccc.flags[i]);
+      snprintf(current, sizeof(current), "%03d", smart_data_ccc.current[i]);
+      snprintf(worst, sizeof(worst), "%03d", smart_data_ccc.worst[i]);
+      snprintf(threshold, sizeof(threshold), "%03d", smart_data_ccc.threshold[i]);
+      snprintf(raw, sizeof(raw), "0x%014llx", smart_data_ccc.raw[i]);
 
       GdkPixbuf *pixbuf = NULL;
 
       // show an info icon if the raw value is 0
       pixbuf = gdk_pixbuf_new_from_file_at_size(smart_info_icon_path, 16, 16, NULL);
 
-      if (smart_data_ccc[i].raw != 0)
+      if (smart_data_ccc.raw[i] != 0)
       {
         // show an error icon if there are reallocated sectors (005) or pending sectors (197)
-        if (smart_data_ccc[i].id == 5 || smart_data_ccc[i].id == 197)
+        if (smart_data_ccc.id[i] == 5 || smart_data_ccc.id[i] == 197)
         {
           pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
         }
         // show a warning icon if there are reported uncorrectable errors (187), command timeouts (188), UDMA CRC errors (199), or offline uncorrectable errors (198)
-        else if (smart_data_ccc[i].id == 187 || smart_data_ccc[i].id == 188 || smart_data_ccc[i].id == 198 || smart_data_ccc[i].id == 199)
+        else if (smart_data_ccc.id[i] == 187 || smart_data_ccc.id[i] == 188 || smart_data_ccc.id[i] == 198 || smart_data_ccc.id[i] == 199)
         {
           pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
         }

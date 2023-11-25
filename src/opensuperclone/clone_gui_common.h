@@ -81,15 +81,16 @@ int cluster_size_copy_ccc;
 char smart_data_text_ccc[MAX_SMART_DATA_TEXT_LENGTH];
 struct
 {
-  int id;
-  int flags;
-  int current;
-  int worst;
-  int threshold;
-  unsigned long long raw;
-  char name[256];
-} smart_data_ccc[256];
-int smart_data_count_ccc;
+  int smart_version;
+  int value_count;
+  int id[256];
+  int flags[256];
+  int current[256];
+  int worst[256];
+  int threshold[256];
+  unsigned long long raw[256];
+  char name[256][256];
+} smart_data_ccc;
 bool aggressive_driver_ccc;
 bool color_statusbar_ccc;
 char primary_relay_name_ccc[MAX_RELAY_NAME_LENGTH];

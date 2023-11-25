@@ -13876,9 +13876,12 @@ int extract_smart_data_ccc(void)
   char temp[256];
   uint16_t version;
   memcpy(&version, smart_data, 2);
-  snprintf(temp, sizeof(temp), "# %s %d\n", _("SMART data structure version"), version);
+  snprintf(temp, sizeof(temp), "# %s %d\n", "SMART data structure version", version);
   strcpy(smart_data_text_ccc, temp);
-  snprintf(temp, sizeof(temp), "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", _("ID"), _("Flags"), _("Current"), _("Worst"), _("Threshold"), _("Raw data"), _("Attribute name"));
+
+  smart_data_ccc.smart_version = version;
+
+  snprintf(temp, sizeof(temp), "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", "ID", "Flags", "Current", "Worst", "Threshold", "Raw data", "Attribute name");
   strcat(smart_data_text_ccc, temp);
   uint8_t threshold = 0;
   int offset = 2;
@@ -13922,40 +13925,14 @@ int extract_smart_data_ccc(void)
       strcat(smart_data_text_ccc, temp);
 
       // add the smart data to the smart data array
-      smart_data_ccc[smart_data_count_ccc].id = id;
-      smart_data_ccc[smart_data_count_ccc].flags = flags;
-      smart_data_ccc[smart_data_count_ccc].current = current;
-      smart_data_ccc[smart_data_count_ccc].worst = worst;
-      smart_data_ccc[smart_data_count_ccc].threshold = threshold;
-      smart_data_ccc[smart_data_count_ccc].raw = (unsigned long long)raw;
-      snprintf(smart_data_ccc[smart_data_count_ccc].name, sizeof(smart_data_ccc[smart_data_count_ccc].name), "%s", name);
-      smart_data_count_ccc++;
-
-      if (id == 5 && raw > 0)
-      {
-        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reallocated Sectors Count = %llu", (unsigned long long)raw);
-        strcat(smart_data_text_ccc, temp);
-      }
-      else if (id == 187 && raw > 0)
-      {
-        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Reported Uncorrectable Errors = %llu", (unsigned long long)raw);
-        strcat(smart_data_text_ccc, temp);
-      }
-      else if (id == 188 && raw > 0)
-      {
-        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Command Timeout = %llu", (unsigned long long)raw);
-        strcat(smart_data_text_ccc, temp);
-      }
-      else if (id == 197 && raw > 0)
-      {
-        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Current Pending Sectors = %llu", (unsigned long long)raw);
-        strcat(smart_data_text_ccc, temp);
-      }
-      else if (id == 198 && raw > 0)
-      {
-        snprintf(temp, sizeof(temp), "\n# *** WARNING *** Offline Uncorrectable = %llu", (unsigned long long)raw);
-        strcat(smart_data_text_ccc, temp);
-      }
+      smart_data_ccc.id[smart_data_ccc.value_count] = id;
+      smart_data_ccc.flags[smart_data_ccc.value_count] = flags;
+      smart_data_ccc.current[smart_data_ccc.value_count] = current;
+      smart_data_ccc.worst[smart_data_ccc.value_count] = worst;
+      smart_data_ccc.threshold[smart_data_ccc.value_count] = threshold;
+      smart_data_ccc.raw[smart_data_ccc.value_count] = (unsigned long long)raw;
+      snprintf(smart_data_ccc.name[smart_data_ccc.value_count], sizeof(smart_data_ccc.name[smart_data_ccc.value_count]), "%s", name);
+      smart_data_ccc.value_count++;
     }
 
     offset += 12;
