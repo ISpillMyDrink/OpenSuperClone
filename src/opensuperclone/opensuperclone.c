@@ -14335,6 +14335,32 @@ char *get_smart_attribute_name_ccc(int id)
   return message;
 }
 
+int get_smart_attribute_level_ccc(int id, long long value, int current, int worst, int threshold)
+{
+  int level = 0;
+
+  switch (id)
+  {
+    case 5:
+    case 197:
+      if (value > 0) level = 2;
+      break;
+
+    case 187:
+    case 188:
+    case 198:
+    case 199:
+      if (value > 0) level = 1;
+      break;
+
+    default:
+      level = 0;
+      break;
+  }
+
+  return level;
+}
+
 long long block_align_ccc(long long value, int offset)
 {
   long long new_value = value / block_size_ccc;

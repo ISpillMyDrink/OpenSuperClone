@@ -2735,6 +2735,7 @@ void display_smart_data_ccc(void)
       char worst[128];
       char threshold[128];
       char raw[128];
+      int level = 0;
 
       snprintf(id, sizeof(id), "%03d", smart_data_ccc.id[i]);
       snprintf(name, sizeof(name), "%s", smart_data_ccc.name[i]);
@@ -2746,21 +2747,19 @@ void display_smart_data_ccc(void)
 
       GdkPixbuf *pixbuf = NULL;
 
-      // show an info icon if the raw value is 0
-      pixbuf = gdk_pixbuf_new_from_file_at_size(smart_info_icon_path, 16, 16, NULL);
+      level = get_smart_attribute_level_ccc(smart_data_ccc.id[i], smart_data_ccc.raw[i], smart_data_ccc.current[i], smart_data_ccc.worst[i], smart_data_ccc.threshold[i]);
 
-      if (smart_data_ccc.raw[i] != 0)
+      if (level == 2)
       {
-        // show an error icon if there are reallocated sectors (005) or pending sectors (197)
-        if (smart_data_ccc.id[i] == 5 || smart_data_ccc.id[i] == 197)
-        {
-          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
-        }
-        // show a warning icon if there are reported uncorrectable errors (187), command timeouts (188), UDMA CRC errors (199), or offline uncorrectable errors (198)
-        else if (smart_data_ccc.id[i] == 187 || smart_data_ccc.id[i] == 188 || smart_data_ccc.id[i] == 198 || smart_data_ccc.id[i] == 199)
-        {
-          pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
-        }
+        pixbuf = gdk_pixbuf_new_from_file_at_size(smart_error_icon_path, 16, 16, NULL);
+      }
+      else if (level == 1)
+      {
+        pixbuf = gdk_pixbuf_new_from_file_at_size(smart_warning_icon_path, 16, 16, NULL);
+      }
+      else
+      {
+        pixbuf = gdk_pixbuf_new_from_file_at_size(smart_info_icon_path, 16, 16, NULL);
       }
 
       gtk_list_store_append(store, &iter);
