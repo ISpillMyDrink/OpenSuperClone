@@ -2688,13 +2688,13 @@ void display_smart_data_ccc(void)
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_dialog"));
   GtkWidget *smart_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "smart_results_box_label"));
-  GtkWidget *smart_update_button = GTK_WIDGET (gtk_builder_get_object (builder, "smart_update_button"));
+  // GtkWidget *smart_update_button = GTK_WIDGET (gtk_builder_get_object (builder, "smart_update_button"));
 
   char smart_data_version_label[256];
   snprintf(smart_data_version_label, sizeof(smart_data_version_label), _("S.M.A.R.T. Data Structure Version: %d"), smart_data_ccc.smart_version);
   gtk_label_set_text(GTK_LABEL(smart_results_box_label), smart_data_version_label);
 
-  gtk_button_set_label(GTK_BUTTON(smart_update_button), _("Update"));
+  // gtk_button_set_label(GTK_BUTTON(smart_update_button), _("Update"));
 
   GtkListStore *store;
   GtkTreeIter iter;
