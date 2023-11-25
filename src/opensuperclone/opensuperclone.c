@@ -2357,8 +2357,7 @@ int read_log_file_ccc(char *log_file)
             char raw_threshold[MAX_LINE_LENGTH] = "";
             char raw_raw[MAX_LINE_LENGTH] = "";
             char raw_name[MAX_LINE_LENGTH] = "";
-            // print the line to console for debugging
-            fprintf(stdout, "%s\n", line);
+            
             sscanf(line, "# %s %s %s %s %s %s %[^\n]", raw_id, raw_flags, raw_current, raw_worst, raw_threshold, raw_raw, raw_name);
 
             smart_data_ccc.id[smart_data_ccc.value_count] = strtoll(raw_id, NULL, 10);
