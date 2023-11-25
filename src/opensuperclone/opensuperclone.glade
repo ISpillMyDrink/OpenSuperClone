@@ -7191,12 +7191,27 @@ no data</property>
       <object class="GtkBox" id="dialog-vbox12">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area12">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="smart_update_button">
+                <property name="label" translatable="yes">update</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <signal name="clicked" handler="get_smart_data_ccc" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="results_ok_button1">
                 <property name="label">gtk-ok</property>
@@ -7208,7 +7223,7 @@ no data</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -7223,6 +7238,7 @@ no data</property>
           <object class="GtkLabel" id="smart_results_box_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="label" translatable="yes">smart structure version</property>
           </object>
           <packing>
             <property name="expand">False</property>
