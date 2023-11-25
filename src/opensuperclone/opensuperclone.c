@@ -1579,6 +1579,8 @@ int read_log_file_ccc(char *log_file)
   int smart_line = 0;
   analyze_text_ccc[0] = '\0';
   smart_data_text_ccc[0] = '\0';
+  smart_data_ccc.smart_version = 0;
+  smart_data_ccc.value_count = 0;
   while (fgets(line, sizeof line, readfile))
   {
     real_line_number++;
@@ -2333,6 +2335,12 @@ int read_log_file_ccc(char *log_file)
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
             strcat(smart_data_text_ccc, raw_data);
+
+            // read the smart version number
+            char raw_version[MAX_LINE_LENGTH] = "";
+            sscanf(line, "# SMART data structure version %s", raw_version);
+            smart_data_ccc.smart_version = strtoll(raw_version, NULL, 0);
+            smart_data_ccc.value_count = 0;
           }
           else
           {
@@ -2340,6 +2348,28 @@ int read_log_file_ccc(char *log_file)
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
             strcat(smart_data_text_ccc, raw_data);
+
+            // read the smart data
+            char raw_id[MAX_LINE_LENGTH] = "";
+            char raw_flags[MAX_LINE_LENGTH] = "";
+            char raw_current[MAX_LINE_LENGTH] = "";
+            char raw_worst[MAX_LINE_LENGTH] = "";
+            char raw_threshold[MAX_LINE_LENGTH] = "";
+            char raw_raw[MAX_LINE_LENGTH] = "";
+            char raw_name[MAX_LINE_LENGTH] = "";
+            // print the line to console for debugging
+            fprintf(stdout, "%s\n", line);
+            sscanf(line, "# %s %s %s %s %s %s %[^\n]", raw_id, raw_flags, raw_current, raw_worst, raw_threshold, raw_raw, raw_name);
+
+            smart_data_ccc.id[smart_data_ccc.value_count] = strtoll(raw_id, NULL, 10);
+            smart_data_ccc.flags[smart_data_ccc.value_count] = strtoll(raw_flags, NULL, 16);
+            smart_data_ccc.current[smart_data_ccc.value_count] = strtoll(raw_current, NULL, 10);
+            smart_data_ccc.worst[smart_data_ccc.value_count] = strtoll(raw_worst, NULL, 10);
+            smart_data_ccc.threshold[smart_data_ccc.value_count] = strtoll(raw_threshold, NULL, 10);
+            smart_data_ccc.raw[smart_data_ccc.value_count] = strtoll(raw_raw, NULL, 16);
+            strncpy(smart_data_ccc.name[smart_data_ccc.value_count], raw_name, 256);
+
+            smart_data_ccc.value_count++;
           }
         }
       }

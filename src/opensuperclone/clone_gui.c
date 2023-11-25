@@ -2666,6 +2666,7 @@ void get_smart_data_ccc(void)
   {
     smart_data_ccc.id[i] = 0;
   }
+  smart_data_ccc.smart_version = 0;
   smart_data_ccc.value_count = 0;
   int ret = extract_smart_data_ccc();
   if (ret == 0)
