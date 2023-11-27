@@ -2502,11 +2502,11 @@ void start_analyzing_ccc(void)
   analyze_data_ccc.good_read_percent = good_percent;
   analyze_data_ccc.bad_read_percent = bad_percent;
   analyze_data_ccc.slow_read_percent = slow_percent;
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Good"), good_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Good", good_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad"), bad_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Bad", bad_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow"), slow_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Slow", slow_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
@@ -2543,7 +2543,7 @@ void start_analyzing_ccc(void)
 
   analyze_data_ccc.slow_issue_percent = slow_issue_percent;
 
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow Responding Firmware Issue"), slow_issue_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Slow Responding Firmware Issue", slow_issue_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   int consecutive_no_read_sections = 0;
@@ -2576,7 +2576,7 @@ void start_analyzing_ccc(void)
 
   analyze_data_ccc.partial_access_percent = partial_access_percent;
 
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Partial Access Issue"), partial_access_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Partial Access Issue", partial_access_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   int bad_sections = 0;
@@ -2595,7 +2595,7 @@ void start_analyzing_ccc(void)
 
   analyze_data_ccc.bad_head_percent = bad_head_percent;
 
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad Or Weak Head"), bad_head_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", "Bad Or Weak Head", bad_head_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
@@ -2603,7 +2603,7 @@ void start_analyzing_ccc(void)
 
   if (1)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# (%d) %s", analyze_slow_total_reads_ccc, _("Variance read times low/high:"));
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# (%d) %s", analyze_slow_total_reads_ccc, "Variance read times low/high:");
     strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
     int slowsections = MAXANALYZESLOW / 4;
     if (extended)
@@ -2629,12 +2629,12 @@ void start_analyzing_ccc(void)
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zones"), _("Total"), total_read_attempts, _("Good"), total_good_reads, _("Bad"), total_bad_reads, total_timeouts, _("Slow"), total_slow_reads, _("Low"), total_low_time / 1000, _("High"), total_high_time / 1000, _("Average"), total_average_read_time / 1000);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zones", "Total", total_read_attempts, "Good", total_good_reads, "Bad", total_bad_reads, total_timeouts, "Slow", total_slow_reads, "Low", total_low_time / 1000, "High", total_high_time / 1000, "Average", total_average_read_time / 1000);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   for (i = 0; i < sections; i++)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", _("Zone"), i, _("Total"), analyze_read_attempts_ccc[i], _("Good"), analyze_good_reads_ccc[i], _("Bad"), analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], _("Slow"), analyze_slow_reads_ccc[i], _("Low"), analyze_low_time_ccc[i] / 1000, _("High"), analyze_high_time_ccc[i] / 1000, _("Average"), analyze_data_ccc.average_read_time[i] / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zone", i, "Total", analyze_read_attempts_ccc[i], "Good", analyze_good_reads_ccc[i], "Bad", analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], "Slow", analyze_slow_reads_ccc[i], "Low", analyze_low_time_ccc[i] / 1000, "High", analyze_high_time_ccc[i] / 1000, "Average", analyze_data_ccc.average_read_time[i] / 1000);
     strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
   }
   fprintf(stdout, "%s", analyze_text_ccc);
@@ -2981,11 +2981,10 @@ void display_identify_data_ccc(void)
   }
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_dialog"));
-  GtkWidget *smart_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
-  // GtkWidget *smart_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "smart_results_box_label"));
+  GtkWidget *identify_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
   g_object_unref(builder);
 
-  gtk_label_set_text(GTK_LABEL(smart_results_data_label), identify_device_raw_text_ccc);
+  gtk_label_set_text(GTK_LABEL(identify_results_data_label), identify_device_raw_text_ccc);
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
