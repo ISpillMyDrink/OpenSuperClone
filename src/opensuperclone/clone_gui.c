@@ -2751,7 +2751,7 @@ void display_analyze_results_ccc(void)
       lowest = analyze_slow_low_ccc[i];
     }
   }
-  snprintf(temp, sizeof(temp), "%s (%lld)", _("Low"), lowest / 1000);
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("Low"), lowest / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 1, NULL);
 
   renderer = gtk_cell_renderer_text_new();
@@ -2763,7 +2763,7 @@ void display_analyze_results_ccc(void)
       highest = analyze_slow_high_ccc[i];
     }
   }
-  snprintf(temp, sizeof(temp), "%s (%lld)", _("High"), highest / 1000);
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("High"), highest / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 2, NULL);
 
   for (int i = 0; i < analyze_data_ccc.slowsections; i++)
@@ -2773,8 +2773,8 @@ void display_analyze_results_ccc(void)
     char high[128];
 
     snprintf(zone, sizeof(zone), "%d", i);
-    snprintf(low, sizeof(low), "%lld", analyze_slow_low_ccc[i] / 1000);
-    snprintf(high, sizeof(high), "%lld", analyze_slow_high_ccc[i] / 1000);
+    snprintf(low, sizeof(low), "%lld %s", analyze_slow_low_ccc[i] / 1000, _("ms"));
+    snprintf(high, sizeof(high), "%lld %s", analyze_slow_high_ccc[i] / 1000, _("ms"));
 
     gtk_list_store_append(store, &variance_iter);
     gtk_list_store_set(store, &variance_iter, 0, zone, 1, low, 2, high, -1);
@@ -2811,15 +2811,15 @@ void display_analyze_results_ccc(void)
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 5, NULL);
 
   renderer = gtk_cell_renderer_text_new();
-  snprintf(temp, sizeof(temp), "%s (%lld)", _("Low"), analyze_data_ccc.total_low_time / 1000);
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("Low"), analyze_data_ccc.total_low_time / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 6, NULL);
 
   renderer = gtk_cell_renderer_text_new();
-  snprintf(temp, sizeof(temp), "%s (%lld)", _("High"), analyze_data_ccc.total_high_time / 1000);
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("High"), analyze_data_ccc.total_high_time / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 7, NULL);
 
   renderer = gtk_cell_renderer_text_new();
-  snprintf(temp, sizeof(temp), "%s (%lld)", _("Average"), analyze_data_ccc.total_average_read_time / 1000);
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("Average"), analyze_data_ccc.total_average_read_time / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 8, NULL);
 
   for (int i = 0; i < analyze_data_ccc.sections; i++)
@@ -2840,9 +2840,9 @@ void display_analyze_results_ccc(void)
     snprintf(bad, sizeof(bad), "%d", analyze_bad_reads_ccc[i]);
     snprintf(timeout, sizeof(timeout), "%d", analyze_timeouts_ccc[i]);
     snprintf(slow, sizeof(slow), "%d", analyze_slow_reads_ccc[i]);
-    snprintf(low, sizeof(low), "%lld", analyze_low_time_ccc[i] / 1000);
-    snprintf(high, sizeof(high), "%lld", analyze_high_time_ccc[i] / 1000);
-    snprintf(average, sizeof(average), "%lld", analyze_data_ccc.average_read_time[i] / 1000);
+    snprintf(low, sizeof(low), "%lld %s", analyze_low_time_ccc[i] / 1000, _("ms"));
+    snprintf(high, sizeof(high), "%lld %s", analyze_high_time_ccc[i] / 1000, _("ms"));
+    snprintf(average, sizeof(average), "%lld %s", analyze_data_ccc.average_read_time[i] / 1000, _("ms"));
 
     gtk_list_store_append(store, &zones_iter);
     gtk_list_store_set(store, &zones_iter, 0, zone, 1, total, 2, good, 3, bad, 4, timeout, 5, slow, 6, low, 7, high, 8, average, -1);
