@@ -2499,11 +2499,14 @@ void start_analyzing_ccc(void)
   good_percent = 100.0f * total_good_reads / total_read_attempts;
   bad_percent = 100.0f * total_bad_reads / total_read_attempts;
   slow_percent = 100.0f * total_slow_reads / total_read_attempts;
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Good"), good_percent);
+  analyze_data_ccc.good_read_percent = good_percent;
+  analyze_data_ccc.bad_read_percent = bad_percent;
+  analyze_data_ccc.slow_read_percent = slow_percent;
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Good"), good_percent, total_good_reads, total_read_attempts);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad"), bad_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Bad"), bad_percent, total_bad_reads, total_read_attempts);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow"), slow_percent);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Slow"), slow_percent, total_slow_reads, total_read_attempts);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
@@ -2698,15 +2701,15 @@ void display_analyze_results_ccc(void)
   gtk_label_set_text(GTK_LABEL(analyze_reads_label), _("Read Statistics"));
 
   char temp[256];
-  snprintf(temp, sizeof(temp), _("Good Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_good_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_good_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Good Reads: %f%% (%d / %d)"), analyze_data_ccc.good_read_percent, analyze_data_ccc.total_good_reads, analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_good_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_good_reads_label), _("Percentage of good reads"));
 
-  snprintf(temp, sizeof(temp), _("Bad Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_bad_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_bad_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Bad Reads: %f%% (%d / %d)"), analyze_data_ccc.bad_read_percent, analyze_data_ccc.total_bad_reads, analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_bad_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_bad_reads_label), _("Percentage of bad reads"));
 
-  snprintf(temp, sizeof(temp), _("Slow Reads: %f%% (%d / %d)"), 100.0f * analyze_data_ccc.total_slow_reads / analyze_data_ccc.total_read_attempts, analyze_data_ccc.total_slow_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Slow Reads: %f%% (%d / %d)"), analyze_data_ccc.slow_read_percent, analyze_data_ccc.total_slow_reads, analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_slow_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_reads_label), _("Percentage of slow reads"));
 

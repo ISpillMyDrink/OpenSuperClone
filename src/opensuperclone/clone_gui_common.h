@@ -73,6 +73,9 @@ struct
   int total_bad_reads;
   int total_slow_reads;
   int total_timeouts;
+  float good_read_percent;
+  float bad_read_percent;
+  float slow_read_percent;
   float slow_issue_percent;
   float partial_access_percent;
   float bad_head_percent;

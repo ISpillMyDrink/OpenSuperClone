@@ -1581,6 +1581,8 @@ int read_log_file_ccc(char *log_file)
   smart_data_text_ccc[0] = '\0';
   smart_data_ccc.smart_version = 0;
   smart_data_ccc.value_count = 0;
+  int logfile_variance_line = 0;
+  int logfile_zone_line = 0;
   while (fgets(line, sizeof line, readfile))
   {
     real_line_number++;
@@ -2321,6 +2323,205 @@ int read_log_file_ccc(char *log_file)
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
             strcat(analyze_text_ccc, raw_data);
+          }
+
+          // parse the read statistics
+          char *temp_good = strstr(line, "# Good = ");
+          char *temp_bad = strstr(line, "# Bad = ");
+          char *temp_slow = strstr(line, "# Slow = ");
+          
+          if (temp_good != NULL)
+          {
+            char raw_good[MAX_LINE_LENGTH] = "";
+            char raw_good_count[MAX_LINE_LENGTH] = "";
+            char raw_total_count[MAX_LINE_LENGTH] = "";
+            sscanf(temp_good, "# Good = %s (%s / %s)", raw_good, raw_good_count, raw_total_count);
+            analyze_data_ccc.good_read_percent = strtof(raw_good, NULL);
+            analyze_data_ccc.total_good_reads = strtoll(raw_good_count, NULL, 10);
+            analyze_data_ccc.total_read_attempts = strtoll(raw_total_count, NULL, 10);
+          }
+          if (temp_bad != NULL)
+          {
+            char raw_bad[MAX_LINE_LENGTH] = "";
+            char raw_bad_count[MAX_LINE_LENGTH] = "";
+            char raw_total_count[MAX_LINE_LENGTH] = "";
+            sscanf(temp_bad, "# Bad = %s (%s / %s)", raw_bad, raw_bad_count, raw_total_count);
+            analyze_data_ccc.bad_read_percent = strtof(raw_bad, NULL);
+            analyze_data_ccc.total_bad_reads = strtoll(raw_bad_count, NULL, 10);
+            // analyze_data_ccc.total_read_attempts = strtoll(raw_total_count, NULL, 10);
+          }
+          if (temp_slow != NULL)
+          {
+            char raw_slow[MAX_LINE_LENGTH] = "";
+            char raw_slow_count[MAX_LINE_LENGTH] = "";
+            char raw_total_count[MAX_LINE_LENGTH] = "";
+            sscanf(temp_slow, "# Slow = %s (%s / %s)", raw_slow, raw_slow_count, raw_total_count);
+            analyze_data_ccc.slow_read_percent = strtof(raw_slow, NULL);
+            analyze_data_ccc.total_slow_reads = strtoll(raw_slow_count, NULL, 10);
+            // analyze_data_ccc.total_read_attempts = strtoll(raw_total_count, NULL, 10);
+          }
+
+          // parse the likely issues
+          char *temp_slow_firmware = strstr(line, "# Slow Responding Firmware Issue = ");
+          char *temp_partial_access = strstr(line, "# Partial Access Issue = ");
+          char *temp_bad_head = strstr(line, "# Bad Or Weak Head = ");
+
+          if (temp_slow_firmware != NULL)
+          {
+            char raw_slow_firmware[MAX_LINE_LENGTH] = "";
+            sscanf(temp_slow_firmware, "# Slow Responding Firmware Issue = %s", raw_slow_firmware);
+            analyze_data_ccc.slow_issue_percent = strtof(raw_slow_firmware, NULL);
+          }
+          if (temp_partial_access != NULL)
+          {
+            char raw_partial_access[MAX_LINE_LENGTH] = "";
+            sscanf(temp_partial_access, "# Partial Access Issue = %s", raw_partial_access);
+            analyze_data_ccc.partial_access_percent = strtof(raw_partial_access, NULL);
+          }
+          if (temp_bad_head != NULL)
+          {
+            char raw_bad_head[MAX_LINE_LENGTH] = "";
+            sscanf(temp_bad_head, "# Bad Or Weak Head = %s", raw_bad_head);
+            analyze_data_ccc.bad_head_percent = strtof(raw_bad_head, NULL);
+          }
+
+          // parse the variance data
+          char *temp_variance = strstr(line, "# (");
+          if (temp_variance != NULL)
+          {
+            char raw_variance[MAX_LINE_LENGTH] = "";
+            sscanf(temp_variance, "# (%s) Variance read times low/high:", raw_variance);
+            analyze_slow_total_reads_ccc = strtoll(raw_variance, NULL, 10);
+            logfile_variance_line = 1;
+            analyze_data_ccc.slowsections = 0;
+          }
+
+          if (logfile_variance_line > 0)
+          {
+            if (logfile_variance_line == 1)
+            {
+              logfile_variance_line = 2;
+            }
+            else if (strcmp(line, "#\n") == 0)
+            {
+              logfile_variance_line = 0;
+            }
+            else
+            {
+              char raw_entry_1[MAX_LINE_LENGTH] = "";
+              char raw_entry_2[MAX_LINE_LENGTH] = "";
+              char raw_entry_3[MAX_LINE_LENGTH] = "";
+              char raw_entry_4[MAX_LINE_LENGTH] = "";
+              char raw_entry_5[MAX_LINE_LENGTH] = "";
+              char raw_entry_6[MAX_LINE_LENGTH] = "";
+              char raw_entry_7[MAX_LINE_LENGTH] = "";
+              char raw_entry_8[MAX_LINE_LENGTH] = "";
+
+              char raw_low_1[MAX_LINE_LENGTH] = "";
+              char raw_high_1[MAX_LINE_LENGTH] = "";
+              char raw_low_2[MAX_LINE_LENGTH] = "";
+              char raw_high_2[MAX_LINE_LENGTH] = "";
+              char raw_low_3[MAX_LINE_LENGTH] = "";
+              char raw_high_3[MAX_LINE_LENGTH] = "";
+              char raw_low_4[MAX_LINE_LENGTH] = "";
+              char raw_high_4[MAX_LINE_LENGTH] = "";
+              char raw_low_5[MAX_LINE_LENGTH] = "";
+              char raw_high_5[MAX_LINE_LENGTH] = "";
+              char raw_low_6[MAX_LINE_LENGTH] = "";
+              char raw_high_6[MAX_LINE_LENGTH] = "";
+              char raw_low_7[MAX_LINE_LENGTH] = "";
+              char raw_high_7[MAX_LINE_LENGTH] = "";
+              char raw_low_8[MAX_LINE_LENGTH] = "";
+              char raw_high_8[MAX_LINE_LENGTH] = "";
+
+              sscanf(line, "# %s %s %s %s %s %s %s %s", raw_entry_1, raw_entry_2, raw_entry_3, raw_entry_4, raw_entry_5, raw_entry_6, raw_entry_7, raw_entry_8);
+
+              sscanf(raw_entry_1, "%[^/]/%[^/]", raw_low_1, raw_high_1);
+              sscanf(raw_entry_2, "%[^/]/%[^/]", raw_low_2, raw_high_2);
+              sscanf(raw_entry_3, "%[^/]/%[^/]", raw_low_3, raw_high_3);
+              sscanf(raw_entry_4, "%[^/]/%[^/]", raw_low_4, raw_high_4);
+              sscanf(raw_entry_5, "%[^/]/%[^/]", raw_low_5, raw_high_5);
+              sscanf(raw_entry_6, "%[^/]/%[^/]", raw_low_6, raw_high_6);
+              sscanf(raw_entry_7, "%[^/]/%[^/]", raw_low_7, raw_high_7);
+              sscanf(raw_entry_8, "%[^/]/%[^/]", raw_low_8, raw_high_8);
+
+              analyze_slow_low_ccc[logfile_variance_line - 2] = strtoll(raw_low_1, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line - 2] = strtoll(raw_high_1, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line - 1] = strtoll(raw_low_2, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line - 1] = strtoll(raw_high_2, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line] = strtoll(raw_low_3, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line] = strtoll(raw_high_3, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line + 1] = strtoll(raw_low_4, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line + 1] = strtoll(raw_high_4, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line + 2] = strtoll(raw_low_5, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line + 2] = strtoll(raw_high_5, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line + 3] = strtoll(raw_low_6, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line + 3] = strtoll(raw_high_6, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line + 4] = strtoll(raw_low_7, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line + 4] = strtoll(raw_high_7, NULL, 10) * 1000;
+              analyze_slow_low_ccc[logfile_variance_line + 5] = strtoll(raw_low_8, NULL, 10) * 1000;
+              analyze_slow_high_ccc[logfile_variance_line + 5] = strtoll(raw_high_8, NULL, 10) * 1000;
+
+              analyze_data_ccc.slowsections = analyze_data_ccc.slowsections + 8;
+              logfile_variance_line++;
+            }
+          }
+
+          // parse the zone data
+          char *temp_zone = strstr(line, "# Zones");
+          if (temp_zone != NULL)
+          {
+            char raw_zone[MAX_LINE_LENGTH] = "";
+            char raw_total[MAX_LINE_LENGTH] = "";
+            char raw_good[MAX_LINE_LENGTH] = "";
+            char raw_bad[MAX_LINE_LENGTH] = "";
+            char raw_timeout[MAX_LINE_LENGTH] = "";
+            char raw_slow[MAX_LINE_LENGTH] = "";
+            char raw_low[MAX_LINE_LENGTH] = "";
+            char raw_high[MAX_LINE_LENGTH] = "";
+            char raw_average[MAX_LINE_LENGTH] = "";
+            sscanf(temp_zone, "# Zones   Total %s    Good %s    Bad %s (%s)    Slow %s    Low %s    High %s    Average %s", raw_total, raw_good, raw_bad, raw_bad, raw_timeout, raw_slow, raw_low, raw_high, raw_average);
+            analyze_data_ccc.total_read_attempts = strtoll(raw_total, NULL, 10);
+            analyze_data_ccc.total_good_reads = strtoll(raw_good, NULL, 10);
+            analyze_data_ccc.total_bad_reads = strtoll(raw_bad, NULL, 10);
+            analyze_data_ccc.total_timeouts = strtoll(raw_timeout, NULL, 10);
+            analyze_data_ccc.total_slow_reads = strtoll(raw_slow, NULL, 10);
+            analyze_data_ccc.total_low_time = strtoll(raw_low, NULL, 10) * 1000;
+            analyze_data_ccc.total_high_time = strtoll(raw_high, NULL, 10) * 1000;
+            analyze_data_ccc.total_average_read_time = strtoll(raw_average, NULL, 10) * 1000;
+            logfile_zone_line = 1;
+            analyze_data_ccc.sections = 0;
+          }
+
+          if (logfile_zone_line > 0)
+          {
+            if (logfile_zone_line == 1)
+            {
+              logfile_zone_line = 2;
+            }
+            else
+            {
+              char raw_zone[MAX_LINE_LENGTH] = "";
+              char raw_total[MAX_LINE_LENGTH] = "";
+              char raw_good[MAX_LINE_LENGTH] = "";
+              char raw_bad[MAX_LINE_LENGTH] = "";
+              char raw_timeout[MAX_LINE_LENGTH] = "";
+              char raw_slow[MAX_LINE_LENGTH] = "";
+              char raw_low[MAX_LINE_LENGTH] = "";
+              char raw_high[MAX_LINE_LENGTH] = "";
+              char raw_average[MAX_LINE_LENGTH] = "";
+              sscanf(line, "# Zone %s    Total %s    Good %s    Bad %s (%s)    Slow %s    Low %s    High %s    Average %s", raw_zone, raw_total, raw_good, raw_bad, raw_bad, raw_timeout, raw_slow, raw_low, raw_high, raw_average);
+              analyze_read_attempts_ccc[logfile_zone_line - 2] = strtoll(raw_total, NULL, 10);
+              analyze_good_reads_ccc[logfile_zone_line - 2] = strtoll(raw_good, NULL, 10);
+              analyze_bad_reads_ccc[logfile_zone_line - 2] = strtoll(raw_bad, NULL, 10);
+              analyze_timeouts_ccc[logfile_zone_line - 2] = strtoll(raw_timeout, NULL, 10);
+              analyze_slow_reads_ccc[logfile_zone_line - 2] = strtoll(raw_slow, NULL, 10);
+              analyze_low_time_ccc[logfile_zone_line - 2] = strtoll(raw_low, NULL, 10) * 1000;
+              analyze_high_time_ccc[logfile_zone_line - 2] = strtoll(raw_high, NULL, 10) * 1000;
+              analyze_data_ccc.average_read_time[logfile_zone_line - 2] = strtoll(raw_average, NULL, 10) * 1000;
+              analyze_data_ccc.sections++;
+              logfile_zone_line++;
+            }
           }
         }
         else if (smart_data)
