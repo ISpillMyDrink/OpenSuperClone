@@ -2738,13 +2738,32 @@ void display_analyze_results_ccc(void)
   g_object_unref(store);
 
   renderer = gtk_cell_renderer_text_new();
-  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("Section"), renderer, "text", 0, NULL);
+  snprintf(temp, sizeof(temp), "%s (%d)", _("Section"), analyze_data_ccc.slowsections);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 0, NULL);
 
   renderer = gtk_cell_renderer_text_new();
-  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("Low"), renderer, "text", 1, NULL);
+  long long lowest = analyze_slow_low_ccc[0];
+  for (int i = 0; i < analyze_data_ccc.slowsections; i++)
+  {
+    if (analyze_slow_low_ccc[i] < lowest)
+    {
+      lowest = analyze_slow_low_ccc[i];
+    }
+  }
+  snprintf(temp, sizeof(temp), "%s (%lld)", _("Low"), lowest / 1000);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 1, NULL);
 
   renderer = gtk_cell_renderer_text_new();
-  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, _("High"), renderer, "text", 2, NULL);
+  long long highest = analyze_slow_high_ccc[0];
+  for (int i = 0; i < analyze_data_ccc.slowsections; i++)
+  {
+    if (analyze_slow_high_ccc[i] > highest)
+    {
+      highest = analyze_slow_high_ccc[i];
+    }
+  }
+  snprintf(temp, sizeof(temp), "%s (%lld)", _("High"), highest / 1000);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 2, NULL);
 
   for (int i = 0; i < analyze_data_ccc.slowsections; i++)
   {
