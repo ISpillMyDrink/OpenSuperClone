@@ -37,7 +37,7 @@ if(DEBUG)
     add_definitions(-DDEBUG)
 endif()
 
-# Copyright year 2022
+# Copyright year 2023
 set(COPYRIGHT_YEAR 2023 CACHE STRING "Copyright Year")
 
 # Path variables for language and script files

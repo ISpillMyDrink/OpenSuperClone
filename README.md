@@ -60,8 +60,8 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 
 * Implemented DKMS for driver installation
 * OSCDriver 2.6.3: add support up to kernel 6.3.13 (thanks to <a href="https://github.com/piernov/">piernov</a>)
-* Added tooltips to most UI elements for clarity
 * Disabling the USB Mass Storage driver now also disables the USB Attached SCSI driver
+* Various UI improvements including tooltips for most controls
 
 #### OpenSuperClone 2.4.1
 
