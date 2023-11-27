@@ -2732,6 +2732,7 @@ void display_analyze_results_ccc(void)
 
   snprintf(temp, sizeof(temp), _("Total Reads: %d"), analyze_slow_total_reads_ccc);
   gtk_label_set_text(GTK_LABEL(analyze_slow_total_reads_label), temp);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_total_reads_label), _("Total number of reads performed during the variance test"));
 
   store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model(GTK_TREE_VIEW(analyze_variance_view), GTK_TREE_MODEL(store));

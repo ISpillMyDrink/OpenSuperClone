@@ -7425,8 +7425,8 @@ no data</property>
     <property name="border-width">5</property>
     <property name="title" translatable="yes">smart results</property>
     <property name="modal">True</property>
-    <property name="default-width">600</property>
-    <property name="default-height">300</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
     <property name="type-hint">dialog</property>
     <property name="transient-for">window_main</property>
     <child internal-child="vbox">
