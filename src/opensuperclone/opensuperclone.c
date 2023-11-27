@@ -2333,32 +2333,18 @@ int read_log_file_ccc(char *log_file)
           if (temp_good != NULL)
           {
             float raw_good = 0;
-            int raw_good_count = 0;
-            int raw_total_count = 0;
-            sscanf(temp_good, "# Good = %f (%d / %d)", &raw_good, &raw_good_count, &raw_total_count);
+            sscanf(temp_good, "# Good = %f", &raw_good);
             analyze_data_ccc.good_read_percent = raw_good;
-            analyze_data_ccc.total_good_reads = raw_good_count;
-            analyze_data_ccc.total_read_attempts = raw_total_count;
           }
           if (temp_bad != NULL)
           {
             float raw_bad = 0;
-            int raw_bad_count = 0;
-            int raw_total_count = 0;
-            sscanf(temp_bad, "# Bad = %f (%d / %f)", &raw_bad, &raw_bad_count, &raw_total_count);
-            analyze_data_ccc.bad_read_percent = raw_bad;
-            analyze_data_ccc.total_bad_reads = raw_bad_count;
-            // analyze_data_ccc.total_read_attempts = raw_total_count;
+            sscanf(temp_bad, "# Bad = %f", &raw_bad);
           }
           if (temp_slow != NULL)
           {
             float raw_slow = 0;
-            int raw_slow_count = 0;
-            int raw_total_count = 0;
-            sscanf(temp_slow, "# Slow = %f (%d / %d)", &raw_slow, &raw_slow_count, &raw_total_count);
-            analyze_data_ccc.slow_read_percent = raw_slow;
-            analyze_data_ccc.total_slow_reads = raw_slow_count;
-            // analyze_data_ccc.total_read_attempts = raw_total_count;
+            sscanf(temp_slow, "# Slow = %f", &raw_slow);
           }
 
           // parse the likely issues

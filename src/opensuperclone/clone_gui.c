@@ -2502,11 +2502,11 @@ void start_analyzing_ccc(void)
   analyze_data_ccc.good_read_percent = good_percent;
   analyze_data_ccc.bad_read_percent = bad_percent;
   analyze_data_ccc.slow_read_percent = slow_percent;
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Good"), good_percent, total_good_reads, total_read_attempts);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Good"), good_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Bad"), bad_percent, total_bad_reads, total_read_attempts);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Bad"), bad_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%% (%d / %d)\n", _("Slow"), slow_percent, total_slow_reads, total_read_attempts);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s = %f%%\n", _("Slow"), slow_percent);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
