@@ -2734,7 +2734,7 @@ void display_analyze_results_ccc(void)
   gtk_label_set_text(GTK_LABEL(analyze_slow_total_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_total_reads_label), _("Total number of reads performed during the variance test"));
 
-  store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  store = gtk_list_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model(GTK_TREE_VIEW(analyze_variance_view), GTK_TREE_MODEL(store));
   g_object_unref(store);
 
@@ -2766,18 +2766,32 @@ void display_analyze_results_ccc(void)
   snprintf(temp, sizeof(temp), "%s (%lld %s)", _("High"), highest / 1000, _("ms"));
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 2, NULL);
 
+  renderer = gtk_cell_renderer_text_new();
+  long long maxvariance = 0;
+  for (int i = 0; i < analyze_data_ccc.slowsections; i++)
+  {
+    if (maxvariance < analyze_slow_high_ccc[i] - analyze_slow_low_ccc[i])
+    {
+      maxvariance = analyze_slow_high_ccc[i] - analyze_slow_low_ccc[i];
+    }
+  }
+  snprintf(temp, sizeof(temp), "%s (%lld %s)", _("Variance"), maxvariance / 1000, _("ms"));
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_variance_view), -1, temp, renderer, "text", 3, NULL);
+
   for (int i = 0; i < analyze_data_ccc.slowsections; i++)
   {
     char zone[128];
     char low[128];
     char high[128];
+    char variance[128];
 
     snprintf(zone, sizeof(zone), "%d", i);
     snprintf(low, sizeof(low), "%lld %s", analyze_slow_low_ccc[i] / 1000, _("ms"));
     snprintf(high, sizeof(high), "%lld %s", analyze_slow_high_ccc[i] / 1000, _("ms"));
+    snprintf(variance, sizeof(variance), "%lld %s", (analyze_slow_high_ccc[i] - analyze_slow_low_ccc[i]) / 1000, _("ms"));
 
     gtk_list_store_append(store, &variance_iter);
-    gtk_list_store_set(store, &variance_iter, 0, zone, 1, low, 2, high, -1);
+    gtk_list_store_set(store, &variance_iter, 0, zone, 1, low, 2, high, 3, variance, -1);
   }
 
   gtk_label_set_text(GTK_LABEL(analyze_zones_label), _("Zone Statistics"));
