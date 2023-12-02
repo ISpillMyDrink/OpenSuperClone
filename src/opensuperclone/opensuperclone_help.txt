@@ -1,14 +1,25 @@
-opensuperclone
-Advanced disk utility.
+OpenSuperClone v2.5.0
 
-Usage: opensuperclone [options]
+Advanced data recovery and disk cloning tool.
 
-OPTIONS:
+DESCRIPTION
+ OpenSuperClone is a GUI and CLI tool for cloning and imaging of
+ degraded and damaged storage devices. It contains a script engine
+ that allows for advanced interaction with devices under recovery.
+
+USAGE
+ $ opensuperclone [OPTIONS]
+
+EXAMPLE
+ $ opensuperclone              # Start the GUI
+ $ opensuperclone --tool       # Start the CLI in interactive mode
+
+OPTIONS
  -v, --version                 Show version and exit
  -h, --help                    Show this help and exit
      --tool                    Start in CLI mode
 
-The following options are for CLI mode only
+Available options for CLI mode:
  -c, --check                   Check the script but don't execute it
  -C, --command                 Use a command line instead of a script
  -d, --direct                  Use direct IO mode (IDE)
@@ -19,3 +30,5 @@ The following options are for CLI mode only
      --ata                     List drives via ATA-passthrough (default)
      --scsi                    List drives via SCSI-passthrough
  -Q, --quiet                   Suppress some of the output
+
+Refer to the OpenSuperClone wiki or HDDSuperClone manual for more information.
