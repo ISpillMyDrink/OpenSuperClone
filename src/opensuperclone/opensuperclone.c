@@ -7,7 +7,6 @@
 #include "common.h"
 #include "clone_gui_common.h"
 #include "opensuperclone.h"
-#include "opensuperclone_help.h"
 
 // Function to handle ctrl-c
 void signal_callback_handler_ccc(int signum)
@@ -1151,11 +1150,38 @@ void fix_driver_memory_driver_ccc(void)
 // function to display help
 void help_ccc(void)
 {
-  unsigned int i;
-  for (i = 0; i < opensuperclone_help_txt_len; i++)
-  {
-    fprintf(stdout, "%c", opensuperclone_help_txt[i]);
-  }
+  fprintf(stdout, "%s %s %s\n", title_ccc, version_number_ccc, GIT_REVISION);
+  fprintf(stdout, "%s\n", _("Advanced data recovery and disk cloning tool."));
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("DESCRIPTION"));
+  fprintf(stdout, "  %s\n", _("OpenSuperClone is a GUI and CLI tool for cloning and imaging of\n  degraded and damaged storage devices. It contains a script engine\n  that allows for advanced interaction with devices under recovery."));
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("USAGE"));
+  fprintf(stdout, "  $ opensuperclone [OPTIONS]\n");
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("EXAMPLE"));
+  fprintf(stdout, "  $ opensuperclone              # %s\n", _("Start the GUI"));
+  fprintf(stdout, "  $ opensuperclone --tool       # %s\n", _("Start the CLI in interactive mode"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("OPTIONS"));
+  fprintf(stdout, "  -v, --version                 %s\n", _("Show version and exit"));
+  fprintf(stdout, "  -h, --help                    %s\n", _("Show this help and exit"));
+  fprintf(stdout, "      --tool                    %s\n", _("Start in CLI mode"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("Available options for CLI mode:"));
+  fprintf(stdout, "  -c, --check                   %s\n", _("Check the script but don't execute it"));
+  fprintf(stdout, "  -C, --command                 %s\n", _("Use a command line instead of a script"));
+  fprintf(stdout, "  -d, --direct                  %s\n", _("Use direct IO mode (IDE)"));
+  fprintf(stdout, "  -a, --ahci                    %s\n", _("Use direct IO mode (AHCI)"));
+  fprintf(stdout, "  -f, --file <file>             %s\n", _("Script file to load and run"));
+  fprintf(stdout, "  -i, --indent <spaces>         %s\n", _("Perform indentation adjustment on the script"));
+  fprintf(stdout, "  -t, --target <disk>           %s\n", _("Disk to use for passthrough mode"));
+  fprintf(stdout, "      --ata                     %s\n", _("List drives via ATA-passthrough (default)"));
+  fprintf(stdout, "      --scsi                    %s\n", _("List drives via SCSI-passthrough"));
+  fprintf(stdout, "  -Q, --quiet                   %s\n", _("Suppress some of the output"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, "%s\n", _("Refer to the OpenSuperClone wiki or HDDSuperClone manual for more information."));
+  fprintf(stdout, "\n");
 }
 
 // function to display version
