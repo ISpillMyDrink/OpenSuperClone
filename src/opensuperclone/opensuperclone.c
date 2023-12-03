@@ -1188,9 +1188,9 @@ void help_ccc(void)
 void version_ccc(void)
 {
   fprintf(stdout, "%s %s %s\n", title_ccc, version_number_ccc, GIT_REVISION);
-  fprintf(stdout, "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors.\n", copyright_year_ccc);
-  fprintf(stdout, "License type: GPL2\n");
-  fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
+  fprintf(stdout, _("Copyright (C) %s Scott Dwyer and OpenSuperClone contributors.\n"), copyright_year_ccc);
+  fprintf(stdout, _("License type: GPL2\n"));
+  fprintf(stdout, _("There is NO WARRANTY, to the extent permitted by law.\n"));
 }
 
 // function to initialize needed memory
