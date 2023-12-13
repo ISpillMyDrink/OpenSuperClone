@@ -14,7 +14,7 @@
 </div>
 
 <h4 align="center">
-  A powerful disk cloning utility for Linux with many advanced features based on <a href="https://www.hddsuperclone.com/">Scott Dwyer's HDDSuperClone</a>.
+  A powerful data recovery utility for Linux with many advanced features based on <a href="https://www.hddsuperclone.com/">Scott Dwyer's HDDSuperClone</a>.
 </h4>
 
 <p align="center">
@@ -39,9 +39,7 @@
 
 #### 📋 Planned Changes
 
-* Refactoring of codebase
-* Remove requirement for running as root
-* Add configuration files and presets
+See the <a href="https://github.com/users/ISpillMyDrink/projects/2">Roadmap</a> for a list of planned changes.
 
 ## 💾 Installation
 
@@ -59,9 +57,9 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.3: add support up to kernel 6.3.13 (thanks to <a href="https://github.com/piernov/">piernov</a>)
+* OSCDriver 2.6.4: add support up to kernel 6.5.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/commit/f21bec38a73e001296e811fb207c712aa660d974">piernov</a>)
 * Disabling the USB Mass Storage driver now also disables the USB Attached SCSI driver
-* Various UI improvements including tooltips for most controls
+* Various UI improvements including tooltips for most controls and improved SMART and Analysis views
 
 #### OpenSuperClone 2.4.1
 
