@@ -2982,11 +2982,122 @@ void display_identify_data_ccc(void)
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_dialog"));
   GtkWidget *identify_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
+
+  GtkWidget *identify_flags_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_flags_label"));
+  GtkWidget *identify_lba_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_lba_checkbox"));
+  GtkWidget *identify_extended_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_extended_checkbox"));
+  GtkWidget *identify_drive_locked_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_drive_locked_checkbox"));
+  GtkWidget *identify_smart_supported_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_smart_supported_checkbox"));
+  GtkWidget *identify_smart_enabled_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_smart_enabled_checkbox"));
+  GtkWidget *identify_rebuild_assist_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_rebuild_assist_checkbox"));
+  GtkWidget *identify_ncq_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_ncq_checkbox"));
+  GtkWidget *identify_sct_error_recovery_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_sct_error_recovery_checkbox"));
+
+  GtkWidget *identify_mdma_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_label"));
+  GtkWidget *identify_mdma_supported_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_supported_label"));
+  GtkWidget *identify_mdma_selected_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_selected_label"));
+  GtkWidget *identify_mdma_supported_0_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_supported_0_checkbox"));
+  GtkWidget *identify_mdma_supported_1_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_supported_1_checkbox"));
+  GtkWidget *identify_mdma_supported_2_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_supported_2_checkbox"));
+  GtkWidget *identify_mdma_selected_0_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_selected_0_checkbox"));
+  GtkWidget *identify_mdma_selected_1_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_selected_1_checkbox"));
+  GtkWidget *identify_mdma_selected_2_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_selected_2_checkbox"));
+
+  GtkWidget *identify_udma_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_label"));
+  GtkWidget *identify_udma_supported_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_label"));
+  GtkWidget *identify_udma_selected_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_label"));
+  GtkWidget *identify_udma_supported_0_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_0_checkbox"));
+  GtkWidget *identify_udma_supported_1_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_1_checkbox"));
+  GtkWidget *identify_udma_supported_2_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_2_checkbox"));
+  GtkWidget *identify_udma_supported_3_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_3_checkbox"));
+  GtkWidget *identify_udma_supported_4_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_4_checkbox"));
+  GtkWidget *identify_udma_supported_5_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_5_checkbox"));
+  GtkWidget *identify_udma_supported_6_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_supported_6_checkbox"));
+  GtkWidget *identify_udma_selected_0_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_0_checkbox"));
+  GtkWidget *identify_udma_selected_1_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_1_checkbox"));
+  GtkWidget *identify_udma_selected_2_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_2_checkbox"));
+  GtkWidget *identify_udma_selected_3_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_3_checkbox"));
+  GtkWidget *identify_udma_selected_4_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_4_checkbox"));
+  GtkWidget *identify_udma_selected_5_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_5_checkbox"));
+  GtkWidget *identify_udma_selected_6_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_6_checkbox"));
+
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(identify_results_data_label), identify_device_raw_text_ccc);
 
-  gtk_window_set_title(GTK_WINDOW(dialog), _("Results"));
+  gtk_label_set_text(GTK_LABEL(identify_flags_label), _("Identify Flags"));
+
+  gtk_button_set_label(GTK_BUTTON(identify_lba_checkbox), _("LBA Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_extended_checkbox), _("LBA48 Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_drive_locked_checkbox), _("Security Locked"));
+  gtk_button_set_label(GTK_BUTTON(identify_smart_supported_checkbox), _("S.M.A.R.T. Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_smart_enabled_checkbox), _("S.M.A.R.T. Enabled"));
+  gtk_button_set_label(GTK_BUTTON(identify_rebuild_assist_checkbox), _("Rebuild Assist Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_ncq_checkbox), _("NCQ Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_sct_error_recovery_checkbox), _("SCT Error Recovery Supported"));
+  
+  gtk_label_set_text(GTK_LABEL(identify_mdma_label), _("Multiword DMA Support"));
+  gtk_label_set_text(GTK_LABEL(identify_mdma_supported_label), _("Supported"));
+  gtk_label_set_text(GTK_LABEL(identify_mdma_selected_label), _("Selected"));
+  
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_0_checkbox), _("0"));
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_1_checkbox), _("1"));
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_2_checkbox), _("2"));
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_selected_0_checkbox), _("0"));
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_selected_1_checkbox), _("1"));
+  gtk_button_set_label(GTK_BUTTON(identify_mdma_selected_2_checkbox), _("2"));
+
+  gtk_label_set_text(GTK_LABEL(identify_udma_label), _("Ultra DMA Support"));
+  gtk_label_set_text(GTK_LABEL(identify_udma_supported_label), _("Supported"));
+  gtk_label_set_text(GTK_LABEL(identify_udma_selected_label), _("Selected"));
+
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_0_checkbox), _("0"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_1_checkbox), _("1"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_2_checkbox), _("2"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_3_checkbox), _("3"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_4_checkbox), _("4"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_5_checkbox), _("5"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_supported_6_checkbox), _("6"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_0_checkbox), _("0"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_1_checkbox), _("1"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_2_checkbox), _("2"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_3_checkbox), _("3"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_4_checkbox), _("4"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_5_checkbox), _("5"));
+  gtk_button_set_label(GTK_BUTTON(identify_udma_selected_6_checkbox), _("6"));
+
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_lba_checkbox), identify_device_data_ccc.lba_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_extended_checkbox), identify_device_data_ccc.extended_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_drive_locked_checkbox), identify_device_data_ccc.drive_locked);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_smart_supported_checkbox), identify_device_data_ccc.smart_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_smart_enabled_checkbox), identify_device_data_ccc.smart_enabled);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_rebuild_assist_checkbox), identify_device_data_ccc.rebuild_assist_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_ncq_checkbox), identify_device_data_ccc.ncq_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_sct_error_recovery_checkbox), identify_device_data_ccc.sct_error_recovery_control);
+
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_supported_0_checkbox), identify_device_data_ccc.mdma_mode_0_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_supported_1_checkbox), identify_device_data_ccc.mdma_mode_1_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_supported_2_checkbox), identify_device_data_ccc.mdma_mode_2_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_selected_0_checkbox), identify_device_data_ccc.mdma_mode_0_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_selected_1_checkbox), identify_device_data_ccc.mdma_mode_1_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_selected_2_checkbox), identify_device_data_ccc.mdma_mode_2_selected);
+
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_0_checkbox), identify_device_data_ccc.udma_mode_0_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_1_checkbox), identify_device_data_ccc.udma_mode_1_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_2_checkbox), identify_device_data_ccc.udma_mode_2_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_3_checkbox), identify_device_data_ccc.udma_mode_3_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_4_checkbox), identify_device_data_ccc.udma_mode_4_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_5_checkbox), identify_device_data_ccc.udma_mode_5_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_supported_6_checkbox), identify_device_data_ccc.udma_mode_6_supported);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_0_checkbox), identify_device_data_ccc.udma_mode_0_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_1_checkbox), identify_device_data_ccc.udma_mode_1_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_2_checkbox), identify_device_data_ccc.udma_mode_2_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_3_checkbox), identify_device_data_ccc.udma_mode_3_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_4_checkbox), identify_device_data_ccc.udma_mode_4_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_5_checkbox), identify_device_data_ccc.udma_mode_5_selected);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_6_checkbox), identify_device_data_ccc.udma_mode_6_selected);
+
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Identify Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
