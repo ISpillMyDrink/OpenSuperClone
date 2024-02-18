@@ -120,6 +120,37 @@ bool rebuild_assist_enabled_ccc;
 bool use_fpdma_ccc;
 bool wait_for_ds_bit_ccc;
 char identify_device_raw_text_ccc[65536];
+struct
+{
+  bool lba_supported;
+  bool extended_supported;
+  bool drive_locked;
+  bool smart_supported;
+  bool smart_enabled;
+  bool rebuild_assist_supported;
+  bool ncq_supported;
+  bool sct_error_recovery_control;
+  bool mdma_mode_0_supported;
+  bool mdma_mode_1_supported;
+  bool mdma_mode_2_supported;
+  bool udma_mode_0_supported;
+  bool udma_mode_1_supported;
+  bool udma_mode_2_supported;
+  bool udma_mode_3_supported;
+  bool udma_mode_4_supported;
+  bool udma_mode_5_supported;
+  bool udma_mode_6_supported;
+  bool mdma_mode_0_selected;
+  bool mdma_mode_1_selected;
+  bool mdma_mode_2_selected;
+  bool udma_mode_0_selected;
+  bool udma_mode_1_selected;
+  bool udma_mode_2_selected;
+  bool udma_mode_3_selected;
+  bool udma_mode_4_selected;
+  bool udma_mode_5_selected;
+  bool udma_mode_6_selected;
+} identify_device_data_ccc;
 
 struct
 {
