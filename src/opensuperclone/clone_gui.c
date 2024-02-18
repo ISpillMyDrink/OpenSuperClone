@@ -2981,7 +2981,6 @@ void display_identify_data_ccc(void)
   }
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_dialog"));
-  GtkWidget *identify_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
 
   GtkWidget *identify_flags_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_flags_label"));
   GtkWidget *identify_lba_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_lba_checkbox"));
@@ -3021,9 +3020,10 @@ void display_identify_data_ccc(void)
   GtkWidget *identify_udma_selected_5_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_5_checkbox"));
   GtkWidget *identify_udma_selected_6_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_udma_selected_6_checkbox"));
 
-  g_object_unref(builder);
+  GtkWidget *identify_raw_buffer_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_raw_buffer_label"));
+  GtkWidget *identify_results_data_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_results_data_label"));
 
-  gtk_label_set_text(GTK_LABEL(identify_results_data_label), identify_device_raw_text_ccc);
+  g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(identify_flags_label), _("Identify Flags"));
 
@@ -3096,6 +3096,9 @@ void display_identify_data_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_4_checkbox), identify_device_data_ccc.udma_mode_4_selected);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_5_checkbox), identify_device_data_ccc.udma_mode_5_selected);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_6_checkbox), identify_device_data_ccc.udma_mode_6_selected);
+
+  gtk_label_set_text(GTK_LABEL(identify_raw_buffer_label), _("Raw Data"));
+  gtk_label_set_text(GTK_LABEL(identify_results_data_label), identify_device_raw_text_ccc);
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Identify Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));

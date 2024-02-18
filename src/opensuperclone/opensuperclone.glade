@@ -6924,10 +6924,36 @@ no data</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="identify_results_data_label">
+                      <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">identify results</property>
+                        <property name="label-xalign">0.009999999776482582</property>
+                        <property name="shadow-type">in</property>
+                        <child>
+                          <object class="GtkAlignment">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="left-padding">12</property>
+                            <child>
+                              <object class="GtkLabel" id="identify_results_data_label">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">identify results</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="identify_raw_buffer_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">raw buffer</property>
+                            <property name="use-markup">True</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
