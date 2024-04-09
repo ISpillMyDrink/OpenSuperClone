@@ -432,19 +432,19 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(bsy_status_icon, _("Busy (The device is busy)"));
   gtk_widget_set_tooltip_text(drdy_status_icon, _("Device Ready (The device is ready to accept commands)"));
   gtk_widget_set_tooltip_text(df_status_icon, _("Device Fault (The device has detected a fault)"));
-  gtk_widget_set_tooltip_text(dsc_status_icon, _("Device Seek Complete (Head is settled on the track)"));
+  gtk_widget_set_tooltip_text(dsc_status_icon, _("Device Seek Complete (Head is settled on the track / Deferred write error)"));
   gtk_widget_set_tooltip_text(drq_status_icon, _("Data Request (The device is ready to transfer data)"));
-  gtk_widget_set_tooltip_text(corr_status_icon, _("Corrected Data (The device has corrected data)"));
-  gtk_widget_set_tooltip_text(idx_status_icon, _("Index (The device has reached the index mark)"));
+  gtk_widget_set_tooltip_text(corr_status_icon, _("Corrected Data (The device has corrected data / Alignment error)"));
+  gtk_widget_set_tooltip_text(idx_status_icon, _("Index (The device has reached the index mark / Sense data available)"));
   gtk_widget_set_tooltip_text(err_status_icon, _("Error (The device has detected an error)"));
-  gtk_widget_set_tooltip_text(bbk_status_icon, _("Bad Block (The device has detected a bad block)"));
+  gtk_widget_set_tooltip_text(bbk_status_icon, _("Bad Block (The device has detected a bad block / Interface CRC error)"));
   gtk_widget_set_tooltip_text(unc_status_icon, _("Uncorrectable Data (The device has detected uncorrectable data)"));
-  gtk_widget_set_tooltip_text(mc_status_icon, _("Media Change (The media has changed)"));
+  gtk_widget_set_tooltip_text(mc_status_icon, _("Media Change (The media has changed / Obsolete)"));
   gtk_widget_set_tooltip_text(idnf_status_icon, _("ID Not Found (The device could not find the sector's ID field)"));
-  gtk_widget_set_tooltip_text(mcr_status_icon, _("Media Change Request (The device has requested a media change)"));
+  gtk_widget_set_tooltip_text(mcr_status_icon, _("Media Change Request (The device has requested a media change / Obsolete)"));
   gtk_widget_set_tooltip_text(abrt_status_icon, _("Command Aborted (The device has aborted the command)"));
-  gtk_widget_set_tooltip_text(tk0nf_status_icon, _("Track 0 Not Found (The device could not find track 0)"));
-  gtk_widget_set_tooltip_text(amnf_status_icon, _("Address Mark Not Found (The device could not find the address mark)"));
+  gtk_widget_set_tooltip_text(tk0nf_status_icon, _("Track 0 Not Found (The device could not find track 0 / End of media)"));
+  gtk_widget_set_tooltip_text(amnf_status_icon, _("Address Mark Not Found (The device could not find the address mark / Command timeout)"));
 
   bsy_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_label"));
   drdy_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_label"));
