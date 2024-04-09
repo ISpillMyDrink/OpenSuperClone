@@ -37,8 +37,8 @@ if(DEBUG)
     add_definitions(-DDEBUG)
 endif()
 
-# Copyright year 2023
-set(COPYRIGHT_YEAR 2023 CACHE STRING "Copyright Year")
+# Copyright year 2024
+set(COPYRIGHT_YEAR 2024 CACHE STRING "Copyright Year")
 
 # Path variables for language and script files
 set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
