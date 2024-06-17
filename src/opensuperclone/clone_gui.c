@@ -2869,6 +2869,38 @@ void display_analyze_results_ccc(void)
   gtk_widget_destroy(dialog);
 }
 
+int get_smart_attribute_level_ccc(int id, long long value, int current, int worst, int threshold)
+{
+  int level = 0;
+
+  switch (id)
+  {
+    // Reallocated Sectors Count
+    case 5:
+    // Current Pending Sectors
+    case 197:
+      if (value > 0) level = 2;
+      break;
+
+  	// Reported Uncorrectable Errors
+    case 187:
+    // Command Timeout
+    case 188:
+    // Off-line Uncorrectable
+    case 198:
+    // UDMA CRC Error Rate
+    case 199:
+      if (value > 0) level = 1;
+      break;
+
+    default:
+      level = 0;
+      break;
+  }
+
+  return level;
+}
+
 void get_smart_data_ccc(void)
 {
   stop_signal_ccc = false;
