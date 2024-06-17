@@ -1531,7 +1531,11 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       }
 
       // configure queue
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0)
       data_queue = blk_mq_init_queue(&data_device.tag_set);
+#else
+      data_queue = blk_mq_alloc_queue(&data_device.tag_set, NULL, NULL);
+#endif
       if (IS_ERR(data_queue))
       {
         printk(KERN_WARNING "oscdriver: Failed to allocate queue\n");
