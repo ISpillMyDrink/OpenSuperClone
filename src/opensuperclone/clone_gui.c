@@ -3005,6 +3005,7 @@ void display_identify_data_ccc(void)
   GtkWidget *identify_rebuild_assist_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_rebuild_assist_checkbox"));
   GtkWidget *identify_ncq_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_ncq_checkbox"));
   GtkWidget *identify_sct_error_recovery_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_sct_error_recovery_checkbox"));
+  GtkWidget *identify_trim_supported_checkbox = GTK_WIDGET(gtk_builder_get_object(builder, "identify_trim_supported_checkbox"));
 
   GtkWidget *identify_mdma_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_label"));
   GtkWidget *identify_mdma_supported_label = GTK_WIDGET(gtk_builder_get_object(builder, "identify_mdma_supported_label"));
@@ -3049,6 +3050,7 @@ void display_identify_data_ccc(void)
   gtk_button_set_label(GTK_BUTTON(identify_rebuild_assist_checkbox), _("Rebuild Assist Supported"));
   gtk_button_set_label(GTK_BUTTON(identify_ncq_checkbox), _("NCQ Supported"));
   gtk_button_set_label(GTK_BUTTON(identify_sct_error_recovery_checkbox), _("SCT Error Recovery Supported"));
+  gtk_button_set_label(GTK_BUTTON(identify_trim_supported_checkbox), _("TRIM Supported"));
   
   gtk_label_set_text(GTK_LABEL(identify_mdma_label), _("Multiword DMA Support"));
   gtk_label_set_text(GTK_LABEL(identify_mdma_supported_label), _("Supported"));
@@ -3088,6 +3090,7 @@ void display_identify_data_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_rebuild_assist_checkbox), identify_device_data_ccc.rebuild_assist_supported);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_ncq_checkbox), identify_device_data_ccc.ncq_supported);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_sct_error_recovery_checkbox), identify_device_data_ccc.sct_error_recovery_control);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_trim_supported_checkbox), identify_device_data_ccc.trim_supported);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_supported_0_checkbox), identify_device_data_ccc.mdma_mode_0_supported);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_mdma_supported_1_checkbox), identify_device_data_ccc.mdma_mode_1_supported);

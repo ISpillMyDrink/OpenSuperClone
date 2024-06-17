@@ -315,6 +315,7 @@ struct
   bool smart_enabled;                 // word 85 bit 0
   bool hpa_supported;                 // word 82 bit 10
   bool dco_supported;                 // word 83 bit 11
+  bool trim_supported;                // word 169 bit 0
   bool multiword_dma_mode0_supported; // word 63 bit 0
   bool multiword_dma_mode1_supported; // word 63 bit 1
   bool multiword_dma_mode2_supported; // word 63 bit 2

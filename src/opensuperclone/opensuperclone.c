@@ -13721,6 +13721,7 @@ int process_source_ccc(void)
       identify_flags_ccc.rebuild_assist_supported = get_flag_data_from_identify_ccc(78, 11, 11);
       identify_flags_ccc.ncq_supported = get_flag_data_from_identify_ccc(76, 8, 8);
       identify_flags_ccc.sct_error_recovery_control = get_flag_data_from_identify_ccc(206, 3, 3);
+      identify_flags_ccc.trim_supported = get_flag_data_from_identify_ccc(169, 0, 0);
       identify_flags_ccc.multiword_dma_mode0_supported = get_flag_data_from_identify_ccc(63, 0, 0);
       identify_flags_ccc.multiword_dma_mode1_supported = get_flag_data_from_identify_ccc(63, 1, 1);
       identify_flags_ccc.multiword_dma_mode2_supported = get_flag_data_from_identify_ccc(63, 2, 2);
@@ -13749,6 +13750,7 @@ int process_source_ccc(void)
       identify_device_data_ccc.rebuild_assist_supported = identify_flags_ccc.rebuild_assist_supported;
       identify_device_data_ccc.ncq_supported = identify_flags_ccc.ncq_supported;
       identify_device_data_ccc.sct_error_recovery_control = identify_flags_ccc.sct_error_recovery_control;
+      identify_device_data_ccc.trim_supported = identify_flags_ccc.trim_supported;
       identify_device_data_ccc.mdma_mode_0_supported = identify_flags_ccc.multiword_dma_mode0_supported;
       identify_device_data_ccc.mdma_mode_1_supported = identify_flags_ccc.multiword_dma_mode1_supported;
       identify_device_data_ccc.mdma_mode_2_supported = identify_flags_ccc.multiword_dma_mode2_supported;

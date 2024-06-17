@@ -130,6 +130,7 @@ struct
   bool rebuild_assist_supported;
   bool ncq_supported;
   bool sct_error_recovery_control;
+  bool trim_supported;
   bool mdma_mode_0_supported;
   bool mdma_mode_1_supported;
   bool mdma_mode_2_supported;
