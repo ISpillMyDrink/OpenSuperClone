@@ -1808,6 +1808,20 @@ void choose_null_ccc(void)
   }
 }
 
+void disconnect_devices_ccc(void)
+{
+  release_devices_ccc();
+  connected_ccc = 0;
+  // strcpy (tempmessage_ccc, _("Devices now disconnected"));
+  // message_error_ccc(tempmessage_ccc);
+  // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
+  // clear_error_message_ccc();
+  set_disconnected_ccc();
+  ata_status_ccc = 0;
+  ata_error_ccc = 0;
+  update_display_ccc(0);
+}
+
 void connect_devices_ccc(void)
 {
   // check if we're already connected
@@ -2013,20 +2027,6 @@ gint display_status_update_action_ccc(gpointer data)
   update_gui_status_buttons_ccc();
   data = data;
   return 1;
-}
-
-void disconnect_devices_ccc(void)
-{
-  release_devices_ccc();
-  connected_ccc = 0;
-  // strcpy (tempmessage_ccc, _("Devices now disconnected"));
-  // message_error_ccc(tempmessage_ccc);
-  // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
-  // clear_error_message_ccc();
-  set_disconnected_ccc();
-  ata_status_ccc = 0;
-  ata_error_ccc = 0;
-  update_display_ccc(0);
 }
 
 void set_connected_ccc(void)
