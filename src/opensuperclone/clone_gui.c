@@ -391,8 +391,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   status_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "status_register_label"));
   error_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "error_register_label"));
 
-  gtk_label_set_text(status_register_label, _("Status Register"));
-  gtk_label_set_text(error_register_label, _("Error Register"));
+  gtk_label_set_text(GTK_LABEL(status_register_label), _("Status Register"));
+  gtk_label_set_text(GTK_LABEL(error_register_label), _("Error Register"));
 
   bsy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_icon"));
   drdy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_icon"));
@@ -496,7 +496,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1150, 690);
+  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
