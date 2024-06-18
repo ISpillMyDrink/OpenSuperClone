@@ -391,8 +391,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   status_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "status_register_label"));
   error_register_label = GTK_WIDGET(gtk_builder_get_object(builder, "error_register_label"));
 
-  gtk_label_set_text(status_register_label, _("Status Register"));
-  gtk_label_set_text(error_register_label, _("Error Register"));
+  gtk_label_set_text(GTK_LABEL(status_register_label), _("Status Register"));
+  gtk_label_set_text(GTK_LABEL(error_register_label), _("Error Register"));
 
   bsy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "bsy_status_icon"));
   drdy_status_icon = GTK_WIDGET(gtk_builder_get_object(builder, "drdy_status_icon"));
@@ -496,7 +496,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
-  gtk_window_set_default_size(main_window_ccc, 1150, 690);
+  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -1808,6 +1808,20 @@ void choose_null_ccc(void)
   }
 }
 
+void disconnect_devices_ccc(void)
+{
+  release_devices_ccc();
+  connected_ccc = 0;
+  // strcpy (tempmessage_ccc, _("Devices now disconnected"));
+  // message_error_ccc(tempmessage_ccc);
+  // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
+  // clear_error_message_ccc();
+  set_disconnected_ccc();
+  ata_status_ccc = 0;
+  ata_error_ccc = 0;
+  update_display_ccc(0);
+}
+
 void connect_devices_ccc(void)
 {
   // check if we're already connected
@@ -2013,20 +2027,6 @@ gint display_status_update_action_ccc(gpointer data)
   update_gui_status_buttons_ccc();
   data = data;
   return 1;
-}
-
-void disconnect_devices_ccc(void)
-{
-  release_devices_ccc();
-  connected_ccc = 0;
-  // strcpy (tempmessage_ccc, _("Devices now disconnected"));
-  // message_error_ccc(tempmessage_ccc);
-  // print_gui_error_message_ccc(error_message_ccc, _("Success!"), 0);
-  // clear_error_message_ccc();
-  set_disconnected_ccc();
-  ata_status_ccc = 0;
-  ata_error_ccc = 0;
-  update_display_ccc(0);
 }
 
 void set_connected_ccc(void)
@@ -2867,6 +2867,38 @@ void display_analyze_results_ccc(void)
   gtk_window_set_title(GTK_WINDOW(dialog), _("Analysis Results"));
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
+}
+
+int get_smart_attribute_level_ccc(int id, long long value, int current, int worst, int threshold)
+{
+  int level = 0;
+
+  switch (id)
+  {
+    // Reallocated Sectors Count
+    case 5:
+    // Current Pending Sectors
+    case 197:
+      if (value > 0) level = 2;
+      break;
+
+  	// Reported Uncorrectable Errors
+    case 187:
+    // Command Timeout
+    case 188:
+    // Off-line Uncorrectable
+    case 198:
+    // UDMA CRC Error Rate
+    case 199:
+      if (value > 0) level = 1;
+      break;
+
+    default:
+      level = 0;
+      break;
+  }
+
+  return level;
 }
 
 void get_smart_data_ccc(void)
