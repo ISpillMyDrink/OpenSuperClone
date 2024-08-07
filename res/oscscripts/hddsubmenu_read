@@ -3,16 +3,16 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Read sectors menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
-  echo "1) Read sectors PIO 28"
-  echo "2) Read sectors PIO 48"
-  echo "3) Read sectors DMA 28"
-  echo "4) Read sectors DMA 48"
-  echo "5) Readlong (old 28 bit)"
-  echo "6) Readlong (48 bit SCT)"
+  echo "Read Sectors Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Read Sectors PIO 28"
+  echo "2) Read Sectors PIO 48"
+  echo "3) Read Sectors DMA 28"
+  echo "4) Read Sectors DMA 48"
+  echo "5) Read Long (Old 28 Bit)"
+  echo "6) Read Long (48 Bit SCT)"
 
   if $printhelp = 1
     exit 0

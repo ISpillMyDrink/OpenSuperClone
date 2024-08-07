@@ -3,13 +3,13 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Security menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help"
-  echo "1) Security remove password"
-  echo "2) Security set password"
-  echo "3) Security unlock"
+  echo "Security Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Security Remove Password"
+  echo "2) Security Set Password"
+  echo "3) Security Unlock"
 
   if $printhelp = 1
     exit 0

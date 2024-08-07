@@ -9,16 +9,16 @@ seti $help = $help
 
 while 1 = 1
   echo " "
-  echo "Main menu"
-  echo "q) Quit"
-  echo "h) Toggle script help
-  echo "1) Device information
-  echo "2) Read sectors"
-  echo "3) Write sectors"
-  echo "4) Erase sectors"
+  echo "Main Menu"
+  echo "Q) Quit"
+  echo "H) Toggle Script Help"
+  echo "1) Device Information"
+  echo "2) Read Sectors"
+  echo "3) Write Sectors"
+  echo "4) Erase Sectors"
   echo "5) Tools"
   echo "6) Security"
-  echo "7) VSC"
+  echo "7) Vendor Specific Commands"
   echo "8) Custom"
 
   if $printhelp = 1

@@ -2,13 +2,12 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Custom menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
-  echo "1) Custom message"
-  echo "8) my scripts tech
-  echo "9) my scripts test
+  echo "Custom Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Custom Message"
+  echo "2) Custom Scripts"
 
   if $printhelp = 1
     exit 0
@@ -39,11 +38,8 @@ while 1 = 1
 
 
 
-  elseif $choicestring = 8
-    loadscript /home/tech/hddsupertool/myscripts/hddsubmenu_custom
-
-  elseif $choicestring = 9
-    loadscript /home/test/hddsupertool/myscripts/hddsubmenu_custom
+  elseif $choicestring = 2
+    loadscript myscripts/hddsubmenu_custom
 
 
   else

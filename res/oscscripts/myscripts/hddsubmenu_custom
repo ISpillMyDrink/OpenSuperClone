@@ -2,10 +2,10 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Device information menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
+  echo "Custom Scripts Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
   echo "1) WD old find password"
   echo "2) WD royl find password"
   echo "3) Image drive DMA advanced"
@@ -26,10 +26,10 @@ while 1 = 1
   echo "18) Process mod02"
   echo "19) SCSI read 10"
   echo "20) SCSI read 12"
-  echo "21) Sense data test
+  echo "21) Sense data test"
   echo "22) Write uncorrectable pattern"
   echo "23) Error Control Timer"
-  echo "99) USB menu
+  echo "99) USB menu"
 
   if $printhelp = 1
     exit 0

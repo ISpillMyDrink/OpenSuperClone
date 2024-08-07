@@ -3,19 +3,19 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Tools menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help"
-  echo "1) Scan device"
-  echo "2) Make a bad sector"
-  echo "3) Write uncorrectable"
-  echo "4) Disable read look ahead"
-  echo "5) Enable read look ahead"
+  echo "Tools Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Scan Device"
+  echo "2) Make a Bad Sector"
+  echo "3) Write Uncorrectable"
+  echo "4) Disable Read Look-Ahead"
+  echo "5) Enable Read Look-Ahead"
   echo "6) Error Control Timer (SCT)"
-  echo "7) Reset Device
-  echo "8) Get device status"
-  echo "9) Hard Reset
+  echo "7) Reset Device"
+  echo "8) Get Device Status"
+  echo "9) Hard Reset"
 
   if $printhelp = 1
     exit 0

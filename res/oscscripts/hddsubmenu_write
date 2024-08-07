@@ -3,14 +3,14 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Write sectors menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
-  echo "1) Write sectors PIO 28"
-  echo "2) Write sectors PIO 48"
-  echo "3) Write sectors DMA 28"
-  echo "4) Write sectors DMA 48"
+  echo "Write Sectors Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Write Sectors PIO 28"
+  echo "2) Write Sectors PIO 48"
+  echo "3) Write Sectors DMA 28"
+  echo "4) Write Sectors DMA 48"
 
   if $printhelp = 1
     exit 0

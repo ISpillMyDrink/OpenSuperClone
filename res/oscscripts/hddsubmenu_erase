@@ -3,12 +3,12 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Erase menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
-  echo "1) Erase sectors 28 PIO
-  echo "2) Erase sectors 48 PIO
+  echo "Erase Sectors Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Erase Sectors 28 PIO"
+  echo "2) Erase Sectors 48 PIO"
 
   if $printhelp = 1
     exit 0

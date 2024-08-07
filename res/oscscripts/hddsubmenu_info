@@ -2,12 +2,12 @@ seti $printhelp = $printhelp
 
 while 1 = 1
   echo " "
-  echo "Device information menu"
-  echo "q) Quit"
-  echo "p) Previous menu"
-  echo "h) Toggle script help
-  echo "1) Identify device"
-  echo "2) Smart info"
+  echo "Device Information Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Identify Device"
+  echo "2) SMART Data"
 
   if $printhelp = 1
     exit 0
