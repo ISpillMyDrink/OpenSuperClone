@@ -47,6 +47,8 @@ Pre-built DEB and RPM packages for OpenSuperClone can be found on the <a href=ht
 
 Instructions for installing OpenSuperClone from source can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Compiling-from-Source">Wiki</a>.
 
+Alternatively to installing OpenSuperClone, a <a href="https://sourceforge.net/projects/opensuperclone-live/">Linux Live ISO</a> containing the project is now provided by <a href="https://sourceforge.net/u/xak77/profile/">xak77</a>.
+
 ## 📖 Documentation
 
 Documentation for OpenSuperClone can be found on the <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki">Wiki</a>.
