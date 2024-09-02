@@ -1533,8 +1533,15 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       // configure queue
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 9, 0)
       data_queue = blk_mq_init_queue(&data_device.tag_set);
-#else
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
       data_queue = blk_mq_alloc_queue(&data_device.tag_set, NULL, NULL);
+#else
+      struct queue_limits lim = {
+        .max_hw_sectors   = DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE,
+        .max_segment_size = DRIVER_TRANSFER_BUFFER_SIZE,
+      };
+
+      data_queue = blk_mq_alloc_queue(&data_device.tag_set, &lim, NULL);
 #endif
       if (IS_ERR(data_queue))
       {
@@ -1545,8 +1552,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
       blk_queue_logical_block_size(data_queue, control_obj->logical_block_size);
       blk_queue_physical_block_size(data_queue, control_obj->physical_block_size);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
       blk_queue_max_hw_sectors(data_queue, DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE);
       blk_queue_max_segment_size(data_queue, DRIVER_TRANSFER_BUFFER_SIZE);
+#endif
 
       data_major_num = register_blkdev(data_major_num, data_device.device_name);
       if (data_major_num < 0)
@@ -1946,7 +1955,7 @@ static struct vm_operations_struct mmap_vm_ops_mdb =
         .close = mmap_close_mdb,
         .fault = mmap_fault_mdb,
 };
-int op_mmap_mdb(struct file *filp, struct vm_area_struct *vma)
+static int op_mmap_mdb(struct file *filp, struct vm_area_struct *vma)
 {
   vma->vm_ops = &mmap_vm_ops_mdb;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 3, 0)
