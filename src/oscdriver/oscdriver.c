@@ -1539,6 +1539,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       struct queue_limits lim = {
         .max_hw_sectors   = DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE,
         .max_segment_size = DRIVER_TRANSFER_BUFFER_SIZE,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0)
+        .logical_block_size = control_obj->logical_block_size,
+        .physical_block_size = control_obj->physical_block_size,
+#endif
       };
 
       data_queue = blk_mq_alloc_queue(&data_device.tag_set, &lim, NULL);
@@ -1550,8 +1554,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       }
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 11, 0)
       blk_queue_logical_block_size(data_queue, control_obj->logical_block_size);
       blk_queue_physical_block_size(data_queue, control_obj->physical_block_size);
+#endif
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
       blk_queue_max_hw_sectors(data_queue, DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE);
       blk_queue_max_segment_size(data_queue, DRIVER_TRANSFER_BUFFER_SIZE);
