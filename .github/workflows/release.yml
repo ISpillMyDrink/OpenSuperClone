@@ -20,8 +20,9 @@ jobs:
               run: |
                   ./package.sh
 
-            - name: Create Release
-              id: create_release
+            - name: Create Pre-Release
+              id: create_prerelease
+              if: contains(github.ref, 'alpha') || contains(github.ref, 'beta')
               uses: actions/create-release@v1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,6 +34,21 @@ jobs:
                 body: |
                     Pre-release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 20.04.
                     This release is not intended for end users, but for developers who want to test the latest features.
+                    Please report any bugs you find on the GitHub issue tracker.
+
+            - name: Create Release
+              id: create_release
+              if: contains(github.ref, 'alpha') == false && contains(github.ref, 'beta') == false
+              uses: actions/create-release@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag_name: ${{ github.ref }}
+                release_name: OpenSuperClone ${{ github.ref }}
+                draft: false
+                prerelease: false
+                body: |
+                    Release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 20.04.
                     Please report any bugs you find on the GitHub issue tracker.
 
             - name: Upload Release Assets
