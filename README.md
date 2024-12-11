@@ -59,7 +59,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 #### OpenSuperClone 2.5 [Work-In-Progress]
 
 * Implemented DKMS for driver installation
-* OSCDriver 2.6.5: add support up to kernel 6.9.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/14">piernov</a>)
+* OSCDriver 2.6.5: add support up to kernel 6.11.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/19">piernov</a>)
 * Disabling the USB Mass Storage driver now also disables the USB Attached SCSI driver
 * Various UI improvements including tooltips for most controls and improved SMART, Analysis, and Identify views
 * Added some more known SMART attributes and Identify flags
