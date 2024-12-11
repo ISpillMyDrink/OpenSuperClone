@@ -616,6 +616,10 @@ void select_file_ccc(void)
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
+    if(log_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(log_file_ccc), NULL);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       clear_source_ccc();
@@ -650,6 +654,10 @@ void new_file_ccc(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+    if(log_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(log_file_ccc), NULL);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       clear_source_ccc();
@@ -683,6 +691,15 @@ void new_domain_ccc(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+    if(domain_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(domain_file_ccc), NULL);
+    }
+    else if(log_file_ccc != NULL)
+    {
+      char *default_path = g_path_get_dirname(log_file_ccc);
+      gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), default_path);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       char *filename;
@@ -773,6 +790,10 @@ void save_file_as_ccc(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+    if(log_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(log_file_ccc), NULL);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       char *filename;
@@ -833,6 +854,15 @@ void save_domain_as_ccc(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+    if(domain_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(domain_file_ccc), NULL);
+    }
+    else if(log_file_ccc != NULL)
+    {
+      char *default_path = g_path_get_dirname(log_file_ccc);
+      gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), default_path);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       char *filename;
@@ -908,6 +938,15 @@ void select_domain_ccc(void)
                                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
+    if(domain_file_ccc != NULL)
+    {
+      gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), g_file_new_for_path(domain_file_ccc), NULL);
+    }
+    else if(log_file_ccc != NULL)
+    {
+      char *default_path = g_path_get_dirname(log_file_ccc);
+      gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), default_path);
+    }
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       char *filename;
@@ -1717,6 +1756,8 @@ void choose_image_ccc(void)
                                          GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                          NULL);
     // gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+    char *default_path = g_path_get_dirname(log_file_ccc);
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), default_path);
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       int confirmed = 1;
