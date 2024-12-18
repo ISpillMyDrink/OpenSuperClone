@@ -18,6 +18,8 @@ int main(int argc, char **argv)
   int command_line_argument;
   int arguments_required;          // required number of non-option arguments
   bool command_line_error = false; // initialize error to false
+  bool log_file_specified = false; // flag to check if log file is specified
+  bool domain_file_specified = false; // flag to check if domain file is specified
 
   while (1)
   {
@@ -26,11 +28,13 @@ int main(int argc, char **argv)
             {"debug", no_argument, 0, 'd'},
             {"help", no_argument, 0, 'h'},
             {"version", no_argument, 0, 'v'},
+            {"logfile", required_argument, 0, 'l'},
+            {"domainfile", required_argument, 0, 'f'},
             {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
 
-    command_line_argument = getopt_long(argc, argv, "dhvt:", long_options, &option_index);
+    command_line_argument = getopt_long(argc, argv, "dhvt:l:f:", long_options, &option_index);
 
     // Detect the end of the options.
     if (command_line_argument == -1)
@@ -49,6 +53,16 @@ int main(int argc, char **argv)
     case 'v':
       version();
       exit(0);
+
+    case 'l':
+      snprintf(log_file, sizeof(log_file), "%s", optarg);
+      log_file_specified = true;
+      break;
+
+    case 'f':
+      snprintf(domain_file, sizeof(domain_file), "%s", optarg);
+      domain_file_specified = true;
+      break;
 
     case '?':
       // getopt_long already printed an error message.
@@ -547,6 +561,55 @@ int main(int argc, char **argv)
   gtk_widget_add_events(main_drawing_area, GDK_BUTTON_PRESS_MASK);
   g_signal_connect(G_OBJECT(main_drawing_area), "button-press-event", G_CALLBACK(on_button_press), NULL);
   gtk_widget_set_double_buffered(main_drawing_area, FALSE);
+
+  // if log file is specified, read it
+  if (log_file_specified)
+  {
+    int ret = read_log_file(log_file);
+    if (ret != 0)
+    {
+      snprintf(tempmessage, TEMP_MESSAGE_SIZE, "error processing log file\n");
+      message_now(tempmessage);
+      exit(1);
+    }
+    else
+    {
+      ret = check_log();
+      if (ret != 0)
+      {
+        snprintf(tempmessage, TEMP_MESSAGE_SIZE, "there were errors found in the log file\n");
+        message_now(tempmessage);
+        exit(1);
+      }
+      else
+      {
+        char *filename = strrchr(log_file, '/') + 1;
+        snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s [%s]", window_title, filename);
+        gtk_window_set_title(GTK_WINDOW(main_window), tempmessage);
+
+        snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("File"), log_file);
+        gtk_label_set_text(GTK_LABEL(progress_log_label), tempmessage);
+      }
+    }
+  }
+
+  // if domain file is specified, read it
+  if (domain_file_specified)
+  {
+    int ret = read_domain_file(domain_file);
+    if (ret != 0)
+    {
+      snprintf(tempmessage, TEMP_MESSAGE_SIZE, "error processing domain file\n");
+      message_now(tempmessage);
+      exit(1);
+    }
+    else
+    {
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+      snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Domain"), domain_file);
+      gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
+    }
+  }
 
   g_object_unref(builder);
 
@@ -3127,6 +3190,8 @@ void help(void)
   fprintf(stdout, "OPTIONS:\n");
   fprintf(stdout, " -v, --version              Show version and exit\n");
   fprintf(stdout, " -h, --help                 Show this help and exit\n");
+  fprintf(stdout, " -l, --logfile <file>       Specify log file to open\n");
+  fprintf(stdout, " -f, --domainfile <file>    Specify domain file to open\n");
   fprintf(stdout, "\n");
 }
 
