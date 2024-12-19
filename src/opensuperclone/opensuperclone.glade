@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
   <object class="GtkTreeStore"/>
@@ -649,6 +649,20 @@
                         <property name="label" translatable="yes">hba reset</property>
                         <property name="use-underline">True</property>
                         <signal name="activate" handler="invoke_hba_reset_ccc" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separator11">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="openoscviewer">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">View in OSCViewer</property>
+                        <signal name="activate" handler="open_in_oscviewer_ccc" swapped="no"/>
                       </object>
                     </child>
                   </object>

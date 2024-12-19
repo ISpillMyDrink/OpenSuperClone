@@ -578,3 +578,5 @@ void get_data_dump_filename_ccc(void);
 void analyze_quick_ccc(void);
 
 void analyze_long_ccc(void);
+
+void open_in_oscviewer(void);

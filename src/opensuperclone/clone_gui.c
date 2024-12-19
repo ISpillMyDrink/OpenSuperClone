@@ -5251,3 +5251,26 @@ void map_heads_ccc(void)
     }
   }
 }
+
+void open_in_oscviewer_ccc(void)
+{
+  if (!project_chosen_ccc)
+  {
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must choose a project first."));
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+    clear_error_message_ccc();
+    return;
+  }
+
+  char temp[1024];
+  if (domain_file_ccc[0] != '\0')
+  {
+    snprintf(temp, sizeof(temp), "%s/oscviewer -l %s -f %s", OSC_INSTALL_PATH, log_file_ccc, domain_file_ccc);
+  }
+  else
+  {
+  snprintf(temp, sizeof(temp), "%s/oscviewer -l %s", OSC_INSTALL_PATH, log_file_ccc);
+  }
+  g_spawn_command_line_async(temp, NULL);
+}
