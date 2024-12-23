@@ -570,7 +570,6 @@ int main(int argc, char **argv)
     {
       snprintf(tempmessage, TEMP_MESSAGE_SIZE, "error processing log file\n");
       message_now(tempmessage);
-      exit(1);
     }
     else
     {
@@ -579,7 +578,6 @@ int main(int argc, char **argv)
       {
         snprintf(tempmessage, TEMP_MESSAGE_SIZE, "there were errors found in the log file\n");
         message_now(tempmessage);
-        exit(1);
       }
       else
       {
@@ -601,7 +599,6 @@ int main(int argc, char **argv)
     {
       snprintf(tempmessage, TEMP_MESSAGE_SIZE, "error processing domain file\n");
       message_now(tempmessage);
-      exit(1);
     }
     else
     {
