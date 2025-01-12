@@ -1,0 +1,3098 @@
+# English translations for OpenSuperClone package.
+# Copyright (C) 2022 OpenSuperClone Contributors
+# This file is distributed under the same license as the OpenSuperClone package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSuperClone 2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-25 22:49+0100\n"
+"PO-Revision-Date: 2022-11-28 09:59+0100\n"
+"Last-Translator: Julian Frohmüller <admin@socialz.de>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/opensuperclone/opensuperclone.c:12829
+#, c-format
+msgid ""
+"\n"
+"Status / Error"
+msgstr "Trạng thái / Lỗi"
+
+#: src/opensuperclone/opensuperclone.c:6085
+#: src/opensuperclone/opensuperclone.c:6116
+#: src/opensuperclone/opensuperclone.c:6144
+#: src/opensuperclone/opensuperclone.c:6172
+#: src/opensuperclone/opensuperclone.c:6204
+#: src/opensuperclone/opensuperclone.c:6236
+#: src/opensuperclone/opensuperclone.c:6463
+#: src/opensuperclone/opensuperclone.c:6494
+#: src/opensuperclone/opensuperclone.c:6522
+#: src/opensuperclone/opensuperclone.c:6550
+#: src/opensuperclone/opensuperclone.c:6582
+#: src/opensuperclone/opensuperclone.c:6614
+msgid "(Bad Head)"
+msgstr "(Đầu đọc xấu)"
+
+#: src/opensuperclone/opensuperclone.c:6384
+#: src/opensuperclone/opensuperclone.c:6406
+#: src/opensuperclone/opensuperclone.c:6459
+#: src/opensuperclone/opensuperclone.c:6463
+#: src/opensuperclone/opensuperclone.c:6490
+#: src/opensuperclone/opensuperclone.c:6494
+#: src/opensuperclone/opensuperclone.c:6518
+#: src/opensuperclone/opensuperclone.c:6522
+#: src/opensuperclone/opensuperclone.c:6546
+#: src/opensuperclone/opensuperclone.c:6550
+#: src/opensuperclone/opensuperclone.c:6578
+#: src/opensuperclone/opensuperclone.c:6582
+#: src/opensuperclone/opensuperclone.c:6610
+#: src/opensuperclone/opensuperclone.c:6614
+#: src/opensuperclone/opensuperclone.c:6653
+msgid "(Reverse)"
+msgstr "(Đọc ngược)"
+
+#: src/opensuperclone/opensuperclone.c:3983
+#, c-format
+msgid ""
+",\n"
+"but source has a size of "
+msgstr ""
+",\n"
+"nhưng nguồn có kích thước là"
+
+#: src/opensuperclone/opensuperclone.c:3987
+#, c-format
+msgid ""
+".\n"
+"Are you sure this is the correct progress log file for this drive?\n"
+msgstr ""
+".\n"
+"Bạn có chắc đây là tệp nhật ký tiến trình chính xác cho ổ đĩa này không?"
+
+#: src/opensuperclone/clone_gui.c:2941
+msgid ""
+"A major driver error is something other than a typical read error. The Exit "
+"or Slow condition is considered a major error."
+msgstr ""
+"Lỗi trình điều khiển chính là lỗi khác với lỗi đọc thông thường. Tình trạng "
+"Thoát hoặc Chậm được coi là lỗi chính."
+
+#: src/opensuperclone/clone_gui.c:391
+msgid ""
+"A sample of data from the last good read since the last display update (will"
+" be all zeroes if no good reads have occurred since the last display update)"
+msgstr ""
+"Mẫu dữ liệu từ lần đọc tốt cuối cùng kể từ lần cập nhật hiển thị cuối cùng "
+"(sẽ toàn là số không nếu không có lần đọc tốt nào xảy ra kể từ lần cập nhật "
+"hiển thị cuối cùng)"
+
+#: src/opensuperclone/clone_gui.c:232
+msgid "About"
+msgstr "Về"
+
+#: src/opensuperclone/clone_gui.c:4629
+msgid "About OpenSuperClone"
+msgstr "Giới thiệu về OpenSuperClone"
+
+#: src/opensuperclone/clone_gui.c:3112
+msgid "Action for reset timeout"
+msgstr "Hành động để thiết lập lại thời gian chờ"
+
+#: src/opensuperclone/clone_gui.c:2906
+msgid "Action to perform on major drive error:"
+msgstr "Hành động thực hiện khi ổ đĩa bị lỗi lớn:"
+
+#: src/opensuperclone/clone_gui.c:3377
+msgid "Activate (Power Off)"
+msgstr "Kích hoạt (Tắt nguồn)"
+
+#: src/opensuperclone/clone_gui.c:2910 src/opensuperclone/clone_gui.c:3116
+msgid "Activate primary relay"
+msgstr "Kích hoạt rơle chính"
+
+#: src/opensuperclone/clone_gui.c:321
+#, fuzzy
+msgid "Activate slow driver"
+msgstr "Kích hoạt trình điều khiển chậm"
+
+#: src/opensuperclone/clone_gui.c:2945
+msgid "Activate the primary relay board and continue cloning"
+msgstr "Kích hoạt bảng chuyển tiếp chính và tiếp tục sao chép"
+
+#: src/opensuperclone/clone_gui.c:3356
+msgid "Activation condition"
+msgstr "Điều kiện kích hoạt"
+
+#: src/opensuperclone/clone_gui.c:3374
+msgid "Activation time (sec)"
+msgstr "Thời gian kích hoạt (giây)"
+
+#: src/opensuperclone/clone_gui.c:238
+msgid "Add to Domain from DMDE bytes file"
+msgstr "Thêm vào miền từ tệp byte DMDE"
+
+#: src/opensuperclone/clone_gui.c:451
+msgid "Address Mark Not Found (The device could not find the address mark)"
+msgstr "Không tìm thấy dấu địa chỉ (Thiết bị không tìm thấy dấu địa chỉ)"
+
+#: src/opensuperclone/clone_gui.c:216 src/opensuperclone/clone_gui.c:3021
+msgid "Advanced Settings"
+msgstr "Cài đặt nâng cao"
+
+#: src/opensuperclone/clone_gui.c:2772
+msgid "Alignment offset (LBA)"
+msgstr "Độ lệch căn chỉnh (LBA)"
+
+#: src/opensuperclone/clone_gui.c:3126
+msgid "Always wait for reset timers"
+msgstr "Luôn luôn chờ bộ đếm thời gian thiết lập lại"
+
+#: src/opensuperclone/clone_gui.c:299
+msgid "Analyze"
+msgstr "Phân tích"
+
+#: src/opensuperclone/clone_gui.c:317
+msgid "Analyze the drive"
+msgstr "Phân tích ổ đĩa"
+
+#: src/opensuperclone/clone_gui.c:318
+msgid "Analyze the drive (extended)"
+msgstr "Phân tích ổ đĩa (mở rộng)"
+
+#: src/opensuperclone/opensuperclone.c:8919
+#, c-format
+msgid "Analyzing"
+msgstr "Phân tích"
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Attribute name"
+msgstr "Tên thuộc tính"
+
+#: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
+msgid "Average"
+msgstr "Trung bình"
+
+#: src/opensuperclone/clone_gui.c:355 src/opensuperclone/clone_gui.c:2454
+#: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
+msgid "Bad"
+msgstr "Xấu"
+
+#: src/opensuperclone/clone_gui.c:444
+msgid "Bad Block (The device has detected a bad block)"
+msgstr "Khối xấu (Thiết bị đã phát hiện ra một khối bị lỗi)"
+
+#: src/opensuperclone/clone_gui.c:2536
+msgid "Bad Or Weak Head"
+msgstr "Đầu đọc xấu hoặc yếu"
+
+#: src/opensuperclone/clone_gui.c:344
+msgid "Base skip size"
+msgstr "Kích thước bỏ qua cơ sở"
+
+#: src/opensuperclone/clone_gui.c:2764
+msgid "Block size (LBA)"
+msgstr "Kích thước khối (LBA)"
+
+#: src/opensuperclone/clone_gui.c:436
+msgid "Busy (The device is busy)"
+msgstr "Bận (Thiết bị đang bận)"
+
+#: src/opensuperclone/clone_gui.c:3107
+msgid "Busy wait time (ms)"
+msgstr "Thời gian chờ bận (ms)"
+
+#: src/opensuperclone/clone_gui.c:2908 src/opensuperclone/clone_gui.c:3114
+#: src/opensuperclone/opensuperclone.c:11890
+#: src/opensuperclone/opensuperclone.c:12007
+msgid "Call command:"
+msgstr "Gọi lệnh:"
+
+#: src/opensuperclone/clone_gui.c:2943
+msgid ""
+"Call the specified command and continue cloning. If the command returns an "
+"error, the clone will be stopped."
+msgstr ""
+"Gọi lệnh đã chỉ định và tiếp tục sao chép. Nếu lệnh trả về lỗi, quá trình "
+"sao chép sẽ dừng lại."
+
+#: src/opensuperclone/clone_gui.c:199
+msgid "Choose Destination"
+msgstr "Chọn Điểm đến"
+
+#: src/opensuperclone/clone_gui.c:912
+msgid "Choose Destination Image"
+msgstr "Chọn hình ảnh đích"
+
+#: src/opensuperclone/clone_gui.c:248
+msgid "Choose Primary Relay Board"
+msgstr "Chọn bảng chuyển tiếp chính"
+
+#: src/opensuperclone/clone_gui.c:198 src/opensuperclone/clone_gui.c:1293
+msgid "Choose Source Drive"
+msgstr "Chọn ổ đĩa nguồn"
+
+#: src/opensuperclone/clone_gui.c:4654
+msgid "Choose USB Relay"
+msgstr "Chọn USB Relay"
+
+#: src/opensuperclone/clone_gui.c:1215 src/opensuperclone/clone_gui.c:1695
+msgid "Choose image file"
+msgstr "Chọn tập tin hình ảnh"
+
+#: src/opensuperclone/clone_gui.c:230
+msgid "Clear Domain"
+msgstr "Xóa tên miền"
+
+#: src/opensuperclone/clone_gui.c:362 src/opensuperclone/clone_gui.c:2155
+msgid "Clone"
+msgstr "Sao chép"
+
+#: src/opensuperclone/clone_gui.c:302
+msgid ""
+"Clone\n"
+"Mode"
+msgstr "Chế độ sao chép"
+
+#: src/opensuperclone/clone_gui.c:217 src/opensuperclone/clone_gui.c:2822
+msgid "Clone Settings"
+msgstr "Cài đặt sao chép"
+
+#: src/opensuperclone/clone_gui.c:361
+msgid "Clone/Driver Mode"
+msgstr "Chế độ sao chép/trình điều khiển"
+
+#: src/opensuperclone/clone_gui.c:2761
+msgid "Cluster Size (LBA)"
+msgstr "Kích thước cụm (LBA)"
+
+#: src/opensuperclone/clone_gui.c:449
+msgid "Command Aborted (The device has aborted the command)"
+msgstr "Lệnh đã bị hủy (Thiết bị đã hủy lệnh)"
+
+#: src/opensuperclone/clone_gui.c:3630
+msgid "Confirm Operation"
+msgstr "Xác nhận hoạt động"
+
+#: src/opensuperclone/clone_gui.c:295
+msgid "Connect"
+msgstr "Kết nối"
+
+#: src/opensuperclone/clone_gui.c:313
+msgid "Connect to the drive"
+msgstr "Kết nối với ổ đĩa"
+
+#: src/opensuperclone/clone_gui.c:4636
+#, c-format
+msgid "Copyright (C) %s Scott Dwyer and OpenSuperClone contributors"
+msgstr ""
+"Bản quyền (C) %s Scott Dwyer và những người đóng góp cho OpenSuperClone"
+
+#: src/opensuperclone/clone_gui.c:441
+msgid "Corrected Data (The device has corrected data)"
+msgstr "Dữ liệu đã sửa (Thiết bị đã sửa dữ liệu)"
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Current"
+msgstr "Hiện hành"
+
+#: src/opensuperclone/clone_gui.c:357
+msgid "Current / Recent / Longest"
+msgstr "Hiện tại / Gần đây / Dài nhất"
+
+#: src/opensuperclone/clone_gui.c:3242
+msgid "Current disabled ports (GRUB data)"
+msgstr "Các cổng hiện tại bị vô hiệu hóa (dữ liệu GRUB)"
+
+#: src/opensuperclone/clone_gui.c:339 src/opensuperclone/clone_gui.c:2905
+msgid "Current position"
+msgstr "Vị trí hiện tại"
+
+#: src/opensuperclone/clone_gui.c:2940
+msgid ""
+"Current position in the recovery (it is not recommended to change this)"
+msgstr ""
+"Vị trí hiện tại trong quá trình phục hồi (không khuyến khích thay đổi vị trí"
+" này)"
+
+#: src/opensuperclone/clone_gui.c:341
+msgid "Current rate"
+msgstr "Tỷ lệ hiện tại"
+
+#: src/opensuperclone/clone_gui.c:3354
+msgid "Current relay board"
+msgstr "Bảng rơle hiện tại"
+
+#: src/opensuperclone/clone_gui.c:340
+msgid "Current status"
+msgstr "Tình trạng hiện tại"
+
+#: src/opensuperclone/clone_gui.c:440
+msgid "Data Request (The device is ready to transfer data)"
+msgstr "Yêu cầu dữ liệu (Thiết bị đã sẵn sàng để truyền dữ liệu)"
+
+#: src/opensuperclone/clone_gui.c:356
+msgid "Data preview"
+msgstr "Xem trước dữ liệu"
+
+#: src/opensuperclone/clone_gui.c:3378
+msgid "Deactivate (Power On)"
+msgstr "Tắt (Bật nguồn)"
+
+#: src/opensuperclone/clone_gui.c:3365
+msgid "Deactivation condition"
+msgstr "Điều kiện hủy kích hoạt"
+
+#: src/opensuperclone/clone_gui.c:333 src/opensuperclone/clone_gui.c:1581
+msgid "Destination (All data will be overwritten!)"
+msgstr "Điểm đến (Tất cả dữ liệu sẽ bị ghi đè!)"
+
+#: src/opensuperclone/opensuperclone.c:9193
+#, c-format
+msgid "Detecting Variance"
+msgstr "Phát hiện sự khác biệt"
+
+#: src/opensuperclone/clone_gui.c:438
+msgid "Device Fault (The device has detected a fault)"
+msgstr "Lỗi thiết bị (Thiết bị đã phát hiện ra lỗi)"
+
+#: src/opensuperclone/clone_gui.c:437
+msgid "Device Ready (The device is ready to accept commands)"
+msgstr "Thiết bị đã sẵn sàng (Thiết bị đã sẵn sàng để tiếp nhận lệnh)"
+
+#: src/opensuperclone/clone_gui.c:439
+msgid "Device Seek Complete (Head is settled on the track)"
+msgstr "Thiết bị tìm kiếm hoàn tất (Đầu đọc đã ổn định trên đường ray)"
+
+#: src/opensuperclone/clone_gui.c:212
+msgid "Direct AHCI"
+msgstr "AHCI trực tiếp"
+
+#: src/opensuperclone/clone_gui.c:211
+msgid "Direct IDE"
+msgstr "IDE trực tiếp"
+
+#: src/opensuperclone/clone_gui.c:213
+msgid "Direct USB"
+msgstr "USB trực tiếp"
+
+#: src/opensuperclone/clone_gui.c:214
+msgid "Direct USB ATA"
+msgstr "USB ATA trực tiếp"
+
+#: src/opensuperclone/clone_gui.c:242 src/opensuperclone/clone_gui.c:3241
+#: src/opensuperclone/clone_gui.c:3249
+msgid "Disable Ports"
+msgstr "Vô hiệu hóa cổng"
+
+#: src/opensuperclone/clone_gui.c:249
+msgid "Disable USB mass storage driver"
+msgstr "Vô hiệu hóa trình điều khiển lưu trữ USB"
+
+#: src/opensuperclone/clone_gui.c:3238
+msgid ""
+"Disable ports for AHCI mode to hide a drive from the operating system.\n"
+"Warning! If you disable the port for the operating system drive,\n"
+"the system will not be able to boot!\n"
+msgstr ""
+"Tắt cổng cho chế độ AHCI để ẩn ổ đĩa khỏi hệ điều hành.\n"
+"Cảnh báo! Nếu bạn tắt cổng cho ổ đĩa hệ điều hành,\n"
+"hệ thống sẽ không thể khởi động!"
+
+#: src/opensuperclone/clone_gui.c:2946
+msgid ""
+"Disable the OS write buffer for writes to the destination. Safer in case of "
+"power loss, but slower."
+msgstr ""
+"Vô hiệu hóa bộ đệm ghi của hệ điều hành để ghi vào đích. An toàn hơn trong "
+"trường hợp mất điện, nhưng chậm hơn."
+
+#: src/opensuperclone/clone_gui.c:2949
+msgid ""
+"Disable the identify device command when listing source drives in Direct "
+"AHCI and IDE modes. This is to prevent a system lockup or error when listing"
+" possible source drives."
+msgstr ""
+"Vô hiệu hóa lệnh nhận dạng thiết bị khi liệt kê các ổ đĩa nguồn ở chế độ "
+"Direct AHCI và IDE. Điều này nhằm ngăn chặn tình trạng khóa hệ thống hoặc "
+"lỗi khi liệt kê các ổ đĩa nguồn có thể có."
+
+#: src/opensuperclone/clone_gui.c:2911
+msgid "Disabled (safer if there is a power loss)"
+msgstr "Đã tắt (an toàn hơn nếu mất điện)"
+
+#: src/opensuperclone/clone_gui.c:296
+msgid "Disconnect"
+msgstr "Ngắt kết nối"
+
+#: src/opensuperclone/clone_gui.c:314
+msgid "Disconnect from the drive"
+msgstr "Ngắt kết nối khỏi ổ đĩa"
+
+#: src/opensuperclone/clone_gui.c:245
+msgid "Display Analyze Results"
+msgstr "Hiển thị Phân tích Kết quả"
+
+#: src/opensuperclone/clone_gui.c:244
+msgid "Display Identify Results"
+msgstr "Hiển thị kết quả nhận dạng"
+
+#: src/opensuperclone/clone_gui.c:246
+msgid "Display SMART Results"
+msgstr "Hiển thị kết quả SMART"
+
+#: src/opensuperclone/clone_gui.c:2750
+msgid "Divide"
+msgstr "Chia"
+
+#: src/opensuperclone/clone_gui.c:2751
+msgid "Divide 2"
+msgstr "Chia 2"
+
+#: src/opensuperclone/clone_gui.c:3123
+msgid "Divide 2 reset time (ms)"
+msgstr "Chia 2 thời gian thiết lập lại (ms)"
+
+#: src/opensuperclone/opensuperclone.c:1728
+#: src/opensuperclone/opensuperclone.c:6168
+#: src/opensuperclone/opensuperclone.c:6172
+#: src/opensuperclone/opensuperclone.c:6546
+#: src/opensuperclone/opensuperclone.c:6550
+#: src/opensuperclone/opensuperclone.c:6995
+#, c-format
+msgid "Dividing 1"
+msgstr "Chia 1"
+
+#: src/opensuperclone/opensuperclone.c:1732
+#: src/opensuperclone/opensuperclone.c:6200
+#: src/opensuperclone/opensuperclone.c:6204
+#: src/opensuperclone/opensuperclone.c:6578
+#: src/opensuperclone/opensuperclone.c:6582
+#: src/opensuperclone/opensuperclone.c:7012
+#, c-format
+msgid "Dividing 2"
+msgstr "Chia 2"
+
+#: src/opensuperclone/clone_gui.c:2899
+msgid "Do not create backup log"
+msgstr "Không tạo nhật ký sao lưu"
+
+#: src/opensuperclone/clone_gui.c:2914
+msgid "Do not perform identify when listing source devices"
+msgstr "Không thực hiện xác định khi liệt kê các thiết bị nguồn"
+
+#: src/opensuperclone/clone_gui.c:3113
+msgid "Do nothing"
+msgstr "Không làm gì cả"
+
+#: src/opensuperclone/clone_gui.c:331
+msgid "Domain"
+msgstr "Miền"
+
+#: src/opensuperclone/clone_gui.c:336
+msgid "Domain size"
+msgstr "Kích thước miền"
+
+#: src/opensuperclone/clone_gui.c:201
+msgid "Drive"
+msgstr "Trình điều khiển"
+
+#: src/opensuperclone/opensuperclone.c:1159
+msgid "Driver install success\n"
+msgstr "Cài đặt trình điều khiển thành công"
+
+#: src/opensuperclone/opensuperclone.c:1199
+msgid "Driver removal success\n"
+msgstr "Đã xóa thành công trình điều khiển"
+
+#: src/opensuperclone/clone_gui.c:202
+msgid "Drives"
+msgstr "Ổ đĩa"
+
+#: src/opensuperclone/opensuperclone.c:1584
+#, fuzzy, c-format
+msgid "ERROR: Maximum USB buffer size exceeded.\n"
+msgstr "ERROR: Maximum sensebuffer size exceeded"
+
+#: src/opensuperclone/opensuperclone.c:1504
+#, c-format
+msgid "ERROR: Maximum scratchpad size exceeded"
+msgstr "LỖI: Vượt quá kích thước tối đa của vùng nhớ tạm"
+
+#: src/opensuperclone/opensuperclone.c:1544
+#, c-format
+msgid "ERROR: Maximum sensebuffer size exceeded"
+msgstr "LỖI: Vượt quá kích thước bộ đệm cảm biến tối đa"
+
+#: src/opensuperclone/clone_gui.c:2780
+msgid "Enable Dividing (divide non-trimmed blocks into smaller blocks)"
+msgstr "Bật tính năng Chia (chia các khối chưa cắt thành các khối nhỏ hơn)"
+
+#: src/opensuperclone/clone_gui.c:2784
+msgid ""
+"Enable Mark Bad Head (uses the skipping information during phases 1-2 to "
+"mark what is considered a bad head)"
+msgstr ""
+"Bật Đánh dấu Đầu đọc xấu (sử dụng thông tin bỏ qua trong giai đoạn 1-2 để đánh "
+"dấu những gì được coi là Đầu đọc xấu)"
+
+#: src/opensuperclone/clone_gui.c:2776
+msgid "Enable Phase 1 (copy pass forward with skipping based on read errors)"
+msgstr ""
+"Bật Giai đoạn 1 (sao chép chuyển tiếp với việc bỏ qua dựa trên lỗi đọc)"
+
+#: src/opensuperclone/clone_gui.c:2777
+msgid "Enable Phase 2 (copy pass backward with skipping based on read errors)"
+msgstr "Bật Giai đoạn 2 (sao chép ngược lại với việc bỏ qua dựa trên lỗi đọc)"
+
+#: src/opensuperclone/clone_gui.c:2778
+msgid "Enable Phase 3 (copy pass forward with skipping based on read speed)"
+msgstr "Bật Giai đoạn 3 (sao chép chuyển tiếp với bỏ qua dựa trên tốc độ đọc)"
+
+#: src/opensuperclone/clone_gui.c:2779
+msgid "Enable Phase 4 (copy pass forward without skipping)"
+msgstr "Bật Giai đoạn 4 (sao chép chuyển tiếp mà không bỏ qua)"
+
+#: src/opensuperclone/clone_gui.c:2785
+msgid "Enable Read Bad Head (read sectors from heads marked as bad)"
+msgstr "Bật Đọc Đầu đọc xấu (đọc các sector từ Đầu đọc được đánh dấu là xấu)"
+
+#: src/opensuperclone/clone_gui.c:2916
+msgid "Enable Rebuild Assist"
+msgstr "Bật Hỗ trợ xây dựng lại"
+
+#: src/opensuperclone/clone_gui.c:2786
+msgid ""
+"Enable Rebuild Assist (use the Rebuild Assist phase instead of phase 1)"
+msgstr ""
+"Bật Hỗ trợ xây dựng lại (sử dụng giai đoạn Hỗ trợ xây dựng lại thay vì giai "
+"đoạn 1)"
+
+#: src/opensuperclone/clone_gui.c:2951
+msgid ""
+"Enable Rebuild Assist. The Rebuild Assist selection in the Clone settings "
+"will have no effect if this is not checked."
+msgstr ""
+"Bật Hỗ trợ xây dựng lại. Lựa chọn Hỗ trợ xây dựng lại trong cài đặt Bản sao "
+"sẽ không có hiệu lực nếu mục này không được chọn."
+
+#: src/opensuperclone/clone_gui.c:2787
+msgid "Enable Reverse (reverse the direction of all passes)"
+msgstr "Bật Đọc ngược (đọc ngược hướng của tất cả các lần truyền)"
+
+#: src/opensuperclone/clone_gui.c:2920
+msgid "Enable SCSI write to destination (for odd sector size)"
+msgstr "Cho phép ghi SCSI vào đích (đối với kích thước sector lẻ)"
+
+#: src/opensuperclone/clone_gui.c:2783
+msgid "Enable Scrape (read non-scraped blocks one sector at a time forwards)"
+msgstr ""
+"Bật chức năng Scrape (đọc các khối chưa được scrape theo từng sector một)"
+
+#: src/opensuperclone/clone_gui.c:2788
+#, fuzzy
+msgid "Enable Skip Fast (use a more aggressive skipping algorithm)"
+msgstr "Enable changing current position (can affect skipping algorithm)"
+
+#: src/opensuperclone/clone_gui.c:2782
+msgid ""
+"Enable Trimming (read non-trimmed blocks one sector at a time forwards and "
+"backwards)"
+msgstr ""
+"Bật chức năng Cắt (đọc các khối không được cắt theo từng sector một theo "
+"chiều tiến và lùi)"
+
+#: src/opensuperclone/clone_gui.c:3128
+msgid "Enable USB bulk reset"
+msgstr "Bật thiết lập lại hàng loạt USB"
+
+#: src/opensuperclone/clone_gui.c:3130
+msgid "Enable USB hard reset"
+msgstr "Bật thiết lập lại cứng USB"
+
+#: src/opensuperclone/clone_gui.c:3131
+msgid "Enable USB port reset"
+msgstr "Bật chức năng đặt lại cổng USB"
+
+#: src/opensuperclone/clone_gui.c:3129
+msgid "Enable USB soft reset"
+msgstr "Bật thiết lập lại mềm USB"
+
+#: src/opensuperclone/clone_gui.c:2904
+msgid "Enable changing current position (can affect skipping algorithm)"
+msgstr ""
+"Cho phép thay đổi vị trí hiện tại (có thể ảnh hưởng đến thuật toán bỏ qua)"
+
+#: src/opensuperclone/clone_gui.c:2902
+msgid "Enable changing output offset (use with caution)"
+msgstr "Cho phép thay đổi độ lệch Đầu đọc ra (sử dụng thận trọng)"
+
+#: src/opensuperclone/clone_gui.c:2939
+#, fuzzy
+msgid ""
+"Enable current position adjustment. You must close and reopen the Advanced "
+"Settings to take effect."
+msgstr "You must reopen the advanced setting for this change to take effect"
+
+#: src/opensuperclone/clone_gui.c:2948
+msgid ""
+"Enable or disable the OS write buffer for writes to the destination. "
+"Disabling it is safer in case of power loss, but slower."
+msgstr ""
+"Bật hoặc tắt bộ đệm ghi hệ điều hành để ghi vào đích. Tắt bộ đệm này an toàn"
+" hơn trong trường hợp mất điện, nhưng chậm hơn."
+
+#: src/opensuperclone/clone_gui.c:2937
+#, fuzzy
+msgid ""
+"Enable output offset adjustment. You must close and reopen the Advanced "
+"Settings to take effect."
+msgstr "You must reopen the advanced setting for this change to take effect"
+
+#: src/opensuperclone/clone_gui.c:2922
+msgid "Enable output sector size adjustment"
+msgstr "Cho phép điều chỉnh kích thước sector Đầu đọc ra"
+
+#: src/opensuperclone/clone_gui.c:2957
+msgid ""
+"Enable output sector size adjustment. You must close and reopen the Advanced"
+" Settings to take effect."
+msgstr ""
+"Bật điều chỉnh kích thước sector Đầu đọc ra. Bạn phải đóng và mở lại Cài đặt "
+"nâng cao để có hiệu lực."
+
+#: src/opensuperclone/clone_gui.c:2921
+msgid "Enable phase logs"
+msgstr "Bật nhật ký pha"
+
+#: src/opensuperclone/clone_gui.c:3118
+msgid "Enable phase timers"
+msgstr "Bật bộ hẹn giờ pha"
+
+#: src/opensuperclone/clone_gui.c:2918
+msgid "Enable read twice on timeout"
+msgstr "Cho phép đọc hai lần khi hết thời gian chờ"
+
+#: src/opensuperclone/clone_gui.c:2947
+msgid ""
+"Enable the OS write buffer for writes to the destination. Faster, but may "
+"cause corruption in case of power loss."
+msgstr ""
+"Bật bộ đệm ghi hệ điều hành để ghi vào đích. Nhanh hơn, nhưng có thể gây "
+"hỏng hóc trong trường hợp mất điện."
+
+#: src/opensuperclone/clone_gui.c:2917
+msgid "Enable using ATA return to mark bad sectors"
+msgstr "Cho phép sử dụng lệnh ATA để đánh dấu các sector xấu"
+
+#: src/opensuperclone/clone_gui.c:2912
+msgid "Enabled (faster)"
+msgstr "Đã bật (nhanh hơn)"
+
+#: src/opensuperclone/clone_gui.c:3357 src/opensuperclone/clone_gui.c:3366
+msgid "Energize relay 1"
+msgstr "Kích hoạt rơle 1"
+
+#: src/opensuperclone/clone_gui.c:3358 src/opensuperclone/clone_gui.c:3367
+msgid "Energize relay 2"
+msgstr "Kích hoạt rơle 2"
+
+#: src/opensuperclone/clone_gui.c:3359 src/opensuperclone/clone_gui.c:3368
+msgid "Energize relay 3"
+msgstr "Kích hoạt rơle 3"
+
+#: src/opensuperclone/clone_gui.c:3360 src/opensuperclone/clone_gui.c:3369
+msgid "Energize relay 4"
+msgstr "Kích hoạt rơle 4"
+
+#: src/opensuperclone/clone_gui.c:3361 src/opensuperclone/clone_gui.c:3370
+msgid "Energize relay 5"
+msgstr "Kích hoạt rơle 5"
+
+#: src/opensuperclone/clone_gui.c:3362 src/opensuperclone/clone_gui.c:3371
+msgid "Energize relay 6"
+msgstr "Kích hoạt rơle 6"
+
+#: src/opensuperclone/clone_gui.c:3363 src/opensuperclone/clone_gui.c:3372
+msgid "Energize relay 7"
+msgstr "Kích hoạt rơle 7"
+
+#: src/opensuperclone/clone_gui.c:3364 src/opensuperclone/clone_gui.c:3373
+msgid "Energize relay 8"
+msgstr "Kích hoạt rơle 8"
+
+#: src/opensuperclone/clone_gui.c:3239
+msgid ""
+"Enter the ports you wish to be disabled as integers separated by spaces.\n"
+"It is best that the port numbers are in order from lowest to highest.\n"
+"You can find port information by listing source drives in AHCI mode.\n"
+msgstr ""
+"Nhập các cổng bạn muốn vô hiệu hóa dưới dạng số nguyên được phân tách bằng dấu cách.\n"
+"Tốt nhất là các số cổng được sắp xếp theo thứ tự từ thấp đến cao.\n"
+"Bạn có thể tìm thông tin cổng bằng cách liệt kê các ổ đĩa nguồn ở chế độ AHCI."
+
+#: src/opensuperclone/clone_gui.c:226
+msgid "Erase Destination"
+msgstr "Xóa Điểm Đến"
+
+#: src/opensuperclone/opensuperclone.c:4660
+#, c-format
+msgid "Erasing"
+msgstr "Xóa bỏ"
+
+#: src/opensuperclone/clone_gui.c:443
+#, fuzzy
+msgid "Error (The device has detected an error)"
+msgstr "Error: Device fault detected on source"
+
+#: src/opensuperclone/opensuperclone.c:1250
+#: src/opensuperclone/opensuperclone.c:1262
+#: src/opensuperclone/opensuperclone.c:1274
+#: src/opensuperclone/opensuperclone.c:1294
+#: src/opensuperclone/opensuperclone.c:1306
+#: src/opensuperclone/opensuperclone.c:1318
+#: src/opensuperclone/opensuperclone.c:1521
+#: src/opensuperclone/opensuperclone.c:1561
+#: src/opensuperclone/opensuperclone.c:1601
+#: src/opensuperclone/opensuperclone.c:3309
+#: src/opensuperclone/opensuperclone.c:3322
+#: src/opensuperclone/opensuperclone.c:3335
+#: src/opensuperclone/opensuperclone.c:3354
+#: src/opensuperclone/opensuperclone.c:3367
+#: src/opensuperclone/opensuperclone.c:3380
+#: src/opensuperclone/opensuperclone.c:15602
+#: src/opensuperclone/opensuperclone.c:15615
+#: src/opensuperclone/opensuperclone.c:15628
+#: src/opensuperclone/opensuperclone.c:15641
+#: src/opensuperclone/opensuperclone.c:15654
+#: src/opensuperclone/opensuperclone.c:15673
+#: src/opensuperclone/opensuperclone.c:15686
+#: src/opensuperclone/opensuperclone.c:15699
+#: src/opensuperclone/opensuperclone.c:15712
+#: src/opensuperclone/opensuperclone.c:15725
+#, c-format
+msgid "Error allocating memory"
+msgstr "Lỗi phân bổ bộ nhớ"
+
+#: src/opensuperclone/opensuperclone.c:11744
+#, c-format
+msgid "Error calculating CHS, value out of bounds"
+msgstr "Lỗi khi tính toán CHS, giá trị nằm ngoài giới hạn"
+
+#: src/opensuperclone/opensuperclone.c:5579
+#, c-format
+msgid "Error changing chunk status, block not found"
+msgstr "Lỗi khi thay đổi trạng thái khối, không tìm thấy khối"
+
+#: src/opensuperclone/opensuperclone.c:5590
+#, c-format
+msgid "Error changing chunk status, is not within the block"
+msgstr "Lỗi khi thay đổi trạng thái khối, không nằm trong khối"
+
+#: src/opensuperclone/clone_gui.c:4695
+msgid "Error choosing USB relay"
+msgstr "Lỗi khi chọn rơle USB"
+
+#: src/opensuperclone/io.c:10619
+#, c-format
+msgid "Error closing virtual disk driver"
+msgstr "Lỗi khi đóng trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/opensuperclone.c:1051
+#: src/opensuperclone/opensuperclone.c:1150
+msgid "Error connecting to driver memory\n"
+msgstr "Lỗi kết nối với bộ nhớ trình điều khiển"
+
+#: src/opensuperclone/opensuperclone.c:15760
+#, c-format
+msgid "Error disabling rebuild assist"
+msgstr "Lỗi khi vô hiệu hóa hỗ trợ xây dựng lại"
+
+#: src/opensuperclone/opensuperclone.c:15771
+#, c-format
+msgid "Error enabling rebuild assist"
+msgstr "Lỗi khi bật hỗ trợ xây dựng lại"
+
+#: src/opensuperclone/clone_gui.c:852
+#, c-format
+msgid "Error exporting ddrescue log (map) file"
+msgstr "Lỗi khi xuất tệp nhật ký ddrescue (bản đồ)"
+
+#: src/opensuperclone/opensuperclone.c:1068
+#, fuzzy
+msgid "Error loading driver\n"
+msgstr "Error allocating memory"
+
+#: src/opensuperclone/io.c:4200 src/opensuperclone/io.c:4256
+#: src/opensuperclone/io.c:4335 src/opensuperclone/io.c:4509
+#: src/opensuperclone/io.c:4576 src/opensuperclone/io.c:4670
+#: src/opensuperclone/io.c:5192 src/opensuperclone/io.c:5259
+#: src/opensuperclone/io.c:5353 src/opensuperclone/io.c:10509
+#: src/opensuperclone/io.c:10579
+#, c-format
+msgid "Error opening virtual disk driver"
+msgstr "Lỗi khi mở trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:3462 src/opensuperclone/clone_gui.c:3483
+#: src/opensuperclone/clone_gui.c:3545 src/opensuperclone/clone_gui.c:3563
+#: src/opensuperclone/clone_gui.c:4762 src/opensuperclone/clone_gui.c:4824
+#: src/opensuperclone/clone_gui.c:4864 src/opensuperclone/clone_gui.c:4884
+#: src/opensuperclone/opensuperclone.c:11953
+#: src/opensuperclone/opensuperclone.c:12052
+#, c-format
+msgid "Error operating relay, see console for more information"
+msgstr "Lỗi khi vận hành rơle, hãy xem bảng điều khiển để biết thêm thông tin"
+
+#: src/opensuperclone/clone_gui.c:954 src/opensuperclone/clone_gui.c:1015
+#: src/opensuperclone/clone_gui.c:1075 src/opensuperclone/clone_gui.c:1100
+#: src/opensuperclone/clone_gui.c:1253 src/opensuperclone/clone_gui.c:1482
+#: src/opensuperclone/clone_gui.c:1648 src/opensuperclone/clone_gui.c:1738
+#, c-format
+msgid ""
+"Error processing log file!\n"
+"The log file was not loaded.\n"
+msgstr ""
+"Lỗi khi xử lý tệp nhật ký!\n"
+"Tệp nhật ký không được tải."
+
+#: src/opensuperclone/clone_gui.c:1626
+msgid "Error selecting destination"
+msgstr "Lỗi khi chọn đích"
+
+#: src/opensuperclone/clone_gui.c:1274 src/opensuperclone/clone_gui.c:1435
+#: src/opensuperclone/clone_gui.c:1446 src/opensuperclone/clone_gui.c:1457
+#: src/opensuperclone/clone_gui.c:1503
+msgid "Error selecting source"
+msgstr "Lỗi khi chọn nguồn"
+
+#: src/opensuperclone/io.c:4217 src/opensuperclone/io.c:4273
+#: src/opensuperclone/io.c:4351 src/opensuperclone/io.c:4526
+#: src/opensuperclone/io.c:4593 src/opensuperclone/io.c:4687
+#: src/opensuperclone/io.c:5209 src/opensuperclone/io.c:5276
+#: src/opensuperclone/io.c:5370 src/opensuperclone/io.c:10533
+#: src/opensuperclone/io.c:10556
+#, c-format
+msgid "Error starting virtual disk driver"
+msgstr "Lỗi khi khởi động trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/io.c:10601
+#, c-format
+msgid "Error stoping virtual disk driver"
+msgstr "Lỗi dừng trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/opensuperclone.c:4050
+#, c-format
+msgid "Error writing backup log file"
+msgstr "Lỗi khi ghi tệp nhật ký sao lưu"
+
+#: src/opensuperclone/opensuperclone.c:10167
+#: src/opensuperclone/opensuperclone.c:10177
+#: src/opensuperclone/opensuperclone.c:10189
+#, c-format
+msgid "Error writing data to destination"
+msgstr "Lỗi khi ghi dữ liệu vào đích"
+
+#: src/opensuperclone/clone_gui.c:719 src/opensuperclone/clone_gui.c:754
+#: src/opensuperclone/clone_gui.c:779 src/opensuperclone/clone_gui.c:814
+#: src/opensuperclone/opensuperclone.c:3397
+#: src/opensuperclone/opensuperclone.c:3688
+#, c-format
+msgid "Error writing progress log file"
+msgstr "Lỗi khi ghi tệp nhật ký tiến trình"
+
+#: src/opensuperclone/clone_gui.c:577 src/opensuperclone/clone_gui.c:610
+#: src/opensuperclone/clone_gui.c:643 src/opensuperclone/clone_gui.c:674
+#: src/opensuperclone/clone_gui.c:681 src/opensuperclone/clone_gui.c:711
+#: src/opensuperclone/clone_gui.c:721 src/opensuperclone/clone_gui.c:733
+#: src/opensuperclone/clone_gui.c:756 src/opensuperclone/clone_gui.c:771
+#: src/opensuperclone/clone_gui.c:781 src/opensuperclone/clone_gui.c:793
+#: src/opensuperclone/clone_gui.c:816 src/opensuperclone/clone_gui.c:831
+#: src/opensuperclone/clone_gui.c:854 src/opensuperclone/clone_gui.c:869
+#: src/opensuperclone/clone_gui.c:899 src/opensuperclone/clone_gui.c:906
+#: src/opensuperclone/clone_gui.c:956 src/opensuperclone/clone_gui.c:1017
+#: src/opensuperclone/clone_gui.c:1077 src/opensuperclone/clone_gui.c:1102
+#: src/opensuperclone/clone_gui.c:1114 src/opensuperclone/clone_gui.c:1195
+#: src/opensuperclone/clone_gui.c:1202 src/opensuperclone/clone_gui.c:1209
+#: src/opensuperclone/clone_gui.c:1255 src/opensuperclone/clone_gui.c:1276
+#: src/opensuperclone/clone_gui.c:1437 src/opensuperclone/clone_gui.c:1448
+#: src/opensuperclone/clone_gui.c:1459 src/opensuperclone/clone_gui.c:1484
+#: src/opensuperclone/clone_gui.c:1505 src/opensuperclone/clone_gui.c:1544
+#: src/opensuperclone/clone_gui.c:1551 src/opensuperclone/clone_gui.c:1628
+#: src/opensuperclone/clone_gui.c:1650 src/opensuperclone/clone_gui.c:1682
+#: src/opensuperclone/clone_gui.c:1689 src/opensuperclone/clone_gui.c:1740
+#: src/opensuperclone/clone_gui.c:1769 src/opensuperclone/clone_gui.c:1776
+#: src/opensuperclone/clone_gui.c:1806 src/opensuperclone/clone_gui.c:1825
+#: src/opensuperclone/clone_gui.c:1833 src/opensuperclone/clone_gui.c:1841
+#: src/opensuperclone/clone_gui.c:1852 src/opensuperclone/clone_gui.c:1883
+#: src/opensuperclone/clone_gui.c:1891 src/opensuperclone/clone_gui.c:1902
+#: src/opensuperclone/clone_gui.c:1947 src/opensuperclone/clone_gui.c:1953
+#: src/opensuperclone/clone_gui.c:3432 src/opensuperclone/clone_gui.c:3464
+#: src/opensuperclone/clone_gui.c:3485 src/opensuperclone/clone_gui.c:3537
+#: src/opensuperclone/clone_gui.c:3547 src/opensuperclone/clone_gui.c:3565
+#: src/opensuperclone/clone_gui.c:3653 src/opensuperclone/clone_gui.c:3678
+#: src/opensuperclone/clone_gui.c:4057 src/opensuperclone/clone_gui.c:4167
+#: src/opensuperclone/clone_gui.c:4501 src/opensuperclone/clone_gui.c:4532
+#: src/opensuperclone/clone_gui.c:4581 src/opensuperclone/clone_gui.c:4614
+#: src/opensuperclone/clone_gui.c:4697 src/opensuperclone/clone_gui.c:4733
+#: src/opensuperclone/clone_gui.c:4764 src/opensuperclone/clone_gui.c:4795
+#: src/opensuperclone/clone_gui.c:4826 src/opensuperclone/clone_gui.c:4857
+#: src/opensuperclone/clone_gui.c:4866 src/opensuperclone/clone_gui.c:4877
+#: src/opensuperclone/clone_gui.c:4886 src/opensuperclone/clone_gui.c:4897
+#: src/opensuperclone/clone_gui.c:4906 src/opensuperclone/io.c:128
+#: src/opensuperclone/io.c:644 src/opensuperclone/io.c:1661
+#: src/opensuperclone/io.c:1703 src/opensuperclone/io.c:1718
+#: src/opensuperclone/io.c:1791 src/opensuperclone/io.c:1835
+#: src/opensuperclone/io.c:2234 src/opensuperclone/io.c:2550
+#: src/opensuperclone/io.c:4088 src/opensuperclone/io.c:4204
+#: src/opensuperclone/io.c:4260 src/opensuperclone/io.c:4339
+#: src/opensuperclone/io.c:4491 src/opensuperclone/io.c:4513
+#: src/opensuperclone/io.c:4558 src/opensuperclone/io.c:4580
+#: src/opensuperclone/io.c:4652 src/opensuperclone/io.c:4674
+#: src/opensuperclone/io.c:5174 src/opensuperclone/io.c:5196
+#: src/opensuperclone/io.c:5241 src/opensuperclone/io.c:5263
+#: src/opensuperclone/io.c:5335 src/opensuperclone/io.c:5357
+#: src/opensuperclone/io.c:5961 src/opensuperclone/io.c:9823
+#: src/opensuperclone/io.c:9974 src/opensuperclone/io.c:10513
+#: src/opensuperclone/io.c:10583 src/opensuperclone/io.c:10626
+#: src/opensuperclone/opensuperclone.c:742
+#: src/opensuperclone/opensuperclone.c:751
+#: src/opensuperclone/opensuperclone.c:933
+#: src/opensuperclone/opensuperclone.c:1254
+#: src/opensuperclone/opensuperclone.c:1266
+#: src/opensuperclone/opensuperclone.c:1278
+#: src/opensuperclone/opensuperclone.c:1298
+#: src/opensuperclone/opensuperclone.c:1310
+#: src/opensuperclone/opensuperclone.c:1322
+#: src/opensuperclone/opensuperclone.c:1378
+#: src/opensuperclone/opensuperclone.c:1396
+#: src/opensuperclone/opensuperclone.c:1411
+#: src/opensuperclone/opensuperclone.c:1444
+#: src/opensuperclone/opensuperclone.c:1506
+#: src/opensuperclone/opensuperclone.c:1525
+#: src/opensuperclone/opensuperclone.c:1546
+#: src/opensuperclone/opensuperclone.c:1565
+#: src/opensuperclone/opensuperclone.c:1586
+#: src/opensuperclone/opensuperclone.c:1605
+#: src/opensuperclone/opensuperclone.c:3313
+#: src/opensuperclone/opensuperclone.c:3326
+#: src/opensuperclone/opensuperclone.c:3339
+#: src/opensuperclone/opensuperclone.c:3358
+#: src/opensuperclone/opensuperclone.c:3371
+#: src/opensuperclone/opensuperclone.c:3384
+#: src/opensuperclone/opensuperclone.c:3399
+#: src/opensuperclone/opensuperclone.c:3690
+#: src/opensuperclone/opensuperclone.c:4052
+#: src/opensuperclone/opensuperclone.c:4636
+#: src/opensuperclone/opensuperclone.c:5583
+#: src/opensuperclone/opensuperclone.c:5594
+#: src/opensuperclone/opensuperclone.c:5720
+#: src/opensuperclone/opensuperclone.c:5825
+#: src/opensuperclone/opensuperclone.c:6827
+#: src/opensuperclone/opensuperclone.c:6872
+#: src/opensuperclone/opensuperclone.c:6884
+#: src/opensuperclone/opensuperclone.c:6895
+#: src/opensuperclone/opensuperclone.c:6905
+#: src/opensuperclone/opensuperclone.c:7078
+#: src/opensuperclone/opensuperclone.c:7156
+#: src/opensuperclone/opensuperclone.c:7241
+#: src/opensuperclone/opensuperclone.c:7444
+#: src/opensuperclone/opensuperclone.c:7493
+#: src/opensuperclone/opensuperclone.c:7571
+#: src/opensuperclone/opensuperclone.c:7672
+#: src/opensuperclone/opensuperclone.c:7835
+#: src/opensuperclone/opensuperclone.c:7875
+#: src/opensuperclone/opensuperclone.c:7920
+#: src/opensuperclone/opensuperclone.c:8002
+#: src/opensuperclone/opensuperclone.c:8133
+#: src/opensuperclone/opensuperclone.c:8222
+#: src/opensuperclone/opensuperclone.c:8310
+#: src/opensuperclone/opensuperclone.c:8377
+#: src/opensuperclone/opensuperclone.c:8424
+#: src/opensuperclone/opensuperclone.c:8533
+#: src/opensuperclone/opensuperclone.c:8664
+#: src/opensuperclone/opensuperclone.c:8749
+#: src/opensuperclone/opensuperclone.c:8837
+#: src/opensuperclone/opensuperclone.c:8905
+#: src/opensuperclone/opensuperclone.c:9005
+#: src/opensuperclone/opensuperclone.c:9428
+#: src/opensuperclone/opensuperclone.c:9949
+#: src/opensuperclone/opensuperclone.c:9961
+#: src/opensuperclone/opensuperclone.c:10054
+#: src/opensuperclone/opensuperclone.c:10066
+#: src/opensuperclone/opensuperclone.c:10084
+#: src/opensuperclone/opensuperclone.c:10129
+#: src/opensuperclone/opensuperclone.c:10161
+#: src/opensuperclone/opensuperclone.c:10171
+#: src/opensuperclone/opensuperclone.c:10181
+#: src/opensuperclone/opensuperclone.c:10193
+#: src/opensuperclone/opensuperclone.c:10207
+#: src/opensuperclone/opensuperclone.c:10218
+#: src/opensuperclone/opensuperclone.c:10228
+#: src/opensuperclone/opensuperclone.c:10945
+#: src/opensuperclone/opensuperclone.c:11469
+#: src/opensuperclone/opensuperclone.c:11748
+#: src/opensuperclone/opensuperclone.c:11901
+#: src/opensuperclone/opensuperclone.c:11912
+#: src/opensuperclone/opensuperclone.c:11927
+#: src/opensuperclone/opensuperclone.c:11937
+#: src/opensuperclone/opensuperclone.c:11955
+#: src/opensuperclone/opensuperclone.c:11965
+#: src/opensuperclone/opensuperclone.c:11980
+#: src/opensuperclone/opensuperclone.c:11990
+#: src/opensuperclone/opensuperclone.c:12018
+#: src/opensuperclone/opensuperclone.c:12054
+#: src/opensuperclone/opensuperclone.c:12214
+#: src/opensuperclone/opensuperclone.c:12223
+#: src/opensuperclone/opensuperclone.c:12234
+#: src/opensuperclone/opensuperclone.c:12274
+#: src/opensuperclone/opensuperclone.c:12288
+#: src/opensuperclone/opensuperclone.c:12314
+#: src/opensuperclone/opensuperclone.c:12335
+#: src/opensuperclone/opensuperclone.c:12351
+#: src/opensuperclone/opensuperclone.c:12362
+#: src/opensuperclone/opensuperclone.c:12381
+#: src/opensuperclone/opensuperclone.c:12392
+#: src/opensuperclone/opensuperclone.c:12421
+#: src/opensuperclone/opensuperclone.c:12543
+#: src/opensuperclone/opensuperclone.c:12595
+#: src/opensuperclone/opensuperclone.c:12607
+#: src/opensuperclone/opensuperclone.c:12619
+#: src/opensuperclone/opensuperclone.c:12632
+#: src/opensuperclone/opensuperclone.c:12677
+#: src/opensuperclone/opensuperclone.c:12716
+#: src/opensuperclone/opensuperclone.c:12821
+#: src/opensuperclone/opensuperclone.c:12833
+#: src/opensuperclone/opensuperclone.c:12843
+#: src/opensuperclone/opensuperclone.c:13254
+#: src/opensuperclone/opensuperclone.c:13264
+#: src/opensuperclone/opensuperclone.c:13307
+#: src/opensuperclone/opensuperclone.c:13317
+#: src/opensuperclone/opensuperclone.c:13430
+#: src/opensuperclone/opensuperclone.c:13463
+#: src/opensuperclone/opensuperclone.c:13475
+#: src/opensuperclone/opensuperclone.c:13490
+#: src/opensuperclone/opensuperclone.c:13850
+#: src/opensuperclone/opensuperclone.c:13858
+#: src/opensuperclone/opensuperclone.c:13898
+#: src/opensuperclone/opensuperclone.c:15018
+#: src/opensuperclone/opensuperclone.c:15040
+#: src/opensuperclone/opensuperclone.c:15049
+#: src/opensuperclone/opensuperclone.c:15060
+#: src/opensuperclone/opensuperclone.c:15070
+#: src/opensuperclone/opensuperclone.c:15165
+#: src/opensuperclone/opensuperclone.c:15179
+#: src/opensuperclone/opensuperclone.c:15190
+#: src/opensuperclone/opensuperclone.c:15211
+#: src/opensuperclone/opensuperclone.c:15219
+#: src/opensuperclone/opensuperclone.c:15232
+#: src/opensuperclone/opensuperclone.c:15243
+#: src/opensuperclone/opensuperclone.c:15266
+#: src/opensuperclone/opensuperclone.c:15275
+#: src/opensuperclone/opensuperclone.c:15289
+#: src/opensuperclone/opensuperclone.c:15306
+#: src/opensuperclone/opensuperclone.c:15314
+#: src/opensuperclone/opensuperclone.c:15326
+#: src/opensuperclone/opensuperclone.c:15606
+#: src/opensuperclone/opensuperclone.c:15619
+#: src/opensuperclone/opensuperclone.c:15632
+#: src/opensuperclone/opensuperclone.c:15645
+#: src/opensuperclone/opensuperclone.c:15658
+#: src/opensuperclone/opensuperclone.c:15677
+#: src/opensuperclone/opensuperclone.c:15690
+#: src/opensuperclone/opensuperclone.c:15703
+#: src/opensuperclone/opensuperclone.c:15716
+#: src/opensuperclone/opensuperclone.c:15729
+#: src/opensuperclone/opensuperclone.c:15744
+#: src/opensuperclone/opensuperclone.c:15752
+#: src/opensuperclone/opensuperclone.c:15762
+#: src/opensuperclone/opensuperclone.c:15773
+#: src/opensuperclone/opensuperclone.c:15862
+#: src/opensuperclone/opensuperclone.c:15870
+#: src/opensuperclone/opensuperclone.c:15887
+#: src/opensuperclone/opensuperclone.c:15911
+#: src/opensuperclone/opensuperclone.c:15924
+#: src/opensuperclone/opensuperclone.c:15936
+#: src/opensuperclone/opensuperclone.c:15982
+#: src/opensuperclone/opensuperclone.c:15992
+#: src/opensuperclone/opensuperclone.c:16006
+#: src/opensuperclone/opensuperclone.c:16025
+#: src/opensuperclone/opensuperclone.c:16083
+#: src/opensuperclone/opensuperclone.c:16106
+#: src/opensuperclone/opensuperclone.c:16302
+#: src/opensuperclone/opensuperclone.c:16313
+#: src/opensuperclone/opensuperclone.c:16330
+#: src/opensuperclone/opensuperclone.c:16349
+#: src/opensuperclone/opensuperclone.c:16428 src/opensuperclone/usbrelay.c:408
+msgid "Error!"
+msgstr "Lỗi!"
+
+#: src/opensuperclone/opensuperclone.c:7076
+#: src/opensuperclone/opensuperclone.c:7491
+#: src/opensuperclone/opensuperclone.c:7873
+#: src/opensuperclone/opensuperclone.c:8375
+#: src/opensuperclone/opensuperclone.c:8903
+#, c-format
+msgid "Error! The disk is security locked!"
+msgstr "Lỗi! Đĩa đã bị khóa bảo mật!"
+
+#: src/opensuperclone/opensuperclone.c:12539
+#, c-format
+msgid "Error: Destination is detected to be the host OS drive"
+msgstr "Lỗi: Phát hiện đích đến là ổ đĩa hệ điều hành máy chủ"
+
+#: src/opensuperclone/opensuperclone.c:10052
+#: src/opensuperclone/opensuperclone.c:10064
+#, c-format
+msgid "Error: Device fault detected on source"
+msgstr "Lỗi: Đã phát hiện lỗi thiết bị trên nguồn"
+
+#: src/opensuperclone/clone_gui.c:904
+#, c-format
+msgid "Error: Domain is not active or no domain file loaded"
+msgstr "Lỗi: Tên miền không hoạt động hoặc không có tệp tên miền nào được tải"
+
+#: src/opensuperclone/opensuperclone.c:931
+#, c-format
+msgid "Error: Driver timeout or error"
+msgstr "Lỗi: Trình điều khiển hết thời gian hoặc lỗi"
+
+#: src/opensuperclone/opensuperclone.c:15177
+#: src/opensuperclone/opensuperclone.c:15230
+#: src/opensuperclone/opensuperclone.c:15287
+#: src/opensuperclone/opensuperclone.c:15324
+msgid "Error: File copying failed"
+msgstr "Lỗi: Sao chép tập tin không thành công"
+
+#: src/opensuperclone/opensuperclone.c:15038
+#: src/opensuperclone/opensuperclone.c:15047
+#: src/opensuperclone/opensuperclone.c:15209
+#: src/opensuperclone/opensuperclone.c:15217
+#: src/opensuperclone/opensuperclone.c:15264
+#: src/opensuperclone/opensuperclone.c:15273
+#: src/opensuperclone/opensuperclone.c:15304
+#: src/opensuperclone/opensuperclone.c:15312
+msgid "Error: No backup file"
+msgstr "Lỗi: Không có tệp sao lưu"
+
+#: src/opensuperclone/clone_gui.c:1951 src/opensuperclone/clone_gui.c:3430
+#: src/opensuperclone/clone_gui.c:3535 src/opensuperclone/clone_gui.c:4731
+#: src/opensuperclone/clone_gui.c:4793 src/opensuperclone/clone_gui.c:4855
+#: src/opensuperclone/clone_gui.c:4875
+#, c-format
+msgid "Error: No relay has been chosen"
+msgstr "Lỗi: Không có rơle nào được chọn"
+
+#: src/opensuperclone/opensuperclone.c:749
+#, c-format
+msgid "Error: Odd sector size not allowed in driver mode"
+msgstr ""
+"Lỗi: Không được phép sử dụng kích thước sector lẻ trong chế độ trình điều "
+"khiển"
+
+#: src/opensuperclone/opensuperclone.c:740
+#, c-format
+msgid "Error: Offset not allowed in driver mode"
+msgstr "Lỗi: Không được phép bù trừ ở chế độ trình điều khiển"
+
+#: src/opensuperclone/opensuperclone.c:12347
+#: src/opensuperclone/opensuperclone.c:12377
+#: src/opensuperclone/opensuperclone.c:13250
+#: src/opensuperclone/opensuperclone.c:13303
+#, c-format
+msgid "Error: Read Capacity command failed with sense data"
+msgstr "Lỗi: Lệnh Đọc dung lượng không thành công với dữ liệu cảm biến"
+
+#: src/opensuperclone/opensuperclone.c:13488
+#, c-format
+msgid "Error: Read size extends past end of device"
+msgstr "Lỗi: Kích thước đọc vượt quá giới hạn của thiết bị"
+
+#: src/opensuperclone/opensuperclone.c:13856
+#, c-format
+msgid "Error: SMART not enabled on this device"
+msgstr "Lỗi: SMART không được bật trên thiết bị này"
+
+#: src/opensuperclone/opensuperclone.c:13848
+#, c-format
+msgid "Error: SMART not supported on this device"
+msgstr "Lỗi: SMART không được hỗ trợ trên thiết bị này"
+
+#: src/opensuperclone/opensuperclone.c:9426
+#, c-format
+msgid ""
+"Error: Skip Reset detected. The settings may need to be changed.\n"
+"Skip size may be too low or too high.\n"
+"The drive may have a slow issue causing too many slow skips.\n"
+"If you got this message very quickly, it may not be reading any data.\n"
+" Please reference the instruction manual for more information."
+msgstr ""
+"Lỗi: Đã phát hiện Skip Reset. Có thể cần phải thay đổi cài đặt.\n"
+"Kích thước Skip có thể quá thấp hoặc quá cao.\n"
+"Ổ đĩa có thể gặp sự cố chậm gây ra quá nhiều lần Skip chậm.\n"
+"Nếu bạn nhận được thông báo này rất nhanh, có thể ổ đĩa không đọc bất kỳ dữ liệu nào.\n"
+"Vui lòng tham khảo hướng dẫn sử dụng để biết thêm thông tin."
+
+#: src/opensuperclone/opensuperclone.c:12671
+#, c-format
+msgid "Error: Source is detected to be mounted"
+msgstr "Lỗi: Nguồn được phát hiện là đã được gắn kết"
+
+#: src/opensuperclone/opensuperclone.c:13471
+#, c-format
+msgid "Error: Source size is invalid"
+msgstr "Lỗi: Kích thước nguồn không hợp lệ"
+
+#: src/opensuperclone/opensuperclone.c:13426
+#: src/opensuperclone/opensuperclone.c:13459
+#, c-format
+msgid ""
+"Error: Source size is not divisable by sector size,\n"
+"source size is"
+msgstr ""
+"Lỗi: Kích thước nguồn không thể chia hết cho kích thước sector,\n"
+"kích thước nguồn là"
+
+#: src/opensuperclone/opensuperclone.c:4632
+#: src/opensuperclone/opensuperclone.c:12615
+#, c-format
+msgid "Error: Unable to get size of destination"
+msgstr "Lỗi: Không thể lấy được kích thước của đích"
+
+#: src/opensuperclone/opensuperclone.c:15163
+msgid "Error: Unable to locate the line in GRUB"
+msgstr "Lỗi: Không thể định vị dòng trong GRUB"
+
+#: src/opensuperclone/opensuperclone.c:12591
+#, c-format
+msgid "Error: Unable to open destination"
+msgstr "Lỗi: Không thể mở đích"
+
+#: src/opensuperclone/opensuperclone.c:15058
+#: src/opensuperclone/opensuperclone.c:15068
+msgid "Error: Unable to open file"
+msgstr "Lỗi: Không thể mở tệp"
+
+#: src/opensuperclone/opensuperclone.c:12712
+#, c-format
+msgid "Error: Unable to open source"
+msgstr "Lỗi: Không thể mở nguồn"
+
+#: src/opensuperclone/opensuperclone.c:13894
+#, c-format
+msgid "Error: Unable to read SMART data from device"
+msgstr "Lỗi: Không thể đọc dữ liệu SMART từ thiết bị"
+
+#: src/opensuperclone/opensuperclone.c:6891
+#: src/opensuperclone/opensuperclone.c:6901
+#, c-format
+msgid "Error: Unable to read from destination"
+msgstr "Lỗi: Không thể đọc từ đích"
+
+#: src/opensuperclone/opensuperclone.c:9957
+#, c-format
+msgid "Error: Unable to read source"
+msgstr "Lỗi: Không thể đọc được nguồn"
+
+#: src/opensuperclone/opensuperclone.c:6880
+#: src/opensuperclone/opensuperclone.c:10203
+#: src/opensuperclone/opensuperclone.c:12603
+#, c-format
+msgid "Error: Unable to seek destination"
+msgstr "Lỗi: Không tìm được đích đến"
+
+#: src/opensuperclone/opensuperclone.c:9945
+#, c-format
+msgid "Error: Unable to seek source"
+msgstr "Lỗi: Không tìm được nguồn"
+
+#: src/opensuperclone/opensuperclone.c:10125
+#: src/opensuperclone/opensuperclone.c:10157
+#: src/opensuperclone/opensuperclone.c:10214
+#: src/opensuperclone/opensuperclone.c:10224
+#: src/opensuperclone/opensuperclone.c:11467
+#, c-format
+msgid "Error: Unable to write to destination"
+msgstr "Lỗi: Không thể ghi vào đích"
+
+#: src/opensuperclone/opensuperclone.c:15188
+#: src/opensuperclone/opensuperclone.c:15241
+msgid "Error: Updating GRUB failed"
+msgstr "Lỗi: Cập nhật GRUB không thành công"
+
+#: src/opensuperclone/clone_gui.c:2769
+msgid "Exit on Slow (kB/s) phase-1-2"
+msgstr "Thoát ở chế độ Chậm (kB/giây) giai đoạn 1-2"
+
+#: src/opensuperclone/clone_gui.c:2770
+msgid "Exit on Slow Time (sec) phase-1-2"
+msgstr "Thoát ở Thời gian chậm (giây) giai đoạn 1-2"
+
+#: src/opensuperclone/opensuperclone.c:7125
+#: src/opensuperclone/opensuperclone.c:7542
+#, c-format
+msgid "Exiting due to slow read speed"
+msgstr "Thoát do tốc độ đọc chậm"
+
+#: src/opensuperclone/clone_gui.c:229 src/opensuperclone/clone_gui.c:837
+msgid "Export ddrescue log (map) file"
+msgstr "Xuất tệp nhật ký ddrescue (bản đồ)"
+
+#: src/opensuperclone/clone_gui.c:300
+msgid ""
+"Extended\n"
+"Analyze"
+msgstr ""
+"Mở rộng\n"
+"Phân tích"
+
+#: src/opensuperclone/opensuperclone.c:12308
+#: src/opensuperclone/opensuperclone.c:12329
+#, c-format
+msgid "Failed checking of source device size"
+msgstr "Không kiểm tra được kích thước thiết bị nguồn"
+
+#: src/opensuperclone/opensuperclone.c:12270
+#: src/opensuperclone/opensuperclone.c:12284
+#: src/opensuperclone/opensuperclone.c:12819
+#: src/opensuperclone/opensuperclone.c:12827
+#, c-format
+msgid "Failed to perform identify device command"
+msgstr "Không thực hiện được lệnh xác định thiết bị"
+
+#: src/opensuperclone/opensuperclone.c:1192
+msgid "Failed to remove driver module, see the console for more information"
+msgstr ""
+"Không thể xóa mô-đun trình điều khiển, hãy xem bảng điều khiển để biết thêm "
+"thông tin"
+
+#: src/opensuperclone/clone_gui.c:194
+msgid "File"
+msgstr "Tài liệu"
+
+#: src/opensuperclone/clone_gui.c:225
+msgid "Fill Mark"
+msgstr "Điền dấu"
+
+#: src/opensuperclone/clone_gui.c:224
+msgid "Fill Zero"
+msgstr "Điền số không"
+
+#: src/opensuperclone/clone_gui.c:358 src/opensuperclone/clone_gui.c:2287
+#: src/opensuperclone/clone_gui.c:2377
+msgid "Filled"
+msgstr "Điền"
+
+#: src/opensuperclone/opensuperclone.c:1748
+#: src/opensuperclone/opensuperclone.c:4726
+#, c-format
+msgid "Filling"
+msgstr "Làm đầy"
+
+#: src/opensuperclone/clone_gui.c:350 src/opensuperclone/opensuperclone.c:1740
+#: src/opensuperclone/opensuperclone.c:4846
+#: src/opensuperclone/opensuperclone.c:6296
+#: src/opensuperclone/opensuperclone.c:6673
+#, c-format
+msgid "Finished"
+msgstr "Hoàn thành"
+
+#: src/opensuperclone/clone_gui.c:236
+msgid "Fix Driver Memory Error"
+msgstr "Sửa lỗi bộ nhớ trình điều khiển"
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Flags"
+msgstr "Cờ"
+
+#: src/opensuperclone/clone_gui.c:2900
+msgid "Force access of mounted disk (not recommended)"
+msgstr "Buộc truy cập vào đĩa đã gắn (không khuyến khích)"
+
+#: src/opensuperclone/clone_gui.c:2901
+msgid "Force same controller / slave (not recommended)"
+msgstr "Buộc cùng một bộ điều khiển / nô lệ (không khuyến khích)"
+
+#: src/opensuperclone/clone_gui.c:2936
+msgid ""
+"Force working with the source even if it is detected that there is another "
+"drive on the same controller (not recommended)"
+msgstr ""
+"Buộc làm việc với nguồn ngay cả khi phát hiện có ổ đĩa khác trên cùng bộ "
+"điều khiển (không khuyến khích)"
+
+#: src/opensuperclone/clone_gui.c:2935
+msgid ""
+"Force working with the source even when it is mounted (not recommended)"
+msgstr ""
+"Buộc làm việc với nguồn ngay cả khi nó được gắn kết (không khuyến khích)"
+
+#: src/opensuperclone/clone_gui.c:3111
+msgid "General timeout (ms)"
+msgstr "Thời gian chờ chung (ms)"
+
+#: src/opensuperclone/clone_gui.c:200
+msgid "Generic block device"
+msgstr "Thiết bị khối chung"
+
+#: src/opensuperclone/clone_gui.c:207
+msgid "Generic source device"
+msgstr "Thiết bị nguồn chung"
+
+#: src/opensuperclone/clone_gui.c:206
+msgid "Generic source file"
+msgstr "Tệp nguồn chung"
+
+#: src/opensuperclone/clone_gui.c:2452 src/opensuperclone/clone_gui.c:2567
+#: src/opensuperclone/clone_gui.c:2572
+msgid "Good"
+msgstr "Tốt"
+
+#: src/opensuperclone/clone_gui.c:310
+msgid ""
+"Hard\n"
+"Reset"
+msgstr "Thiết lập lại cứng"
+
+#: src/opensuperclone/clone_gui.c:328
+#, fuzzy
+msgid "Hard reset the drive"
+msgstr "Hard reset time (ms)"
+
+#: src/opensuperclone/clone_gui.c:3109
+msgid "Hard reset time (ms)"
+msgstr "Thời gian thiết lập lại cứng (ms)"
+
+#: src/opensuperclone/clone_gui.c:231
+msgid "Help"
+msgstr "Giúp đỡ"
+
+#: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
+msgid "High"
+msgstr "Cao"
+
+#: src/opensuperclone/opensuperclone.c:12358
+#: src/opensuperclone/opensuperclone.c:12388
+#: src/opensuperclone/opensuperclone.c:13260
+#: src/opensuperclone/opensuperclone.c:13313
+#, c-format
+msgid "Host IO error during capacity"
+msgstr "Lỗi IO của máy chủ trong quá trình xử lý dung lượng"
+
+#: src/opensuperclone/opensuperclone.c:12839
+#, c-format
+msgid "Host IO error during identify"
+msgstr "Lỗi IO của máy chủ trong quá trình xác định"
+
+#: src/opensuperclone/opensuperclone.c:10080
+#, c-format
+msgid "Host IO error during reading source"
+msgstr "Lỗi IO của máy chủ trong khi đọc nguồn"
+
+#: src/opensuperclone/opensuperclone.c:12230
+#, c-format
+msgid "Host IO error during source drive identify"
+msgstr "Lỗi IO của máy chủ trong quá trình xác định ổ đĩa nguồn"
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "ID"
+msgstr "NHẬN DẠNG"
+
+#: src/opensuperclone/clone_gui.c:447
+msgid "ID Not Found (The device could not find the sector's ID field)"
+msgstr "Không tìm thấy ID (Thiết bị không tìm thấy trường ID của sector)"
+
+#: src/opensuperclone/opensuperclone.c:829
+#, c-format
+msgid "Idle"
+msgstr "Nhàn rỗi"
+
+#: src/opensuperclone/clone_gui.c:2934
+msgid ""
+"If checked, no log backups will be created when writing to the progess log "
+"(not recommended)"
+msgstr ""
+"Nếu được chọn, sẽ không có bản sao lưu nhật ký nào được tạo khi ghi vào nhật"
+" ký tiến trình (không khuyến khích)"
+
+#: src/opensuperclone/clone_gui.c:2955
+msgid ""
+"If the destination drive sector size is not a multiple of 512, you must "
+"enable this to be able to write to the drive."
+msgstr ""
+"Nếu kích thước sector của ổ đĩa đích không phải là bội số của 512, bạn phải "
+"bật tính năng này để có thể ghi vào ổ đĩa."
+
+#: src/opensuperclone/clone_gui.c:2954
+msgid ""
+"If the device fails to identify after a relay power cycle, enabling this "
+"option will cause a second attempt to disconnect and reconnect the device."
+msgstr ""
+"Nếu thiết bị không nhận dạng được sau một chu kỳ cấp nguồn cho rơle, việc "
+"bật tùy chọn này sẽ thực hiện lần thử thứ hai để ngắt kết nối và kết nối lại"
+" thiết bị."
+
+#: src/opensuperclone/clone_gui.c:203
+msgid "Image file"
+msgstr "Tập tin hình ảnh"
+
+#: src/opensuperclone/clone_gui.c:228 src/opensuperclone/clone_gui.c:687
+msgid "Import ddrescue log (map) file"
+msgstr "Nhập tệp nhật ký ddrescue (bản đồ)"
+
+#: src/opensuperclone/clone_gui.c:442
+msgid "Index (The device has reached the index mark)"
+msgstr "Chỉ số (Thiết bị đã đạt đến vạch chỉ số)"
+
+#: src/opensuperclone/clone_gui.c:3506 src/opensuperclone/clone_gui.c:3660
+#: src/opensuperclone/clone_gui.c:3685 src/opensuperclone/clone_gui.c:4446
+#: src/opensuperclone/clone_gui.c:4459 src/opensuperclone/clone_gui.c:4472
+#: src/opensuperclone/opensuperclone.c:1028
+#: src/opensuperclone/opensuperclone.c:1040
+#: src/opensuperclone/opensuperclone.c:1054
+#: src/opensuperclone/opensuperclone.c:1071
+#: src/opensuperclone/opensuperclone.c:1153
+#: src/opensuperclone/opensuperclone.c:1162
+#: src/opensuperclone/opensuperclone.c:1219
+#: src/opensuperclone/opensuperclone.c:4688
+#: src/opensuperclone/opensuperclone.c:4851
+#: src/opensuperclone/opensuperclone.c:6300
+#: src/opensuperclone/opensuperclone.c:6311
+#: src/opensuperclone/opensuperclone.c:6319
+#: src/opensuperclone/opensuperclone.c:6677
+#: src/opensuperclone/opensuperclone.c:6688
+#: src/opensuperclone/opensuperclone.c:6696
+#: src/opensuperclone/opensuperclone.c:7127
+#: src/opensuperclone/opensuperclone.c:7544
+#: src/opensuperclone/opensuperclone.c:15025
+#: src/opensuperclone/opensuperclone.c:15197
+#: src/opensuperclone/opensuperclone.c:15250
+#: src/opensuperclone/opensuperclone.c:15295
+#: src/opensuperclone/opensuperclone.c:15332
+msgid "Information"
+msgstr "Thông tin"
+
+#: src/opensuperclone/clone_gui.c:3106
+msgid "Initial busy wait time (ms)"
+msgstr "Thời gian chờ bận ban Đầu đọc (ms)"
+
+#: src/opensuperclone/clone_gui.c:2762
+msgid "Input Offset (LBA)"
+msgstr "Độ lệch Đầu đọc vào (LBA)"
+
+#: src/opensuperclone/opensuperclone.c:6870
+#, c-format
+msgid "Internal driver buffer error"
+msgstr "Lỗi bộ đệm trình điều khiển bên trong"
+
+#: src/opensuperclone/opensuperclone.c:10943
+#, c-format
+msgid "Internal program error processing domain check"
+msgstr "Kiểm tra miền xử lý lỗi chương trình nội bộ"
+
+#: src/opensuperclone/opensuperclone.c:5716
+#: src/opensuperclone/opensuperclone.c:5821
+#, c-format
+msgid "Internal program error, Position not found in domain"
+msgstr "Lỗi chương trình nội bộ, Không tìm thấy vị trí trong miền"
+
+#: src/opensuperclone/opensuperclone.c:6823
+#: src/opensuperclone/opensuperclone.c:7152
+#: src/opensuperclone/opensuperclone.c:7567
+#: src/opensuperclone/opensuperclone.c:7916
+#: src/opensuperclone/opensuperclone.c:8420
+#: src/opensuperclone/opensuperclone.c:9001
+#, c-format
+msgid "Internal program error, Position not found in progress log file"
+msgstr ""
+"Lỗi chương trình nội bộ, Không tìm thấy vị trí trong tệp nhật ký tiến trình"
+
+#: src/opensuperclone/opensuperclone.c:7239
+#: src/opensuperclone/opensuperclone.c:7670
+#: src/opensuperclone/opensuperclone.c:8000
+#: src/opensuperclone/opensuperclone.c:8220
+#: src/opensuperclone/opensuperclone.c:8531
+#: src/opensuperclone/opensuperclone.c:8747
+#, c-format
+msgid "Internal program error, domain check returned position out of range"
+msgstr ""
+"Lỗi chương trình nội bộ, kiểm tra miền trả về vị trí nằm ngoài phạm vi"
+
+#: src/opensuperclone/opensuperclone.c:12675
+#, c-format
+msgid ""
+"It is recommended to unmount all partitions on the source.\n"
+"You can use the --force option to use the source anyway (not recommended)."
+msgstr ""
+"Nên hủy gắn kết tất cả các phân vùng trên nguồn.\n"
+"Bạn có thể sử dụng tùy chọn --force để sử dụng nguồn (không khuyến khích)."
+
+#: src/opensuperclone/clone_gui.c:335
+msgid "LBA to read"
+msgstr "LBA để đọc"
+
+#: src/opensuperclone/clone_gui.c:2285
+msgid "Last read size"
+msgstr "Kích thước đọc cuối cùng"
+
+#: src/opensuperclone/clone_gui.c:349
+msgid "Last run size"
+msgstr "Kích thước chạy cuối cùng"
+
+#: src/opensuperclone/clone_gui.c:4639
+#, c-format
+msgid ""
+"License type: GPL2\n"
+"There is NO WARRANTY, to the extent permitted by law."
+msgstr ""
+"Loại giấy phép: GPL2\n"
+"KHÔNG CÓ BẢO HÀNH nào, trong phạm vi pháp luật cho phép."
+
+#: src/opensuperclone/clone_gui.c:2803
+msgid "Limit for the maximum read rate in kB/s"
+msgstr "Giới hạn tốc độ đọc tối đa tính bằng kB/giây"
+
+#: src/opensuperclone/clone_gui.c:227 src/opensuperclone/clone_gui.c:875
+msgid "Load Domain File"
+msgstr "Tải tập tin miền"
+
+#: src/opensuperclone/clone_gui.c:583
+msgid "Load project (progress) file"
+msgstr "Tải tệp dự án (tiến trình)"
+
+#: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
+msgid "Low"
+msgstr "Thấp"
+
+#: src/opensuperclone/clone_gui.c:2798
+msgid "Lowest read rate in kB/s before triggering a skip in phase 3"
+msgstr ""
+"Tốc độ đọc thấp nhất tính bằng kB/giây trước khi kích hoạt bỏ qua ở giai "
+"đoạn 3"
+
+#: src/opensuperclone/clone_gui.c:2799
+msgid "Lowest read rate in kB/s before triggering an exit in phases 1-2"
+msgstr ""
+"Tốc độ đọc thấp nhất tính bằng kB/giây trước khi kích hoạt thoát ở giai đoạn"
+" 1-2"
+
+#: src/opensuperclone/opensuperclone.c:6045
+#: src/opensuperclone/opensuperclone.c:6423
+#, fuzzy, c-format
+msgid "Mapping"
+msgstr "Scraping"
+
+#: src/opensuperclone/clone_gui.c:2754
+msgid "Mark Bad Head"
+msgstr "Đánh dấu Đầu đọc xấu"
+
+#: src/opensuperclone/clone_gui.c:2766
+msgid "Max Skip Size (LBA) phase-1-2"
+msgstr "Kích thước bỏ qua tối đa (LBA) giai đoạn 1-2"
+
+#: src/opensuperclone/clone_gui.c:2773
+msgid "Max read rate (kB/s)"
+msgstr "Tốc độ đọc tối đa (kB/giây)"
+
+#: src/opensuperclone/clone_gui.c:2796
+msgid ""
+"Maximum number of sectors to skip in LBAs during phases 1-2. The default is "
+"calculated as drive size / 1000 or 1GB, whichever is smaller."
+msgstr ""
+"Số sector tối đa có thể bỏ qua trong LBA trong giai đoạn 1-2. Mặc định được "
+"tính theo kích thước ổ đĩa / 1000 hoặc 1GB, tùy theo số nào nhỏ hơn."
+
+#: src/opensuperclone/clone_gui.c:446
+msgid "Media Change (The media has changed)"
+msgstr ""
+"Phương tiện truyền thông thay đổi (Phương tiện truyền thông đã thay đổi)"
+
+#: src/opensuperclone/clone_gui.c:448
+msgid "Media Change Request (The device has requested a media change)"
+msgstr ""
+"Yêu cầu thay đổi phương tiện (Thiết bị đã yêu cầu thay đổi phương tiện)"
+
+#: src/opensuperclone/clone_gui.c:205
+msgid "Mode"
+msgstr "Cách thức"
+
+#: src/opensuperclone/clone_gui.c:2164
+msgid "Mode 1"
+msgstr "Chế độ 1"
+
+#: src/opensuperclone/clone_gui.c:2173
+msgid "Mode 2"
+msgstr "Chế độ 2"
+
+#: src/opensuperclone/clone_gui.c:2182
+msgid "Mode 3"
+msgstr "Chế độ 3"
+
+#: src/opensuperclone/clone_gui.c:2191
+msgid "Mode 4"
+msgstr "Chế độ 4"
+
+#: src/opensuperclone/clone_gui.c:2200
+msgid "Mode 5"
+msgstr "Chế độ 5"
+
+#: src/opensuperclone/clone_gui.c:204 src/opensuperclone/clone_gui.c:1785
+msgid "NULL (No destination)"
+msgstr "NULL (Không có đích đến)"
+
+#: src/opensuperclone/clone_gui.c:239 src/opensuperclone/clone_gui.c:649
+msgid "New Domain File"
+msgstr "Tệp tên miền mới"
+
+#: src/opensuperclone/clone_gui.c:196
+msgid "New Project"
+msgstr "Dự án mới"
+
+#: src/opensuperclone/clone_gui.c:616
+msgid "New project (progress) file"
+msgstr "Tệp dự án mới (tiến trình)"
+
+#: src/opensuperclone/clone_gui.c:1942
+#: src/opensuperclone/opensuperclone.c:12630
+#, c-format
+msgid "No destination chosen\n"
+msgstr "Không có điểm đến nào được chọn"
+
+#: src/opensuperclone/clone_gui.c:1932
+#, c-format
+msgid "No project chosen\n"
+msgstr "Không có dự án nào được chọn"
+
+#: src/opensuperclone/clone_gui.c:1823 src/opensuperclone/clone_gui.c:1937
+#, c-format
+msgid "No source chosen\n"
+msgstr "Không có nguồn nào được chọn"
+
+#: src/opensuperclone/clone_gui.c:353
+msgid "Non-Divided"
+msgstr "Không chia"
+
+#: src/opensuperclone/clone_gui.c:354
+msgid "Non-Scraped"
+msgstr "Không bị cạo"
+
+#: src/opensuperclone/clone_gui.c:351
+msgid "Non-Tried"
+msgstr "Chưa thử"
+
+#: src/opensuperclone/clone_gui.c:352
+msgid "Non-Trimmed"
+msgstr "Không cắt tỉa"
+
+#: src/opensuperclone/clone_gui.c:2801
+msgid ""
+"Number of bytes per sector. This value will be detected automatically when "
+"choosing a source."
+msgstr ""
+"Số byte trên mỗi sector. Giá trị này sẽ được tự động phát hiện khi chọn "
+"nguồn."
+
+#: src/opensuperclone/clone_gui.c:2794
+msgid ""
+"Number of logical sectors per physical sector. All reads will be aligned to "
+"this value."
+msgstr ""
+"Số sector logic trên mỗi sector vật lý. Tất cả các lần đọc sẽ được căn chỉnh"
+" theo giá trị này."
+
+#: src/opensuperclone/clone_gui.c:2802
+msgid ""
+"Number of logical sectors to align the source to. This value will be "
+"detected automatically when choosing a source."
+msgstr ""
+"Số sector logic để căn chỉnh nguồn. Giá trị này sẽ được tự động phát hiện "
+"khi chọn nguồn."
+
+#: src/opensuperclone/clone_gui.c:2797
+msgid ""
+"Number of milliseconds to wait for a read before triggering a skip in phases"
+" 1-2"
+msgstr ""
+"Số mili giây phải chờ để đọc trước khi kích hoạt bỏ qua trong giai đoạn 1-2"
+
+#: src/opensuperclone/clone_gui.c:2790
+msgid "Number of retry passes to perform"
+msgstr "Số lần thử lại để thực hiện"
+
+#: src/opensuperclone/clone_gui.c:2800
+msgid ""
+"Number of seconds to wait for a slow read before triggering an exit in "
+"phases 1-2"
+msgstr "Số giây chờ để đọc chậm trước khi kích hoạt thoát ở giai đoạn 1-2"
+
+#: src/opensuperclone/clone_gui.c:2791
+msgid "Number of sectors per read block in phases 1-4"
+msgstr "Số sector trên mỗi khối đọc trong giai đoạn 1-4"
+
+#: src/opensuperclone/clone_gui.c:2793
+msgid "Number of sectors to copy"
+msgstr "Số lượng sector cần sao chép"
+
+#: src/opensuperclone/clone_gui.c:2792
+msgid "Number of sectors to skip at the beginning"
+msgstr "Số lượng sector cần bỏ qua lúc Đầu đọc"
+
+#: src/opensuperclone/clone_gui.c:2795
+msgid ""
+"Number of sectors to skip in LBAs during phases 1-3. This number can grow "
+"during phases 1-2 to adjust to the head skipping algorithm."
+msgstr ""
+"Số lượng sector cần bỏ qua trong LBA trong giai đoạn 1-3. Số lượng này có "
+"thể tăng lên trong giai đoạn 1-2 để điều chỉnh theo thuật toán bỏ qua Đầu đọc."
+
+#: src/opensuperclone/clone_gui.c:2938
+msgid ""
+"Offset in LBAs to start writing to the destination (default -1 follows input"
+" offset)"
+msgstr ""
+"Bù trừ trong LBA để bắt Đầu đọc ghi vào đích (mặc định -1 theo sau bù trừ Đầu đọc "
+"vào)"
+
+#: src/opensuperclone/clone_gui.c:2959
+msgid ""
+"Only use IO SCSI for reading the virtual disk. Normal block reads will "
+"return all zeros when this is enabled."
+msgstr ""
+"Chỉ sử dụng IO SCSI để đọc đĩa ảo. Đọc khối thông thường sẽ trả về toàn bộ "
+"số không khi tính năng này được bật."
+
+#: src/opensuperclone/clone_gui.c:195
+msgid "Open Project"
+msgstr "Mở dự án"
+
+#: src/opensuperclone/clone_gui.c:2913
+msgid "Operating System write buffer (must disconnect to take effect)"
+msgstr "Bộ đệm ghi của hệ điều hành (phải ngắt kết nối để có hiệu lực)"
+
+#: src/opensuperclone/clone_gui.c:3504
+#: src/opensuperclone/opensuperclone.c:1217
+#: src/opensuperclone/opensuperclone.c:15195
+#: src/opensuperclone/opensuperclone.c:15248
+#: src/opensuperclone/opensuperclone.c:15293
+#: src/opensuperclone/opensuperclone.c:15330
+#, c-format
+msgid "Operation completed successfully\n"
+msgstr "Hoạt động đã hoàn thành thành công"
+
+#: src/opensuperclone/clone_gui.c:2964
+msgid ""
+"Options for how the virtual disk handles read errors as presented by the "
+"recovery."
+msgstr ""
+"Tùy chọn về cách đĩa ảo xử lý lỗi đọc như được trình bày trong quá trình "
+"khôi phục."
+
+#: src/opensuperclone/clone_gui.c:2903
+msgid "Output Offset (default value is -1, follow input offset)"
+msgstr "Độ lệch Đầu đọc ra (giá trị mặc định là -1, theo độ lệch Đầu đọc vào)"
+
+#: src/opensuperclone/clone_gui.c:2958
+msgid "Output sector adjustment in bytes (relative to the source sector size)"
+msgstr "Điều chỉnh sector Đầu đọc ra theo byte (so với kích thước sector nguồn)"
+
+#: src/opensuperclone/clone_gui.c:2923
+msgid "Output sector size adjustment"
+msgstr "Điều chỉnh kích thước sector Đầu đọc ra"
+
+#: src/opensuperclone/clone_gui.c:2915
+msgid "PIO mode"
+msgstr "Chế độ PIO"
+
+#: src/opensuperclone/clone_gui.c:2520
+msgid "Partial Access Issue"
+msgstr "Vấn đề truy cập một phần"
+
+#: src/opensuperclone/clone_gui.c:210
+msgid "Passthrough ATA"
+msgstr "ATA truyền qua"
+
+#: src/opensuperclone/clone_gui.c:209
+msgid "Passthrough SCSI"
+msgstr "SCSI truyền qua"
+
+#: src/opensuperclone/clone_gui.c:208
+msgid "Passthrough auto detect"
+msgstr "Tự động phát hiện Passthrough"
+
+#: src/opensuperclone/clone_gui.c:2781
+msgid "Perform two dividing passes instead of one"
+msgstr "Thực hiện hai lần chia thay vì một lần"
+
+#: src/opensuperclone/clone_gui.c:2746
+#: src/opensuperclone/opensuperclone.c:1708
+#: src/opensuperclone/opensuperclone.c:6006
+#: src/opensuperclone/opensuperclone.c:6384
+#, c-format
+msgid "Phase 1"
+msgstr "Giai đoạn 1"
+
+#: src/opensuperclone/clone_gui.c:3119
+msgid "Phase 1-2 reset time (ms)"
+msgstr "Thời gian thiết lập lại pha 1-2 (ms)"
+
+#: src/opensuperclone/clone_gui.c:2747
+#: src/opensuperclone/opensuperclone.c:1712
+#: src/opensuperclone/opensuperclone.c:6028
+#: src/opensuperclone/opensuperclone.c:6406
+#, c-format
+msgid "Phase 2"
+msgstr "Giai đoạn 2"
+
+#: src/opensuperclone/clone_gui.c:2748
+#: src/opensuperclone/opensuperclone.c:1716
+#: src/opensuperclone/opensuperclone.c:6081
+#: src/opensuperclone/opensuperclone.c:6085
+#: src/opensuperclone/opensuperclone.c:6459
+#: src/opensuperclone/opensuperclone.c:6463
+#, c-format
+msgid "Phase 3"
+msgstr "Giai đoạn 3"
+
+#: src/opensuperclone/clone_gui.c:3120
+msgid "Phase 3 reset time (ms)"
+msgstr "Thời gian thiết lập lại pha 3 (ms)"
+
+#: src/opensuperclone/clone_gui.c:2749
+#: src/opensuperclone/opensuperclone.c:1720
+#: src/opensuperclone/opensuperclone.c:6112
+#: src/opensuperclone/opensuperclone.c:6116
+#: src/opensuperclone/opensuperclone.c:6490
+#: src/opensuperclone/opensuperclone.c:6494
+#: src/opensuperclone/opensuperclone.c:6966
+#, c-format
+msgid "Phase 4"
+msgstr "Giai đoạn 4"
+
+#: src/opensuperclone/clone_gui.c:3121
+msgid "Phase 4 reset time (ms)"
+msgstr "Thời gian thiết lập lại pha 4 (ms)"
+
+#: src/opensuperclone/clone_gui.c:2745
+msgid "Phase Control"
+msgstr "Kiểm soát pha"
+
+#: src/opensuperclone/clone_gui.c:3117
+msgid "Phase timers (soft reset timers)"
+msgstr "Bộ hẹn giờ pha (bộ hẹn giờ thiết lập lại mềm)"
+
+#: src/opensuperclone/clone_gui.c:3284
+msgid "Possible Logical Units"
+msgstr "Các đơn vị logic có thể"
+
+#: src/opensuperclone/clone_gui.c:3375
+msgid "Post activation delay time (sec)"
+msgstr "Thời gian trễ sau khi kích hoạt (giây)"
+
+#: src/opensuperclone/clone_gui.c:251
+msgid "Power Off"
+msgstr "Tắt nguồn"
+
+#: src/opensuperclone/clone_gui.c:252
+msgid "Power On"
+msgstr "Bật nguồn"
+
+#: src/opensuperclone/clone_gui.c:255
+msgid "Power off the drive with the selected relay board"
+msgstr "Tắt nguồn ổ đĩa bằng bảng rơle đã chọn"
+
+#: src/opensuperclone/clone_gui.c:256
+msgid "Power on the drive with the selected relay board"
+msgstr "Bật nguồn ổ đĩa bằng bảng rơle đã chọn"
+
+#: src/opensuperclone/clone_gui.c:247 src/opensuperclone/clone_gui.c:3388
+msgid "Primary Relay Settings"
+msgstr "Cài đặt Rơ le chính"
+
+#: src/opensuperclone/clone_gui.c:3353
+msgid "Primary relay board settings"
+msgstr "Cài đặt bảng rơle chính"
+
+#: src/opensuperclone/clone_gui.c:330
+msgid "Project"
+msgstr "Dự án"
+
+#: src/opensuperclone/clone_gui.c:197
+msgid "Quit"
+msgstr "Từ bỏ"
+
+#: src/opensuperclone/clone_gui.c:2768
+msgid "Rate Skip (kB/s) phase-3"
+msgstr "Tốc độ bỏ qua (kB/giây) giai đoạn 3"
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Raw data"
+msgstr "Dữ liệu thô"
+
+#: src/opensuperclone/clone_gui.c:2755
+msgid "Read Bad Head"
+msgstr "Đọc Bad Head"
+
+#: src/opensuperclone/clone_gui.c:2961
+msgid "Read errors will return with a standard I/O error."
+msgstr "Lỗi đọc sẽ trả về lỗi I/O tiêu chuẩn."
+
+#: src/opensuperclone/clone_gui.c:2963
+#, fuzzy
+msgid "Read errors will return with mark filled data."
+msgstr "Return mark filled data"
+
+#: src/opensuperclone/clone_gui.c:2962
+#, fuzzy
+msgid "Read errors will return zero filled data."
+msgstr "Return zero filled data"
+
+#: src/opensuperclone/opensuperclone.c:6856
+#, c-format
+msgid "Reading destination"
+msgstr "Điểm đến đọc"
+
+#: src/opensuperclone/opensuperclone.c:6966
+#: src/opensuperclone/opensuperclone.c:6982
+#: src/opensuperclone/opensuperclone.c:6995
+#: src/opensuperclone/opensuperclone.c:7012
+#: src/opensuperclone/opensuperclone.c:7029
+#: src/opensuperclone/opensuperclone.c:7042
+msgid "Reading: "
+msgstr "Đọc:"
+
+#: src/opensuperclone/clone_gui.c:2756
+#: src/opensuperclone/opensuperclone.c:5983
+#, c-format
+msgid "Rebuild Assist"
+msgstr "Hỗ trợ xây dựng lại"
+
+#: src/opensuperclone/opensuperclone.c:15750
+#, c-format
+msgid "Rebuild assist is not supported on this device"
+msgstr "Hỗ trợ xây dựng lại không được hỗ trợ trên thiết bị này"
+
+#: src/opensuperclone/opensuperclone.c:15742
+#, c-format
+msgid "Rebuild assist only works in direct ahci mode"
+msgstr "Hỗ trợ xây dựng lại chỉ hoạt động ở chế độ ahci trực tiếp"
+
+#: src/opensuperclone/clone_gui.c:342
+msgid "Recent rate"
+msgstr "Tỷ lệ gần đây"
+
+#: src/opensuperclone/clone_gui.c:3355
+msgid "Relay board settings"
+msgstr "Cài đặt bảng rơle"
+
+#: src/opensuperclone/clone_gui.c:360
+msgid "Remaining retry passes"
+msgstr "Số lần thử lại còn lại"
+
+#: src/opensuperclone/clone_gui.c:338
+msgid "Remaining time"
+msgstr "Thời gian còn lại"
+
+#: src/opensuperclone/clone_gui.c:223 src/opensuperclone/clone_gui.c:4586
+msgid "Repair Log"
+msgstr "Nhật ký sửa chữa"
+
+#: src/opensuperclone/clone_gui.c:220 src/opensuperclone/clone_gui.c:4506
+msgid "Reset Current Status"
+msgstr "Đặt lại trạng thái hiện tại"
+
+#: src/opensuperclone/clone_gui.c:222 src/opensuperclone/clone_gui.c:4537
+msgid "Reset Log"
+msgstr "Nhật ký thiết lập lại"
+
+#: src/opensuperclone/clone_gui.c:3110
+msgid "Reset timeout (ms)"
+msgstr "Thiết lập lại thời gian chờ (ms)"
+
+#: src/opensuperclone/clone_gui.c:250
+msgid "Restore USB mass storage driver"
+msgstr "Khôi phục trình điều khiển lưu trữ USB"
+
+#: src/opensuperclone/clone_gui.c:243
+msgid "Restore original startup port configuration"
+msgstr "Khôi phục cấu hình cổng khởi động ban Đầu đọc"
+
+#: src/opensuperclone/clone_gui.c:2623 src/opensuperclone/clone_gui.c:2659
+#: src/opensuperclone/clone_gui.c:2680
+msgid "Results"
+msgstr "Kết quả"
+
+#: src/opensuperclone/clone_gui.c:359
+msgid "Retried"
+msgstr "Đã thử lại"
+
+#: src/opensuperclone/clone_gui.c:2760
+msgid "Retries"
+msgstr "Thử lại"
+
+#: src/opensuperclone/clone_gui.c:319
+msgid "Retrieve SMART information"
+msgstr "Lấy thông tin SMART"
+
+#: src/opensuperclone/clone_gui.c:2919
+msgid "Retry connecting on failure after relay power cycle"
+msgstr "Thử lại kết nối khi lỗi xảy ra sau khi ngắt nguồn rơle"
+
+#: src/opensuperclone/clone_gui.c:3125
+msgid "Retry reset time (ms)"
+msgstr "Thời gian thử lại thiết lập lại (ms)"
+
+#: src/opensuperclone/opensuperclone.c:1744
+#: src/opensuperclone/opensuperclone.c:6276
+#: src/opensuperclone/opensuperclone.c:6653
+#: src/opensuperclone/opensuperclone.c:7042
+#, c-format
+msgid "Retrying"
+msgstr "Đang thử lại"
+
+#: src/opensuperclone/clone_gui.c:2928
+msgid "Return mark filled data"
+msgstr "Trả về dữ liệu đã điền dấu"
+
+#: src/opensuperclone/clone_gui.c:2926
+msgid "Return read error (standard)"
+msgstr "Trả về lỗi đọc (chuẩn)"
+
+#: src/opensuperclone/clone_gui.c:2927
+msgid "Return zero filled data"
+msgstr "Trả về dữ liệu đã điền số 0"
+
+#: src/opensuperclone/clone_gui.c:2757
+msgid "Reverse"
+msgstr "Đọc ngược"
+
+#: src/opensuperclone/clone_gui.c:337
+msgid "Run time"
+msgstr "Thời gian chạy"
+
+#: src/opensuperclone/clone_gui.c:301
+msgid "SMART"
+msgstr "SMART"
+
+#: src/opensuperclone/opensuperclone.c:13951
+msgid "SMART data structure version"
+msgstr "Phiên bản cấu trúc dữ liệu SMART"
+
+#: src/opensuperclone/clone_gui.c:240
+msgid "Save Domain File"
+msgstr "Lưu tệp miền"
+
+#: src/opensuperclone/clone_gui.c:241 src/opensuperclone/clone_gui.c:799
+msgid "Save Domain File As"
+msgstr "Lưu tệp miền dưới dạng"
+
+#: src/opensuperclone/clone_gui.c:218
+msgid "Save Project"
+msgstr "Lưu Dự án"
+
+#: src/opensuperclone/clone_gui.c:219
+msgid "Save Project As"
+msgstr "Lưu Dự án dưới dạng"
+
+#: src/opensuperclone/clone_gui.c:739
+msgid "Save Project File As"
+msgstr "Lưu tệp dự án dưới dạng"
+
+#: src/opensuperclone/clone_gui.c:2753
+msgid "Scrape"
+msgstr "Cạo"
+
+#: src/opensuperclone/clone_gui.c:3124
+msgid "Scrape reset time (ms)"
+msgstr "Thời gian thiết lập lại dữ liệu (ms)"
+
+#: src/opensuperclone/opensuperclone.c:1736
+#: src/opensuperclone/opensuperclone.c:6232
+#: src/opensuperclone/opensuperclone.c:6236
+#: src/opensuperclone/opensuperclone.c:6610
+#: src/opensuperclone/opensuperclone.c:6614
+#: src/opensuperclone/opensuperclone.c:7029
+#, c-format
+msgid "Scraping"
+msgstr "Đang cạo"
+
+#: src/opensuperclone/clone_gui.c:2771
+msgid "Sector size (bytes)"
+msgstr "Kích thước sector (byte)"
+
+#: src/opensuperclone/clone_gui.c:3282 src/opensuperclone/clone_gui.c:3292
+msgid "Select Logical Unit"
+msgstr "Chọn Đơn vị Logic"
+
+#: src/opensuperclone/clone_gui.c:2775
+msgid "Select the phases to be used for the clone operation"
+msgstr "Chọn các giai đoạn sẽ được sử dụng cho hoạt động sao chép"
+
+#: src/opensuperclone/clone_gui.c:3286
+msgid "Set Logical Unit"
+msgstr "Đặt Đơn vị Logic"
+
+#: src/opensuperclone/clone_gui.c:3244
+msgid "Set disabled ports"
+msgstr "Đặt cổng bị vô hiệu hóa"
+
+#: src/opensuperclone/clone_gui.c:215
+msgid "Settings"
+msgstr "Cài đặt"
+
+#: src/opensuperclone/clone_gui.c:2763
+msgid "Size (LBA)"
+msgstr "Kích thước (LBA)"
+
+#: src/opensuperclone/clone_gui.c:2758
+msgid "Skip Fast"
+msgstr "Bỏ qua nhanh"
+
+#: src/opensuperclone/clone_gui.c:2765
+msgid "Skip Size (LBA) phase-1-2-3"
+msgstr "Kích thước bỏ qua (LBA) giai đoạn 1-2-3"
+
+#: src/opensuperclone/clone_gui.c:2767
+msgid "Skip Threshold (ms) phase-1-2"
+msgstr "Ngưỡng bỏ qua (ms) giai đoạn 1-2"
+
+#: src/opensuperclone/clone_gui.c:348
+msgid "Skip resets"
+msgstr "Bỏ qua thiết lập lại"
+
+#: src/opensuperclone/clone_gui.c:347
+msgid "Skip runs"
+msgstr "Bỏ qua chạy"
+
+#: src/opensuperclone/clone_gui.c:345
+msgid "Skips"
+msgstr "Bỏ qua"
+
+#: src/opensuperclone/clone_gui.c:2456 src/opensuperclone/clone_gui.c:2567
+#: src/opensuperclone/clone_gui.c:2572
+msgid "Slow"
+msgstr "Chậm"
+
+#: src/opensuperclone/clone_gui.c:303
+msgid ""
+"Slow\n"
+"Driver"
+msgstr "Trình điều khiển chậm"
+
+#: src/opensuperclone/clone_gui.c:2490
+msgid "Slow Responding Firmware Issue"
+msgstr "Sự cố phần mềm phản hồi chậm"
+
+#: src/opensuperclone/clone_gui.c:346
+msgid "Slow skips"
+msgstr "Bỏ qua chậm"
+
+#: src/opensuperclone/clone_gui.c:309
+msgid ""
+"Soft\n"
+"Reset"
+msgstr ""
+"Mềm\n"
+"Đặt lại"
+
+#: src/opensuperclone/clone_gui.c:327
+#, fuzzy
+msgid "Soft reset the drive"
+msgstr "Thiết lập lại trình điều khiển"
+
+#: src/opensuperclone/clone_gui.c:3108
+msgid "Soft reset time (ms)"
+msgstr "Thời gian thiết lập lại mềm (ms)"
+
+#: src/opensuperclone/clone_gui.c:332
+msgid "Source"
+msgstr "Nguồn"
+
+#: src/opensuperclone/clone_gui.c:1881
+#, c-format
+msgid "Source and Destination cannot be the same device"
+msgstr "Nguồn và đích không thể là cùng một thiết bị"
+
+#: src/opensuperclone/opensuperclone.c:12212
+#, c-format
+msgid "Source drive did not respond properly to identify command"
+msgstr "Ổ đĩa nguồn không phản hồi đúng cách để xác định lệnh"
+
+#: src/opensuperclone/opensuperclone.c:12419
+#, c-format
+msgid "Source drive reports wrong size / size changed"
+msgstr "Ổ đĩa nguồn báo cáo kích thước sai / kích thước đã thay đổi"
+
+#: src/opensuperclone/opensuperclone.c:12221
+#, c-format
+msgid "Source drive responded with error to identify command"
+msgstr "Ổ đĩa nguồn phản hồi lỗi để xác định lệnh"
+
+#: src/opensuperclone/clone_gui.c:297
+msgid "Start"
+msgstr "Bắt Đầu"
+
+#: src/opensuperclone/clone_gui.c:234
+msgid "Start Virtual Disk Driver"
+msgstr "Khởi động Trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:315
+#, fuzzy
+msgid "Start the clone/virtual driver"
+msgstr "Bắt đầu sao chép/trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:298
+msgid "Stop"
+msgstr "Dừng lại"
+
+#: src/opensuperclone/clone_gui.c:235
+msgid "Stop Virtual Disk Driver"
+msgstr "Dừng trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:2942
+#, fuzzy
+msgid "Stop cloning and show an error message indicating the fault"
+msgstr "Dừng sao chép và hiển thị thông báo lỗi cho biết lỗi"
+
+#: src/opensuperclone/clone_gui.c:2907
+msgid "Stop cloning with error message"
+msgstr "Dừng sao chép với thông báo lỗi"
+
+#: src/opensuperclone/clone_gui.c:316
+#, fuzzy
+msgid "Stop the clone/virtual driver"
+msgstr "Dừng trình điều khiển sao chép/trình điều khiển đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:320
+msgid "Switch to clone mode"
+msgstr "Chuyển sang chế độ sao chép"
+
+#: src/opensuperclone/clone_gui.c:322
+msgid ""
+"Switch to virtual mode 1: This mode will use all available Phases (starting "
+"with Phase 4) when reading from the source"
+msgstr ""
+"Chuyển sang chế độ ảo 1: Chế độ này sẽ sử dụng tất cả các Giai đoạn có sẵn "
+"(bắt Đầu đọc từ Giai đoạn 4) khi đọc từ nguồn"
+
+#: src/opensuperclone/clone_gui.c:323
+msgid ""
+"Switch to virtual mode 2: This mode will only use Phase 4 and will not "
+"perform any further processing of a chunk"
+msgstr ""
+"Chuyển sang chế độ ảo 2: Chế độ này sẽ chỉ sử dụng Giai đoạn 4 và sẽ không "
+"thực hiện bất kỳ xử lý nào thêm cho một khối"
+
+#: src/opensuperclone/clone_gui.c:324
+msgid ""
+"Switch to virtual mode 3: This mode is the same as mode 2, but it will "
+"increase the read size (up to the cluster size) when it detects sequential "
+"reads"
+msgstr ""
+"Chuyển sang chế độ ảo 3: Chế độ này giống như chế độ 2, nhưng nó sẽ tăng "
+"kích thước đọc (lên đến kích thước cụm) khi phát hiện các lần đọc tuần tự"
+
+#: src/opensuperclone/clone_gui.c:325
+msgid ""
+"Switch to virtual mode 4: This mode only reads from the destination, and "
+"will not read any data from the source"
+msgstr ""
+"Chuyển sang chế độ ảo 4: Chế độ này chỉ đọc từ đích và sẽ không đọc bất kỳ "
+"dữ liệu nào từ nguồn"
+
+#: src/opensuperclone/clone_gui.c:326
+msgid ""
+"Switch to virtual mode 5: This mode does not read any data and will instead "
+"return zeroed data"
+msgstr ""
+"Chuyển sang chế độ ảo 5: Chế độ này không đọc bất kỳ dữ liệu nào và thay vào"
+" đó sẽ trả về dữ liệu bằng không"
+
+#: src/opensuperclone/clone_gui.c:2909 src/opensuperclone/clone_gui.c:3115
+msgid "Test command"
+msgstr "Lệnh kiểm tra"
+
+#: src/opensuperclone/clone_gui.c:3376
+msgid "Test relay operation"
+msgstr "Kiểm tra hoạt động của rơle"
+
+#: src/opensuperclone/clone_gui.c:2944
+#, fuzzy
+msgid "Test the specified command"
+msgstr "Kiểm tra lệnh được chỉ định"
+
+#: src/opensuperclone/clone_gui.c:378
+msgid "The average rate of the entire recovery"
+msgstr "Tỷ lệ trung bình của toàn bộ quá trình phục hồi"
+
+#: src/opensuperclone/clone_gui.c:377
+msgid "The average rate of the last 5 minutes of the recovery"
+msgstr "Tốc độ trung bình của 5 phút cuối cùng của quá trình phục hồi"
+
+#: src/opensuperclone/clone_gui.c:379
+#, fuzzy
+msgid "The base skip size"
+msgstr "Kích thước bỏ qua cơ sở"
+
+#: src/opensuperclone/clone_gui.c:3649 src/opensuperclone/clone_gui.c:3674
+#: src/opensuperclone/opensuperclone.c:11897
+#: src/opensuperclone/opensuperclone.c:12014
+#, c-format
+msgid "The called command failed with exit signal / status"
+msgstr "Lệnh được gọi không thành công với tín hiệu thoát / trạng thái"
+
+#: src/opensuperclone/clone_gui.c:3658 src/opensuperclone/clone_gui.c:3683
+#: src/opensuperclone/opensuperclone.c:11905
+#: src/opensuperclone/opensuperclone.c:12022
+#, c-format
+msgid "The command completed normally"
+msgstr "Lệnh đã hoàn thành bình thường"
+
+#: src/opensuperclone/clone_gui.c:396
+msgid "The current mode of the recovery"
+msgstr "Chế độ phục hồi hiện tại"
+
+#: src/opensuperclone/clone_gui.c:374
+msgid "The current position in the source drive in LBAs"
+msgstr "Vị trí hiện tại trong ổ đĩa nguồn trong LBA"
+
+#: src/opensuperclone/clone_gui.c:376
+msgid "The current rate of the recovery"
+msgstr "Tỷ lệ phục hồi hiện tại"
+
+#: src/opensuperclone/clone_gui.c:375
+msgid "The current status of the recovery"
+msgstr "Tình trạng hiện tại của quá trình phục hồi"
+
+#: src/opensuperclone/clone_gui.c:368
+msgid "The destination drive or image file to be recovered to"
+msgstr "Ổ đĩa đích hoặc tệp hình ảnh cần phục hồi"
+
+#: src/opensuperclone/clone_gui.c:366
+msgid "The domain file for the current recovery"
+msgstr "Tệp miền cho quá trình phục hồi hiện tại"
+
+#: src/opensuperclone/opensuperclone.c:11935
+#: src/opensuperclone/opensuperclone.c:11988
+#, c-format
+msgid "The drive is still unresponsive after the command call"
+msgstr "Ổ đĩa vẫn không phản hồi sau khi gọi lệnh"
+
+#: src/opensuperclone/opensuperclone.c:1025
+msgid "The driver is already installed and active\n"
+msgstr "Trình điều khiển đã được cài đặt và hoạt động"
+
+#: src/opensuperclone/opensuperclone.c:1037
+msgid "The driver memory is now connected\n"
+msgstr "Bộ nhớ trình điều khiển hiện đã được kết nối"
+
+#: src/opensuperclone/opensuperclone.c:3979
+#, c-format
+msgid ""
+"The end does not equal the drive size!\n"
+"Logfile reports size of "
+msgstr ""
+"Phần cuối không bằng kích thước ổ đĩa!\n"
+"Tệp nhật ký báo cáo kích thước của"
+
+#: src/opensuperclone/clone_gui.c:373
+msgid "The estimated time remaining to complete the recovery"
+msgstr "Thời gian ước tính còn lại để hoàn tất quá trình phục hồi"
+
+#: src/opensuperclone/clone_gui.c:1709
+msgid ""
+"The image file currently exists.\n"
+"This will continue the recovery using this image file."
+msgstr ""
+"Tệp hình ảnh hiện tại đã tồn tại.\n"
+"Thao tác này sẽ tiếp tục khôi phục bằng tệp hình ảnh này."
+
+#: src/opensuperclone/clone_gui.c:973 src/opensuperclone/clone_gui.c:1034
+#: src/opensuperclone/clone_gui.c:1831 src/opensuperclone/clone_gui.c:1889
+#: src/opensuperclone/clone_gui.c:4612
+#, c-format
+msgid ""
+"The log file has errors!\n"
+"The log file will need to be repaired before it can be used.\n"
+"Please reference console messages for more information.\n"
+msgstr ""
+"Tệp nhật ký có lỗi!\n"
+"Tệp nhật ký sẽ cần được sửa chữa trước khi có thể sử dụng.\n"
+"Vui lòng tham khảo thông báo bảng điều khiển để biết thêm thông tin."
+
+#: src/opensuperclone/clone_gui.c:392
+msgid ""
+"The longest read time since the last display update / within the last 256 "
+"display updates / since the start of the recovery"
+msgstr ""
+"Thời gian đọc dài nhất kể từ lần cập nhật hiển thị cuối cùng / trong vòng "
+"256 lần cập nhật hiển thị cuối cùng / kể từ khi bắt Đầu đọc quá trình phục hồi"
+
+#: src/opensuperclone/clone_gui.c:2966
+msgid ""
+"The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). "
+"Note that if you choose a name that is already in use, it will cause a "
+"system crash. Also, you should choose a conventional name with the SDx "
+"format, or some software will not find or list it."
+msgstr ""
+"Tên của đĩa ảo trong /dev. Tên mặc định là sdv (/dev/sdv). Lưu ý rằng nếu "
+"bạn chọn tên đã được sử dụng, nó sẽ gây ra sự cố hệ thống. Ngoài ra, bạn nên"
+" chọn tên thông thường với định dạng SDx, nếu không một số phần mềm sẽ không"
+" tìm thấy hoặc liệt kê tên đó."
+
+#: src/opensuperclone/clone_gui.c:370
+msgid "The number of LBAs to be read from the source drive"
+msgstr "Số lượng LBA được đọc từ ổ đĩa nguồn"
+
+#: src/opensuperclone/clone_gui.c:365
+msgid "The project log file for the current recovery"
+msgstr "Tệp nhật ký dự án cho quá trình phục hồi hiện tại"
+
+#: src/opensuperclone/opensuperclone.c:6317
+#: src/opensuperclone/opensuperclone.c:6694
+#, c-format
+msgid "The rescue failed to finish"
+msgstr "Việc cứu hộ không thể hoàn thành"
+
+#: src/opensuperclone/opensuperclone.c:6307
+#: src/opensuperclone/opensuperclone.c:6684
+#, c-format
+msgid ""
+"The rescue has stopped before completion.\n"
+"Stop code = "
+msgstr ""
+"Việc cứu hộ đã dừng lại trước khi hoàn tất.\n"
+"Mã dừng ="
+
+#: src/opensuperclone/opensuperclone.c:4686
+#: src/opensuperclone/opensuperclone.c:4849
+#: src/opensuperclone/opensuperclone.c:6298
+#: src/opensuperclone/opensuperclone.c:6675
+#, c-format
+msgid "The rescue is finished using the current settings"
+msgstr "Việc cứu hộ đã hoàn tất bằng cách sử dụng các thiết lập hiện tại"
+
+#: src/opensuperclone/clone_gui.c:371
+msgid "The size of the domain file in LBAs"
+msgstr "Kích thước của tệp miền trong LBA"
+
+#: src/opensuperclone/clone_gui.c:384
+msgid "The size of the last skip run"
+msgstr "Kích thước của lần chạy bỏ qua cuối cùng"
+
+#: src/opensuperclone/clone_gui.c:367
+msgid "The source drive to be recovered"
+msgstr "Ổ đĩa nguồn cần được phục hồi"
+
+#: src/opensuperclone/clone_gui.c:369
+msgid "The total number of LBAs in the source drive"
+msgstr "Tổng số LBA trong ổ đĩa nguồn"
+
+#: src/opensuperclone/clone_gui.c:385
+msgid "The total number of LBAs recovered so far"
+msgstr "Tổng số LBA đã được phục hồi cho đến nay"
+
+#: src/opensuperclone/clone_gui.c:393
+msgid ""
+"The total number of LBAs that have been filled either in Fill mode or Erase "
+"mode"
+msgstr "Tổng số LBA đã được điền ở chế độ Điền hoặc chế độ Xóa"
+
+#: src/opensuperclone/clone_gui.c:390
+msgid "The total number of LBAs that have been marked as bad"
+msgstr "Tổng số LBA được đánh dấu là xấu"
+
+#: src/opensuperclone/clone_gui.c:394
+msgid "The total number of LBAs that have been retried"
+msgstr "Tổng số LBA đã được thử lại"
+
+#: src/opensuperclone/clone_gui.c:388
+msgid "The total number of LBAs that have not been divided"
+msgstr "Tổng số LBA chưa được chia"
+
+#: src/opensuperclone/clone_gui.c:389
+msgid "The total number of LBAs that have not been scraped"
+msgstr "Tổng số LBA chưa được thu thập"
+
+#: src/opensuperclone/clone_gui.c:386
+msgid "The total number of LBAs that have not been tried to be recovered"
+msgstr "Tổng số LBA chưa được thử để phục hồi"
+
+#: src/opensuperclone/clone_gui.c:387
+msgid "The total number of LBAs that have not been trimmed"
+msgstr "Tổng số LBA chưa được cắt giảm"
+
+#: src/opensuperclone/clone_gui.c:395
+msgid "The total number of retry passes remaining"
+msgstr "Tổng số lượt thử lại còn lại"
+
+#: src/opensuperclone/clone_gui.c:382
+msgid "The total number of skip runs so far"
+msgstr "Tổng số lần bỏ qua cho đến nay"
+
+#: src/opensuperclone/clone_gui.c:381
+msgid "The total number of skips due to slow reads so far"
+msgstr "Tổng số lần bỏ qua do đọc chậm cho đến nay"
+
+#: src/opensuperclone/clone_gui.c:380
+msgid "The total number of skips so far"
+msgstr "Tổng số lần bỏ qua cho đến nay"
+
+#: src/opensuperclone/clone_gui.c:383
+msgid ""
+"The total number of times the skipping was reset due to exceeding the limit "
+"of 64 skips in a run"
+msgstr ""
+"Tổng số lần bỏ qua được thiết lập lại do vượt quá giới hạn 64 lần bỏ qua "
+"trong một lần chạy"
+
+#: src/opensuperclone/clone_gui.c:372
+msgid "The total time taken to recover the drive"
+msgstr "Tổng thời gian cần thiết để khôi phục ổ đĩa"
+
+#: src/opensuperclone/clone_gui.c:1839 src/opensuperclone/io.c:4086
+#: src/opensuperclone/io.c:4489 src/opensuperclone/io.c:4556
+#: src/opensuperclone/io.c:4650 src/opensuperclone/io.c:5172
+#: src/opensuperclone/io.c:5239 src/opensuperclone/io.c:5333
+#, c-format
+msgid "The virtual disk device driver is not running"
+msgstr "Trình điều khiển thiết bị đĩa ảo không chạy"
+
+#: src/opensuperclone/clone_gui.c:3105
+msgid ""
+"These timer settings are only for Direct IDE and Direct AHCI modes.\n"
+"They have no effect with the passthrough modes.\n"
+msgstr ""
+"Các thiết lập hẹn giờ này chỉ dành cho chế độ Direct IDE và Direct AHCI.\n"
+"Chúng không có tác dụng với chế độ passthrough."
+
+#: src/opensuperclone/clone_gui.c:3283
+msgid ""
+"This device has more than 1 logical unit.\n"
+"Please choose which logical unit."
+msgstr ""
+"Thiết bị này có nhiều hơn 1 đơn vị logic.\n"
+"Vui lòng chọn đơn vị logic nào."
+
+#: src/opensuperclone/clone_gui.c:2967
+msgid ""
+"This option will turn on using colors on the bottom status bar (may not work"
+" on some systems)."
+msgstr ""
+"Tùy chọn này sẽ được bật bằng cách sử dụng màu trên thanh trạng thái phía "
+"dưới (có thể không hoạt động trên một số hệ thống)."
+
+#: src/opensuperclone/clone_gui.c:4589
+msgid ""
+"This will repair the current progress log in memory. \n"
+"It is recommended to make a backup copy of the log before repairing."
+msgstr ""
+"Thao tác này sẽ sửa chữa nhật ký tiến trình hiện tại trong bộ nhớ. \n"
+"Nên tạo bản sao lưu nhật ký trước khi sửa chữa."
+
+#: src/opensuperclone/clone_gui.c:4509
+msgid ""
+"This will reset the current log status to Phase1,\n"
+" and current position to 0,\n"
+" and reset all skip data"
+msgstr ""
+"Điều này sẽ thiết lập lại trạng thái nhật ký hiện tại thành Giai đoạn 1,\n"
+"và vị trí hiện tại thành 0,\n"
+"và thiết lập lại tất cả dữ liệu bỏ qua"
+
+#: src/opensuperclone/clone_gui.c:4540
+msgid ""
+"This will reset the position to 0, \n"
+"the current status to non-tried, \n"
+"and will change all unfinished blocks \n"
+"in the log to a status of non-tried. \n"
+"This will also reset all skipping data."
+msgstr ""
+"Thao tác này sẽ đặt lại vị trí về 0,\n"
+"trạng thái hiện tại thành chưa thử\n"
+"và sẽ thay đổi tất cả các khối chưa hoàn thành\n"
+"trong nhật ký thành trạng thái chưa thử.\n"
+"Thao tác này cũng sẽ đặt lại tất cả dữ liệu bỏ qua."
+
+#: src/opensuperclone/clone_gui.c:2960
+msgid ""
+"This will use the physical sector size as the logical sector size when "
+"presenting the virtual disk to the operating system. The physical size is "
+"determined by the Block size setting in the Clone Settings."
+msgstr ""
+"Điều này sẽ sử dụng kích thước sector vật lý làm kích thước sector logic khi"
+" trình bày đĩa ảo cho hệ điều hành. Kích thước vật lý được xác định bởi "
+"thiết lập Block size trong Clone Settings."
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Threshold"
+msgstr "Ngưỡng"
+
+#: src/opensuperclone/clone_gui.c:233 src/opensuperclone/clone_gui.c:3174
+msgid "Timer Settings"
+msgstr "Cài đặt hẹn giờ"
+
+#: src/opensuperclone/clone_gui.c:221
+msgid "Tools"
+msgstr "Công cụ"
+
+#: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
+msgid "Total"
+msgstr "Tổng cộng"
+
+#: src/opensuperclone/clone_gui.c:334
+msgid "Total LBA"
+msgstr "Tổng LBA"
+
+#: src/opensuperclone/clone_gui.c:343
+msgid "Total rate"
+msgstr "Tổng tỷ lệ"
+
+#: src/opensuperclone/clone_gui.c:2375
+msgid "Total, Good, Bad, Slow"
+msgstr "Tổng thể, Tốt, Xấu, Chậm"
+
+#: src/opensuperclone/clone_gui.c:450
+msgid "Track 0 Not Found (The device could not find track 0)"
+msgstr "Không tìm thấy track 0 (Thiết bị không tìm thấy track 0)"
+
+#: src/opensuperclone/clone_gui.c:2752
+msgid "Trim (overrides dividing)"
+msgstr "Cắt (ghi đè phép chia)"
+
+#: src/opensuperclone/clone_gui.c:3122
+msgid "Trim/Divide reset time (ms)"
+msgstr "Thời gian thiết lập lại cắt/chia (ms)"
+
+#: src/opensuperclone/opensuperclone.c:1724
+#: src/opensuperclone/opensuperclone.c:6140
+#: src/opensuperclone/opensuperclone.c:6144
+#: src/opensuperclone/opensuperclone.c:6518
+#: src/opensuperclone/opensuperclone.c:6522
+#: src/opensuperclone/opensuperclone.c:6982
+#, c-format
+msgid "Trimming"
+msgstr "Cắt tỉa"
+
+#: src/opensuperclone/clone_gui.c:3127
+msgid "USB reset choices"
+msgstr "Lựa chọn thiết lập lại USB"
+
+#: src/opensuperclone/clone_gui.c:1850 src/opensuperclone/clone_gui.c:1900
+#: src/opensuperclone/opensuperclone.c:11910
+#: src/opensuperclone/opensuperclone.c:11925
+#: src/opensuperclone/opensuperclone.c:11963
+#: src/opensuperclone/opensuperclone.c:11978
+#, c-format
+msgid "Unable to connect devices"
+msgstr "Không thể kết nối thiết bị"
+
+#: src/opensuperclone/clone_gui.c:1207 src/opensuperclone/clone_gui.c:1804
+#: src/opensuperclone/opensuperclone.c:1376
+#: src/opensuperclone/opensuperclone.c:1394
+#: src/opensuperclone/opensuperclone.c:1409
+#, c-format
+msgid ""
+"Unable to get buffer physical address in 32 bit range.\n"
+"Please try Starting the Virtual Disk Driver.\n"
+"\n"
+" Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."
+msgstr ""
+"Không thể lấy địa chỉ vật lý của bộ đệm trong phạm vi 32 bit.\n"
+"Vui lòng thử Khởi động Trình điều khiển đĩa ảo.\n"
+"\n"
+"Giải pháp thay thế là thử chọn lại chế độ (chuyển sang chế độ khác và quay lại) hoặc khởi động lại chương trình."
+
+#: src/opensuperclone/opensuperclone.c:11872
+#: src/opensuperclone/opensuperclone.c:12312
+#: src/opensuperclone/opensuperclone.c:12333
+#, c-format
+msgid "Unable to reopen source device"
+msgstr "Không thể mở lại thiết bị nguồn"
+
+#: src/opensuperclone/clone_gui.c:445
+msgid "Uncorrectable Data (The device has detected uncorrectable data)"
+msgstr "Dữ liệu không thể sửa (Thiết bị đã phát hiện dữ liệu không thể sửa)"
+
+#: src/opensuperclone/clone_gui.c:3247
+msgid "Update ports"
+msgstr "Cập nhật cổng"
+
+#: src/opensuperclone/clone_gui.c:3245
+msgid "Updated disabled ports (GRUB data)"
+msgstr "Cập nhật các cổng bị vô hiệu hóa (dữ liệu GRUB)"
+
+#: src/opensuperclone/clone_gui.c:2950
+msgid "Use PIO instead of DMA for reading the source drive."
+msgstr "Sử dụng PIO thay vì DMA để đọc ổ đĩa nguồn."
+
+#: src/opensuperclone/clone_gui.c:2932
+msgid "Use button colors in bottom status bar"
+msgstr "Sử dụng màu nút ở thanh trạng thái dưới cùng"
+
+#: src/opensuperclone/clone_gui.c:2925
+msgid "Use physical sector size as logical for virtual disk"
+msgstr "Sử dụng kích thước sector vật lý làm logic cho đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:2544
+msgid "Variance read times low/high:"
+msgstr "Thời gian đọc phương sai thấp/cao:"
+
+#: src/opensuperclone/clone_gui.c:304
+msgid ""
+"Virtual\n"
+"Mode 1"
+msgstr ""
+"Chế độ ảo\n"
+"1"
+
+#: src/opensuperclone/clone_gui.c:305
+msgid ""
+"Virtual\n"
+"Mode 2"
+msgstr ""
+"Chế độ ảo\n"
+"2"
+
+#: src/opensuperclone/clone_gui.c:306
+msgid ""
+"Virtual\n"
+"Mode 3"
+msgstr ""
+"Chế độ ảo\n"
+"3"
+
+#: src/opensuperclone/clone_gui.c:307
+msgid ""
+"Virtual\n"
+"Mode 4"
+msgstr ""
+"Chế độ ảo\n"
+"4"
+
+#: src/opensuperclone/clone_gui.c:308
+msgid ""
+"Virtual\n"
+"Mode 5"
+msgstr ""
+"Chế độ ảo\n"
+"5"
+
+#: src/opensuperclone/clone_gui.c:2929
+msgid "Virtual Disk Device Driver output options for read errors"
+msgstr "Tùy chọn Đầu đọc ra của Trình điều khiển thiết bị đĩa ảo cho lỗi đọc"
+
+#: src/opensuperclone/clone_gui.c:2924
+msgid "Virtual Disk IO SCSI only"
+msgstr "Chỉ có đĩa ảo IO SCSI"
+
+#: src/opensuperclone/clone_gui.c:2931
+msgid "Virtual Disk device name"
+msgstr "Tên thiết bị đĩa ảo"
+
+#: src/opensuperclone/clone_gui.c:2930
+msgid "Virtual Disk minimum cluster read size (mode 3)"
+msgstr "Kích thước cụm đọc tối thiểu của Đĩa ảo (chế độ 3)"
+
+#: src/opensuperclone/clone_gui.c:237
+msgid "Virtual Driver only"
+msgstr "Chỉ có Trình điều khiển ảo"
+
+#: src/opensuperclone/io.c:8725
+msgid ""
+"WARNING: The selected device is a slave on the controller!\n"
+"This does not always work as expected!\n"
+"That could be very dangerous, and could result in data loss (or worse)!\n"
+"It is recommended for the device to be master on the controller!\n"
+msgstr ""
+"CẢNH BÁO: Thiết bị được chọn là thiết bị phụ trên bộ điều khiển!\n"
+"Điều này không phải lúc nào cũng hoạt động như mong đợi!\n"
+"Điều đó có thể rất nguy hiểm và có thể dẫn đến mất dữ liệu (hoặc tệ hơn)!\n"
+"Nên để thiết bị là thiết bị chính trên bộ điều khiển!"
+
+#: src/opensuperclone/io.c:8687
+msgid ""
+"WARNING: There is possibly another drive on the same controller!\n"
+"You should NEVER work with a drive when another drive is on the same controller!\n"
+"That could be very dangerous, and could result in data loss (or worse)!\n"
+msgstr ""
+"CẢNH BÁO: Có thể có một ổ đĩa khác trên cùng một bộ điều khiển!\n"
+"Bạn KHÔNG BAO GIỜ được làm việc với một ổ đĩa khi có một ổ đĩa khác trên cùng một bộ điều khiển!\n"
+"Điều đó có thể rất nguy hiểm và có thể dẫn đến mất dữ liệu (hoặc tệ hơn)!"
+
+#: src/opensuperclone/io.c:8763 src/opensuperclone/io.c:8800
+msgid ""
+"WARNING: This drive is also available to the OS!\n"
+"That is too dangerous, and would likely result in a computer crash!\n"
+"Please make sure to follow the instructions on how to hide the drive!\n"
+msgstr ""
+"CẢNH BÁO: Ổ đĩa này cũng khả dụng với hệ điều hành!\n"
+"Điều đó quá nguy hiểm và có thể dẫn đến máy tính bị sập!\n"
+"Vui lòng đảm bảo làm theo hướng dẫn về cách ẩn ổ đĩa!"
+
+#: src/opensuperclone/clone_gui.c:975 src/opensuperclone/clone_gui.c:1036
+#: src/opensuperclone/clone_gui.c:1919 src/opensuperclone/clone_gui.c:2016
+#: src/opensuperclone/clone_gui.c:2212 src/opensuperclone/io.c:8689
+#: src/opensuperclone/io.c:8727 src/opensuperclone/io.c:8765
+#: src/opensuperclone/io.c:8802
+msgid "Warning"
+msgstr "Cảnh báo"
+
+#: src/opensuperclone/clone_gui.c:1917
+#, c-format
+msgid ""
+"Warning! The destination is smaller than the source.\n"
+"Some data may not be copied."
+msgstr ""
+"Cảnh báo! Điểm đến nhỏ hơn nguồn.\n"
+"Một số dữ liệu có thể không được sao chép."
+
+#: src/opensuperclone/clone_gui.c:2014 src/opensuperclone/clone_gui.c:2210
+#, c-format
+msgid ""
+"Warning! Using driver mode with destination of null will clear the current progress log.\n"
+"Once you click on Start, the log will be cleared.\n"
+"If you wish to keep the current log, disconnect and make a copy."
+msgstr ""
+"Cảnh báo! Sử dụng chế độ trình điều khiển với đích đến là null sẽ xóa nhật ký tiến trình hiện tại.\n"
+"Khi bạn nhấp vào Bắt Đầu đọc, nhật ký sẽ bị xóa.\n"
+"Nếu bạn muốn giữ nhật ký hiện tại, hãy ngắt kết nối và tạo một bản sao."
+
+#: src/opensuperclone/clone_gui.c:2952
+msgid ""
+"When a bad cluster is read in Passthrough ATA or Direct modes, the ATA "
+"return data can include the LBA of the first reported bad sector for the "
+"read. When this option is selected, data up to that LBA will be read, the "
+"problem sector marked as Bad, and the rest of the chunk marked as Non-"
+"Trimmed."
+msgstr ""
+"Khi một cụm xấu được đọc trong chế độ Passthrough ATA hoặc Direct, dữ liệu "
+"trả về ATA có thể bao gồm LBA của sector xấu Đầu đọc tiên được báo cáo cho lần "
+"đọc. Khi tùy chọn này được chọn, dữ liệu lên đến LBA đó sẽ được đọc, sector "
+"có vấn đề được đánh dấu là Bad và phần còn lại của khối được đánh dấu là "
+"Non-Trimmed."
+
+#: src/opensuperclone/clone_gui.c:2956
+msgid ""
+"When enabled a log with a time and phase stamp in the name will be created "
+"at the end of every phase."
+msgstr ""
+"Khi được bật, một nhật ký có dấu thời gian và giai đoạn trong tên sẽ được "
+"tạo vào cuối mỗi giai đoạn."
+
+#: src/opensuperclone/clone_gui.c:2953
+msgid ""
+"When enabled and the soft reset timeout is exceeded when reading, after the "
+"reset a second read attempt will be performed. The second read attempt will "
+"use the Retry reset time as the soft reset time for the this second read "
+"attempt."
+msgstr ""
+"Khi được bật và thời gian chờ thiết lập lại mềm bị vượt quá khi đọc, sau khi"
+" thiết lập lại, một lần đọc thứ hai sẽ được thực hiện. Lần đọc thứ hai sẽ sử"
+" dụng thời gian thiết lập lại thử lại làm thời gian thiết lập lại mềm cho "
+"lần đọc thứ hai này."
+
+#: src/opensuperclone/clone_gui.c:2965
+msgid ""
+"When in virtual mode 3, this will be the minimum cluster read size. When "
+"cloning using a domain, this will also be the minimum cluster read size, so "
+"that small domain reads can be prevented if desired."
+msgstr ""
+"Khi ở chế độ ảo 3, đây sẽ là kích thước đọc cụm tối thiểu. Khi sao chép bằng"
+" miền, đây cũng sẽ là kích thước đọc cụm tối thiểu, do đó có thể ngăn chặn "
+"các lần đọc miền nhỏ nếu muốn."
+
+#: src/opensuperclone/opensuperclone.c:13953
+msgid "Worst"
+msgstr "Tồi tệ nhất"
+
+#: src/opensuperclone/opensuperclone.c:15281
+msgid ""
+"You are about to disable the USB mass storage driver,\n"
+"after which no USB storage devices will be detected by the operating system."
+msgstr ""
+"Bạn sắp tắt trình điều khiển lưu trữ USB,\n"
+"sau đó hệ điều hành sẽ không phát hiện bất kỳ thiết bị lưu trữ USB nào."
+
+#: src/opensuperclone/opensuperclone.c:4627
+msgid ""
+"You are about to erase all data on the destination!\n"
+"Are you sure you want to erase all data?"
+msgstr ""
+"Bạn sắp xóa toàn bộ dữ liệu trên đích đến!\n"
+"Bạn có chắc chắn muốn xóa toàn bộ dữ liệu không?"
+
+#: src/opensuperclone/opensuperclone.c:15172
+#: src/opensuperclone/opensuperclone.c:15225
+msgid ""
+"You are about to make a change to the startup configuration.\n"
+"A reboot will be required for the changes to take effect."
+msgstr ""
+"Bạn sắp thực hiện thay đổi đối với cấu hình khởi động.\n"
+"Cần phải khởi động lại để các thay đổi có hiệu lực."
+
+#: src/opensuperclone/opensuperclone.c:15319
+msgid "You are about to restore the USB mass storage driver."
+msgstr "Bạn sắp khôi phục trình điều khiển lưu trữ USB."
+
+#: src/opensuperclone/clone_gui.c:709 src/opensuperclone/clone_gui.c:731
+#: src/opensuperclone/clone_gui.c:769 src/opensuperclone/clone_gui.c:791
+#: src/opensuperclone/clone_gui.c:829 src/opensuperclone/clone_gui.c:1193
+#: src/opensuperclone/clone_gui.c:1542 src/opensuperclone/clone_gui.c:1680
+#: src/opensuperclone/clone_gui.c:1767 src/opensuperclone/clone_gui.c:4499
+#: src/opensuperclone/clone_gui.c:4530 src/opensuperclone/clone_gui.c:4579
+#, c-format
+msgid "You must choose a project first."
+msgstr "Đầu đọc tiên, bạn phải chọn một dự án."
+
+#: src/opensuperclone/clone_gui.c:1945
+#, c-format
+msgid "You must choose a project, source, and destination before connecting."
+msgstr "Bạn phải chọn dự án, nguồn và đích trước khi kết nối."
+
+#: src/opensuperclone/clone_gui.c:575 src/opensuperclone/clone_gui.c:608
+#: src/opensuperclone/clone_gui.c:641 src/opensuperclone/clone_gui.c:672
+#: src/opensuperclone/clone_gui.c:867 src/opensuperclone/clone_gui.c:897
+#: src/opensuperclone/clone_gui.c:1112 src/opensuperclone/clone_gui.c:1200
+#: src/opensuperclone/clone_gui.c:1549 src/opensuperclone/clone_gui.c:1687
+#: src/opensuperclone/clone_gui.c:1774
+#, c-format
+msgid "You must disconnect first."
+msgstr "Trước tiên bạn phải ngắt kết nối."
+
+#: src/opensuperclone/clone_gui.c:4444 src/opensuperclone/clone_gui.c:4457
+#: src/opensuperclone/clone_gui.c:4470
+msgid "You must reopen the advanced setting for this change to take effect"
+msgstr "Bạn phải mở lại cài đặt nâng cao để thay đổi này có hiệu lực"
+
+#: src/opensuperclone/clone_gui.c:679
+#, c-format
+msgid "You must start a new project before importing a ddrescue log file"
+msgstr "Bạn phải bắt Đầu đọc một dự án mới trước khi nhập tệp nhật ký ddrescue"
+
+#: src/opensuperclone/clone_gui.c:2572
+msgid "Zone"
+msgstr "Vùng"
+
+#: src/opensuperclone/clone_gui.c:2567
+msgid "Zones"
+msgstr "Các vùng"
+
+#: src/opensuperclone/opensuperclone.c:1440
+#, c-format
+msgid "posix_memalign failed"
+msgstr "posix_memalign không thành công"
+
+#~ msgid "Cannot open for writing"
+#~ msgstr "Không thể mở để viết"
+
+#~ msgid "Failed to install driver module, see the console for more information"
+#~ msgstr ""
+#~ "Không cài đặt được mô-đun trình điều khiển, hãy xem bảng điều khiển để biết "
+#~ "thêm thông tin"
+
+#~ msgid "Make failed, see the console for more information"
+#~ msgstr ""
+#~ "Thực hiện không thành công, hãy xem bảng điều khiển để biết thêm thông tin"
