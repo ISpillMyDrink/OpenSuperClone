@@ -1785,7 +1785,7 @@ msgstr "Chưa thử"
 
 #: src/opensuperclone/clone_gui.c:352
 msgid "Non-Trimmed"
-msgstr "Không cắt tỉa"
+msgstr "Không cắt bỏ"
 
 #: src/opensuperclone/clone_gui.c:2801
 msgid ""
@@ -2774,7 +2774,7 @@ msgstr "Thời gian thiết lập lại cắt/chia (ms)"
 #: src/opensuperclone/opensuperclone.c:6982
 #, c-format
 msgid "Trimming"
-msgstr "Cắt tỉa"
+msgstr "Cắt bỏ"
 
 #: src/opensuperclone/clone_gui.c:3127
 msgid "USB reset choices"
