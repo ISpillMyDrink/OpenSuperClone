@@ -93,7 +93,7 @@ msgstr ""
 
 #: src/opensuperclone/clone_gui.c:232
 msgid "About"
-msgstr "Về"
+msgstr "Giới thiệu"
 
 #: src/opensuperclone/clone_gui.c:4629
 msgid "About OpenSuperClone"
@@ -113,7 +113,7 @@ msgstr "Kích hoạt (Tắt nguồn)"
 
 #: src/opensuperclone/clone_gui.c:2910 src/opensuperclone/clone_gui.c:3116
 msgid "Activate primary relay"
-msgstr "Kích hoạt rơle chính"
+msgstr "Kích hoạt relay chính"
 
 #: src/opensuperclone/clone_gui.c:321
 #, fuzzy
@@ -146,7 +146,7 @@ msgstr "Cài đặt nâng cao"
 
 #: src/opensuperclone/clone_gui.c:2772
 msgid "Alignment offset (LBA)"
-msgstr "Độ lệch căn chỉnh (LBA)"
+msgstr "Căn chỉnh offset (LBA)"
 
 #: src/opensuperclone/clone_gui.c:3126
 msgid "Always wait for reset timers"
@@ -298,7 +298,7 @@ msgstr "Dữ liệu đã sửa (Thiết bị đã sửa dữ liệu)"
 
 #: src/opensuperclone/opensuperclone.c:13953
 msgid "Current"
-msgstr "Hiện hành"
+msgstr "Hiện tại"
 
 #: src/opensuperclone/clone_gui.c:357
 msgid "Current / Recent / Longest"
@@ -325,7 +325,7 @@ msgstr "Tỷ lệ hiện tại"
 
 #: src/opensuperclone/clone_gui.c:3354
 msgid "Current relay board"
-msgstr "Bảng rơle hiện tại"
+msgstr "Bảng relay hiện tại"
 
 #: src/opensuperclone/clone_gui.c:340
 msgid "Current status"
@@ -695,35 +695,35 @@ msgstr "Đã bật (nhanh hơn)"
 
 #: src/opensuperclone/clone_gui.c:3357 src/opensuperclone/clone_gui.c:3366
 msgid "Energize relay 1"
-msgstr "Kích hoạt rơle 1"
+msgstr "Kích hoạt relay 1"
 
 #: src/opensuperclone/clone_gui.c:3358 src/opensuperclone/clone_gui.c:3367
 msgid "Energize relay 2"
-msgstr "Kích hoạt rơle 2"
+msgstr "Kích hoạt relay 2"
 
 #: src/opensuperclone/clone_gui.c:3359 src/opensuperclone/clone_gui.c:3368
 msgid "Energize relay 3"
-msgstr "Kích hoạt rơle 3"
+msgstr "Kích hoạt relay 3"
 
 #: src/opensuperclone/clone_gui.c:3360 src/opensuperclone/clone_gui.c:3369
 msgid "Energize relay 4"
-msgstr "Kích hoạt rơle 4"
+msgstr "Kích hoạt relay 4"
 
 #: src/opensuperclone/clone_gui.c:3361 src/opensuperclone/clone_gui.c:3370
 msgid "Energize relay 5"
-msgstr "Kích hoạt rơle 5"
+msgstr "Kích hoạt relay 5"
 
 #: src/opensuperclone/clone_gui.c:3362 src/opensuperclone/clone_gui.c:3371
 msgid "Energize relay 6"
-msgstr "Kích hoạt rơle 6"
+msgstr "Kích hoạt relay 6"
 
 #: src/opensuperclone/clone_gui.c:3363 src/opensuperclone/clone_gui.c:3372
 msgid "Energize relay 7"
-msgstr "Kích hoạt rơle 7"
+msgstr "Kích hoạt relay 7"
 
 #: src/opensuperclone/clone_gui.c:3364 src/opensuperclone/clone_gui.c:3373
 msgid "Energize relay 8"
-msgstr "Kích hoạt rơle 8"
+msgstr "Kích hoạt relay 8"
 
 #: src/opensuperclone/clone_gui.c:3239
 msgid ""
@@ -795,7 +795,7 @@ msgstr "Lỗi khi thay đổi trạng thái khối, không nằm trong khối"
 
 #: src/opensuperclone/clone_gui.c:4695
 msgid "Error choosing USB relay"
-msgstr "Lỗi khi chọn rơle USB"
+msgstr "Lỗi khi chọn relay USB"
 
 #: src/opensuperclone/io.c:10619
 #, c-format
@@ -845,7 +845,7 @@ msgstr "Lỗi khi mở trình điều khiển đĩa ảo"
 #: src/opensuperclone/opensuperclone.c:12052
 #, c-format
 msgid "Error operating relay, see console for more information"
-msgstr "Lỗi khi vận hành rơle, hãy xem bảng điều khiển để biết thêm thông tin"
+msgstr "Lỗi khi vận hành relay, hãy xem bảng điều khiển để biết thêm thông tin"
 
 #: src/opensuperclone/clone_gui.c:954 src/opensuperclone/clone_gui.c:1015
 #: src/opensuperclone/clone_gui.c:1075 src/opensuperclone/clone_gui.c:1100
@@ -1184,7 +1184,7 @@ msgstr "Lỗi: Không có tệp sao lưu"
 #: src/opensuperclone/clone_gui.c:4875
 #, c-format
 msgid "Error: No relay has been chosen"
-msgstr "Lỗi: Không có rơle nào được chọn"
+msgstr "Lỗi: Không có relay nào được chọn"
 
 #: src/opensuperclone/opensuperclone.c:749
 #, c-format
@@ -1508,7 +1508,7 @@ msgstr "Không tìm thấy ID (Thiết bị không tìm thấy trường ID củ
 #: src/opensuperclone/opensuperclone.c:829
 #, c-format
 msgid "Idle"
-msgstr "Nhàn rỗi"
+msgstr "Idle"
 
 #: src/opensuperclone/clone_gui.c:2934
 msgid ""
@@ -1531,7 +1531,7 @@ msgid ""
 "If the device fails to identify after a relay power cycle, enabling this "
 "option will cause a second attempt to disconnect and reconnect the device."
 msgstr ""
-"Nếu thiết bị không nhận dạng được sau một chu kỳ cấp nguồn cho rơle, việc "
+"Nếu thiết bị không nhận dạng được sau một chu kỳ cấp nguồn cho relay, việc "
 "bật tùy chọn này sẽ thực hiện lần thử thứ hai để ngắt kết nối và kết nối lại"
 " thiết bị."
 
@@ -1661,7 +1661,7 @@ msgstr "Tải tập tin miền"
 
 #: src/opensuperclone/clone_gui.c:583
 msgid "Load project (progress) file"
-msgstr "Tải tệp dự án (tiến trình)"
+msgstr "Tải tệp project (tiến trình)"
 
 #: src/opensuperclone/clone_gui.c:2567 src/opensuperclone/clone_gui.c:2572
 msgid "Low"
@@ -1753,7 +1753,7 @@ msgstr "Dự án mới"
 
 #: src/opensuperclone/clone_gui.c:616
 msgid "New project (progress) file"
-msgstr "Tệp dự án mới (tiến trình)"
+msgstr "Tệp project mới (tiến trình)"
 
 #: src/opensuperclone/clone_gui.c:1942
 #: src/opensuperclone/opensuperclone.c:12630
@@ -1764,7 +1764,7 @@ msgstr "Không có điểm đến nào được chọn"
 #: src/opensuperclone/clone_gui.c:1932
 #, c-format
 msgid "No project chosen\n"
-msgstr "Không có dự án nào được chọn"
+msgstr "Không có project nào được chọn"
 
 #: src/opensuperclone/clone_gui.c:1823 src/opensuperclone/clone_gui.c:1937
 #, c-format
@@ -1866,7 +1866,7 @@ msgstr ""
 
 #: src/opensuperclone/clone_gui.c:195
 msgid "Open Project"
-msgstr "Mở dự án"
+msgstr "Mở project"
 
 #: src/opensuperclone/clone_gui.c:2913
 msgid "Operating System write buffer (must disconnect to take effect)"
@@ -2001,11 +2001,11 @@ msgstr "Bật nguồn"
 
 #: src/opensuperclone/clone_gui.c:255
 msgid "Power off the drive with the selected relay board"
-msgstr "Tắt nguồn ổ đĩa bằng bảng rơle đã chọn"
+msgstr "Tắt nguồn ổ đĩa bằng bảng relay đã chọn"
 
 #: src/opensuperclone/clone_gui.c:256
 msgid "Power on the drive with the selected relay board"
-msgstr "Bật nguồn ổ đĩa bằng bảng rơle đã chọn"
+msgstr "Bật nguồn ổ đĩa bằng bảng relay đã chọn"
 
 #: src/opensuperclone/clone_gui.c:247 src/opensuperclone/clone_gui.c:3388
 msgid "Primary Relay Settings"
@@ -2013,7 +2013,7 @@ msgstr "Cài đặt Rơ le chính"
 
 #: src/opensuperclone/clone_gui.c:3353
 msgid "Primary relay board settings"
-msgstr "Cài đặt bảng rơle chính"
+msgstr "Cài đặt bảng relay chính"
 
 #: src/opensuperclone/clone_gui.c:330
 msgid "Project"
@@ -2021,7 +2021,7 @@ msgstr "Dự án"
 
 #: src/opensuperclone/clone_gui.c:197
 msgid "Quit"
-msgstr "Từ bỏ"
+msgstr "Thoát"
 
 #: src/opensuperclone/clone_gui.c:2768
 msgid "Rate Skip (kB/s) phase-3"
@@ -2042,12 +2042,12 @@ msgstr "Lỗi đọc sẽ trả về lỗi I/O tiêu chuẩn."
 #: src/opensuperclone/clone_gui.c:2963
 #, fuzzy
 msgid "Read errors will return with mark filled data."
-msgstr "Return mark filled data"
+msgstr "Các lỗi đọc sẽ trả về với dữ liệu đã được đánh dấu hoặc điền sẵn."
 
 #: src/opensuperclone/clone_gui.c:2962
 #, fuzzy
 msgid "Read errors will return zero filled data."
-msgstr "Return zero filled data"
+msgstr "Các lỗi đọc sẽ trả về dữ liệu đã được điền bằng số không."
 
 #: src/opensuperclone/opensuperclone.c:6856
 #, c-format
@@ -2085,7 +2085,7 @@ msgstr "Tỷ lệ gần đây"
 
 #: src/opensuperclone/clone_gui.c:3355
 msgid "Relay board settings"
-msgstr "Cài đặt bảng rơle"
+msgstr "Cài đặt bảng relay"
 
 #: src/opensuperclone/clone_gui.c:360
 msgid "Remaining retry passes"
@@ -2138,7 +2138,7 @@ msgstr "Lấy thông tin SMART"
 
 #: src/opensuperclone/clone_gui.c:2919
 msgid "Retry connecting on failure after relay power cycle"
-msgstr "Thử lại kết nối khi lỗi xảy ra sau khi ngắt nguồn rơle"
+msgstr "Thử lại kết nối khi lỗi xảy ra sau khi ngắt nguồn relay"
 
 #: src/opensuperclone/clone_gui.c:3125
 msgid "Retry reset time (ms)"
@@ -2198,7 +2198,7 @@ msgstr "Lưu Dự án dưới dạng"
 
 #: src/opensuperclone/clone_gui.c:739
 msgid "Save Project File As"
-msgstr "Lưu tệp dự án dưới dạng"
+msgstr "Lưu tệp project dưới dạng"
 
 #: src/opensuperclone/clone_gui.c:2753
 msgid "Scrape"
@@ -2416,7 +2416,7 @@ msgstr "Lệnh kiểm tra"
 
 #: src/opensuperclone/clone_gui.c:3376
 msgid "Test relay operation"
-msgstr "Kiểm tra hoạt động của rơle"
+msgstr "Kiểm tra hoạt động của relay"
 
 #: src/opensuperclone/clone_gui.c:2944
 #, fuzzy
@@ -2548,7 +2548,7 @@ msgstr "Số lượng LBA được đọc từ ổ đĩa nguồn"
 
 #: src/opensuperclone/clone_gui.c:365
 msgid "The project log file for the current recovery"
-msgstr "Tệp nhật ký dự án cho quá trình phục hồi hiện tại"
+msgstr "Tệp nhật ký project cho quá trình phục hồi hiện tại"
 
 #: src/opensuperclone/opensuperclone.c:6317
 #: src/opensuperclone/opensuperclone.c:6694
@@ -3045,12 +3045,12 @@ msgstr "Bạn sắp khôi phục trình điều khiển lưu trữ USB."
 #: src/opensuperclone/clone_gui.c:4530 src/opensuperclone/clone_gui.c:4579
 #, c-format
 msgid "You must choose a project first."
-msgstr "Đầu đọc tiên, bạn phải chọn một dự án."
+msgstr "Đầu đọc tiên, bạn phải chọn một project."
 
 #: src/opensuperclone/clone_gui.c:1945
 #, c-format
 msgid "You must choose a project, source, and destination before connecting."
-msgstr "Bạn phải chọn dự án, nguồn và đích trước khi kết nối."
+msgstr "Bạn phải chọn project, nguồn và đích trước khi kết nối."
 
 #: src/opensuperclone/clone_gui.c:575 src/opensuperclone/clone_gui.c:608
 #: src/opensuperclone/clone_gui.c:641 src/opensuperclone/clone_gui.c:672
@@ -3070,7 +3070,7 @@ msgstr "Bạn phải mở lại cài đặt nâng cao để thay đổi này có
 #: src/opensuperclone/clone_gui.c:679
 #, c-format
 msgid "You must start a new project before importing a ddrescue log file"
-msgstr "Bạn phải bắt Đầu đọc một dự án mới trước khi nhập tệp nhật ký ddrescue"
+msgstr "Bạn phải bắt Đầu đọc một project mới trước khi nhập tệp nhật ký ddrescue"
 
 #: src/opensuperclone/clone_gui.c:2572
 msgid "Zone"
@@ -3086,7 +3086,7 @@ msgid "posix_memalign failed"
 msgstr "posix_memalign không thành công"
 
 #~ msgid "Cannot open for writing"
-#~ msgstr "Không thể mở để viết"
+#~ msgstr "Không thể mở để ghi"
 
 #~ msgid "Failed to install driver module, see the console for more information"
 #~ msgstr ""
