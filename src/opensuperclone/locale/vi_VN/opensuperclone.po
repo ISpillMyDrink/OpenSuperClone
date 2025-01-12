@@ -134,7 +134,7 @@ msgstr "Thời gian kích hoạt (giây)"
 
 #: src/opensuperclone/clone_gui.c:238
 msgid "Add to Domain from DMDE bytes file"
-msgstr "Thêm vào miền từ tệp byte DMDE"
+msgstr "Thêm vào tên miền từ tệp byte DMDE"
 
 #: src/opensuperclone/clone_gui.c:451
 msgid "Address Mark Not Found (The device could not find the address mark)"
@@ -246,7 +246,7 @@ msgstr "Chọn tập tin hình ảnh"
 
 #: src/opensuperclone/clone_gui.c:230
 msgid "Clear Domain"
-msgstr "Xóa tên miền"
+msgstr "Xóa tên tên miền"
 
 #: src/opensuperclone/clone_gui.c:362 src/opensuperclone/clone_gui.c:2155
 msgid "Clone"
@@ -491,11 +491,11 @@ msgstr "Không làm gì cả"
 
 #: src/opensuperclone/clone_gui.c:331
 msgid "Domain"
-msgstr "Miền"
+msgstr "tên miền"
 
 #: src/opensuperclone/clone_gui.c:336
 msgid "Domain size"
-msgstr "Kích thước miền"
+msgstr "Kích thước tên miền"
 
 #: src/opensuperclone/clone_gui.c:201
 msgid "Drive"
@@ -1153,7 +1153,7 @@ msgstr "Lỗi: Đã phát hiện lỗi thiết bị trên nguồn"
 #: src/opensuperclone/clone_gui.c:904
 #, c-format
 msgid "Error: Domain is not active or no domain file loaded"
-msgstr "Lỗi: Tên miền không hoạt động hoặc không có tệp tên miền nào được tải"
+msgstr "Lỗi: Tên tên miền không hoạt động hoặc không có tệp tên tên miền nào được tải"
 
 #: src/opensuperclone/opensuperclone.c:931
 #, c-format
@@ -1591,13 +1591,13 @@ msgstr "Lỗi bộ đệm trình điều khiển bên trong"
 #: src/opensuperclone/opensuperclone.c:10943
 #, c-format
 msgid "Internal program error processing domain check"
-msgstr "Kiểm tra miền xử lý lỗi chương trình nội bộ"
+msgstr "Kiểm tra tên miền xử lý lỗi chương trình nội bộ"
 
 #: src/opensuperclone/opensuperclone.c:5716
 #: src/opensuperclone/opensuperclone.c:5821
 #, c-format
 msgid "Internal program error, Position not found in domain"
-msgstr "Lỗi chương trình nội bộ, Không tìm thấy vị trí trong miền"
+msgstr "Lỗi chương trình nội bộ, Không tìm thấy vị trí trong tên miền"
 
 #: src/opensuperclone/opensuperclone.c:6823
 #: src/opensuperclone/opensuperclone.c:7152
@@ -1619,7 +1619,7 @@ msgstr ""
 #, c-format
 msgid "Internal program error, domain check returned position out of range"
 msgstr ""
-"Lỗi chương trình nội bộ, kiểm tra miền trả về vị trí nằm ngoài phạm vi"
+"Lỗi chương trình nội bộ, kiểm tra tên miền trả về vị trí nằm ngoài phạm vi"
 
 #: src/opensuperclone/opensuperclone.c:12675
 #, c-format
@@ -1657,7 +1657,7 @@ msgstr "Giới hạn tốc độ đọc tối đa tính bằng kB/giây"
 
 #: src/opensuperclone/clone_gui.c:227 src/opensuperclone/clone_gui.c:875
 msgid "Load Domain File"
-msgstr "Tải tập tin miền"
+msgstr "Tải tập tin tên miền"
 
 #: src/opensuperclone/clone_gui.c:583
 msgid "Load project (progress) file"
@@ -1745,7 +1745,7 @@ msgstr "NULL (Không có đích đến)"
 
 #: src/opensuperclone/clone_gui.c:239 src/opensuperclone/clone_gui.c:649
 msgid "New Domain File"
-msgstr "Tệp tên miền mới"
+msgstr "Tệp tên tên miền mới"
 
 #: src/opensuperclone/clone_gui.c:196
 msgid "New Project"
@@ -2182,11 +2182,11 @@ msgstr "Phiên bản cấu trúc dữ liệu SMART"
 
 #: src/opensuperclone/clone_gui.c:240
 msgid "Save Domain File"
-msgstr "Lưu tệp miền"
+msgstr "Lưu tệp tên miền"
 
 #: src/opensuperclone/clone_gui.c:241 src/opensuperclone/clone_gui.c:799
 msgid "Save Domain File As"
-msgstr "Lưu tệp miền dưới dạng"
+msgstr "Lưu tệp tên miền dưới dạng"
 
 #: src/opensuperclone/clone_gui.c:218
 msgid "Save Project"
@@ -2472,7 +2472,7 @@ msgstr "Ổ đĩa đích hoặc tệp hình ảnh cần phục hồi"
 
 #: src/opensuperclone/clone_gui.c:366
 msgid "The domain file for the current recovery"
-msgstr "Tệp miền cho quá trình phục hồi hiện tại"
+msgstr "Tệp tên miền cho quá trình phục hồi hiện tại"
 
 #: src/opensuperclone/opensuperclone.c:11935
 #: src/opensuperclone/opensuperclone.c:11988
@@ -2576,7 +2576,7 @@ msgstr "Việc cứu hộ đã hoàn tất bằng cách sử dụng các thiết
 
 #: src/opensuperclone/clone_gui.c:371
 msgid "The size of the domain file in LBAs"
-msgstr "Kích thước của tệp miền trong LBA"
+msgstr "Kích thước của tệp tên miền trong LBA"
 
 #: src/opensuperclone/clone_gui.c:384
 msgid "The size of the last skip run"
@@ -3001,8 +3001,8 @@ msgid ""
 "that small domain reads can be prevented if desired."
 msgstr ""
 "Khi ở chế độ ảo 3, đây sẽ là kích thước đọc cụm tối thiểu. Khi sao chép bằng"
-" miền, đây cũng sẽ là kích thước đọc cụm tối thiểu, do đó có thể ngăn chặn "
-"các lần đọc miền nhỏ nếu muốn."
+" tên miền, đây cũng sẽ là kích thước đọc cụm tối thiểu, do đó có thể ngăn chặn "
+"các lần đọc tên miền nhỏ nếu muốn."
 
 #: src/opensuperclone/opensuperclone.c:13953
 msgid "Worst"
