@@ -190,6 +190,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
   activate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button_main"));
   deactivate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button_main"));
+  disablenvmemi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disablenvmemi"));
+  restorenvmemi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restorenvmemi"));
 
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi_ccc), _("File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi_ccc), _("Open Project"));
@@ -248,6 +250,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB Mass Storage Driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(disablenvmemi_ccc), _("Disable NVM Express Driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(restorenvmemi_ccc), _("Restore NVM Express Driver"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), _("Power Off"));
   gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), _("Power On"));
 

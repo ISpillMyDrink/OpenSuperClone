@@ -471,6 +471,24 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="disablenvmemi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">disable nvme driver</property>
+                        <property name="use-underline">True</property>
+                        <signal name="activate" handler="disable_nvme_driver_ccc" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="restorenvmemi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">restore nvme driver</property>
+                        <property name="use-underline">True</property>
+                        <signal name="activate" handler="restore_nvme_driver_ccc" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem" id="separator8">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>

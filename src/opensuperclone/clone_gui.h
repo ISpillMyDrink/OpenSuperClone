@@ -172,6 +172,8 @@ GtkWidget *primaryrelaymi_ccc;
 GtkWidget *chooseprimaryrelaymi_ccc;
 GtkWidget *disableusbmassmi_ccc;
 GtkWidget *restoreusbmassmi_ccc;
+GtkWidget *disablenvmemi_ccc;
+GtkWidget *restorenvmemi_ccc;
 
 GtkWidget *choose_source_dialog_window_ccc;
 GtkWidget *choose_source_scrolled_window_ccc;
