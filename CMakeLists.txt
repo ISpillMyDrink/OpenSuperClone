@@ -22,6 +22,9 @@ project(OpenSuperClone
 # OSCDriver version 2.6.6
 set(OSC_DRIVER_VERSION 2.6.6 CACHE STRING "OSCDriver Version")
 
+# MiniNVMe version 1.0.0
+set(MININVME_VERSION 1.0.0 CACHE STRING "MiniNVMe Version")
+
 # Warning: Do not change the following variables unless you know what you are doing
 # and never set strings longer than 31 characters
 set(OSC_DRIVER_IOCTL_NAME "oscdriverc" CACHE STRING "OSCDriver IOCTL name, max 31 characters")
