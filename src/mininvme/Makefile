@@ -1,14 +1,35 @@
-MODULE=mininvme
+KMOD = mininvme
 
-obj-m += $(MODULE).o
+KERNELRELEASE ?= $(shell uname -r)
 
-$(MODULE)-y := main.o nvme.o ioctl.o
+obj-m = $(KMOD).o
+$(KMOD)-y := main.o nvme.o ioctl.o
+MAKE_FLAGS = -C
+KDIR = /lib/modules/$(KERNELRELEASE)/build
 
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+RMFLAGS = -vR
+
+TMPS =  $(KMOD).mod \
+        $(KMOD).mod.*  \
+       .$(KMOD).*.cmd  \
+        built-in.o     \
+       .built-in.*     \
+        modules.order  \
+        Module.symvers \
+       .tmp_versions
+
+default:
+	$(MAKE) $(MAKE_FLAGS) $(KDIR) M=$$PWD
+
+.PHONY: all clean
+
+all: default
 
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	$(RM) $(RMFLAGS) $(KMOD).ko $(KMOD).o $(TMPS)
 
 install:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules_install
+	insmod $(KMOD).ko
+
+uninstall:
+	rmmod $(KMOD)

@@ -1,0 +1,8 @@
+PACKAGE_NAME="mininvme"
+PACKAGE_VERSION="@MININVME_VERSION@"
+MAKE="make"
+INSTALL="make install"
+CLEAN="make clean"
+BUILT_MODULE_NAME="$PACKAGE_NAME"
+DEST_MODULE_LOCATION="/kernel/drivers/misc"
+AUTOINSTALL="yes"
