@@ -141,7 +141,11 @@ static struct pci_driver _driver = {
     .remove = device_remove
 };
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
+static int uevent(struct device *pDev, struct kobj_uevent_env *pEnv)
+#else
 static int uevent(const struct device *pDev, struct kobj_uevent_env *pEnv)
+#endif
 {
     (void)(pDev);
     add_uevent_var(pEnv, "DEVMODE=%#o", 0666);
@@ -166,7 +170,11 @@ static int __init kernel_object_init(void)
 
     _imajor = MAJOR(dev);
 
-    _device_class = class_create(KBUILD_MODNAME);
+    #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
+        _device_class = class_create(THIS_MODULE, KBUILD_MODNAME);
+    #else
+        _device_class = class_create(KBUILD_MODNAME);
+    #endif
 
     if (!_device_class) {
         printk(KERN_ERR "%s: Error at class_create()\n", KBUILD_MODNAME);

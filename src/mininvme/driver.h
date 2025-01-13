@@ -9,18 +9,21 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 
+#include "config.h"
+
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/cdev.h>
+#include <linux/version.h>
 #include "nvme.h"
 #include "ioctl.h"
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Alexander E. <aekhv@vk.com>");
 MODULE_DESCRIPTION("MiniNVMe kernel module");
-MODULE_VERSION("1.0");
+MODULE_VERSION(DRIVER_VERSION);
 
 // Use "insmod mininvme.ko debug=1" to turn debug on
 static bool debug = 0;
