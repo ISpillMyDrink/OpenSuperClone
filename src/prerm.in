@@ -1,6 +1,13 @@
 #!/bin/sh
 
 if command -v dkms >/dev/null; then
+    dkms remove oscdriver/@OSC_DRIVER_VERSION@ --all
+else
+    echo "WARNING: DKMS is not installed, skipping driver removal."
+    echo "If the driver was installed manually, it will not be removed."
+fi
+
+if command -v dkms >/dev/null; then
     dkms remove mininvme/@MININVME_VERSION@ --all
 else
     echo "WARNING: DKMS is not installed, skipping driver removal."

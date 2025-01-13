@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if command -v dkms >/dev/null; then
-    dkms install mininvme/@MININVME_VERSION@
-else
-    echo "WARNING: DKMS is not installed, skipping driver installation."
-    echo "To use native NVMe support you will have to install the driver manually."
-fi
