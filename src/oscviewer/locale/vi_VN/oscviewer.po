@@ -1,0 +1,311 @@
+# English translations for OpenSuperClone package.
+# Copyright (C) 2022 OpenSuperClone Contributors
+# This file is distributed under the same license as the OpenSuperClone package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSuperClone 2.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-1-15 10:01+0100\n"
+"PO-Revision-Date: 2022-11-28 09:54+0100\n"
+"Last-Translator: Nguyen Vu Ha <hanaloginstruments@gmail.com>\n"
+"Language-Team: Vietnamese\n"
+"Language: vn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/oscviewer/oscviewer.c:330 src/oscviewer/oscviewer.c:1371
+msgid "1 minute"
+msgstr "1 phút"
+
+#: src/oscviewer/oscviewer.c:164
+msgid "1 pt"
+msgstr "1 điểm"
+
+#: src/oscviewer/oscviewer.c:199
+msgid "10 pt"
+msgstr "10 điểm"
+
+#: src/oscviewer/oscviewer.c:328 src/oscviewer/oscviewer.c:1363
+msgid "10 seconds"
+msgstr "10 giây"
+
+#: src/oscviewer/oscviewer.c:200
+msgid "12 pt"
+msgstr "12 điểm"
+
+#: src/oscviewer/oscviewer.c:254
+msgid "128K"
+msgstr "128 nghìn"
+
+#: src/oscviewer/oscviewer.c:201
+msgid "14 pt"
+msgstr "14 điểm"
+
+#: src/oscviewer/oscviewer.c:202
+msgid "16 pt"
+msgstr "16 điểm"
+
+#: src/oscviewer/oscviewer.c:251
+msgid "16K"
+msgstr "16 nghìn"
+
+#: src/oscviewer/oscviewer.c:261
+msgid "16M"
+msgstr "16 triệu"
+
+#: src/oscviewer/oscviewer.c:257
+msgid "1M"
+msgstr "1 triệu"
+
+#: src/oscviewer/oscviewer.c:331 src/oscviewer/oscviewer.c:1375
+msgid "2 minutes"
+msgstr "2 phút"
+
+#: src/oscviewer/oscviewer.c:165
+msgid "2 pt"
+msgstr "2 điểm"
+
+#: src/oscviewer/oscviewer.c:255
+msgid "256K"
+msgstr "256 nghìn"
+
+#: src/oscviewer/oscviewer.c:258
+msgid "2M"
+msgstr "2 triệu"
+
+#: src/oscviewer/oscviewer.c:166
+msgid "3 pt"
+msgstr "3 điểm"
+
+#: src/oscviewer/oscviewer.c:329 src/oscviewer/oscviewer.c:1367
+msgid "30 seconds"
+msgstr "30 giây"
+
+#: src/oscviewer/oscviewer.c:252
+msgid "32K"
+msgstr "32 nghìn"
+
+#: src/oscviewer/oscviewer.c:167 src/oscviewer/oscviewer.c:196
+msgid "4 pt"
+msgstr "4 điểm"
+
+#: src/oscviewer/oscviewer.c:249
+msgid "4K"
+msgstr "4 ngìn"
+
+#: src/oscviewer/oscviewer.c:259
+msgid "4M"
+msgstr "4 triệu"
+
+#: src/oscviewer/oscviewer.c:332 src/oscviewer/oscviewer.c:1379
+msgid "5 minutes"
+msgstr "5 phút"
+
+#: src/oscviewer/oscviewer.c:327 src/oscviewer/oscviewer.c:1359
+msgid "5 seconds"
+msgstr "5 giây"
+
+#: src/oscviewer/oscviewer.c:256
+msgid "512K"
+msgstr "512 nghìn"
+
+#: src/oscviewer/oscviewer.c:197
+msgid "6 pt"
+msgstr "6 điểm"
+
+#: src/oscviewer/oscviewer.c:253
+msgid "64K"
+msgstr "64 nghìn"
+
+#: src/oscviewer/oscviewer.c:198
+msgid "8 pt"
+msgstr "8 điểm"
+
+#: src/oscviewer/oscviewer.c:250
+msgid "8K"
+msgstr "8 nghìn"
+
+#: src/oscviewer/oscviewer.c:260
+msgid "8M"
+msgstr "8 triệu"
+
+#: src/oscviewer/oscviewer.c:382
+msgid "About"
+msgstr "Giới thiệu"
+
+#: src/oscviewer/oscviewer.c:3101
+msgid "About OSCViewer"
+msgstr "Giới thiệu về OSCViewer"
+
+#: src/oscviewer/oscviewer.c:2866
+msgid "Areas"
+msgstr "Khu vực"
+
+#: src/oscviewer/oscviewer.c:148 src/oscviewer/oscviewer.c:325
+#: src/oscviewer/oscviewer.c:1355 src/oscviewer/oscviewer.c:1359
+#: src/oscviewer/oscviewer.c:1363 src/oscviewer/oscviewer.c:1367
+#: src/oscviewer/oscviewer.c:1371 src/oscviewer/oscviewer.c:1375
+#: src/oscviewer/oscviewer.c:1379
+msgid "Auto-Update"
+msgstr "Tự động cập nhật"
+
+#: src/oscviewer/oscviewer.c:428 src/oscviewer/oscviewer.c:653
+#: src/oscviewer/oscviewer.c:2856
+msgid "Bad"
+msgstr "Xấu"
+
+#: src/oscviewer/oscviewer.c:431 src/oscviewer/oscviewer.c:733
+msgid "Bad Head"
+msgstr "Đầu đọc xấu"
+
+#: src/oscviewer/oscviewer.c:436
+msgid "Block Colors"
+msgstr "Khối màu"
+
+#: src/oscviewer/oscviewer.c:3108
+#, c-format
+msgid "Copyright (C) %i Scott Dwyer and OpenSuperClone contributors"
+msgstr ""
+"Bản quyền (C) %i Scott Dwyer và những người đóng góp cho OpenSuperClone"
+
+#: src/oscviewer/oscviewer.c:430 src/oscviewer/oscviewer.c:698
+msgid "Current"
+msgstr "Hiện tại"
+
+#: src/oscviewer/oscviewer.c:144 src/oscviewer/oscviewer.c:434
+#: src/oscviewer/oscviewer.c:769 src/oscviewer/oscviewer.c:1249
+#: src/oscviewer/oscviewer.c:1294
+msgid "Domain"
+msgstr "Tên miền"
+
+#: src/oscviewer/oscviewer.c:2311 src/oscviewer/oscviewer.c:2413
+#, c-format
+msgid "Domain block not found"
+msgstr "Không tìm thấy khối tên miền"
+
+#: src/oscviewer/oscviewer.c:2315 src/oscviewer/oscviewer.c:2417
+msgid "Error!"
+msgstr "Lỗi!"
+
+#: src/oscviewer/oscviewer.c:133 src/oscviewer/oscviewer.c:1212
+msgid "File"
+msgstr "Tài liệu"
+
+#: src/oscviewer/oscviewer.c:429 src/oscviewer/oscviewer.c:683
+#: src/oscviewer/oscviewer.c:2854
+msgid "Finished"
+msgstr "Hoàn thành"
+
+#: src/oscviewer/oscviewer.c:715
+msgid "Good Data"
+msgstr "Dữ liệu tốt"
+
+#: src/oscviewer/oscviewer.c:381
+msgid "Help"
+msgstr "Giúp đỡ"
+
+#: src/oscviewer/oscviewer.c:336
+msgid "Highlight Good Data"
+msgstr "Làm nổi bật dữ liệu tốt"
+
+#: src/oscviewer/oscviewer.c:163
+msgid "Left Panel Resolution"
+msgstr "Độ phân giải bảng điều khiển bên trái"
+
+#: src/oscviewer/oscviewer.c:3111
+#, c-format
+msgid ""
+"License type: GPL2\n"
+"There is NO WARRANTY, to the extent permitted by law."
+msgstr ""
+"Loại giấy phép: GPL2\n"
+"KHÔNG CÓ BẢO HÀNH nào, trong phạm vi pháp luật cho phép."
+
+#: src/oscviewer/oscviewer.c:137
+msgid "Load DMDE Bytes File"
+msgstr "Tải tệp DMDE Byte"
+
+#: src/oscviewer/oscviewer.c:136
+msgid "Load Domain"
+msgstr "Tải tên miền"
+
+#: src/oscviewer/oscviewer.c:142
+msgid "Log"
+msgstr "Nhật ký"
+
+#: src/oscviewer/oscviewer.c:248
+msgid "Main Grid Size"
+msgstr "Kích thước lưới chính"
+
+#: src/oscviewer/oscviewer.c:195
+msgid "Main Panel Resolution"
+msgstr "Độ phân giải của bảng điều khiển chính"
+
+#: src/oscviewer/oscviewer.c:437
+msgid "Marker Colors"
+msgstr "Màu sắc đánh dấu"
+
+#: src/oscviewer/oscviewer.c:426 src/oscviewer/oscviewer.c:623
+#: src/oscviewer/oscviewer.c:2862
+msgid "Non-Divided"
+msgstr "Không chia"
+
+#: src/oscviewer/oscviewer.c:427 src/oscviewer/oscviewer.c:638
+#: src/oscviewer/oscviewer.c:2864
+msgid "Non-Scraped"
+msgstr "Không bị cạo"
+
+#: src/oscviewer/oscviewer.c:424 src/oscviewer/oscviewer.c:668
+#: src/oscviewer/oscviewer.c:2858
+msgid "Non-Tried"
+msgstr "Chưa thử"
+
+#: src/oscviewer/oscviewer.c:425 src/oscviewer/oscviewer.c:608
+#: src/oscviewer/oscviewer.c:2860
+msgid "Non-Trimmed"
+msgstr "Không cắt bỏ"
+
+#: src/oscviewer/oscviewer.c:148 src/oscviewer/oscviewer.c:326
+#: src/oscviewer/oscviewer.c:1355
+msgid "Off"
+msgstr "Tắt"
+
+#: src/oscviewer/oscviewer.c:135
+msgid "Open"
+msgstr "Mở"
+
+#: src/oscviewer/oscviewer.c:134
+msgid "Quit"
+msgstr "Thoát"
+
+#: src/oscviewer/oscviewer.c:432 src/oscviewer/oscviewer.c:785
+msgid "Selected"
+msgstr "Đã chọn"
+
+#: src/oscviewer/oscviewer.c:118 src/oscviewer/oscviewer.c:138
+msgid "Settings"
+msgstr "Cài đặt"
+
+#: src/oscviewer/oscviewer.c:345
+msgid "Show Bad Head"
+msgstr "Hiển thị đầu xấu"
+
+#: src/oscviewer/oscviewer.c:371
+msgid "Show Domain"
+msgstr "Hiển thị tên miền"
+
+#: src/oscviewer/oscviewer.c:368
+msgid "Show High-Time"
+msgstr "Hiển thị thời gian cao"
+
+#: src/oscviewer/oscviewer.c:433 src/oscviewer/oscviewer.c:751
+#: src/oscviewer/oscviewer.c:2868
+msgid "Timing"
+msgstr "Thời gian"
+
+#: src/oscviewer/oscviewer.c:155
+msgid "View"
+msgstr "Xem"
