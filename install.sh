@@ -67,4 +67,18 @@ else
     echo "Installed OSCDriver."
 fi
 
+VERSION=$(grep -oP '(?<=set\(MIMINVME_VERSION ).*(?=\))' ../CMakeLists.txt)
+VERSION=$(echo $VERSION | cut -d' ' -f1)
+echo "Found MiniNVMe version $VERSION."
+
+echo "Installing MiniNVMe..."
+sudo dkms install -m mininvme -v $VERSION
+
+if [ $? -ne 0 ]; then
+    echo "Failed to install MiniNVMe."
+    exit 1
+else
+    echo "Installed MiniNVMe."
+fi
+
 echo "Done."

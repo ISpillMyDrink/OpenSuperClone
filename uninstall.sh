@@ -63,4 +63,22 @@ fi
 
 echo "Done uninstalling OSCDriver."
 
+echo "Uninstalling MiniNVMe..."
+
+if lsmod | grep -q mininvme; then
+    sudo rmmod mininvme
+fi
+
+VERSION=$(grep -oP '(?<=set\(MIMINVME_VERSION ).*(?=\))' CMakeLists.txt)
+VERSION=$(echo $VERSION | cut -d' ' -f1)
+echo "Assuming MiniNVMe version $VERSION."
+
+sudo dkms remove -m mininvme/$VERSION --all
+
+if [ -d /usr/src/mininvme-$VERSION ]; then
+    sudo rm -rf /usr/src/mininvme-$VERSION
+fi
+
+echo "Done uninstalling MiniNVMe."
+
 echo "Done."
