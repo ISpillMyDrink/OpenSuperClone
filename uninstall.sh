@@ -69,7 +69,7 @@ if lsmod | grep -q mininvme; then
     sudo rmmod mininvme
 fi
 
-VERSION=$(grep -oP '(?<=set\(MIMINVME_VERSION ).*(?=\))' CMakeLists.txt)
+VERSION=$(grep -oP '(?<=set\(MININVME_VERSION ).*(?=\))' CMakeLists.txt)
 VERSION=$(echo $VERSION | cut -d' ' -f1)
 echo "Assuming MiniNVMe version $VERSION."
 

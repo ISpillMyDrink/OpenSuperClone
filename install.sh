@@ -67,7 +67,7 @@ else
     echo "Installed OSCDriver."
 fi
 
-VERSION=$(grep -oP '(?<=set\(MIMINVME_VERSION ).*(?=\))' ../CMakeLists.txt)
+VERSION=$(grep -oP '(?<=set\(MININVME_VERSION ).*(?=\))' ../CMakeLists.txt)
 VERSION=$(echo $VERSION | cut -d' ' -f1)
 echo "Found MiniNVMe version $VERSION."
 
