@@ -21,7 +21,9 @@ msgstr ""
 msgid ""
 "\n"
 "Status / Error"
-msgstr "Trạng thái / Lỗi"
+msgstr ""
+"\n"
+"Trạng thái / Lỗi"
 
 #: src/opensuperclone/opensuperclone.c:6085
 #: src/opensuperclone/opensuperclone.c:6116
@@ -72,7 +74,7 @@ msgid ""
 "Are you sure this is the correct progress log file for this drive?\n"
 msgstr ""
 ".\n"
-"Bạn có chắc đây là tệp nhật ký tiến trình chính xác cho ổ đĩa này không?"
+"Bạn có chắc đây là tệp nhật ký tiến trình chính xác cho ổ đĩa này không?\n"
 
 #: src/opensuperclone/clone_gui.c:2941
 msgid ""
@@ -401,7 +403,7 @@ msgid ""
 msgstr ""
 "Tắt cổng cho chế độ AHCI để ẩn ổ đĩa khỏi hệ điều hành.\n"
 "Cảnh báo! Nếu bạn tắt cổng cho ổ đĩa hệ điều hành,\n"
-"hệ thống sẽ không thể khởi động!"
+"hệ thống sẽ không thể khởi động!\n"
 
 #: src/opensuperclone/clone_gui.c:2946
 msgid ""
@@ -503,11 +505,11 @@ msgstr "Trình điều khiển"
 
 #: src/opensuperclone/opensuperclone.c:1159
 msgid "Driver install success\n"
-msgstr "Cài đặt trình điều khiển thành công"
+msgstr "Cài đặt trình điều khiển thành công\n"
 
 #: src/opensuperclone/opensuperclone.c:1199
 msgid "Driver removal success\n"
-msgstr "Đã xóa thành công trình điều khiển"
+msgstr "Đã xóa thành công trình điều khiển\n"
 
 #: src/opensuperclone/clone_gui.c:202
 msgid "Drives"
@@ -733,7 +735,7 @@ msgid ""
 msgstr ""
 "Nhập các cổng bạn muốn vô hiệu hóa dưới dạng số nguyên được phân tách bằng dấu cách.\n"
 "Tốt nhất là các số cổng được sắp xếp theo thứ tự từ thấp đến cao.\n"
-"Bạn có thể tìm thông tin cổng bằng cách liệt kê các ổ đĩa nguồn ở chế độ AHCI."
+"Bạn có thể tìm thông tin cổng bằng cách liệt kê các ổ đĩa nguồn ở chế độ AHCI.\n"
 
 #: src/opensuperclone/clone_gui.c:226
 msgid "Erase Destination"
@@ -805,7 +807,7 @@ msgstr "Lỗi khi đóng trình điều khiển đĩa ảo"
 #: src/opensuperclone/opensuperclone.c:1051
 #: src/opensuperclone/opensuperclone.c:1150
 msgid "Error connecting to driver memory\n"
-msgstr "Lỗi kết nối với bộ nhớ trình điều khiển"
+msgstr "Lỗi kết nối với bộ nhớ trình điều khiển\n"
 
 #: src/opensuperclone/opensuperclone.c:15760
 #, c-format
@@ -857,7 +859,7 @@ msgid ""
 "The log file was not loaded.\n"
 msgstr ""
 "Lỗi khi xử lý tệp nhật ký!\n"
-"Tệp nhật ký không được tải."
+"Tệp nhật ký không được tải.\n"
 
 #: src/opensuperclone/clone_gui.c:1626
 msgid "Error selecting destination"
@@ -1759,17 +1761,17 @@ msgstr "Tệp project mới (tiến trình)"
 #: src/opensuperclone/opensuperclone.c:12630
 #, c-format
 msgid "No destination chosen\n"
-msgstr "Không có điểm đến nào được chọn"
+msgstr "Không có điểm đến nào được chọn\n"
 
 #: src/opensuperclone/clone_gui.c:1932
 #, c-format
 msgid "No project chosen\n"
-msgstr "Không có project nào được chọn"
+msgstr "Không có project nào được chọn\n"
 
 #: src/opensuperclone/clone_gui.c:1823 src/opensuperclone/clone_gui.c:1937
 #, c-format
 msgid "No source chosen\n"
-msgstr "Không có nguồn nào được chọn"
+msgstr "Không có nguồn nào được chọn\n"
 
 #: src/opensuperclone/clone_gui.c:353
 msgid "Non-Divided"
@@ -1880,7 +1882,7 @@ msgstr "Bộ đệm ghi của hệ điều hành (phải ngắt kết nối đ�
 #: src/opensuperclone/opensuperclone.c:15330
 #, c-format
 msgid "Operation completed successfully\n"
-msgstr "Hoạt động đã hoàn thành thành công"
+msgstr "Hoạt động đã hoàn thành thành công\n"
 
 #: src/opensuperclone/clone_gui.c:2964
 msgid ""
@@ -2482,11 +2484,11 @@ msgstr "Ổ đĩa vẫn không phản hồi sau khi gọi lệnh"
 
 #: src/opensuperclone/opensuperclone.c:1025
 msgid "The driver is already installed and active\n"
-msgstr "Trình điều khiển đã được cài đặt và hoạt động"
+msgstr "Trình điều khiển đã được cài đặt và hoạt động\n"
 
 #: src/opensuperclone/opensuperclone.c:1037
 msgid "The driver memory is now connected\n"
-msgstr "Bộ nhớ trình điều khiển hiện đã được kết nối"
+msgstr "Bộ nhớ trình điều khiển hiện đã được kết nối\n"
 
 #: src/opensuperclone/opensuperclone.c:3979
 #, c-format
@@ -2520,7 +2522,7 @@ msgid ""
 msgstr ""
 "Tệp nhật ký có lỗi!\n"
 "Tệp nhật ký sẽ cần được sửa chữa trước khi có thể sử dụng.\n"
-"Vui lòng tham khảo thông báo bảng điều khiển để biết thêm thông tin."
+"Vui lòng tham khảo thông báo bảng điều khiển để biết thêm thông tin.\n"
 
 #: src/opensuperclone/clone_gui.c:392
 msgid ""
@@ -2666,7 +2668,7 @@ msgid ""
 "They have no effect with the passthrough modes.\n"
 msgstr ""
 "Các thiết lập hẹn giờ này chỉ dành cho chế độ Direct IDE và Direct AHCI.\n"
-"Chúng không có tác dụng với chế độ passthrough."
+"Chúng không có tác dụng với chế độ passthrough.\n"
 
 #: src/opensuperclone/clone_gui.c:3283
 msgid ""
@@ -2910,7 +2912,7 @@ msgstr ""
 "CẢNH BÁO: Thiết bị được chọn là thiết bị phụ trên bộ điều khiển!\n"
 "Điều này không phải lúc nào cũng hoạt động như mong đợi!\n"
 "Điều đó có thể rất nguy hiểm và có thể dẫn đến mất dữ liệu (hoặc tệ hơn)!\n"
-"Nên để thiết bị là thiết bị chính trên bộ điều khiển!"
+"Nên để thiết bị là thiết bị chính trên bộ điều khiển!\n"
 
 #: src/opensuperclone/io.c:8687
 msgid ""
@@ -2920,7 +2922,7 @@ msgid ""
 msgstr ""
 "CẢNH BÁO: Có thể có một ổ đĩa khác trên cùng một bộ điều khiển!\n"
 "Bạn KHÔNG BAO GIỜ được làm việc với một ổ đĩa khi có một ổ đĩa khác trên cùng một bộ điều khiển!\n"
-"Điều đó có thể rất nguy hiểm và có thể dẫn đến mất dữ liệu (hoặc tệ hơn)!"
+"Điều đó có thể rất nguy hiểm và có thể dẫn đến mất dữ liệu (hoặc tệ hơn)!\n"
 
 #: src/opensuperclone/io.c:8763 src/opensuperclone/io.c:8800
 msgid ""
@@ -2930,7 +2932,7 @@ msgid ""
 msgstr ""
 "CẢNH BÁO: Ổ đĩa này cũng khả dụng với hệ điều hành!\n"
 "Điều đó quá nguy hiểm và có thể dẫn đến máy tính bị sập!\n"
-"Vui lòng đảm bảo làm theo hướng dẫn về cách ẩn ổ đĩa!"
+"Vui lòng đảm bảo làm theo hướng dẫn về cách ẩn ổ đĩa!\n"
 
 #: src/opensuperclone/clone_gui.c:975 src/opensuperclone/clone_gui.c:1036
 #: src/opensuperclone/clone_gui.c:1919 src/opensuperclone/clone_gui.c:2016
