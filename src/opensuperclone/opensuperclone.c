@@ -15517,6 +15517,18 @@ void disable_usb_mass_storage_ccc(void)
         return;
       }
     }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK))
     {
@@ -15536,6 +15548,18 @@ void disable_usb_mass_storage_ccc(void)
       {
         // error copying
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
