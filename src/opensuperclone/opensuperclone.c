@@ -1150,7 +1150,7 @@ void fix_driver_memory_driver_ccc(void)
 // function to display help
 void help_ccc(void)
 {
-  fprintf(stdout, "%s %s %s\n", title_ccc, version_number_ccc, GIT_REVISION);
+  fprintf(stdout, "%s %s\n", title_ccc, version_number_ccc); // Removed GIT_REVISION
   fprintf(stdout, "%s\n", _("Advanced data recovery and disk cloning tool."));
   fprintf(stdout, "\n");
   fprintf(stdout, "%s\n", _("DESCRIPTION"));
@@ -1187,7 +1187,7 @@ void help_ccc(void)
 // function to display version
 void version_ccc(void)
 {
-  fprintf(stdout, "%s %s %s\n", title_ccc, version_number_ccc, GIT_REVISION);
+  fprintf(stdout, "%s %s\n", title_ccc, version_number_ccc); // Removed GIT_REVISION
   fprintf(stdout, _("Copyright (C) %s Scott Dwyer and OpenSuperClone contributors.\n"), copyright_year_ccc);
   fprintf(stdout, _("License type: GPL2\n"));
   fprintf(stdout, _("There is NO WARRANTY, to the extent permitted by law.\n"));
