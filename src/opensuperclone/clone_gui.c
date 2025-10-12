@@ -4969,7 +4969,7 @@ void about_ccc(void)
 
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title_ccc);
 
-  snprintf(temp, sizeof(temp), "%s %s", version_number_ccc, GIT_REVISION);
+  snprintf(temp, sizeof(temp), "%s", version_number_ccc);
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
 
   snprintf(temp, sizeof(temp), _("Copyright (C) %s Scott Dwyer and OpenSuperClone contributors"), copyright_year_ccc);
