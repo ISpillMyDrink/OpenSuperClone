@@ -3162,7 +3162,7 @@ void about(void)
 
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(dialog), title);
 
-  snprintf(temp, sizeof(temp), "%s %s", OSC_VERSION, GIT_REVISION);
+  snprintf(temp, sizeof(temp), "%s", OSC_VERSION); // Removed GIT_REVISION
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), temp);
 
   snprintf(temp, sizeof(temp), _("Copyright (C) %i Scott Dwyer and OpenSuperClone contributors"), COPYRIGHT_YEAR);
@@ -3195,7 +3195,7 @@ void help(void)
 // function to display version
 void version(void)
 {
-  fprintf(stdout, "%s %s %s\n", title, OSC_VERSION, GIT_REVISION);
+  fprintf(stdout, "%s %s\n", title, OSC_VERSION); // Removed GIT_REVISION
   fprintf(stdout, "Copyright (C) %d Scott Dwyer and OpenSuperClone contributors.\n", COPYRIGHT_YEAR);
   fprintf(stdout, "License type: GPL2\n");
   fprintf(stdout, "There is NO WARRANTY, to the extent permitted by law.\n");
