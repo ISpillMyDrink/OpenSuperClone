@@ -586,6 +586,10 @@ void analyze_long_ccc(void);
 
 void open_in_oscviewer_ccc(void);
 
+void read_config_file_with_name_ccc(char *filename);
+
 void read_config_file_ccc(void);
+
+void write_config_file_with_name_ccc(char *filename);
 
 void write_config_file_ccc(void);
