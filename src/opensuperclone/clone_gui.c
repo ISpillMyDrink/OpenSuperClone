@@ -1622,6 +1622,8 @@ void choose_source_ccc(void)
           char filename[1024];
           snprintf(filename, 1024, "%sdefault_ssd.cfg", template_directory);
 
+          read_config_file_with_name_ccc(filename);
+
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Optimized settings loaded for SSD drives\n"));
           message_now_ccc(tempmessage_ccc);
         }
