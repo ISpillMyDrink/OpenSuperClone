@@ -151,6 +151,7 @@ struct
   bool udma_mode_4_selected;
   bool udma_mode_5_selected;
   bool udma_mode_6_selected;
+  bool solid_state_drive;
 } identify_device_data_ccc;
 
 struct

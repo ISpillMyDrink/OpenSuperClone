@@ -13742,6 +13742,7 @@ int process_source_ccc(void)
       identify_flags_ccc.ultra_dma_mode4_selected = get_flag_data_from_identify_ccc(88, 12, 12);
       identify_flags_ccc.ultra_dma_mode5_selected = get_flag_data_from_identify_ccc(88, 13, 13);
       identify_flags_ccc.ultra_dma_mode6_selected = get_flag_data_from_identify_ccc(88, 14, 14);
+      identify_flags_ccc.solid_state_drive = get_flag_data_from_identify_ccc(217,0,0) == 1;
       identify_device_data_ccc.lba_supported = identify_flags_ccc.lba_supported;
       identify_device_data_ccc.extended_supported = identify_flags_ccc.extended_support;
       identify_device_data_ccc.drive_locked = identify_flags_ccc.drive_locked;
@@ -13771,6 +13772,7 @@ int process_source_ccc(void)
       identify_device_data_ccc.udma_mode_4_selected = identify_flags_ccc.ultra_dma_mode4_selected;
       identify_device_data_ccc.udma_mode_5_selected = identify_flags_ccc.ultra_dma_mode5_selected;
       identify_device_data_ccc.udma_mode_6_selected = identify_flags_ccc.ultra_dma_mode6_selected;
+      identify_device_data_ccc.solid_state_drive = identify_flags_ccc.solid_state_drive;
       // strncat(identify_device_raw_text_ccc, "#\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       // snprintf(tempstring, sizeof(tempstring), "# lba supported = %s\n", identify_flags_ccc.lba_supported ? "yes" : "no");
       // strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);

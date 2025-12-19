@@ -1596,7 +1596,7 @@ void choose_source_ccc(void)
                                         GTK_DIALOG_DESTROY_WITH_PARENT,
                                         GTK_MESSAGE_QUESTION,
                                         GTK_BUTTONS_YES_NO,
-                                        _("Source was detected as %s.\n Load optimized settings for this drive?"), current_source_model_ccc);
+                                        _("Source was detected as %s.\nLoad optimized settings for this drive?"), current_source_model_ccc);
         gint result = gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         if (result == GTK_RESPONSE_YES)
@@ -1604,6 +1604,25 @@ void choose_source_ccc(void)
           read_config_file_with_name_ccc(filename);
 
           snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Optimized settings loaded for %s\n"), current_source_model_ccc);
+          message_now_ccc(tempmessage_ccc);
+        }
+      }
+      else if (identify_device_data_ccc.solid_state_drive)
+      {
+        GtkWidget *dialog;
+        dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                        GTK_MESSAGE_QUESTION,
+                                        GTK_BUTTONS_YES_NO,
+                                        _("Source was detected as a solid state drive.\nLoad optimized settings for SSD drives?"), current_source_model_ccc);
+        gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        if (result == GTK_RESPONSE_YES)
+        {
+          char filename[1024];
+          snprintf(filename, 1024, "%sdefault_ssd.cfg", template_directory);
+
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Optimized settings loaded for SSD drives\n"));
           message_now_ccc(tempmessage_ccc);
         }
       }
