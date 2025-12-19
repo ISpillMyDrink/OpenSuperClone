@@ -756,7 +756,11 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
 }
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
 static int hddscbd_getgeo(struct block_device *block_device, struct hd_geometry *geo)
+#else
+static int hddscbd_getgeo(struct gendisk *disk, struct hd_geometry *geo)
+#endif
 {
   geo->cylinders = data_device.chs_cylinders;
   geo->heads = data_device.chs_heads;
