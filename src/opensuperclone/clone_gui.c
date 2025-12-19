@@ -5738,7 +5738,7 @@ void read_config_file_with_name_ccc(char* filename)
   load_timer_settings_ccc();
 
   // read timer settings from config file
-  group = config_setting_get_member(root, "timer");
+  group = config_setting_get_member(root, "timers");
   if (group != NULL)
   {
     setting = config_setting_get_member(group, "initial_busy_wait_time");
