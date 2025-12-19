@@ -19,8 +19,8 @@ project(OpenSuperClone
         LANGUAGES C
 )
 
-# OSCDriver version 2.6.7
-set(OSC_DRIVER_VERSION 2.6.7 CACHE STRING "OSCDriver Version")
+# OSCDriver version 2.6.8
+set(OSC_DRIVER_VERSION 2.6.8 CACHE STRING "OSCDriver Version")
 
 # Warning: Do not change the following variables unless you know what you are doing
 # and never set strings longer than 31 characters
