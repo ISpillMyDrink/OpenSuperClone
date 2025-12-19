@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libconfig.h>
 
 #define TRANSLATETIMERALL 1000000000   // nanosecond delay for every translate call
 #define TRANSLATETIMERFAST 10000000000 // nanosecond delay for each normal translate call
@@ -172,6 +173,8 @@ GtkWidget *primaryrelaymi_ccc;
 GtkWidget *chooseprimaryrelaymi_ccc;
 GtkWidget *disableusbmassmi_ccc;
 GtkWidget *restoreusbmassmi_ccc;
+GtkWidget *loadconfigmi_ccc;
+GtkWidget *writeconfigmi_ccc;
 
 GtkWidget *choose_source_dialog_window_ccc;
 GtkWidget *choose_source_scrolled_window_ccc;
@@ -465,6 +468,8 @@ char *smart_info_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/circle-info.svg
 char *smart_warning_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/triangle-exclamation.svg";
 char *smart_error_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/xmark.svg";
 
+char *template_directory = OSC_RESOURCE_PATH "/templates/";
+
 void select_file_ccc(void);
 
 void select_ddrescue_file_ccc(void);
@@ -580,3 +585,7 @@ void analyze_quick_ccc(void);
 void analyze_long_ccc(void);
 
 void open_in_oscviewer_ccc(void);
+
+void read_config_file_ccc(void);
+
+void write_config_file_ccc(void);

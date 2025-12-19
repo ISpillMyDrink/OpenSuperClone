@@ -559,6 +559,30 @@
                         <signal name="activate" handler="choose_primary_usb_ccc" swapped="no"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separator12">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="loadconfigmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">load configuration</property>
+                        <property name="use-underline">True</property>
+                        <signal name="activate" handler="read_config_file_ccc" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="writeconfigmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">save configuration</property>
+                        <property name="use-underline">True</property>
+                        <signal name="activate" handler="write_config_file_ccc" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

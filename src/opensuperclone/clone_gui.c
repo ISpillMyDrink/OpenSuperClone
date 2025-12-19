@@ -188,6 +188,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
+  loadconfigmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "loadconfigmi"));
+  writeconfigmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "writeconfigmi"));
   activate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button_main"));
   deactivate_primary_relay_button_main_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button_main"));
 
@@ -248,6 +250,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB Mass Storage Driver"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(loadconfigmi_ccc), _("Open Settings File"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(writeconfigmi_ccc), _("Save Settings File"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay_button_main_ccc), _("Power Off"));
   gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_main_ccc), _("Power On"));
 
@@ -5273,4 +5277,903 @@ void open_in_oscviewer_ccc(void)
   snprintf(temp, sizeof(temp), "%s/oscviewer -l %s", OSC_INSTALL_PATH, log_file_ccc);
   }
   g_spawn_command_line_async(temp, NULL);
+}
+
+void read_config_file_ccc(void)
+{
+  GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new(_("Load Settings File"),
+                                        GTK_WINDOW(main_window_ccc),
+                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                        NULL);
+  
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), template_directory);
+
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    
+    FILE *config_file = fopen(filename, "r");
+    if (config_file == NULL)
+    {
+      // no config file, use defaults
+      return;
+    }
+
+    config_t config;
+    config_init(&config);
+
+    if (config_read(&config, config_file) == CONFIG_FALSE)
+    {
+      fprintf(stderr, "Error reading config file: %s", config_error_text(&config));
+      config_destroy(&config);
+      fclose(config_file);
+      return;
+    }
+
+    config_setting_t *root;
+    config_setting_t *setting;
+    config_setting_t *group;
+
+    root = config_root_setting(&config);
+
+    // load clone settings
+    load_clone_settings_ccc();
+
+    // read clone settings from config file
+    group = config_setting_get_member(root, "clone");
+    if (group != NULL)
+    {
+    
+      setting = config_setting_get_member(group, "no_phase1");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_phase1 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_phase2");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_phase2 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_phase3");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_phase3 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_phase4");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_phase4 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_trim");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_trim = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_scrape");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_scrape = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_divide1");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.no_divide1 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "do_divide2");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.do_divide2 = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "read_bad_head");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.read_bad_head = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "mark_bad_head");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.mark_bad_head = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "rebuild_assist");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.rebuild_assist = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "reverse");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.reverse = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "retries");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.retries = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "cluster_size");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.cluster_size = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "block_size");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.block_size = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "input_offset");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.input_offset = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "read_size");;
+      if (setting != NULL)
+      {
+        clone_settings_ccc.read_size = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "skip_fast");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.skip_fast = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "rate_skip");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.rate_skip = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "exit_on_slow");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.exit_on_slow = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "exit_slow_time");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.exit_slow_time = config_setting_get_int64(setting);
+      }
+
+      // setting = config_setting_get_member(group, "min_skip_size");
+      // if (setting != NULL)
+      // {
+      //   clone_settings_ccc.min_skip_size = config_setting_get_int64(setting);
+      // }
+
+      // setting = config_setting_get_member(group, "min_skip_size_bak");
+      // if (setting != NULL)
+      // {
+      //   clone_settings_ccc.min_skip_size_bak = config_setting_get_int64(setting);
+      // }
+
+      // setting = config_setting_get_member(group, "max_skip_size");
+      // if (setting != NULL)
+      // {
+      //   clone_settings_ccc.max_skip_size = config_setting_get_int64(setting);
+      // }
+
+      setting = config_setting_get_member(group, "skip_timeout");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.skip_timeout = config_setting_get_int64(setting);
+      }
+
+      // setting = config_setting_get_member(group, "sector_size");
+      // if (setting != NULL)
+      // {
+      //   clone_settings_ccc.sector_size = config_setting_get_int(setting);
+      // }
+
+      // setting = config_setting_get_member(group, "block_offset");
+      // if (setting != NULL)
+      // {
+      //   clone_settings_ccc.block_offset = config_setting_get_int(setting);
+      // }
+
+      setting = config_setting_get_member(group, "max_read_rate");
+      if (setting != NULL)
+      {
+        clone_settings_ccc.max_read_rate = config_setting_get_int64(setting);
+      }
+    }
+
+    // update clone settings
+    update_clone_settings_ccc();
+
+    // load advanced settings
+    load_advanced_settings_ccc();
+
+    // read advanced settings from config file
+    group = config_setting_get_member(root, "advanced");
+    if (group != NULL)
+    {
+      setting = config_setting_get_member(group, "force_mounted");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.force_mounted = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "force_dangerous");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.force_dangerous = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "no_log_backup");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.no_log_backup = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_output_offset");;
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_output_offset = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "output_offset");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.output_offset = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_current_position");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_current_position = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "current_position");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.current_position = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "command_to_call");
+      if (setting != NULL)
+      {
+        const char *cmd = config_setting_get_string(setting);
+        snprintf(advanced_settings_ccc.command_to_call, sizeof(advanced_settings_ccc.command_to_call), "%s", cmd);
+      }
+
+      setting = config_setting_get_member(group, "stop_on_error");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.stop_on_error = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "call_command");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.call_command = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "activate_primary_relay");;
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.activate_primary_relay = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "write_buffer_auto");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.write_buffer_auto = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "write_buffer_disable");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.write_buffer_disable = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "write_buffer_enable");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.write_buffer_enable = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "driver_return_error");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.driver_return_error = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "driver_return_zeros");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.driver_return_zeros = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "driver_return_marked");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.driver_return_marked = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "virtual_disk_device_name");
+      if (setting != NULL)
+      {
+        const char *vdn = config_setting_get_string(setting);
+        snprintf(advanced_settings_ccc.virtual_disk_device_name, sizeof(advanced_settings_ccc.virtual_disk_device_name), "%s", vdn);
+      }
+
+      setting = config_setting_get_member(group, "disable_identify");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.disable_identify = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "pio_mode");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.pio_mode = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_rebuild_assist");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_rebuild_assist = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_process_chunk");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_process_chunk = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_read_twice");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_read_twice = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_retry_connecting");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_retry_connecting = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_scsi_write");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_scsi_write = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_phase_log");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_phase_log = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "enable_output_sector_size");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.enable_output_sector_size = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "output_sector_adjustment");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.output_sector_adjustment = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "driver_io_scsi_only");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.driver_io_scsi_only = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "use_physical_sector_size_for_virtual");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.use_physical_sector_size_for_virtual = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "driver_minimum_cluster_size");
+      if (setting != NULL)
+      {
+        advanced_settings_ccc.driver_minimum_cluster_size = config_setting_get_int64(setting);
+      }
+
+      // setting = config_setting_get_member(group, "color_statusbar");
+      // if (setting != NULL)
+      // {
+      //   advanced_settings_ccc.color_statusbar = config_setting_get_bool(setting);
+      // }
+    }
+
+    // update advanced settings
+    update_advanced_settings_ccc();
+
+    // load timer settings
+    load_timer_settings_ccc();
+
+    // read timer settings from config file
+    group = config_setting_get_member(root, "timer");
+    if (group != NULL)
+    {
+      setting = config_setting_get_member(group, "initial_busy_wait_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.initial_busy_wait_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "busy_wait_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.busy_wait_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "hard_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.hard_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "power_cycle_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.power_cycle_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "general_timeout");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.general_timeout = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "power_command_to_call");
+      if (setting != NULL)
+      {
+        const char *pcmd = config_setting_get_string(setting);
+        snprintf(timer_settings_ccc.power_command_to_call, sizeof(timer_settings_ccc.power_command_to_call), "%s", pcmd);
+      }
+
+      setting = config_setting_get_member(group, "stop_on_power_cycle");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.stop_on_power_cycle = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "call_power_command");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.call_power_command = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "power_cycle_primary_relay");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.power_cycle_primary_relay = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "phase_timers");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.phase_timers = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "p12_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.p12_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "p3_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.p3_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "p4_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.p4_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "td_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.td_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "d2_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.d2_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "sc_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.sc_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "rt_soft_reset_time");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.rt_soft_reset_time = config_setting_get_int64(setting);
+      }
+
+      setting = config_setting_get_member(group, "always_wait_for_reset_timers");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.always_wait_for_reset_timers = config_setting_get_bool(setting);
+      }
+
+      setting = config_setting_get_member(group, "usb_bulk_reset_enabled");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.usb_bulk_reset_enabled = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "usb_soft_reset_enabled");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.usb_soft_reset_enabled = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "usb_hard_reset_enabled");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.usb_hard_reset_enabled = config_setting_get_int(setting);
+      }
+
+      setting = config_setting_get_member(group, "usb_port_reset_enabled");
+      if (setting != NULL)
+      {
+        timer_settings_ccc.usb_port_reset_enabled = config_setting_get_int(setting);
+      }
+    }
+
+    // update timer settings
+    update_timer_settings_ccc();
+
+    config_destroy(&config);
+
+    fclose(config_file);
+
+    g_free(filename);
+  }
+  gtk_widget_destroy(dialog);
+}
+
+void write_config_file_ccc(void)
+{
+  GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new(_("Save Settings File As"),
+                                        GTK_WINDOW(main_window_ccc),
+                                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                        NULL);
+
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), template_directory);
+  
+  gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    
+    FILE *config_file = fopen(filename, "w");
+    if (config_file == NULL)
+    {
+      fprintf(stderr, "Error opening config file for writing: %s", strerror(errno));
+      return;
+    }
+
+    config_t config;
+    config_init(&config);
+
+    config_setting_t *root;
+    config_setting_t *setting;
+    config_setting_t *group;
+
+    root = config_root_setting(&config);
+
+    // load clone settings
+    load_clone_settings_ccc();
+
+    // write clone settings to config file
+    group = config_setting_add(root, "clone", CONFIG_TYPE_GROUP);
+
+    setting = config_setting_add(group, "no_phase1", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_phase1);
+
+    setting = config_setting_add(group, "no_phase2", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_phase2);
+
+    setting = config_setting_add(group, "no_phase3", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_phase3);
+
+    setting = config_setting_add(group, "no_phase4", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_phase4);
+
+    setting = config_setting_add(group, "no_trim", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_trim);
+
+    setting = config_setting_add(group, "no_scrape", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_scrape);
+
+    setting = config_setting_add(group, "no_divide1", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.no_divide1);
+
+    setting = config_setting_add(group, "do_divide2", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.do_divide2);
+
+    setting = config_setting_add(group, "read_bad_head", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.read_bad_head);
+
+    setting = config_setting_add(group, "mark_bad_head", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.mark_bad_head);
+
+    setting = config_setting_add(group, "rebuild_assist", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.rebuild_assist);
+
+    setting = config_setting_add(group, "reverse", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.reverse);
+
+    setting = config_setting_add(group, "retries", CONFIG_TYPE_INT);
+    config_setting_set_bool(setting, clone_settings_ccc.retries);
+
+    setting = config_setting_add(group, "cluster_size", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, clone_settings_ccc.cluster_size);
+
+    setting = config_setting_add(group, "block_size", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, clone_settings_ccc.block_size);
+
+    setting = config_setting_add(group, "input_offset", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.input_offset);
+
+    setting = config_setting_add(group, "read_size", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.read_size);
+
+    setting = config_setting_add(group, "skip_fast", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, clone_settings_ccc.skip_fast);
+
+    setting = config_setting_add(group, "rate_skip", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.rate_skip);
+
+    setting = config_setting_add(group, "exit_on_slow", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.exit_on_slow);
+
+    setting = config_setting_add(group, "exit_slow_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.exit_slow_time);
+
+    //setting = config_setting_add(group, "min_skip_size", CONFIG_TYPE_INT64);
+    //config_setting_set_int64(setting, clone_settings_ccc.min_skip_size);
+
+    //setting = config_setting_add(group, "min_skip_size_bak", CONFIG_TYPE_INT64);
+    //config_setting_set_int64(setting, clone_settings_ccc.min_skip_size_bak);
+
+    //setting = config_setting_add(group, "max_skip_size", CONFIG_TYPE_INT64);
+    //config_setting_set_int64(setting, clone_settings_ccc.max_skip_size);
+
+    setting = config_setting_add(group, "skip_timeout", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.skip_timeout);
+
+    //setting = config_setting_add(group, "sector_size", CONFIG_TYPE_INT);
+    //config_setting_set_int(setting, clone_settings_ccc.sector_size);
+
+    //setting = config_setting_add(group, "block_offset", CONFIG_TYPE_INT);
+    //config_setting_set_int(setting, clone_settings_ccc.block_offset);
+
+    setting = config_setting_add(group, "max_read_rate", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, clone_settings_ccc.max_read_rate);
+
+    // load advanced settings
+    load_advanced_settings_ccc();
+
+    // write advanced settings to config file
+    group = config_setting_add(root, "advanced", CONFIG_TYPE_GROUP);
+
+    setting = config_setting_add(group, "force_mounted", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.force_mounted);
+
+    setting = config_setting_add(group, "force_dangerous", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.force_dangerous);
+
+    setting = config_setting_add(group, "no_log_backup", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.no_log_backup);
+
+    setting = config_setting_add(group, "enable_output_offset", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_output_offset);
+
+    setting = config_setting_add(group, "output_offset", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, advanced_settings_ccc.output_offset);
+
+    setting = config_setting_add(group, "enable_current_position", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_current_position);
+
+    setting = config_setting_add(group, "current_position", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, advanced_settings_ccc.current_position);
+
+    setting = config_setting_add(group, "command_to_call", CONFIG_TYPE_STRING);
+    config_setting_set_string(setting, advanced_settings_ccc.command_to_call);
+
+    setting = config_setting_add(group, "stop_on_error", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.stop_on_error);
+
+    setting = config_setting_add(group, "call_command", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.call_command);
+
+    setting = config_setting_add(group, "activate_primary_relay", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.activate_primary_relay);
+
+    setting = config_setting_add(group, "write_buffer_auto", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.write_buffer_auto);
+
+    setting = config_setting_add(group, "write_buffer_disable", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.write_buffer_disable);
+
+    setting = config_setting_add(group, "write_buffer_enable", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.write_buffer_enable);
+
+    setting = config_setting_add(group, "driver_return_error", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.driver_return_error);
+
+    setting = config_setting_add(group, "driver_return_zeros", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.driver_return_zeros);
+
+    setting = config_setting_add(group, "driver_return_marked", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.driver_return_marked);
+
+    setting = config_setting_add(group, "virtual_disk_device_name", CONFIG_TYPE_STRING);
+    config_setting_set_string(setting, advanced_settings_ccc.virtual_disk_device_name);
+
+    setting = config_setting_add(group, "disable_identify", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.disable_identify);
+
+    setting = config_setting_add(group, "pio_mode", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.pio_mode);
+
+    setting = config_setting_add(group, "enable_rebuild_assist", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_rebuild_assist);
+
+    setting = config_setting_add(group, "enable_process_chunk", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_process_chunk);
+
+    setting = config_setting_add(group, "enable_read_twice", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_read_twice);
+
+    setting = config_setting_add(group, "enable_retry_connecting", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_retry_connecting);
+
+    setting = config_setting_add(group, "enable_scsi_write", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_scsi_write);
+
+    setting = config_setting_add(group, "enable_phase_log", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_phase_log);
+
+    setting = config_setting_add(group, "enable_output_sector_size", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.enable_output_sector_size);
+
+    setting = config_setting_add(group, "output_sector_adjustment", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, advanced_settings_ccc.output_sector_adjustment);
+
+    setting = config_setting_add(group, "driver_io_scsi_only", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.driver_io_scsi_only);
+
+    setting = config_setting_add(group, "use_physical_sector_size_for_virtual", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, advanced_settings_ccc.use_physical_sector_size_for_virtual);
+
+    setting = config_setting_add(group, "driver_minimum_cluster_size", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, advanced_settings_ccc.driver_minimum_cluster_size);
+
+    // setting = config_setting_add(group, "color_statusbar", CONFIG_TYPE_BOOL);
+    // config_setting_set_bool(setting, advanced_settings_ccc.color_statusbar);
+
+    // load timer settings
+    load_timer_settings_ccc();
+
+    // write timer settings to config file
+    group = config_setting_add(root, "timers", CONFIG_TYPE_GROUP);
+
+    setting = config_setting_add(group, "initial_busy_wait_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.initial_busy_wait_time);
+
+    setting = config_setting_add(group, "busy_wait_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.busy_wait_time);
+
+    setting = config_setting_add(group, "soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.soft_reset_time);
+
+    setting = config_setting_add(group, "hard_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.hard_reset_time);
+
+    setting = config_setting_add(group, "power_cycle_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.power_cycle_time);
+
+    setting = config_setting_add(group, "general_timeout", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.general_timeout);
+
+    setting = config_setting_add(group, "power_command_to_call", CONFIG_TYPE_STRING);
+    config_setting_set_string(setting, timer_settings_ccc.power_command_to_call);
+
+    setting = config_setting_add(group, "stop_on_power_cycle", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, timer_settings_ccc.stop_on_power_cycle);
+
+    setting = config_setting_add(group, "call_power_command", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, timer_settings_ccc.call_power_command);
+
+    setting = config_setting_add(group, "power_cycle_primary_relay", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, timer_settings_ccc.power_cycle_primary_relay);
+
+    setting = config_setting_add(group, "phase_timers", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, timer_settings_ccc.phase_timers);
+
+    setting = config_setting_add(group, "p12_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.p12_soft_reset_time);
+
+    setting = config_setting_add(group, "p3_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.p3_soft_reset_time);
+
+    setting = config_setting_add(group, "p4_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.p4_soft_reset_time);
+
+    setting = config_setting_add(group, "td_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.td_soft_reset_time);
+
+    setting = config_setting_add(group, "d2_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.d2_soft_reset_time);
+
+    setting = config_setting_add(group, "sc_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.sc_soft_reset_time);
+
+    setting = config_setting_add(group, "rt_soft_reset_time", CONFIG_TYPE_INT64);
+    config_setting_set_int64(setting, timer_settings_ccc.rt_soft_reset_time);
+
+    setting = config_setting_add(group, "always_wait_for_reset_timers", CONFIG_TYPE_BOOL);
+    config_setting_set_bool(setting, timer_settings_ccc.always_wait_for_reset_timers);
+
+    setting = config_setting_add(group, "usb_bulk_reset_enabled", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, timer_settings_ccc.usb_bulk_reset_enabled);
+
+    setting = config_setting_add(group, "usb_soft_reset_enabled", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, timer_settings_ccc.usb_soft_reset_enabled);
+
+    setting = config_setting_add(group, "usb_hard_reset_enabled", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, timer_settings_ccc.usb_hard_reset_enabled);
+
+    setting = config_setting_add(group, "usb_port_reset_enabled", CONFIG_TYPE_INT);
+    config_setting_set_int(setting, timer_settings_ccc.usb_port_reset_enabled);
+
+    config_write(&config, config_file);
+
+    config_destroy(&config);
+
+    fclose(config_file);
+
+    g_free(filename);
+
+    gtk_widget_destroy(dialog);
+  }
 }
