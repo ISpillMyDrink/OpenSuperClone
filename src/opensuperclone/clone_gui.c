@@ -504,7 +504,18 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   char filename[1024];
   snprintf(filename, 1024, "%s%s", template_directory, default_config_filename);
 
-  read_config_file_with_name_ccc(filename);
+  FILE *file = fopen(filename, "r");
+  if (file)
+  {
+    fclose(file);
+
+    read_config_file_with_name_ccc(filename);
+  }
+  else
+  {
+    // write default config file if it does not exist
+    write_config_file_with_name_ccc(filename);
+  }
 
   gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
   gtk_widget_show_all(main_window_ccc);
