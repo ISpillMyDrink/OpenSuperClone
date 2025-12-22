@@ -500,6 +500,12 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   g_object_unref(builder);
 
+  // load default settings from config file
+  char filename[1024];
+  snprintf(filename, 1024, "%s%s", template_directory, default_config_filename);
+
+  read_config_file_with_name_ccc(filename);
+
   gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
@@ -1620,7 +1626,7 @@ void choose_source_ccc(void)
         if (result == GTK_RESPONSE_YES)
         {
           char filename[1024];
-          snprintf(filename, 1024, "%sdefault_ssd.cfg", template_directory);
+          snprintf(filename, 1024, "%s%s", template_directory, default_ssd_config_filename);
 
           read_config_file_with_name_ccc(filename);
 
