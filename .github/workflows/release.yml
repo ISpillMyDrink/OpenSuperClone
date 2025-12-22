@@ -32,7 +32,7 @@ jobs:
                 draft: false
                 prerelease: true
                 body: |
-                    Pre-release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 20.04.
+                    Pre-release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 22.04.
                     This release is not intended for end users, but for developers who want to test the latest features.
                     Please report any bugs you find on the GitHub issue tracker.
 
@@ -48,7 +48,7 @@ jobs:
                 draft: false
                 prerelease: false
                 body: |
-                    Release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 20.04.
+                    Release version of OpenSuperClone ${{ github.ref }}, automatically built on Ubuntu 22.04.
                     Please report any bugs you find on the GitHub issue tracker.
 
             - name: Upload Release Assets
