@@ -5884,6 +5884,132 @@ void read_config_file_with_name_ccc(char* filename)
   // update timer settings
   update_timer_settings_ccc();
 
+  // load primary relay settings
+  load_primary_relay_settings_ccc();
+
+  // read primary relay settings from config file
+  group = config_setting_get_member(root, "relay");
+  if (group != NULL)
+  {
+    setting = config_setting_get_member(group, "activate_primary_relay1");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay1 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay2");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay2 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay3");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay3 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay4");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay4 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay5");;
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay5 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay6");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay6 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay7");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay7 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "activate_primary_relay8");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.activate_primary_relay8 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay1");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay1 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay2");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay2 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay3");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay3 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay4");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay4 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay5");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay5 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay6");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay6 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay7");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay7 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "deactivate_primary_relay8");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.deactivate_primary_relay8 = config_setting_get_bool(setting);
+    }
+
+    setting = config_setting_get_member(group, "primary_relay_activation_time");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.primary_relay_activation_time = config_setting_get_int64(setting);
+    }
+
+    setting = config_setting_get_member(group, "primary_relay_delay_time");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.primary_relay_delay_time = config_setting_get_int64(setting);
+    } 
+
+    // setting = config_setting_get_member(group, "primary_relay_name");;
+    // if (setting != NULL)
+    // {
+    //   const char *prn = config_setting_get_string(setting);
+    //   snprintf(primary_relay_settings_ccc.primary_relay_name, sizeof(primary_relay_settings_ccc.primary_relay_name), "%s", prn);
+    // }
+  }
+
+  // update primary relay settings
+  update_primary_relay_settings_ccc();
+
   config_destroy(&config);
 
   fclose(config_file);
@@ -6197,6 +6323,69 @@ void write_config_file_with_name_ccc(char* filename)
 
   setting = config_setting_add(group, "usb_port_reset_enabled", CONFIG_TYPE_INT);
   config_setting_set_int(setting, timer_settings_ccc.usb_port_reset_enabled);
+
+  // load primary relay settings
+  load_primary_relay_settings_ccc();
+
+  // write primary relay settings to config file
+  group = config_setting_add(root, "relay", CONFIG_TYPE_GROUP);
+
+  setting = config_setting_add(group, "activate_primary_relay1", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay1);
+
+  setting = config_setting_add(group, "activate_primary_relay2", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay2);
+
+  setting = config_setting_add(group, "activate_primary_relay3", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay3);
+
+  setting = config_setting_add(group, "activate_primary_relay4", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay4);
+
+  setting = config_setting_add(group, "activate_primary_relay5", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay5);
+
+  setting = config_setting_add(group, "activate_primary_relay6", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay6);
+
+  setting = config_setting_add(group, "activate_primary_relay7", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay7);
+
+  setting = config_setting_add(group, "activate_primary_relay8", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.activate_primary_relay8);
+
+  setting = config_setting_add(group, "deactivate_primary_relay1", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay1);
+
+  setting = config_setting_add(group, "deactivate_primary_relay2", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay2);
+
+  setting = config_setting_add(group, "deactivate_primary_relay3", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay3);
+
+  setting = config_setting_add(group, "deactivate_primary_relay4", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay4);
+
+  setting = config_setting_add(group, "deactivate_primary_relay5", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay5);
+
+  setting = config_setting_add(group, "deactivate_primary_relay6", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay6);
+
+  setting = config_setting_add(group, "deactivate_primary_relay7", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay7);
+
+  setting = config_setting_add(group, "deactivate_primary_relay8", CONFIG_TYPE_BOOL);
+  config_setting_set_bool(setting, primary_relay_settings_ccc.deactivate_primary_relay8);
+
+  setting = config_setting_add(group, "primary_relay_activation_time", CONFIG_TYPE_INT64);
+  config_setting_set_int64(setting, primary_relay_settings_ccc.primary_relay_activation_time);
+
+  setting = config_setting_add(group, "primary_relay_delay_time", CONFIG_TYPE_INT64);
+  config_setting_set_int64(setting, primary_relay_settings_ccc.primary_relay_delay_time);
+
+  // setting = config_setting_add(group, "primary_relay_name", CONFIG_TYPE_STRING);
+  // config_setting_set_string(setting, primary_relay_settings_ccc.primary_relay_name);
 
   config_write(&config, config_file);
 
