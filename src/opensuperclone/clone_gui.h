@@ -595,3 +595,5 @@ void read_config_file_ccc(void);
 void write_config_file_with_name_ccc(char *filename);
 
 void write_config_file_ccc(void);
+
+void check_source_against_templates(void);
