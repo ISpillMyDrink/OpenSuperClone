@@ -6,6 +6,7 @@ set(SOURCES
     usbrelay.c
     common.c
     clone_gui.c
+    asclepius.c
 )
 
 # Generate header files from resources
