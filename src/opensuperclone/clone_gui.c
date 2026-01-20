@@ -8,6 +8,7 @@
 #include "clone_gui.h"
 #include "common.h"
 #include "opensuperclone_glade.h"
+#include "asclepius.h"
 
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
@@ -467,6 +468,33 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   tk0nf_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "tk0nf_status_label"));
   amnf_status_label = GTK_WIDGET(gtk_builder_get_object(builder, "amnf_status_label"));
 
+  asclepius_sata_power_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_sata_power_label"));
+  asclepius_usb_power_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_usb_power_label"));
+
+  gtk_label_set_text(GTK_LABEL(asclepius_sata_power_label), _("SATA / IDE"));
+  gtk_label_set_text(GTK_LABEL(asclepius_usb_power_label), _("USB"));
+
+  asclepius_12v_icon = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_12v_icon"));
+  asclepius_5v_icon = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_5v_icon"));
+  asclepius_usb_icon = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_usb_icon"));
+
+  gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_off_path);
+  gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_off_path);
+
+  gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel"));
+  gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel"));
+  gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel"));
+  
+
+  asclepius_12v_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_12v_label"));
+  asclepius_5v_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_5v_label"));
+  asclepius_usb_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_usb_label"));
+
+  gtk_label_set_text(GTK_LABEL(asclepius_12v_label), _("0mA"));
+  gtk_label_set_text(GTK_LABEL(asclepius_5v_label), _("0mA"));
+  gtk_label_set_text(GTK_LABEL(asclepius_usb_label), _("0mA"));
+
   gtk_label_set_text(GTK_LABEL(bsy_status_label), _("BSY"));
   gtk_label_set_text(GTK_LABEL(drdy_status_label), _("DRDY"));
   gtk_label_set_text(GTK_LABEL(df_status_label), _("DF"));
@@ -516,6 +544,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     // write default config file if it does not exist
     write_config_file_with_name_ccc(filename);
   }
+
+  gdk_threads_add_timeout(1000, display_status_update_asclepius_action, NULL);
 
   gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
   gtk_widget_show_all(main_window_ccc);
@@ -2107,6 +2137,13 @@ gint display_status_update_action_ccc(gpointer data)
   return 1;
 }
 
+gint display_status_update_asclepius_action(gpointer data)
+{
+  update_asclepius_status();
+
+  return 1;
+}
+
 void set_connected_ccc(void)
 {
   if (driver_mode_ccc && (strcmp(disk_2_ccc, "/dev/null") == 0))
@@ -2228,6 +2265,7 @@ void update_gui_display_ccc(void)
   // gtk_label_set_text(GTK_LABEL(), display_output_ccc.);
 
   update_status_buttons_ccc();
+  update_asclepius_status();
   run_gtk_gui_update_ccc();
 }
 
@@ -4367,6 +4405,61 @@ void update_status_buttons_ccc(void)
         gtk_image_set_from_file(GTK_IMAGE(amnf_status_icon), error_icon_on_path);
       }
     }
+  }
+}
+
+void update_asclepius_status(void)
+{
+  if (asclepius_get_connection_status())
+  {
+    asclepius_get_status();
+
+    if (asclepius_status.main12v_enabled)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_on_path);
+    }
+    else
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_off_path);
+    }
+    if (asclepius_status.main12v_ocp)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), error_icon_on_path);
+    }
+
+    if(asclepius_status.main5v_enabled)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_on_path);
+    }
+    else
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_off_path);
+    }
+    if (asclepius_status.main5v_ocp)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), error_icon_on_path);
+    }
+
+    if(asclepius_status.usb5v_enabled)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_on_path);
+    }
+    else
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_off_path);
+    }
+    if (asclepius_status.usb5v_ocp)
+    {
+      gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), error_icon_on_path);
+    }
+
+    char temp[16];
+    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.main12v_current);
+    gtk_label_set_text(GTK_LABEL(asclepius_12v_label), temp);
+    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.main5v_current);
+    gtk_label_set_text(GTK_LABEL(asclepius_5v_label), temp);
+    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.usb5v_current);
+    gtk_label_set_text(GTK_LABEL(asclepius_usb_label), temp);
   }
 }
 

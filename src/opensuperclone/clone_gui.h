@@ -110,6 +110,16 @@ GtkWidget *abrt_status_label;
 GtkWidget *tk0nf_status_label;
 GtkWidget *amnf_status_label;
 
+// asclepius status
+GtkWidget *asclepius_12v_icon;
+GtkWidget *asclepius_5v_icon;
+GtkWidget *asclepius_usb_icon;
+GtkWidget *asclepius_12v_label;
+GtkWidget *asclepius_5v_label;
+GtkWidget *asclepius_usb_label;
+GtkWidget *asclepius_sata_power_label;
+GtkWidget *asclepius_usb_power_label;
+
 // file menu
 GtkWidget *topmenubar_ccc;
 GtkWidget *filemenu_ccc;
@@ -538,6 +548,8 @@ void set_mode_ccc(void);
 
 void update_status_buttons_ccc(void);
 
+void update_asclepius_status(void);
+
 void set_state_from_button_ccc(GtkWidget *widget, gpointer data);
 
 void do_reset_status_ccc(void);
@@ -551,6 +563,8 @@ void about_ccc(void);
 void start_display_status_update_timer_ccc(void);
 
 gint display_status_update_action_ccc(gpointer data);
+
+gint display_status_update_asclepius_action(gpointer data);
 
 void set_driver_mode_button_status_ccc(bool active);
 
