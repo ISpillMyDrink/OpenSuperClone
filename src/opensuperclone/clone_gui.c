@@ -545,6 +545,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     write_config_file_with_name_ccc(filename);
   }
 
+  asclepius_connect();
+
   gdk_threads_add_timeout(1000, display_status_update_asclepius_action, NULL);
 
   gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
@@ -1940,7 +1942,7 @@ void connect_devices_ccc(void)
   }
 
   int relaycheck = 1;
-  if ((activate_primary_relay_on_error_ccc || power_cycle_primary_relay_ccc) && !(fill_mode_ccc || driver_only_ccc) && !usbr1_chosen_ccc)
+  if ((activate_primary_relay_on_error_ccc || power_cycle_primary_relay_ccc) && !(fill_mode_ccc || driver_only_ccc) && !(usbr1_chosen_ccc || asclepius_get_connection_status()))
   {
     relaycheck = 0;
   }
@@ -4113,6 +4115,30 @@ void do_test_primary_relay_ccc(void)
 
 int cycle_primary_relay_ccc(void)
 {
+  if(asclepius_get_connection_status())
+  {
+    asclepius_disable_channel(ASCLEPIUS_ALL);
+
+    // wait to deactivate
+    unsigned int i;
+    for (i = primary_relay_activation_time_ccc; i > 0; i--)
+    {
+      g_print("%d ", i);
+      do_nanosleep_ccc(1000000000);
+    }
+
+    asclepius_enable_channel(ASCLEPIUS_ALL);
+
+    // wait for delay time
+    for (i = primary_relay_delay_time_ccc; i > 0; i--)
+    {
+      g_print("%d ", i);
+      do_nanosleep_ccc(1000000000);
+    }
+
+    return 0;
+  }
+
   if (!usbr1_chosen_ccc)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
@@ -5185,6 +5211,13 @@ void clear_usbr1_ccc(void)
 
 void do_activate_primary_relay_ccc(void)
 {
+  if(asclepius_get_connection_status())
+  {
+    asclepius_disable_channel(ASCLEPIUS_ALL);
+
+    return;
+  }
+
   if (!usbr1_chosen_ccc)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
@@ -5247,6 +5280,13 @@ void do_activate_primary_relay_ccc(void)
 
 void do_deactivate_primary_relay_ccc(void)
 {
+  if(asclepius_get_connection_status())
+  {
+    asclepius_enable_channel(ASCLEPIUS_ALL);
+
+    return;
+  }
+
   if (!usbr1_chosen_ccc)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
