@@ -3198,7 +3198,7 @@ no data</property>
                                               <object class="GtkLabel" id="asclepius_12v_label">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">0mA</property>
+                                                <property name="label" translatable="yes">0V / 0mA</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -3234,7 +3234,7 @@ no data</property>
                                               <object class="GtkLabel" id="asclepius_5v_label">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">0mA</property>
+                                                <property name="label" translatable="yes">0V / 0mA</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -3308,7 +3308,7 @@ no data</property>
                                               <object class="GtkLabel" id="asclepius_usb_label">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">0mA</property>
+                                                <property name="label" translatable="yes">0V / 0mA</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>

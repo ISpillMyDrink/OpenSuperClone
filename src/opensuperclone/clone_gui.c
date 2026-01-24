@@ -491,9 +491,9 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   asclepius_5v_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_5v_label"));
   asclepius_usb_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_usb_label"));
 
-  gtk_label_set_text(GTK_LABEL(asclepius_12v_label), _("0mA"));
-  gtk_label_set_text(GTK_LABEL(asclepius_5v_label), _("0mA"));
-  gtk_label_set_text(GTK_LABEL(asclepius_usb_label), _("0mA"));
+  gtk_label_set_text(GTK_LABEL(asclepius_12v_label), _("0V / 0mA"));
+  gtk_label_set_text(GTK_LABEL(asclepius_5v_label), _("0V / 0mA"));
+  gtk_label_set_text(GTK_LABEL(asclepius_usb_label), _("0V / 0mA"));
 
   gtk_label_set_text(GTK_LABEL(bsy_status_label), _("BSY"));
   gtk_label_set_text(GTK_LABEL(drdy_status_label), _("DRDY"));
@@ -4454,11 +4454,11 @@ void update_asclepius_status(void)
     }
 
     char temp[16];
-    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.main12v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main12v_voltage / 1000, asclepius_status.main12v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_12v_label), temp);
-    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.main5v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main5v_voltage / 1000, asclepius_status.main5v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_5v_label), temp);
-    snprintf(temp, sizeof(temp), _("%dmA"), asclepius_status.usb5v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main5v_voltage / 1000, asclepius_status.usb5v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_usb_label), temp);
   }
 }
