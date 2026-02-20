@@ -36,6 +36,7 @@
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Virtual-Disk-Mode">Virtual Disk Mode</a> for targeted data extraction
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Direct-Modes">Direct AHCI/IDE</a> capability to circumvent OS drivers
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Relay-Operation">USB Relay Control</a> for automatic power cycling of drives
+* <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Script-Reference">Script Engine</a> for advanced interaction with drives
 
 #### 📋 Planned Changes
 
