@@ -8,8 +8,8 @@
 unsigned int script_rows_ccc = 1000;
 unsigned int number_variable_rows_ccc = 100;
 unsigned int string_variable_rows_ccc = 100;
-char *menufile1_ccc = "hddmenu";
-char *menufile2_ccc = "oscscripts/hddmenu";
+char *menufile1_ccc = "hddmenu.osc";
+char *menufile2_ccc = "oscscripts/hddmenu.osc";
 char *menufile3_ccc = OSC_SCRIPT_MENU;
 char script_directory1_ccc[PATH_MAX] = "";
 char script_directory2_ccc[PATH_MAX] = "oscscripts/";

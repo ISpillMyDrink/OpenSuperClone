@@ -1,0 +1,44 @@
+seti $printhelp = $printhelp
+
+while 1 = 1
+  echo " "
+  echo "Custom Menu"
+  echo "Q) Quit"
+  echo "P) Previous Menu"
+  echo "H) Toggle Script Help"
+  echo "1) Custom Message"
+  echo "2) Custom Scripts"
+
+  if $printhelp = 1
+    exit 0
+  endif
+
+  echo "Enter your choice:"
+  userinput $choicestring
+
+  if $choicestring = q
+    break
+
+  elseif $choicestring = p
+    previousscript
+
+  elseif $choicestring = h
+    if $help = 0
+      seti $help = 1
+      echo "Help is now turned on"
+    else
+      seti $help = 0
+      echo "Help is now turned off"
+    endif
+
+  elseif $choicestring = 1
+    echo "Add your own scripts here"
+
+  elseif $choicestring = 2
+    loadscript myscripts/hddsubmenu_custom.osc
+
+  else
+    echo "bad choice= " $choicestring
+  endif
+done
+end

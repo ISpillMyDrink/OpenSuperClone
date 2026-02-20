@@ -43,7 +43,7 @@ set(COPYRIGHT_YEAR 2025 CACHE STRING "Copyright Year")
 # Path variables for language and script files
 set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
 set(OSC_SCRIPT_PATH "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/" CACHE STRING "OpenSuperClone Script Directory")
-set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
+set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu.osc" CACHE STRING "OpenSuperClone Script Menu File")
 set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/locale/" CACHE STRING "OpenSuperClone Language Directory")
 set(OSC_RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/opensuperclone/" CACHE STRING "OpenSuperClone Resource Directory")
 
