@@ -63,8 +63,6 @@ while 1 = 1
 done
 
 
-
-
 # set the buffer size
 buffersize 512
 
@@ -176,11 +174,5 @@ if $timer > -1
 endif
 
 
-
-
 previousscript
 end
-
-
-
-

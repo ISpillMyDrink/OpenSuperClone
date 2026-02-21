@@ -85,11 +85,9 @@ while 1 = 1
     break
 
 
-
   else
     echo "bad choice= " $choicestring
   endif
-
 
 
 done

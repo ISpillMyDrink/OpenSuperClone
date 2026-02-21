@@ -61,7 +61,7 @@ sets $wdcheck = buffer $start_offset 3
 sets $compare = "WDC"
 if $wdcheck != $compare
   echo "Model: " $model
-  echo "Drive is not WD, exiting
+  echo "Drive is not WD, exiting"
   previousscript
 endif
 
@@ -241,11 +241,8 @@ while $record_count < $total_records
 done
 
 
-
-
 previousscript
 end
-
 
 
 subroutine status_check
@@ -260,7 +257,6 @@ subroutine status_check
 endsubroutine
 
 
-
 subroutine status_check_no_stop
   seti $command_failed = 0
   gosub check_command_status
@@ -270,8 +266,6 @@ subroutine status_check_no_stop
     gosub show_ata_return_status
   endif
 endsubroutine
-
-
 
 
 subroutine read_module
@@ -339,12 +333,3 @@ subroutine read_module
   gosub status_check
 
 endsubroutine
-
-
-
-
-
-
-
-
-

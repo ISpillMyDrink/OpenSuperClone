@@ -112,8 +112,6 @@ if $password != $null
 endif
 
 
-
-
 # set the buffer size
 buffersize 512
 # clear the buffer to 0's

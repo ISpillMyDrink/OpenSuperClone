@@ -191,7 +191,6 @@ endif
 previousscript
 
 
-
 subroutine get_threshold_data
   seti $t_offset = 2
   seti $t_count = 0
@@ -208,8 +207,6 @@ subroutine get_threshold_data
     seti $t_count = $t_count + 1
   done
 endsubroutine
-
-
 
 
 subroutine get_attribute_name
@@ -386,6 +383,4 @@ subroutine get_attribute_name
 endsubroutine
 
 
-
 end
-

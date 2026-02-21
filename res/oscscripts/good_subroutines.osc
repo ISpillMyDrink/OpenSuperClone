@@ -80,5 +80,3 @@ subroutine reset_device
     softreset
   endif
 endsubroutine
-
-

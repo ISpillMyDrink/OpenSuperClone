@@ -61,7 +61,7 @@ sets $wdcheck = buffer $start_offset 3
 sets $compare = "WDC"
 if $wdcheck != $compare
   echo "Model: " $model
-  echo "Drive is not WD, exiting
+  echo "Drive is not WD, exiting"
   previousscript
 endif
 
@@ -214,10 +214,8 @@ echo "Calculated Checksum = 0x" $calculated_checksum $message
 decimal
 
 
-
 previousscript
 end
-
 
 
 subroutine status_check

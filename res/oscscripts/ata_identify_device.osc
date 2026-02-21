@@ -128,7 +128,3 @@ echo "write_uncorrectable supported= " $write_uncorrectable
 
 previousscript
 end
-
-
-
-

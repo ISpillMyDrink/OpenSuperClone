@@ -1,5 +1,3 @@
-
-
 seti $printhelp = $printhelp
 seti $help = $help
 if $help = 1
@@ -68,8 +66,6 @@ gosub process_rom
 
 previousscript
 end
-
-
 
 
 subroutine process_rom
@@ -199,9 +195,6 @@ subroutine process_rom
 endsubroutine
 
 
-
-
-
 subroutine process_directory
   echo "Directory module 0x" $mod_id " found, processing"
   #printscratchpad $position 512
@@ -284,78 +277,71 @@ subroutine process_directory
 endsubroutine
 
 
-
-
-
 subroutine process_module
-# process the module
-      seti $working_offset = $mod_location
-      #echo "Header:"
-      #printscratchpad $working_offset 4
-      seti $working_offset = $mod_location + 8
-      seti $mod_id = scratchpad $working_offset w
-      hex
-      #echo "Module ID = 0x" $mod_id
+  # process the module
+  seti $working_offset = $mod_location
+  #echo "Header:"
+  #printscratchpad $working_offset 4
+  seti $working_offset = $mod_location + 8
+  seti $mod_id = scratchpad $working_offset w
+  hex
+  #echo "Module ID = 0x" $mod_id
 
-      # find how many sectors the module contains
-      seti $working_offset = $mod_location + 0xa
-      seti $mod_length_sectors = scratchpad $working_offset
-      seti $working_offset = $mod_location + 0xb
-      seti $tempnum = scratchpad $working_offset
-      seti $tempnum = $tempnum > 8
-      seti $mod_length_sectors = $mod_length_sectors + $tempnum
+  # find how many sectors the module contains
+  seti $working_offset = $mod_location + 0xa
+  seti $mod_length_sectors = scratchpad $working_offset
+  seti $working_offset = $mod_location + 0xb
+  seti $tempnum = scratchpad $working_offset
+  seti $tempnum = $tempnum > 8
+  seti $mod_length_sectors = $mod_length_sectors + $tempnum
 
-      #echo "Size in sectors = 0x" $mod_length_sectors
-      seti $working_offset = $mod_location + 0xc
-      seti $checksum = scratchpad $working_offset dw
-      #echo "32 bit checksum = 0x" $checksum
-      seti $working_offset = $mod_location + 0x10
-      #echo "Mod version:"
-      #printscratchpad $working_offset 8
-      decimal
+  #echo "Size in sectors = 0x" $mod_length_sectors
+  seti $working_offset = $mod_location + 0xc
+  seti $checksum = scratchpad $working_offset dw
+  #echo "32 bit checksum = 0x" $checksum
+  seti $working_offset = $mod_location + 0x10
+  #echo "Mod version:"
+  #printscratchpad $working_offset 8
+  decimal
 
-      seti $module_size = $mod_size
-      seti $calculated_checksum = 0
-      seti $count = 0
-      while $count < $module_size
-        seti $working_offset = $mod_location + $count
-        if $working_offset > $search_end
-          #echo "end of module is past end of rom"
-          break
-        endif
-        seti $dword = scratchpad $working_offset dw
-        seti $remainder = $module_size - $count
-        if $remainder < 4
-          if $remainder = 3
-            seti $dword = $dword & 0xffffff
-          elseif $remainder = 2
-            seti $dword = $dword & 0xffff
-          elseif $remainder = 1
-            seti $dword = $dword & 0xff
-          endif
-        endif
-        seti $calculated_checksum = $calculated_checksum + $dword
-        seti $count = $count + 4
-        # skip the actual checksum bytes
-        if $count = 0xc
-          seti $count = $count + 4
-        endif
-      done
-      seti $calculated_checksum = $calculated_checksum & 0xffffffff
-      seti $calculated_checksum = 0xffffffff - $calculated_checksum
-      seti $calculated_checksum = $calculated_checksum + 1
-
-      hex
-      if $checksum = $calculated_checksum
-        sets $checkstring = " calulated=0x" $calculated_checksum " (good)"
-      else
-        sets $checkstring = " calulated=0x" $calculated_checksum " (bad)"
+  seti $module_size = $mod_size
+  seti $calculated_checksum = 0
+  seti $count = 0
+  while $count < $module_size
+    seti $working_offset = $mod_location + $count
+    if $working_offset > $search_end
+      #echo "end of module is past end of rom"
+      break
+    endif
+    seti $dword = scratchpad $working_offset dw
+    seti $remainder = $module_size - $count
+    if $remainder < 4
+      if $remainder = 3
+        seti $dword = $dword & 0xffffff
+      elseif $remainder = 2
+        seti $dword = $dword & 0xffff
+      elseif $remainder = 1
+        seti $dword = $dword & 0xff
       endif
-      echo "0x" $mod_location " ModID=0x" $mod_id " size=0x" $mod_size " checksum=0x" $checksum $checkstring
-      decimal
-      #printscratchpad $mod_location $mod_size
+    endif
+    seti $calculated_checksum = $calculated_checksum + $dword
+    seti $count = $count + 4
+    # skip the actual checksum bytes
+    if $count = 0xc
+      seti $count = $count + 4
+    endif
+  done
+  seti $calculated_checksum = $calculated_checksum & 0xffffffff
+  seti $calculated_checksum = 0xffffffff - $calculated_checksum
+  seti $calculated_checksum = $calculated_checksum + 1
+
+  hex
+  if $checksum = $calculated_checksum
+    sets $checkstring = " calulated=0x" $calculated_checksum " (good)"
+  else
+    sets $checkstring = " calulated=0x" $calculated_checksum " (bad)"
+  endif
+  echo "0x" $mod_location " ModID=0x" $mod_id " size=0x" $mod_size " checksum=0x" $checksum $checkstring
+  decimal
+  #printscratchpad $mod_location $mod_size
 endsubroutine
-
-
-
-

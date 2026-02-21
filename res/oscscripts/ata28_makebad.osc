@@ -71,7 +71,6 @@ if $ask = 1
 endif
 
 
-
 # set the buffer size to one sector plus 8 ecc bytes
 seti $buffersize = 512 + 8
 buffersize $buffersize
@@ -157,7 +156,3 @@ echo "Command completed"
 
 previousscript
 end
-
-
-
-

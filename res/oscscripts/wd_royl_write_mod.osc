@@ -1,5 +1,3 @@
-
-
 echo 'Western Digital ROYL write module from file using vendor specific commands.'
 echo 'WARNING: THIS IS DANGEROUS AND COULD KILL THE DRIVE!!!'
 echo 'USE AT YOUR OWN RISK!!!'
@@ -113,10 +111,6 @@ previousscript
 end
 
 
-
-
-
-
 subroutine read_module
   # get model and serial using identify device command
   echo "Performing identify device command"
@@ -159,7 +153,7 @@ subroutine read_module
   sets $compare = "WDC"
   if $wdcheck != $compare
     echo "Model: " $model
-    echo "Drive is not WD, exiting
+    echo "Drive is not WD, exiting"
     previousscript
   endif
 
@@ -289,9 +283,6 @@ subroutine read_module
 endsubroutine
 
 
-
-
-
 subroutine make_patch
   # this patches the checksum
   # calculate new checksum and insert it
@@ -313,10 +304,6 @@ subroutine make_patch
 endsubroutine
 
 
-
-
-
-
 subroutine status_check
   seti $command_failed = 0
   gosub check_command_status
@@ -327,9 +314,6 @@ subroutine status_check
     previousscript
   endif
 endsubroutine
-
-
-
 
 
 subroutine enable_vsc
@@ -343,10 +327,6 @@ subroutine enable_vsc
 endsubroutine
 
 
-
-
-
-
 subroutine disable_vsc
   # disable vendor specific commands
   echo "disable vsc"
@@ -356,10 +336,6 @@ subroutine disable_vsc
   # check if command failed
   gosub status_check
 endsubroutine
-
-
-
-
 
 
 subroutine write_patch
@@ -492,11 +468,6 @@ subroutine write_patch
 endsubroutine
 
 
-
-
-
-
-
 subroutine prepare_read_vsc
   # vsc to prepare (command to set for module read)
   echo "prepare read vsc"
@@ -514,8 +485,6 @@ subroutine prepare_read_vsc
 endsubroutine
 
 
-
-
 subroutine prepare_write_vsc
   # vsc to prepare (command to set for module write)
   echo "prepare write vsc"
@@ -531,8 +500,6 @@ subroutine prepare_write_vsc
   # check if command failed
   gosub status_check
 endsubroutine
-
-
 
 
 subroutine read_and_verify
@@ -567,10 +534,8 @@ subroutine read_and_verify
 endsubroutine
 
 
-
-
 subroutine calculate_checksum_scratchpad
-seti $calculated_checksum = 0
+  seti $calculated_checksum = 0
   seti $count = 0
   while $count < $scratchpad_size
     seti $dword = scratchpad $count dw
@@ -585,10 +550,3 @@ seti $calculated_checksum = 0
   seti $calculated_checksum = 0xffffffff - $calculated_checksum
   seti $calculated_checksum = $calculated_checksum + 1
 endsubroutine
-
-
-
-
-
-
-

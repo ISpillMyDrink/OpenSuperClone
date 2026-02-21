@@ -497,51 +497,48 @@ previousscript
 end
 
 
-
 subroutine displayoutput
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    upline
-    echo "                                                  "
-    gettime
-    seti $totaltime = $time - $programstart
-    seti $totalseconds = $totaltime / 1000000
-    seti $remainder = $totaltime % 1000000
-    seti $totalminutes = $totalseconds / 60
-    seti $seconds = $totalseconds % 60
-    seti $hours = $totalminutes / 60
-    seti $minutes = $totalminutes % 60
-    echo "scantime h:m:s = " $hours ":" $minutes ":" $seconds "." $remainder
-    seti $positionpercent = $processedsectors * 100
-    seti $percentcomplete = $positionpercent / $totalsectors
-    seti $remainder = $positionpercent % $totalsectors
-    seti $remainder = $remainder * 100
-    seti $percentremainder = $remainder / $totalsectors
-    if $percentremainder < 10
-      echo $percentcomplete ".0" $percentremainder "%  complete    "
-    else
-      echo $percentcomplete "." $percentremainder "%  complete    "
-    endif
-    echo "position= " $currentposition "                           "
-    echo "speed= " $currentspeed " kB/s                           "
-    echo "<1ms=" $1ms "                           "
-    echo "1-3ms=" $3ms "                           "
-    echo "3-10ms=" $10ms "                          "
-    echo "10-30ms=" $30ms "                           "
-    echo "30-100ms=" $100ms "                           "
-    echo "100-300ms=" $300ms "                           "
-    echo ">300ms=" $over300ms "                           "
-    echo "errors=" $errorcount "                           "
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  upline
+  echo "                                                  "
+  gettime
+  seti $totaltime = $time - $programstart
+  seti $totalseconds = $totaltime / 1000000
+  seti $remainder = $totaltime % 1000000
+  seti $totalminutes = $totalseconds / 60
+  seti $seconds = $totalseconds % 60
+  seti $hours = $totalminutes / 60
+  seti $minutes = $totalminutes % 60
+  echo "scantime h:m:s = " $hours ":" $minutes ":" $seconds "." $remainder
+  seti $positionpercent = $processedsectors * 100
+  seti $percentcomplete = $positionpercent / $totalsectors
+  seti $remainder = $positionpercent % $totalsectors
+  seti $remainder = $remainder * 100
+  seti $percentremainder = $remainder / $totalsectors
+  if $percentremainder < 10
+    echo $percentcomplete ".0" $percentremainder "%  complete    "
+  else
+    echo $percentcomplete "." $percentremainder "%  complete    "
+  endif
+  echo "position= " $currentposition "                           "
+  echo "speed= " $currentspeed " kB/s                           "
+  echo "<1ms=" $1ms "                           "
+  echo "1-3ms=" $3ms "                           "
+  echo "3-10ms=" $10ms "                          "
+  echo "10-30ms=" $30ms "                           "
+  echo "30-100ms=" $100ms "                           "
+  echo "100-300ms=" $300ms "                           "
+  echo ">300ms=" $over300ms "                           "
+  echo "errors=" $errorcount "                           "
 endsubroutine
-
-

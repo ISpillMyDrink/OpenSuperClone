@@ -118,7 +118,6 @@ if $ask = 1
 endif
 
 
-
 # set the buffer size
 seti $buffersize = $count * 512
 buffersize $buffersize
@@ -168,7 +167,3 @@ endif
 
 previousscript
 end
-
-
-
-

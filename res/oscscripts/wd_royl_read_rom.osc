@@ -1,5 +1,3 @@
-
-
 seti $printhelp = $printhelp
 seti $help = $help
 if $help = 1
@@ -160,7 +158,6 @@ previousscript
 end
 
 
-
 subroutine status_check
   seti $command_failed = 0
   gosub check_command_status
@@ -171,7 +168,6 @@ subroutine status_check
     previousscript
   endif
 endsubroutine
-
 
 
 subroutine enable_vsc
@@ -185,7 +181,6 @@ subroutine enable_vsc
 endsubroutine
 
 
-
 subroutine disable_vsc
   # disable vendor specific commands
   echo "disable vsc"
@@ -195,6 +190,3 @@ subroutine disable_vsc
   # check if command failed
   gosub status_check
 endsubroutine
-
-
-
