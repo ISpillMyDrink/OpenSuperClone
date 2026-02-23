@@ -118,14 +118,7 @@ seti $command = 0xc8
 ata28cmd $features $count $LBAlow $LBAmid $LBAhigh $device $command
 
 # check if command failed
-seti $command_failed = 0
-gosub check_command_status
-if $command_failed = 1
-  echo "Command failed!"
-  gosub show_sense_data
-  gosub show_ata_return_status
-  previousscript
-endif
+gosub status_check
 
 # show the actual data on the screen or write the data to the file
 if $file = $null

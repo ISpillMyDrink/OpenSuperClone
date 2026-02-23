@@ -129,14 +129,7 @@ endbuffer
 ata48cmd $features $count $LBAhigh $LBAmid $LBAlow $device $command
 
 # check if command failed
-seti $command_failed = 0
-gosub check_command_status
-if $command_failed = 1
-  echo "Command failed!"
-  gosub show_sense_data
-  gosub show_ata_return_status
-  previousscript
-endif
+gosub status_check
 
 
 # now we have to perform a second command to read the data returned
@@ -155,14 +148,7 @@ seti $features = 0xd5
 ata48cmd $features $count $LBAhigh $LBAmid $LBAlow $device $command
 
 # check if command failed
-seti $command_failed = 0
-gosub check_command_status
-if $command_failed = 1
-  echo "Command failed!"
-  gosub show_sense_data
-  gosub show_ata_return_status
-  previousscript
-endif
+gosub status_check
 
 
 seti $ecc_length = $ata_return_count & 0xff
