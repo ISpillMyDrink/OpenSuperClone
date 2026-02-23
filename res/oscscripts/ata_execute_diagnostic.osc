@@ -2,7 +2,7 @@ seti $printhelp = $printhelp
 seti $help = $help
 if $help = 1
   echo 'execute device diagnostic.'
-  echo 'Example: opensuperclone --tool -t /dev/sda -f ata_execute_diagnostic'
+  echo 'Example: opensuperclone --tool -t /dev/sda -f ata_execute_diagnostic.osc'
   if $printhelp = 1
     exit 0
   endif
@@ -44,7 +44,3 @@ echo "Command completed"
 
 previousscript
 end
-
-
-
-

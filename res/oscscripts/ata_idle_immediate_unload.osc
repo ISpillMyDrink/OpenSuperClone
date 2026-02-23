@@ -2,7 +2,7 @@ seti $printhelp = $printhelp
 seti $help = $help
 if $help = 1
   echo 'idle immediate with unload.'
-  echo 'Example: opensuperclone --tool -t /dev/sda -f ata_idle_immediate_unload'
+  echo 'Example: opensuperclone --tool -t /dev/sda -f ata_idle_immediate_unload.osc'
   if $printhelp = 1
     exit 0
   endif
@@ -49,7 +49,3 @@ echo "Command completed"
 
 previousscript
 end
-
-
-
-
