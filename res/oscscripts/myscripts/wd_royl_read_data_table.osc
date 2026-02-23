@@ -366,21 +366,6 @@ subroutine process_offset
   echo "offset=" $offset " (" $offset_string ")  value=" $value " (" $value_string ")(" $bytes " bytes)"
 endsubroutine
 
-
-
-subroutine status_check
-  seti $command_failed = 0
-  gosub check_command_status
-  if $command_failed = 1
-    echo "Command failed!"
-    gosub show_sense_data
-    gosub show_ata_return_status
-    previousscript
-  endif
-endsubroutine
-
-
-
 subroutine enable_vsc
   # enable vendor specific commands
   echo "enable vsc"

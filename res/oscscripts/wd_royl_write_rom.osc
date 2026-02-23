@@ -663,18 +663,6 @@ subroutine verify_rom
 endsubroutine
 
 
-subroutine status_check
-  seti $command_failed = 0
-  gosub check_command_status
-  if $command_failed = 1
-    echo "Command failed!"
-    gosub show_sense_data
-    gosub show_ata_return_status
-    previousscript
-  endif
-endsubroutine
-
-
 subroutine status_check_no_exit
   seti $command_failed = 0
   gosub check_command_status

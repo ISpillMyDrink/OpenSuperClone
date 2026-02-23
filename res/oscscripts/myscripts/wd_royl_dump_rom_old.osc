@@ -58,16 +58,3 @@ writebuffer 3rom2.bin 0 0 0x10000
 
 previousscript
 end
-
-
-
-subroutine status_check
-  seti $command_failed = 0
-  gosub check_command_status
-  if $command_failed = 1
-    echo "Command failed!"
-    gosub show_sense_data
-    gosub show_ata_return_status
-    previousscript
-  endif
-endsubroutine
