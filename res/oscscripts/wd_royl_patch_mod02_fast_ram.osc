@@ -1,5 +1,3 @@
-
-
 echo 'Western Digital ROYL fast patch module 0x02 in RAM.'
 echo 'This is to resolve a common WD slow issue, where the drive reads slow.'
 echo 'Definition of the "slow responding issue":'
@@ -80,9 +78,6 @@ gosub dump_ram
 
 previousscript
 end
-
-
-
 
 
 subroutine find_ram_size
@@ -217,9 +212,6 @@ subroutine find_ram_size
 endsubroutine
 
 
-
-
-
 subroutine dump_ram
   gosub enable_vsc
 
@@ -290,9 +282,6 @@ subroutine dump_ram
     echo "ram patch failed"
   endif
 endsubroutine
-
-
-
 
 
 subroutine process_ram
@@ -369,9 +358,6 @@ subroutine process_ram
 endsubroutine
 
 
-
-
-
 subroutine patch_module
   seti $wposition = $module_position
   seti $wposition = $wposition + 0x8000000
@@ -442,9 +428,6 @@ subroutine patch_module
 endsubroutine
 
 
-
-
-
 subroutine process_mod02
   # process the module
   seti $total_records = buffer 0x30 w
@@ -470,7 +453,7 @@ subroutine process_mod02
         setbuffer $erase_offset
           00
         endbuffer
-      seti $erase = $erase + 1
+        seti $erase = $erase + 1
       done
       echo "Data record #" $rcount " after patch:"
       printbuffer $record_offset $record_size
@@ -479,9 +462,6 @@ subroutine process_mod02
 
   done
 endsubroutine
-
-
-
 
 
 subroutine calculate_checksum_buffer
@@ -502,9 +482,6 @@ subroutine calculate_checksum_buffer
 endsubroutine
 
 
-
-
-
 subroutine idle_drive
   echo "attempting to idle drive"
   seti $idle_tries = 0
@@ -523,7 +500,6 @@ subroutine idle_drive
     endif
   done
 endsubroutine
-
 
 
 subroutine idle
@@ -547,9 +523,6 @@ subroutine idle
 endsubroutine
 
 
-
-
-
 subroutine enable_vsc
   # enable vendor specific commands
   echo "enable vsc"
@@ -561,7 +534,6 @@ subroutine enable_vsc
 endsubroutine
 
 
-
 subroutine disable_vsc
   # disable vendor specific commands
   echo "disable vsc"
@@ -571,6 +543,3 @@ subroutine disable_vsc
   # check if command failed
   gosub status_check
 endsubroutine
-
-
-

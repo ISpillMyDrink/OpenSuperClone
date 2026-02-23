@@ -1,5 +1,3 @@
-
-
 echo 'Western Digital ROYL patch module 0x02 using vendor specific commands.'
 echo 'This is to resolve a common WD slow issue, where the drive reads slow.'
 echo 'Definition of the "slow responding issue":'
@@ -111,9 +109,6 @@ previousscript
 end
 
 
-
-
-
 subroutine identify_device
   # set the base filenames
   sets $basefilename = "mod02original.bin"
@@ -158,7 +153,7 @@ subroutine identify_device
   sets $wdcompare = "WDC"
   if $wdcheck != $wdcompare
     echo "Model: " $model
-    echo "Drive is not WD, exiting
+    echo "Drive is not WD, exiting"
     previousscript
   endif
 
@@ -205,67 +200,64 @@ subroutine identify_device
   echo "Firmware revision= " $firmware
   wordflipbuffer 0 512
 
-# show if drive supports extended commands
-seti $tempnum = buffer 167
-seti $extended = $tempnum & 4
-seti $extended = $extended > 2
-#echo "supports 48 bit commands = " $extended
+  # show if drive supports extended commands
+  seti $tempnum = buffer 167
+  seti $extended = $tempnum & 4
+  seti $extended = $extended > 2
+  #echo "supports 48 bit commands = " $extended
 
-# total addressable sectors
-if $extended = 1
-  seti $addressable = buffer 200 qw
-  echo "total addressable sectors= " $addressable
-else
-  seti $addressable = buffer 120 dw
-  echo "total addressable sectors= " $addressable
-endif
+  # total addressable sectors
+  if $extended = 1
+    seti $addressable = buffer 200 qw
+    echo "total addressable sectors= " $addressable
+  else
+    seti $addressable = buffer 120 dw
+    echo "total addressable sectors= " $addressable
+  endif
 
-# words per logical sector
-seti $wordsps = buffer 234 w
-#echo "words per logical sector= " $wordsps
+  # words per logical sector
+  seti $wordsps = buffer 234 w
+  #echo "words per logical sector= " $wordsps
 
-# size
-if $wordsps = 0
-  seti $sectorsize = 512
-else
-  seti $sectorsize = $wordsps * 2
-endif
-seti $sizeb = $addressable * $sectorsize
-seti $sizemb = $sizeb / 1048576
-echo "Size in bytes= " $sizeb
-#echo "Size in MiB= " $sizemb
+  # size
+  if $wordsps = 0
+    seti $sectorsize = 512
+  else
+    seti $sectorsize = $wordsps * 2
+  endif
+  seti $sizeb = $addressable * $sectorsize
+  seti $sizemb = $sizeb / 1048576
+  echo "Size in bytes= " $sizeb
+  #echo "Size in MiB= " $sizemb
 
-# show drive security status
-seti $tempnum = buffer 257
-seti $security_level = $tempnum & 1
-seti $tempnum = buffer 256
-seti $enhanced_security_erase_supported = $tempnum & 32
-seti $enhanced_security_erase_supported = $enhanced_security_erase_supported > 5
-seti $security_count_expired = $tempnum & 16
-seti $security_count_expired = $security_count_expired > 4
-seti $security_frozen = $tempnum & 8
-seti $security_frozen = $security_frozen > 3
-seti $security_locked = $tempnum & 4
-seti $security_locked = $security_locked > 2
-seti $security_enabled = $tempnum & 2
-seti $security_enabled = $security_enabled > 1
-seti $security_supported = $tempnum & 1
-#echo "enhanced_security_erase_supported= " $enhanced_security_erase_supported
-#echo "security_count_expired= " $security_count_expired
-#echo "security_frozen= " $security_frozen
-echo "security_locked= " $security_locked
-echo "security_enabled= " $security_enabled
-#echo "security_supported= " $security_supported
+  # show drive security status
+  seti $tempnum = buffer 257
+  seti $security_level = $tempnum & 1
+  seti $tempnum = buffer 256
+  seti $enhanced_security_erase_supported = $tempnum & 32
+  seti $enhanced_security_erase_supported = $enhanced_security_erase_supported > 5
+  seti $security_count_expired = $tempnum & 16
+  seti $security_count_expired = $security_count_expired > 4
+  seti $security_frozen = $tempnum & 8
+  seti $security_frozen = $security_frozen > 3
+  seti $security_locked = $tempnum & 4
+  seti $security_locked = $security_locked > 2
+  seti $security_enabled = $tempnum & 2
+  seti $security_enabled = $security_enabled > 1
+  seti $security_supported = $tempnum & 1
+  #echo "enhanced_security_erase_supported= " $enhanced_security_erase_supported
+  #echo "security_count_expired= " $security_count_expired
+  #echo "security_frozen= " $security_frozen
+  echo "security_locked= " $security_locked
+  echo "security_enabled= " $security_enabled
+  #echo "security_supported= " $security_supported
 
-if $security_enabled != 0
-  echo "The drive currently has a password set."
-  echo "This patch will not work with an existing password."
-  previousscript
-endif
+  if $security_enabled != 0
+    echo "The drive currently has a password set."
+    echo "This patch will not work with an existing password."
+    previousscript
+  endif
 endsubroutine
-
-
-
 
 
 subroutine find_ram_size
@@ -400,9 +392,6 @@ subroutine find_ram_size
 endsubroutine
 
 
-
-
-
 subroutine dump_ram
   gosub enable_vsc
 
@@ -473,9 +462,6 @@ subroutine dump_ram
     echo "ram patch failed"
   endif
 endsubroutine
-
-
-
 
 
 subroutine process_ram
@@ -550,9 +536,6 @@ subroutine process_ram
     seti $search_position = $search_position + 512
   done
 endsubroutine
-
-
-
 
 
 subroutine patch_module
@@ -635,9 +618,6 @@ subroutine patch_module
 endsubroutine
 
 
-
-
-
 subroutine process_mod02
   # process the module
   seti $total_records = buffer 0x30 w
@@ -683,9 +663,6 @@ subroutine process_mod02
 endsubroutine
 
 
-
-
-
 subroutine calculate_checksum_buffer
   seti $calculated_checksum = 0
   seti $ccount = 0
@@ -704,105 +681,96 @@ subroutine calculate_checksum_buffer
 endsubroutine
 
 
-
-
-
 subroutine set_password
-echo "setting password"
-# set the buffer size
-buffersize 512
-# clear the buffer to 0's
-clearbuffer
+  echo "setting password"
+  # set the buffer size
+  buffersize 512
+  # clear the buffer to 0's
+  clearbuffer
 
-seti $type = 0
-seti $level = 0
-sets $password = "password"
+  seti $type = 0
+  seti $level = 0
+  sets $password = "password"
 
-# put the type and level in the buffer
-seti $byte0 = $type & 0x01
-seti $byte1 = $level & 0x01
-setbuffer 0
-  $byte0 $byte1
-endbuffer
+  # put the type and level in the buffer
+  seti $byte0 = $type & 0x01
+  seti $byte1 = $level & 0x01
+  setbuffer 0
+    $byte0 $byte1
+  endbuffer
 
-# put the password (up to 32 characters) in the buffer
-# if set this will overwrite part of all of the hex password
-stringtobuffer 2 32 $password
+  # put the password (up to 32 characters) in the buffer
+  # if set this will overwrite part of all of the hex password
+  stringtobuffer 2 32 $password
 
-# set the LBAs and count to 0
-seti $count = 0
-seti $LBAlow = 0
-seti $LBAmid = 0
-seti $LBAhigh = 0
+  # set the LBAs and count to 0
+  seti $count = 0
+  seti $LBAlow = 0
+  seti $LBAmid = 0
+  seti $LBAhigh = 0
 
-# set some things for the ata command
-setwritepio
-# set features to 0
-seti $features = 0
-# set device bits 7(compatibility) 5(compatibility)
-seti $device = 0xa0
-# set the command for security set password pio data-out
-seti $atacommand = 0xf1
+  # set some things for the ata command
+  setwritepio
+  # set features to 0
+  seti $features = 0
+  # set device bits 7(compatibility) 5(compatibility)
+  seti $device = 0xa0
+  # set the command for security set password pio data-out
+  seti $atacommand = 0xf1
 
-# perform the command
-ata28cmd $features $count $LBAlow $LBAmid $LBAhigh $device $atacommand
+  # perform the command
+  ata28cmd $features $count $LBAlow $LBAmid $LBAhigh $device $atacommand
 
-# check if command failed
-gosub status_check
+  # check if command failed
+  gosub status_check
 
-echo "password set"
+  echo "password set"
 endsubroutine
-
-
-
 
 
 subroutine remove_password
-echo "removing password"
-# set the buffer size
-buffersize 512
-# clear the buffer to 0's
-clearbuffer
+  echo "removing password"
+  # set the buffer size
+  buffersize 512
+  # clear the buffer to 0's
+  clearbuffer
 
-seti $type = 0
-sets $password = "password"
+  seti $type = 0
+  sets $password = "password"
 
-# put the type in the buffer
-seti $byte0 = $type & 0x01
-setbuffer 0
-  $byte0
-endbuffer
+  # put the type in the buffer
+  seti $byte0 = $type & 0x01
+  setbuffer 0
+    $byte0
+  endbuffer
 
-# put the password (up to 32 characters) in the buffer
-# if set this will overwrite part of all of the hex password
-stringtobuffer 2 32 $password
+  # put the password (up to 32 characters) in the buffer
+  # if set this will overwrite part of all of the hex password
+  stringtobuffer 2 32 $password
 
-# set the LBAs and count to 0
-seti $count = 0
-seti $LBAlow = 0
-seti $LBAmid = 0
-seti $LBAhigh = 0
+  # set the LBAs and count to 0
+  seti $count = 0
+  seti $LBAlow = 0
+  seti $LBAmid = 0
+  seti $LBAhigh = 0
 
-# set some things for the ata command
-setwritepio
-# set features to 0
-seti $features = 0
-# set device bits 7(compatibility) 5(compatibility)
-seti $device = 0xa0
-# set the command for security disable password pio data-out
-seti $atacommand = 0xf6
+  # set some things for the ata command
+  setwritepio
+  # set features to 0
+  seti $features = 0
+  # set device bits 7(compatibility) 5(compatibility)
+  seti $device = 0xa0
+  # set the command for security disable password pio data-out
+  seti $atacommand = 0xf6
 
-# perform the command
-ata28cmd $features $count $LBAlow $LBAmid $LBAhigh $device $atacommand
+  # perform the command
+  ata28cmd $features $count $LBAlow $LBAmid $LBAhigh $device $atacommand
 
-# check if command failed
-gosub status_check
+  # check if command failed
+  gosub status_check
 
-echo "password removed"
+  echo "password removed"
 endsubroutine
-
-
-
 
 
 subroutine idle_drive
@@ -823,7 +791,6 @@ subroutine idle_drive
     endif
   done
 endsubroutine
-
 
 
 subroutine idle
@@ -847,9 +814,6 @@ subroutine idle
 endsubroutine
 
 
-
-
-
 subroutine enable_vsc
   # enable vendor specific commands
   echo "enable vsc"
@@ -861,7 +825,6 @@ subroutine enable_vsc
 endsubroutine
 
 
-
 subroutine disable_vsc
   # disable vendor specific commands
   echo "disable vsc"
@@ -871,6 +834,3 @@ subroutine disable_vsc
   # check if command failed
   gosub status_check
 endsubroutine
-
-
-
