@@ -17,6 +17,8 @@ while 1 = 1
   echo "9) WD ROYL (Marvel) Check ROM File"
   echo "10) WD ROYL (Marvel) Write ROM (DANGEROUS)"
   echo "11) WD ROYL (Marvel) Write Module (DANGEROUS)"
+  echo "12) WD ROYL (Marvel) Patch Module 02 in RAM (Fast)"
+  echo "13) WD ROYL (Marvel) Patch Module 02 in RAM"
 
   if $printhelp = 1
     exit 0
@@ -84,6 +86,13 @@ while 1 = 1
     loadscript wd_royl_write_mod.osc
     break
 
+  elseif $choicestring = 12
+    loadscript wd_royl_patch_mod02_fast_ram.osc
+    break
+
+  elseif $choicestring = 13
+    loadscript wd_royl_patch_mod02_ram.osc
+    break
 
   else
     echo "bad choice= " $choicestring

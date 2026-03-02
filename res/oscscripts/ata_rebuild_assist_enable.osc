@@ -22,10 +22,6 @@ sets $null = ""
 seti $using_menu = $using_menu
 
 
-
-
-
-
 # set the buffer size
 buffersize 512
 
@@ -62,12 +58,5 @@ ata48cmd $features $count $LBAhigh $LBAmid $LBAlow $device $command
 gosub status_check
 
 
-
-
-
 previousscript
 end
-
-
-
-

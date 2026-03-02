@@ -465,6 +465,7 @@ unsigned long long d2_soft_reset_time_ccc;
 unsigned long long sc_soft_reset_time_ccc;
 unsigned long long rt_soft_reset_time_ccc;
 char *drive_serial_ccc;
+int drive_port_ccc;
 int new_source_ccc;
 int new_destination_ccc;
 long long source_total_size_ccc;

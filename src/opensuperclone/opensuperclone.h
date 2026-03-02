@@ -23,6 +23,7 @@
 #define USB1PRODUCTID 518
 #define DEBUGOUT 519
 #define VERBOSEOUT 520
+#define PORT 521
 
 #define NONTRIED 0
 #define NONTRIMMED 0x10

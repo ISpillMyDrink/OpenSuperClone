@@ -205,6 +205,7 @@ int main(int argc, char **argv)
   primary_relay_delay_time_ccc = PRIMARY_RELAY_DELAY_TIME;
   use_rebuild_assist_ccc = false;
   rebuild_assist_enabled_ccc = false;
+  drive_port_ccc = -1;
   use_fpdma_ccc = false;
   wait_for_ds_bit_ccc = false;
   rebuild_assist_data_valid_ccc = false;
@@ -293,6 +294,7 @@ int main(int argc, char **argv)
             {"testskipmb", required_argument, 0, TESTSKIPMB},
             {"testskip", required_argument, 0, TESTSKIP},
             {"testskipfast", required_argument, 0, TESTSKIPFAST},
+            {"port", required_argument, 0, PORT},
             {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
@@ -417,6 +419,22 @@ int main(int argc, char **argv)
       exit(0);
       break;
 
+    case PORT:
+    {
+      char *endptr;
+      long parsed_port = strtol(optarg, &endptr, 0);
+      if (*optarg == '\0' || *endptr != '\0' || parsed_port < 0 || parsed_port > 0x7fffffffL)
+      {
+        fprintf(stderr, "Error: invalid --port value '%s'\n", optarg);
+        command_line_error = true;
+      }
+      else
+      {
+        drive_port_ccc = (int)parsed_port;
+      }
+      break;
+    }
+
     case '?':
       // getopt_long already printed an error message.
       command_line_error = true;
@@ -475,20 +493,6 @@ int main(int argc, char **argv)
 
   else if (command_line_ccc)
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
-    {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
-      {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
-      }
-    }
-
     // get remaining arguments that are not options
     while ((argc - optind) > 0)
     {
@@ -518,17 +522,20 @@ int main(int argc, char **argv)
 
   else
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
+    if (superclone_ccc)
     {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
+      arguments_required = 0;
+      if ((argc - optind) != arguments_required)
       {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
+        command_line_error = true;
+        if ((argc - optind) < arguments_required)
+        {
+          fprintf(stderr, "Error: too few arguments\n");
+        }
+        if ((argc - optind) > arguments_required)
+        {
+          fprintf(stderr, "Error: too many arguments\n");
+        }
       }
     }
 
@@ -1176,6 +1183,7 @@ void help_ccc(void)
   fprintf(stdout, "  -f, --file <file>             %s\n", _("Script file to load and run"));
   fprintf(stdout, "  -i, --indent <spaces>         %s\n", _("Perform indentation adjustment on the script"));
   fprintf(stdout, "  -t, --target <disk>           %s\n", _("Disk to use for passthrough mode"));
+  fprintf(stdout, "      --port <num>              %s\n", _("ATA port to use for direct modes"));
   fprintf(stdout, "      --ata                     %s\n", _("List drives via ATA-passthrough (default)"));
   fprintf(stdout, "      --scsi                    %s\n", _("List drives via SCSI-passthrough"));
   fprintf(stdout, "  -Q, --quiet                   %s\n", _("Suppress some of the output"));
