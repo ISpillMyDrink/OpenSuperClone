@@ -475,20 +475,6 @@ int main(int argc, char **argv)
 
   else if (command_line_ccc)
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
-    {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
-      {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
-      }
-    }
-
     // get remaining arguments that are not options
     while ((argc - optind) > 0)
     {
@@ -518,17 +504,20 @@ int main(int argc, char **argv)
 
   else
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
+    if (superclone_ccc)
     {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
+      arguments_required = 0;
+      if ((argc - optind) != arguments_required)
       {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
+        command_line_error = true;
+        if ((argc - optind) < arguments_required)
+        {
+          fprintf(stderr, "Error: too few arguments\n");
+        }
+        if ((argc - optind) > arguments_required)
+        {
+          fprintf(stderr, "Error: too many arguments\n");
+        }
       }
     }
 
