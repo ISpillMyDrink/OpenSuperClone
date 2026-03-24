@@ -54,7 +54,7 @@ void asclepius_connect(void)
     tty.c_oflag &= ~ONLCR;   // Prevent conversion of newline to carriage return/line feed
 
     tty.c_cc[VTIME] = 10;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received
-    tty.c_cc[VMIN] = 0;
+    tty.c_cc[VMIN] = 2;
 
     cfsetispeed(&tty, ASCLEPIUS_BAUDRATE);
     cfsetospeed(&tty, ASCLEPIUS_BAUDRATE);
