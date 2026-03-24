@@ -68,8 +68,6 @@ void asclepius_connect(void)
     }
 
     asclepius_connected = true;
-
-    sleep(ASCLEPIUS_IOCMD_DELAY);
 }
 
 void asclepius_disconnect(void)
@@ -101,8 +99,6 @@ void asclepius_enable_channel(uint8_t channel)
     asclepius_command.channel = channel;
 
     write(asclepius_serial_port, &asclepius_command, sizeof(asclepius_command));
-
-    sleep(ASCLEPIUS_IOCMD_DELAY);
 }
 
 void asclepius_disable_channel(uint8_t channel)
@@ -116,8 +112,6 @@ void asclepius_disable_channel(uint8_t channel)
     asclepius_command.channel = channel;
 
     write(asclepius_serial_port, &asclepius_command, sizeof(asclepius_command));
-
-    sleep(ASCLEPIUS_IOCMD_DELAY);
 }
 
 void asclepius_get_status(void)

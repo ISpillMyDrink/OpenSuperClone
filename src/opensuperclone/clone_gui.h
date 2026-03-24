@@ -483,6 +483,9 @@ char *default_config_filename = "default.cfg";
 char *default_ssd_config_filename = "default_ssd.cfg";
 char *default_asclepius_config_filename = "asclepius.cfg";
 
+int default_window_width = 1350;
+int default_window_height = 670;
+
 void select_file_ccc(void);
 
 void select_ddrescue_file_ccc(void);

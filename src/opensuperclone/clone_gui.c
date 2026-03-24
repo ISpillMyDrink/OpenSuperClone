@@ -9,6 +9,7 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 #include "asclepius.h"
+#include <libconfig.h>
 
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 {
@@ -569,7 +570,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     }
   }
 
-  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1350, 670);
+  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), default_window_width, default_window_height);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -5494,6 +5495,23 @@ void read_config_file_with_name_ccc(char* filename)
   // load clone settings
   load_clone_settings_ccc();
 
+  // read ui settings from config file
+  group = config_setting_get_member(root, "ui");
+  if (group != NULL)
+  {
+    setting = config_setting_get_member(group, "window_width");
+    if (setting != NULL)
+    {
+      default_window_width = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "window_height");
+    if (setting != NULL)
+    {
+      default_window_height = config_setting_get_int(setting);
+    }
+  }
+
   // read clone settings from config file
   group = config_setting_get_member(root, "clone");
   if (group != NULL)
@@ -6201,6 +6219,15 @@ void write_config_file_with_name_ccc(char* filename)
 
   // load clone settings
   load_clone_settings_ccc();
+
+  // write ui settings to config file
+  group = config_setting_add(root, "ui", CONFIG_TYPE_GROUP);
+
+  setting = config_setting_add(group, "window_width", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, default_window_width);
+
+  setting = config_setting_add(group, "window_height", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, default_window_height);
 
   // write clone settings to config file
   group = config_setting_add(root, "clone", CONFIG_TYPE_GROUP);
