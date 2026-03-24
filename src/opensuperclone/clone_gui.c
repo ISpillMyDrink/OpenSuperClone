@@ -547,9 +547,29 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   asclepius_connect();
 
-  gdk_threads_add_timeout(1000, display_status_update_asclepius_action, NULL);
+  if(asclepius_get_connection_status())
+  {
+    print_gui_error_message_ccc(_("Asclepius companion board was detected.\nEnabling default settings for Asclepius support."), _("Asclepius Connection"), 0);
 
-  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1150, 690);
+    gdk_threads_add_timeout(1000, display_status_update_asclepius_action, NULL);
+
+    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
+
+    // load asclepius settings from config file
+    char filename[1024];
+    snprintf(filename, 1024, "%s%s", template_directory, default_asclepius_config_filename);
+
+    FILE *file = fopen(filename, "r");
+    if (file)
+    {
+      fclose(file);
+
+      read_config_file_with_name_ccc(filename);
+    }
+  }
+
+  gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), 1350, 670);
   gtk_widget_show_all(main_window_ccc);
   gtk_main();
 
@@ -5349,6 +5369,13 @@ void do_deactivate_primary_relay_ccc(void)
 
 void do_activate_primary_relay_main_ccc(void)
 {
+  if(asclepius_get_connection_status())
+  {
+    asclepius_disable_channel(ASCLEPIUS_ALL);
+
+    return;
+  }
+
   if (!usbr1_chosen_ccc)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));
@@ -5369,6 +5396,13 @@ void do_activate_primary_relay_main_ccc(void)
 
 void do_deactivate_primary_relay_main_ccc(void)
 {
+  if(asclepius_get_connection_status())
+  {
+    asclepius_enable_channel(ASCLEPIUS_ALL);
+
+    return;
+  }
+
   if (!usbr1_chosen_ccc)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: No relay has been chosen"));

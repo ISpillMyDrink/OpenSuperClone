@@ -481,6 +481,7 @@ char *smart_error_icon_path = OSC_RESOURCE_PATH "/img/fontawesome/xmark.svg";
 char *template_directory = OSC_RESOURCE_PATH "/templates/";
 char *default_config_filename = "default.cfg";
 char *default_ssd_config_filename = "default_ssd.cfg";
+char *default_asclepius_config_filename = "asclepius.cfg";
 
 void select_file_ccc(void);
 
