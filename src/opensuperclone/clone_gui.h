@@ -472,6 +472,9 @@ char *template_directory = OSC_RESOURCE_PATH "/templates/";
 char *default_config_filename = "default.cfg";
 char *default_ssd_config_filename = "default_ssd.cfg";
 
+int default_window_width = 1150;
+int default_window_height = 690;
+
 void select_file_ccc(void);
 
 void select_ddrescue_file_ccc(void);
