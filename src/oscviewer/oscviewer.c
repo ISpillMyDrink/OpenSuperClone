@@ -54,6 +54,10 @@ static void sync_preference_widgets(void)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), show_domain ? TRUE : FALSE);
   }
+  if (followcurrentcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(followcurrentcheck), follow_current_on_update ? TRUE : FALSE);
+  }
 
   if (autoupdatebuttonoff != NULL)
   {
@@ -160,6 +164,10 @@ static void sync_preference_widgets(void)
   if (settings_show_domain_check != NULL)
   {
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_domain_check), show_domain ? TRUE : FALSE);
+  }
+  if (settings_follow_current_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_follow_current_check), follow_current_on_update ? TRUE : FALSE);
   }
 
   updating_preferences = FALSE;
@@ -359,6 +367,7 @@ int main(int argc, char **argv)
   settings_show_bad_head_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_bad_head_check"));
   settings_show_domain_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_domain_check"));
   settings_show_timing_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_timing_combo"));
+  settings_follow_current_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_follow_current_check"));
 
   if (settings_main_grid_size_combo != NULL)
   {
@@ -658,10 +667,16 @@ int main(int argc, char **argv)
 
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), _("Show Domain"));
+  followcurrentcheck = GTK_WIDGET(gtk_builder_get_object(builder, "followcurrentcheck"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(followcurrentcheck), _("Follow Current on Auto-Update"));
 
   if (show_domain)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+  }
+  if (follow_current_on_update)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(followcurrentcheck), TRUE);
   }
 
   // help menu
@@ -761,6 +776,7 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(settings_show_bad_head_check), "toggled", G_CALLBACK(settings_toggle_show_bad), NULL);
   g_signal_connect(G_OBJECT(settings_show_domain_check), "toggled", G_CALLBACK(settings_toggle_show_domain), NULL);
   g_signal_connect(G_OBJECT(settings_show_timing_combo), "changed", G_CALLBACK(settings_show_timing_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_follow_current_check), "toggled", G_CALLBACK(settings_toggle_follow_current), NULL);
 
   g_signal_connect(G_OBJECT(leftresbutton1), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(1));
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
@@ -804,6 +820,7 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showbadcheck), "activate", G_CALLBACK(toggle_showbad), NULL);
 
   g_signal_connect(G_OBJECT(showdomaincheck), "activate", G_CALLBACK(toggle_showdomain), NULL);
+  g_signal_connect(G_OBJECT(followcurrentcheck), "activate", G_CALLBACK(toggle_follow_current_menu), NULL);
 
   g_signal_connect(G_OBJECT(showtimingbuttonoff), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(0));
   g_signal_connect(G_OBJECT(showtimingbutton1), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(1));
@@ -1765,6 +1782,11 @@ gint reload_file(void)
     }
   }
 
+  if (follow_current_on_update && auto_update_interval > 0)
+  {
+    jump_to_current(NULL, NULL);
+  }
+
   invalidate_render_caches(FALSE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 
@@ -1867,6 +1889,18 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
   sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
+}
+
+void toggle_follow_current_menu(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  follow_current_on_update = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
 }
 
 void change_left_resolution(GtkWidget *w, gpointer data)
@@ -2003,6 +2037,18 @@ void settings_toggle_show_domain(GtkWidget *w, gpointer data)
   sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_follow_current(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  follow_current_on_update = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
 }
 
 void jump_to_current(GtkWidget *w, gpointer data)
@@ -4049,6 +4095,12 @@ void read_config_file(void)
     {
       show_domain = config_setting_get_int(setting);
     }
+
+    setting = config_setting_get_member(group, "follow_current_on_update");
+    if (setting != NULL)
+    {
+      follow_current_on_update = config_setting_get_int(setting);
+    }
   }
 
   config_destroy(&config);
@@ -4144,6 +4196,9 @@ void write_config_file(void)
 
   setting = config_setting_add(group, "show_domain", CONFIG_TYPE_INT);
   config_setting_set_int(setting, show_domain);
+
+  setting = config_setting_add(group, "follow_current_on_update", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, follow_current_on_update);
 
   config_write(&config, config_file);
 

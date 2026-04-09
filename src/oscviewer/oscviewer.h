@@ -158,6 +158,7 @@ GtkWidget *settings_show_good_data_check;
 GtkWidget *settings_show_bad_head_check;
 GtkWidget *settings_show_domain_check;
 GtkWidget *settings_show_timing_combo;
+GtkWidget *settings_follow_current_check;
 
 // file menu
 GtkWidget *filemenu;
@@ -215,6 +216,7 @@ GtkWidget *autoupdatebutton2m;
 GtkWidget *autoupdatebutton5m;
 GtkWidget *showbadcheck;
 GtkWidget *showdomaincheck;
+GtkWidget *followcurrentcheck;
 GtkWidget *optionsw;
 GSList *leftresgroup = NULL;
 GSList *mainresgroup = NULL;
@@ -308,6 +310,7 @@ int show_bad_head = 0;
 int show_good_data = 0;
 int show_timing = 0;
 int show_domain = 0;
+int follow_current_on_update = 0;
 gboolean updating_preferences = FALSE;
 int mouse_x = 0;
 int mouse_y = 0;
@@ -358,6 +361,8 @@ void settings_toggle_show_bad(GtkWidget *w, gpointer data);
 
 void settings_toggle_show_domain(GtkWidget *w, gpointer data);
 
+void settings_toggle_follow_current(GtkWidget *w, gpointer data);
+
 void change_left_resolution(GtkWidget *w, gpointer data);
 
 void jump_to_current(GtkWidget *w, gpointer data);
@@ -405,6 +410,8 @@ void toggle_showgood(GtkWidget *w, gpointer data);
 void set_show_timing(GtkWidget *w, gpointer data);
 
 void toggle_showdomain(GtkWidget *w, gpointer data);
+
+void toggle_follow_current_menu(GtkWidget *w, gpointer data);
 
 int check_log(void);
 
