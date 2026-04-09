@@ -7,6 +7,226 @@
 #include "oscviewer.h"
 #include "oscviewer_glade.h"
 
+static const int main_grid_size_values[] = {4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216};
+static const int auto_update_interval_values[] = {0, 5000, 10000, 30000, 60000, 120000, 300000};
+static const int show_timing_values[] = {0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50, 60};
+
+static int find_value_index(const int *values, int count, int value)
+{
+  for (int i = 0; i < count; i++)
+  {
+    if (values[i] == value)
+    {
+      return i;
+    }
+  }
+  return 0;
+}
+
+static void set_combo_active_from_value(GtkWidget *combo, const int *values, int count, int value)
+{
+  if (combo == NULL)
+  {
+    return;
+  }
+  int index = find_value_index(values, count, value);
+  gtk_combo_box_set_active(GTK_COMBO_BOX(combo), index);
+}
+
+static void sync_preference_widgets(void)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  updating_preferences = TRUE;
+
+  if (showgoodcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showgoodcheck), show_good_data ? TRUE : FALSE);
+  }
+  if (showbadcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showbadcheck), show_bad_head ? TRUE : FALSE);
+  }
+  if (showdomaincheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), show_domain ? TRUE : FALSE);
+  }
+
+  if (autoupdatebuttonoff != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebuttonoff), auto_update_interval == 0);
+  }
+  if (autoupdatebutton5s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton5s), auto_update_interval == 5000);
+  }
+  if (autoupdatebutton10s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton10s), auto_update_interval == 10000);
+  }
+  if (autoupdatebutton30s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton30s), auto_update_interval == 30000);
+  }
+  if (autoupdatebutton1m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton1m), auto_update_interval == 60000);
+  }
+  if (autoupdatebutton2m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton2m), auto_update_interval == 120000);
+  }
+  if (autoupdatebutton5m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton5m), auto_update_interval == 300000);
+  }
+
+  if (showtimingbuttonoff != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbuttonoff), show_timing == 0);
+  }
+  if (showtimingbutton1 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton1), show_timing == 1);
+  }
+  if (showtimingbutton2 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton2), show_timing == 2);
+  }
+  if (showtimingbutton3 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton3), show_timing == 3);
+  }
+  if (showtimingbutton4 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton4), show_timing == 4);
+  }
+  if (showtimingbutton5 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton5), show_timing == 5);
+  }
+  if (showtimingbutton7 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton7), show_timing == 7);
+  }
+  if (showtimingbutton10 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton10), show_timing == 10);
+  }
+  if (showtimingbutton15 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton15), show_timing == 15);
+  }
+  if (showtimingbutton20 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton20), show_timing == 20);
+  }
+  if (showtimingbutton25 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton25), show_timing == 25);
+  }
+  if (showtimingbutton30 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton30), show_timing == 30);
+  }
+  if (showtimingbutton40 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton40), show_timing == 40);
+  }
+  if (showtimingbutton50 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton50), show_timing == 50);
+  }
+  if (showtimingbutton60 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton60), show_timing == 60);
+  }
+
+  set_combo_active_from_value(settings_main_grid_size_combo, main_grid_size_values, (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])), main_grid_size);
+  set_combo_active_from_value(settings_auto_update_combo, auto_update_interval_values, (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])), auto_update_interval);
+  set_combo_active_from_value(settings_show_timing_combo, show_timing_values, (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])), show_timing);
+
+  if (settings_show_good_data_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_good_data_check), show_good_data ? TRUE : FALSE);
+  }
+  if (settings_show_bad_head_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_bad_head_check), show_bad_head ? TRUE : FALSE);
+  }
+  if (settings_show_domain_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_domain_check), show_domain ? TRUE : FALSE);
+  }
+
+  updating_preferences = FALSE;
+}
+
+static void update_auto_update_label(void)
+{
+  if (auto_update_label == NULL)
+  {
+    return;
+  }
+
+  if (auto_update_interval == 0)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
+  }
+  else if (auto_update_interval == 5000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 seconds"));
+  }
+  else if (auto_update_interval == 10000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("10 seconds"));
+  }
+  else if (auto_update_interval == 30000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("30 seconds"));
+  }
+  else if (auto_update_interval == 60000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("1 minute"));
+  }
+  else if (auto_update_interval == 120000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("2 minutes"));
+  }
+  else if (auto_update_interval == 300000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 minutes"));
+  }
+  else
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %d ms", _("Auto-Update"), auto_update_interval);
+  }
+
+  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+}
+
+static void apply_auto_update_interval(int interval)
+{
+  auto_update_interval = interval;
+
+  if (autotimer_on)
+  {
+    g_source_remove(timeout_tag);
+    autotimer_on = 0;
+  }
+
+  if (auto_update_interval > 0)
+  {
+    timeout_tag = g_timeout_add(auto_update_interval, (GSourceFunc)reload_file, NULL);
+    autotimer_on = 1;
+  }
+
+  update_auto_update_label();
+}
+
 int main(int argc, char **argv)
 {
   bindtextdomain("oscviewer", OSC_LANG_PATH);
@@ -132,6 +352,61 @@ int main(int argc, char **argv)
   gtk_window_set_title(GTK_WINDOW(settings_window), _("Settings"));
   g_signal_connect(settings_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
+  settings_view_label = GTK_WIDGET(gtk_builder_get_object(builder, "settings_view_label"));
+  settings_main_grid_size_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_main_grid_size_combo"));
+  settings_auto_update_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_auto_update_combo"));
+  settings_show_good_data_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_good_data_check"));
+  settings_show_bad_head_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_bad_head_check"));
+  settings_show_domain_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_domain_check"));
+  settings_show_timing_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_timing_combo"));
+
+  if (settings_main_grid_size_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("4K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("8K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("16K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("32K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("64K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("128K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("256K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("512K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("1M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("2M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("4M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("8M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("16M"));
+  }
+
+  if (settings_auto_update_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("Off"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("5 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("10 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("30 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("1 minute"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("2 minutes"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("5 minutes"));
+  }
+
+  if (settings_show_timing_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("Off"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("1"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("2"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("3"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("4"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("5"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("7"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("10"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("15"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("20"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("25"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("30"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("40"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("50"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("60"));
+  }
+
   // set it to exit if closed
   g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -159,8 +434,7 @@ int main(int argc, char **argv)
   gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
 
   auto_update_label = GTK_WIDGET(gtk_builder_get_object(builder, "auto_update_label"));
-  snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
-  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+  update_auto_update_label();
 
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
@@ -451,6 +725,9 @@ int main(int argc, char **argv)
   gtk_label_set_text(GTK_LABEL(block_color_label), _("Block Colors"));
   gtk_label_set_text(GTK_LABEL(marker_color_label), _("Marker Colors"));
 
+  sync_preference_widgets();
+  apply_auto_update_interval(auto_update_interval);
+
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window), accel_group);
@@ -477,6 +754,13 @@ int main(int argc, char **argv)
 
   // set it to open the settings window if the settings item is selected
   g_signal_connect(G_OBJECT(settingsmi), "activate", G_CALLBACK(show_settings_window), NULL);
+
+  g_signal_connect(G_OBJECT(settings_main_grid_size_combo), "changed", G_CALLBACK(settings_main_grid_size_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_auto_update_combo), "changed", G_CALLBACK(settings_auto_update_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_show_good_data_check), "toggled", G_CALLBACK(settings_toggle_show_good), NULL);
+  g_signal_connect(G_OBJECT(settings_show_bad_head_check), "toggled", G_CALLBACK(settings_toggle_show_bad), NULL);
+  g_signal_connect(G_OBJECT(settings_show_domain_check), "toggled", G_CALLBACK(settings_toggle_show_domain), NULL);
+  g_signal_connect(G_OBJECT(settings_show_timing_combo), "changed", G_CALLBACK(settings_show_timing_changed), NULL);
 
   g_signal_connect(G_OBJECT(leftresbutton1), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(1));
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
@@ -1489,51 +1773,28 @@ gint reload_file(void)
 
 void set_autoupdate_timer(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (autotimer_on)
   {
     g_source_remove(timeout_tag);
     autotimer_on = 0;
   }
-  int time = GPOINTER_TO_INT(data);
-  if (time > 0)
-  {
-    timeout_tag = g_timeout_add(time, (GSourceFunc)reload_file, NULL);
-    autotimer_on = 1;
-  }
-
-  if (!autotimer_on)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
-  }
-  else if (time == 5000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 seconds"));
-  }
-  else if (time == 10000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("10 seconds"));
-  }
-  else if (time == 30000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("30 seconds"));
-  }
-  else if (time == 60000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("1 minute"));
-  }
-  else if (time == 120000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("2 minutes"));
-  }
-  else if (time == 300000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 minutes"));
-  }
-  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+  apply_auto_update_interval(GPOINTER_TO_INT(data));
+  write_config_file();
+  sync_preference_widgets();
 }
 
 void toggle_showbad(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_bad_head = 1;
@@ -1543,12 +1804,19 @@ void toggle_showbad(GtkWidget *w, gpointer data)
     show_bad_head = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void toggle_showgood(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_good_data = 1;
@@ -1558,20 +1826,34 @@ void toggle_showgood(GtkWidget *w, gpointer data)
     show_good_data = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void set_show_timing(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   show_timing = GPOINTER_TO_INT(data);
 
+  write_config_file();
+  sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void toggle_showdomain(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_domain = 1;
@@ -1581,6 +1863,8 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
     show_domain = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
@@ -1606,10 +1890,117 @@ void change_main_resolution(GtkWidget *w, gpointer data)
 
 void change_main_grid_size(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_grid_size = GPOINTER_TO_INT(data);
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_main_grid_size_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])))
+  {
+    return;
+  }
+
+  main_grid_size = main_grid_size_values[index];
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_auto_update_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])))
+  {
+    return;
+  }
+
+  apply_auto_update_interval(auto_update_interval_values[index]);
+  write_config_file();
+  sync_preference_widgets();
+}
+
+void settings_show_timing_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])))
+  {
+    return;
+  }
+
+  show_timing = show_timing_values[index];
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_good(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_good_data = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_bad(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_bad_head = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_domain(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_domain = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
   invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
@@ -3382,6 +3773,7 @@ int print_gui_error_message(char *message, char *title, int type)
 
 void show_settings_window(void)
 {
+  sync_preference_widgets();
   gtk_widget_show_all(settings_window);
 
   GdkRGBA good_color_rgba;
@@ -3618,6 +4010,47 @@ void read_config_file(void)
     }
   }
 
+  // view settings
+  group = config_setting_get_member(root, "view");
+  if (group != NULL)
+  {
+    setting = config_setting_get_member(group, "main_grid_size");
+    if (setting != NULL)
+    {
+      main_grid_size = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "auto_update_interval");
+    if (setting != NULL)
+    {
+      auto_update_interval = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_good_data");
+    if (setting != NULL)
+    {
+      show_good_data = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_bad_head");
+    if (setting != NULL)
+    {
+      show_bad_head = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_timing");
+    if (setting != NULL)
+    {
+      show_timing = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_domain");
+    if (setting != NULL)
+    {
+      show_domain = config_setting_get_int(setting);
+    }
+  }
+
   config_destroy(&config);
 
   fclose(config_file);
@@ -3690,6 +4123,27 @@ void write_config_file(void)
   setting = config_setting_add(group, "selected_color", CONFIG_TYPE_INT);
   config_setting_set_format(setting, CONFIG_FORMAT_HEX);
   config_setting_set_int(setting, selected_color);
+
+  // view settings
+  group = config_setting_add(root, "view", CONFIG_TYPE_GROUP);
+
+  setting = config_setting_add(group, "main_grid_size", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, main_grid_size);
+
+  setting = config_setting_add(group, "auto_update_interval", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, auto_update_interval);
+
+  setting = config_setting_add(group, "show_good_data", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_good_data);
+
+  setting = config_setting_add(group, "show_bad_head", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_bad_head);
+
+  setting = config_setting_add(group, "show_timing", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_timing);
+
+  setting = config_setting_add(group, "show_domain", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_domain);
 
   config_write(&config, config_file);
 

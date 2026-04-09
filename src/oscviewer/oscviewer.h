@@ -151,6 +151,13 @@ GtkWidget *time_color_label;
 GtkWidget *domain_color_label;
 GtkWidget *block_color_label;
 GtkWidget *marker_color_label;
+GtkWidget *settings_view_label;
+GtkWidget *settings_main_grid_size_combo;
+GtkWidget *settings_auto_update_combo;
+GtkWidget *settings_show_good_data_check;
+GtkWidget *settings_show_bad_head_check;
+GtkWidget *settings_show_domain_check;
+GtkWidget *settings_show_timing_combo;
 
 // file menu
 GtkWidget *filemenu;
@@ -294,12 +301,14 @@ int selected_color = WHITE;
 int time_color = MAGENTA;
 int domain_color = MYBLUE;
 int main_grid_size = MAINGRIDSIZE;
+int auto_update_interval = 0;
 gint timeout_tag = 0;
 int autotimer_on = 0;
 int show_bad_head = 0;
 int show_good_data = 0;
 int show_timing = 0;
 int show_domain = 0;
+gboolean updating_preferences = FALSE;
 int mouse_x = 0;
 int mouse_y = 0;
 int mouse_x_old = 0;
@@ -336,6 +345,18 @@ void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, 
 void change_main_resolution(GtkWidget *w, gpointer data);
 
 void change_main_grid_size(GtkWidget *w, gpointer data);
+
+void settings_main_grid_size_changed(GtkWidget *w, gpointer data);
+
+void settings_auto_update_changed(GtkWidget *w, gpointer data);
+
+void settings_show_timing_changed(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_good(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_bad(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_domain(GtkWidget *w, gpointer data);
 
 void change_left_resolution(GtkWidget *w, gpointer data);
 
