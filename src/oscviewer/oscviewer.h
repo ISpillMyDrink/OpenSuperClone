@@ -103,6 +103,23 @@ GtkWidget *left_drawing_area;
 GtkWidget *main_scrolled_window;
 GtkWidget *main_drawing_vbox;
 
+// cached render surfaces
+cairo_surface_t *top_render_cache;
+cairo_surface_t *main_render_cache;
+cairo_surface_t *left_render_cache;
+gboolean top_render_cache_dirty;
+gboolean main_render_cache_dirty;
+gboolean left_render_cache_dirty;
+gint top_render_cache_width;
+gint top_render_cache_height;
+gint main_render_cache_width;
+gint main_render_cache_height;
+gdouble main_render_cache_scroll_position;
+gint main_render_cache_clip_x;
+gint main_render_cache_clip_y;
+gint left_render_cache_width;
+gint left_render_cache_height;
+
 // main window widgets
 GtkWidget *progress_log_label;
 GtkWidget *domain_log_label;
@@ -300,6 +317,10 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 static gboolean left_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
 static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
+
+static void invalidate_render_caches(gboolean top_dirty, gboolean main_dirty, gboolean left_dirty);
+
+static void clear_render_cache(cairo_surface_t **surface, gint *width, gint *height);
 
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data);
 
