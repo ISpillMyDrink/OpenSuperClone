@@ -196,6 +196,7 @@ GtkWidget *mainsizebutton2m;
 GtkWidget *mainsizebutton4m;
 GtkWidget *mainsizebutton8m;
 GtkWidget *mainsizebutton16m;
+GtkWidget *jumpcurrentmi;
 GtkWidget *autoupdatemi;
 GtkWidget *autoupdatemenu;
 GtkWidget *autoupdatebuttonoff;
@@ -337,6 +338,8 @@ void change_main_resolution(GtkWidget *w, gpointer data);
 void change_main_grid_size(GtkWidget *w, gpointer data);
 
 void change_left_resolution(GtkWidget *w, gpointer data);
+
+void jump_to_current(GtkWidget *w, gpointer data);
 
 int initialize_memory(void);
 

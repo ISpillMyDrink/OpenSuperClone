@@ -169,6 +169,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(optionsmi), _("View"));
 
   // left res menu
+  jumpcurrentmi = GTK_WIDGET(gtk_builder_get_object(builder, "jumpcurrentmi"));
   leftresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "leftresolutionmi"));
   leftresbutton1 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton1"));
   leftresbutton2 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton2"));
@@ -460,6 +461,7 @@ int main(int argc, char **argv)
   gtk_widget_add_accelerator(showgoodcheck, "activate", accel_group, GDK_KEY_g, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(showbadcheck, "activate", accel_group, GDK_KEY_b, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(showdomaincheck, "activate", accel_group, GDK_KEY_d, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(jumpcurrentmi, "activate", accel_group, GDK_KEY_j, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
   // set it to exit if the quit item is selected
   g_signal_connect(G_OBJECT(quitmi), "activate", G_CALLBACK(gtk_main_quit), NULL);
@@ -480,6 +482,8 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
   g_signal_connect(G_OBJECT(leftresbutton3), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(3));
   g_signal_connect(G_OBJECT(leftresbutton4), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(4));
+
+  g_signal_connect(G_OBJECT(jumpcurrentmi), "activate", G_CALLBACK(jump_to_current), NULL);
 
   g_signal_connect(G_OBJECT(mainresbutton4), "activate", G_CALLBACK(change_main_resolution), GINT_TO_POINTER(4));
   g_signal_connect(G_OBJECT(mainresbutton6), "activate", G_CALLBACK(change_main_resolution), GINT_TO_POINTER(6));
@@ -1607,6 +1611,64 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
   main_grid_size = GPOINTER_TO_INT(data);
 
   invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void jump_to_current(GtkWidget *w, gpointer data)
+{
+  if (total_size <= 0 || main_square_size <= 0 || main_scrolled_window == NULL)
+  {
+    return;
+  }
+
+  int columns = main_drawing_area_width / main_square_size;
+  int rows = main_drawing_area_height / main_square_size;
+  int squares = columns * rows;
+  if (columns <= 0 || rows <= 0 || squares <= 0)
+  {
+    return;
+  }
+
+  long long blocks_per_square = total_size / (squares - 1);
+  int adjustment = 1;
+  while (total_size > squares * blocks_per_square && (squares - adjustment) > 0)
+  {
+    adjustment++;
+    blocks_per_square = total_size / (squares - adjustment);
+  }
+  if (blocks_per_square <= 0)
+  {
+    blocks_per_square = 1;
+  }
+
+  long long current_square = current_position / blocks_per_square;
+  int current_row = current_square / columns;
+  int current_col = current_square % columns;
+  gdouble target = (current_row * main_square_size) - (main_scrolled_window_height / 2.0) + (main_square_size / 2.0);
+
+  GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window));
+  gdouble lower = gtk_adjustment_get_lower(vadj);
+  gdouble upper = gtk_adjustment_get_upper(vadj) - gtk_adjustment_get_page_size(vadj);
+  if (upper < lower)
+  {
+    upper = lower;
+  }
+  if (target < lower)
+  {
+    target = lower;
+  }
+  if (target > upper)
+  {
+    target = upper;
+  }
+
+  mouse_x = (current_col * main_square_size) + square_adjust + (main_square_size / 2);
+  mouse_y = (current_row * main_square_size) + square_adjust + (main_square_size / 2);
+  mouse_x_old = mouse_x - 1;
+  mouse_y_old = mouse_y - 1;
+
+  gtk_adjustment_set_value(vadj, target);
+  invalidate_render_caches(FALSE, TRUE, FALSE);
   gtk_widget_queue_draw(main_window);
 }
 
