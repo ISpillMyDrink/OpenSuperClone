@@ -486,9 +486,6 @@ char *default_asclepius_config_filename = "asclepius.cfg";
 int default_window_width = 1350;
 int default_window_height = 670;
 
-int default_window_width = 1150;
-int default_window_height = 690;
-
 void select_file_ccc(void);
 
 void select_ddrescue_file_ccc(void);
