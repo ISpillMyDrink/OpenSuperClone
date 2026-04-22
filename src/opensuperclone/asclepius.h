@@ -32,6 +32,8 @@ struct
     uint8_t channel;
 } asclepius_command;
 
+#define ASCLEPIUS_STATUS_PACKET_SIZE 28
+
 struct
 {
     bool main12v_ocp;
