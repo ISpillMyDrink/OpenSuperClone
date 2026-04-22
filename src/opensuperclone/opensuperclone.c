@@ -205,6 +205,7 @@ int main(int argc, char **argv)
   primary_relay_delay_time_ccc = PRIMARY_RELAY_DELAY_TIME;
   use_rebuild_assist_ccc = false;
   rebuild_assist_enabled_ccc = false;
+  drive_port_ccc = -1;
   use_fpdma_ccc = false;
   wait_for_ds_bit_ccc = false;
   rebuild_assist_data_valid_ccc = false;
@@ -293,6 +294,7 @@ int main(int argc, char **argv)
             {"testskipmb", required_argument, 0, TESTSKIPMB},
             {"testskip", required_argument, 0, TESTSKIP},
             {"testskipfast", required_argument, 0, TESTSKIPFAST},
+            {"port", required_argument, 0, PORT},
             {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
@@ -417,6 +419,22 @@ int main(int argc, char **argv)
       exit(0);
       break;
 
+    case PORT:
+    {
+      char *endptr;
+      long parsed_port = strtol(optarg, &endptr, 0);
+      if (*optarg == '\0' || *endptr != '\0' || parsed_port < 0 || parsed_port > 0x7fffffffL)
+      {
+        fprintf(stderr, "Error: invalid --port value '%s'\n", optarg);
+        command_line_error = true;
+      }
+      else
+      {
+        drive_port_ccc = (int)parsed_port;
+      }
+      break;
+    }
+
     case '?':
       // getopt_long already printed an error message.
       command_line_error = true;
@@ -475,20 +493,6 @@ int main(int argc, char **argv)
 
   else if (command_line_ccc)
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
-    {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
-      {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
-      }
-    }
-
     // get remaining arguments that are not options
     while ((argc - optind) > 0)
     {
@@ -518,17 +522,20 @@ int main(int argc, char **argv)
 
   else
   {
-    arguments_required = 0;
-    if ((argc - optind) != arguments_required)
+    if (superclone_ccc)
     {
-      command_line_error = true;
-      if ((argc - optind) < arguments_required)
+      arguments_required = 0;
+      if ((argc - optind) != arguments_required)
       {
-        fprintf(stderr, "Error: too few arguments\n");
-      }
-      if ((argc - optind) > arguments_required)
-      {
-        fprintf(stderr, "Error: too many arguments\n");
+        command_line_error = true;
+        if ((argc - optind) < arguments_required)
+        {
+          fprintf(stderr, "Error: too few arguments\n");
+        }
+        if ((argc - optind) > arguments_required)
+        {
+          fprintf(stderr, "Error: too many arguments\n");
+        }
       }
     }
 
@@ -1176,6 +1183,7 @@ void help_ccc(void)
   fprintf(stdout, "  -f, --file <file>             %s\n", _("Script file to load and run"));
   fprintf(stdout, "  -i, --indent <spaces>         %s\n", _("Perform indentation adjustment on the script"));
   fprintf(stdout, "  -t, --target <disk>           %s\n", _("Disk to use for passthrough mode"));
+  fprintf(stdout, "      --port <num>              %s\n", _("ATA port to use for direct modes"));
   fprintf(stdout, "      --ata                     %s\n", _("List drives via ATA-passthrough (default)"));
   fprintf(stdout, "      --scsi                    %s\n", _("List drives via SCSI-passthrough"));
   fprintf(stdout, "  -Q, --quiet                   %s\n", _("Suppress some of the output"));
@@ -13742,6 +13750,7 @@ int process_source_ccc(void)
       identify_flags_ccc.ultra_dma_mode4_selected = get_flag_data_from_identify_ccc(88, 12, 12);
       identify_flags_ccc.ultra_dma_mode5_selected = get_flag_data_from_identify_ccc(88, 13, 13);
       identify_flags_ccc.ultra_dma_mode6_selected = get_flag_data_from_identify_ccc(88, 14, 14);
+      identify_flags_ccc.solid_state_drive = get_flag_data_from_identify_ccc(217,0,0) == 1;
       identify_device_data_ccc.lba_supported = identify_flags_ccc.lba_supported;
       identify_device_data_ccc.extended_supported = identify_flags_ccc.extended_support;
       identify_device_data_ccc.drive_locked = identify_flags_ccc.drive_locked;
@@ -13771,6 +13780,7 @@ int process_source_ccc(void)
       identify_device_data_ccc.udma_mode_4_selected = identify_flags_ccc.ultra_dma_mode4_selected;
       identify_device_data_ccc.udma_mode_5_selected = identify_flags_ccc.ultra_dma_mode5_selected;
       identify_device_data_ccc.udma_mode_6_selected = identify_flags_ccc.ultra_dma_mode6_selected;
+      identify_device_data_ccc.solid_state_drive = identify_flags_ccc.solid_state_drive;
       // strncat(identify_device_raw_text_ccc, "#\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       // snprintf(tempstring, sizeof(tempstring), "# lba supported = %s\n", identify_flags_ccc.lba_supported ? "yes" : "no");
       // strncat(identify_device_raw_text_ccc, tempstring, sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
@@ -15517,6 +15527,18 @@ void disable_usb_mass_storage_ccc(void)
         return;
       }
     }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK))
     {
@@ -15536,6 +15558,18 @@ void disable_usb_mass_storage_ccc(void)
       {
         // error copying
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15566,6 +15600,30 @@ void restore_usb_mass_storage_ccc(void)
         return;
       }
     }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist", F_OK))
     {
@@ -15573,6 +15631,30 @@ void restore_usb_mass_storage_ccc(void)
       {
         // error copying
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz");
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        return;
+      }
+    }
+    else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist", F_OK))
+    {
+      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst"))
+      {
+        // error copying
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();

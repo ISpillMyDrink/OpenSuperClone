@@ -46,6 +46,9 @@ target_link_directories(oscviewer PRIVATE ${LIBCONFIG_LIBRARY_DIRS})
 target_compile_options(oscviewer PRIVATE ${LIBCONFIG_CFLAGS_OTHER})
 target_link_libraries(oscviewer ${LIBCONFIG_LIBRARIES})
 
+# Add libm dependency
+target_link_libraries(oscviewer m)
+
 target_compile_options(oscviewer PRIVATE ${CC_OPTIONS})
 
 # Install executable

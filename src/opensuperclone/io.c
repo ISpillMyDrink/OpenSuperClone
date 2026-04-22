@@ -8354,6 +8354,25 @@ int choose_device_ccc(void)
     int keeptrying = 1;
     if (drive_serial_ccc == NULL && !superclone_ccc)
     {
+      if (drive_port_ccc >= 0)
+      {
+        int i;
+        for (i = 0; i < device_count_ccc; i++)
+        {
+          if (port_number_ccc[i] == drive_port_ccc)
+          {
+            choice = i + 1;
+            keeptrying = 0;
+            break;
+          }
+        }
+        if (keeptrying)
+        {
+          fprintf(stderr, "Error: No drive found on port %d.\n", drive_port_ccc);
+          return (-2);
+        }
+      }
+
       while (keeptrying)
       {
         strcpy(raw_value, "");
@@ -8462,6 +8481,25 @@ int choose_device_ccc(void)
     int keeptrying = 1;
     if (drive_serial_ccc == NULL && !superclone_ccc)
     {
+      if (drive_port_ccc >= 0)
+      {
+        int i;
+        for (i = 0; i < device_count_ccc; i++)
+        {
+          if (port_number_ccc[i] == drive_port_ccc)
+          {
+            choice = i + 1;
+            keeptrying = 0;
+            break;
+          }
+        }
+        if (keeptrying)
+        {
+          fprintf(stderr, "Error: No drive found on port %d.\n", drive_port_ccc);
+          return (-2);
+        }
+      }
+
       while (keeptrying)
       {
         strcpy(raw_value, "");
@@ -8567,6 +8605,11 @@ int choose_device_ccc(void)
     char raw_value[32];
     int choice = -1;
     int keeptrying = 1;
+    if (drive_port_ccc >= 0 && !superclone_ccc)
+    {
+      fprintf(stderr, "Error: --port is only valid with --direct or --ahci mode.\n");
+      return (-2);
+    }
     if (drive_serial_ccc == NULL && !superclone_ccc)
     {
       while (keeptrying)

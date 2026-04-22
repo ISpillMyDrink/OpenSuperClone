@@ -7,6 +7,234 @@
 #include "oscviewer.h"
 #include "oscviewer_glade.h"
 
+static const int main_grid_size_values[] = {4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216};
+static const int auto_update_interval_values[] = {0, 5000, 10000, 30000, 60000, 120000, 300000};
+static const int show_timing_values[] = {0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50, 60};
+
+static int find_value_index(const int *values, int count, int value)
+{
+  for (int i = 0; i < count; i++)
+  {
+    if (values[i] == value)
+    {
+      return i;
+    }
+  }
+  return 0;
+}
+
+static void set_combo_active_from_value(GtkWidget *combo, const int *values, int count, int value)
+{
+  if (combo == NULL)
+  {
+    return;
+  }
+  int index = find_value_index(values, count, value);
+  gtk_combo_box_set_active(GTK_COMBO_BOX(combo), index);
+}
+
+static void sync_preference_widgets(void)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  updating_preferences = TRUE;
+
+  if (showgoodcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showgoodcheck), show_good_data ? TRUE : FALSE);
+  }
+  if (showbadcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showbadcheck), show_bad_head ? TRUE : FALSE);
+  }
+  if (showdomaincheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), show_domain ? TRUE : FALSE);
+  }
+  if (followcurrentcheck != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(followcurrentcheck), follow_current_on_update ? TRUE : FALSE);
+  }
+
+  if (autoupdatebuttonoff != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebuttonoff), auto_update_interval == 0);
+  }
+  if (autoupdatebutton5s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton5s), auto_update_interval == 5000);
+  }
+  if (autoupdatebutton10s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton10s), auto_update_interval == 10000);
+  }
+  if (autoupdatebutton30s != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton30s), auto_update_interval == 30000);
+  }
+  if (autoupdatebutton1m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton1m), auto_update_interval == 60000);
+  }
+  if (autoupdatebutton2m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton2m), auto_update_interval == 120000);
+  }
+  if (autoupdatebutton5m != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(autoupdatebutton5m), auto_update_interval == 300000);
+  }
+
+  if (showtimingbuttonoff != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbuttonoff), show_timing == 0);
+  }
+  if (showtimingbutton1 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton1), show_timing == 1);
+  }
+  if (showtimingbutton2 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton2), show_timing == 2);
+  }
+  if (showtimingbutton3 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton3), show_timing == 3);
+  }
+  if (showtimingbutton4 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton4), show_timing == 4);
+  }
+  if (showtimingbutton5 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton5), show_timing == 5);
+  }
+  if (showtimingbutton7 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton7), show_timing == 7);
+  }
+  if (showtimingbutton10 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton10), show_timing == 10);
+  }
+  if (showtimingbutton15 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton15), show_timing == 15);
+  }
+  if (showtimingbutton20 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton20), show_timing == 20);
+  }
+  if (showtimingbutton25 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton25), show_timing == 25);
+  }
+  if (showtimingbutton30 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton30), show_timing == 30);
+  }
+  if (showtimingbutton40 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton40), show_timing == 40);
+  }
+  if (showtimingbutton50 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton50), show_timing == 50);
+  }
+  if (showtimingbutton60 != NULL)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton60), show_timing == 60);
+  }
+
+  set_combo_active_from_value(settings_main_grid_size_combo, main_grid_size_values, (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])), main_grid_size);
+  set_combo_active_from_value(settings_auto_update_combo, auto_update_interval_values, (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])), auto_update_interval);
+  set_combo_active_from_value(settings_show_timing_combo, show_timing_values, (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])), show_timing);
+
+  if (settings_show_good_data_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_good_data_check), show_good_data ? TRUE : FALSE);
+  }
+  if (settings_show_bad_head_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_bad_head_check), show_bad_head ? TRUE : FALSE);
+  }
+  if (settings_show_domain_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_show_domain_check), show_domain ? TRUE : FALSE);
+  }
+  if (settings_follow_current_check != NULL)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings_follow_current_check), follow_current_on_update ? TRUE : FALSE);
+  }
+
+  updating_preferences = FALSE;
+}
+
+static void update_auto_update_label(void)
+{
+  if (auto_update_label == NULL)
+  {
+    return;
+  }
+
+  if (auto_update_interval == 0)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
+  }
+  else if (auto_update_interval == 5000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 seconds"));
+  }
+  else if (auto_update_interval == 10000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("10 seconds"));
+  }
+  else if (auto_update_interval == 30000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("30 seconds"));
+  }
+  else if (auto_update_interval == 60000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("1 minute"));
+  }
+  else if (auto_update_interval == 120000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("2 minutes"));
+  }
+  else if (auto_update_interval == 300000)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 minutes"));
+  }
+  else
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %d ms", _("Auto-Update"), auto_update_interval);
+  }
+
+  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+}
+
+static void apply_auto_update_interval(int interval)
+{
+  auto_update_interval = interval;
+
+  if (autotimer_on)
+  {
+    g_source_remove(timeout_tag);
+    autotimer_on = 0;
+  }
+
+  if (auto_update_interval > 0)
+  {
+    timeout_tag = g_timeout_add(auto_update_interval, (GSourceFunc)reload_file, NULL);
+    autotimer_on = 1;
+  }
+
+  update_auto_update_label();
+}
+
 int main(int argc, char **argv)
 {
   bindtextdomain("oscviewer", OSC_LANG_PATH);
@@ -132,6 +360,62 @@ int main(int argc, char **argv)
   gtk_window_set_title(GTK_WINDOW(settings_window), _("Settings"));
   g_signal_connect(settings_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 
+  settings_view_label = GTK_WIDGET(gtk_builder_get_object(builder, "settings_view_label"));
+  settings_main_grid_size_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_main_grid_size_combo"));
+  settings_auto_update_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_auto_update_combo"));
+  settings_show_good_data_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_good_data_check"));
+  settings_show_bad_head_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_bad_head_check"));
+  settings_show_domain_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_domain_check"));
+  settings_show_timing_combo = GTK_WIDGET(gtk_builder_get_object(builder, "settings_show_timing_combo"));
+  settings_follow_current_check = GTK_WIDGET(gtk_builder_get_object(builder, "settings_follow_current_check"));
+
+  if (settings_main_grid_size_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("4K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("8K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("16K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("32K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("64K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("128K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("256K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("512K"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("1M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("2M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("4M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("8M"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_main_grid_size_combo), _("16M"));
+  }
+
+  if (settings_auto_update_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("Off"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("5 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("10 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("30 seconds"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("1 minute"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("2 minutes"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_auto_update_combo), _("5 minutes"));
+  }
+
+  if (settings_show_timing_combo != NULL)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("Off"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("1"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("2"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("3"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("4"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("5"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("7"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("10"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("15"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("20"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("25"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("30"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("40"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("50"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(settings_show_timing_combo), _("60"));
+  }
+
   // set it to exit if closed
   g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -159,8 +443,7 @@ int main(int argc, char **argv)
   gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
 
   auto_update_label = GTK_WIDGET(gtk_builder_get_object(builder, "auto_update_label"));
-  snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
-  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+  update_auto_update_label();
 
   block_information_label = GTK_WIDGET(gtk_builder_get_object(builder, "block_information_label"));
 
@@ -169,6 +452,7 @@ int main(int argc, char **argv)
   gtk_menu_item_set_label(GTK_MENU_ITEM(optionsmi), _("View"));
 
   // left res menu
+  jumpcurrentmi = GTK_WIDGET(gtk_builder_get_object(builder, "jumpcurrentmi"));
   leftresolutionmi = GTK_WIDGET(gtk_builder_get_object(builder, "leftresolutionmi"));
   leftresbutton1 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton1"));
   leftresbutton2 = GTK_WIDGET(gtk_builder_get_object(builder, "leftresbutton2"));
@@ -383,10 +667,16 @@ int main(int argc, char **argv)
 
   showdomaincheck = GTK_WIDGET(gtk_builder_get_object(builder, "showdomaincheck"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(showdomaincheck), _("Show Domain"));
+  followcurrentcheck = GTK_WIDGET(gtk_builder_get_object(builder, "followcurrentcheck"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(followcurrentcheck), _("Follow Current on Auto-Update"));
 
   if (show_domain)
   {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showdomaincheck), TRUE);
+  }
+  if (follow_current_on_update)
+  {
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(followcurrentcheck), TRUE);
   }
 
   // help menu
@@ -450,6 +740,9 @@ int main(int argc, char **argv)
   gtk_label_set_text(GTK_LABEL(block_color_label), _("Block Colors"));
   gtk_label_set_text(GTK_LABEL(marker_color_label), _("Marker Colors"));
 
+  sync_preference_widgets();
+  apply_auto_update_interval(auto_update_interval);
+
   // add keyboard shortcuts
   GtkAccelGroup *accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(main_window), accel_group);
@@ -460,6 +753,7 @@ int main(int argc, char **argv)
   gtk_widget_add_accelerator(showgoodcheck, "activate", accel_group, GDK_KEY_g, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(showbadcheck, "activate", accel_group, GDK_KEY_b, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(showdomaincheck, "activate", accel_group, GDK_KEY_d, GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(jumpcurrentmi, "activate", accel_group, GDK_KEY_j, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
   // set it to exit if the quit item is selected
   g_signal_connect(G_OBJECT(quitmi), "activate", G_CALLBACK(gtk_main_quit), NULL);
@@ -476,10 +770,20 @@ int main(int argc, char **argv)
   // set it to open the settings window if the settings item is selected
   g_signal_connect(G_OBJECT(settingsmi), "activate", G_CALLBACK(show_settings_window), NULL);
 
+  g_signal_connect(G_OBJECT(settings_main_grid_size_combo), "changed", G_CALLBACK(settings_main_grid_size_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_auto_update_combo), "changed", G_CALLBACK(settings_auto_update_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_show_good_data_check), "toggled", G_CALLBACK(settings_toggle_show_good), NULL);
+  g_signal_connect(G_OBJECT(settings_show_bad_head_check), "toggled", G_CALLBACK(settings_toggle_show_bad), NULL);
+  g_signal_connect(G_OBJECT(settings_show_domain_check), "toggled", G_CALLBACK(settings_toggle_show_domain), NULL);
+  g_signal_connect(G_OBJECT(settings_show_timing_combo), "changed", G_CALLBACK(settings_show_timing_changed), NULL);
+  g_signal_connect(G_OBJECT(settings_follow_current_check), "toggled", G_CALLBACK(settings_toggle_follow_current), NULL);
+
   g_signal_connect(G_OBJECT(leftresbutton1), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(1));
   g_signal_connect(G_OBJECT(leftresbutton2), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(2));
   g_signal_connect(G_OBJECT(leftresbutton3), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(3));
   g_signal_connect(G_OBJECT(leftresbutton4), "activate", G_CALLBACK(change_left_resolution), GINT_TO_POINTER(4));
+
+  g_signal_connect(G_OBJECT(jumpcurrentmi), "activate", G_CALLBACK(jump_to_current), NULL);
 
   g_signal_connect(G_OBJECT(mainresbutton4), "activate", G_CALLBACK(change_main_resolution), GINT_TO_POINTER(4));
   g_signal_connect(G_OBJECT(mainresbutton6), "activate", G_CALLBACK(change_main_resolution), GINT_TO_POINTER(6));
@@ -516,6 +820,7 @@ int main(int argc, char **argv)
   g_signal_connect(G_OBJECT(showbadcheck), "activate", G_CALLBACK(toggle_showbad), NULL);
 
   g_signal_connect(G_OBJECT(showdomaincheck), "activate", G_CALLBACK(toggle_showdomain), NULL);
+  g_signal_connect(G_OBJECT(followcurrentcheck), "activate", G_CALLBACK(toggle_follow_current_menu), NULL);
 
   g_signal_connect(G_OBJECT(showtimingbuttonoff), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(0));
   g_signal_connect(G_OBJECT(showtimingbutton1), "activate", G_CALLBACK(set_show_timing), GINT_TO_POINTER(1));
@@ -617,6 +922,271 @@ int main(int argc, char **argv)
   return 0;
 }
 
+static void clear_render_cache(cairo_surface_t **surface, gint *width, gint *height)
+{
+  if (*surface != NULL)
+  {
+    cairo_surface_destroy(*surface);
+    *surface = NULL;
+  }
+  *width = 0;
+  *height = 0;
+}
+
+static void invalidate_render_caches(gboolean top_dirty, gboolean main_dirty, gboolean left_dirty)
+{
+  if (top_dirty)
+  {
+    top_render_cache_dirty = TRUE;
+  }
+  if (main_dirty)
+  {
+    main_render_cache_dirty = TRUE;
+  }
+  if (left_dirty)
+  {
+    left_render_cache_dirty = TRUE;
+  }
+}
+
+static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int clip_width, int clip_height, gdouble scroll_position)
+{
+  double total_squares = main_grid_size;
+  double pixels = total_squares * main_square_size * main_square_size;
+
+  double x, y, w, l, r, g, b;
+  int max_width = main_scrolled_window_width - 25;
+  if (max_width <= 0)
+  {
+    max_width = 1;
+  }
+  int adjusted_height = (pixels / max_width) + 1;
+  gtk_widget_set_size_request(GTK_WIDGET(main_drawing_area), max_width, adjusted_height + 1);
+
+  get_rgb_color(WHITE);
+  r = rcolor;
+  g = gcolor;
+  b = bcolor;
+  x = 0;
+  y = 0;
+  w = clip_width;
+  l = clip_height;
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, w, l);
+  cairo_fill(cr);
+
+  if (total_size > 0)
+  {
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
+    message_debug(tempmessage, 0);
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "scroll = %f\n", scroll_position);
+    message_debug(tempmessage, 0);
+
+    int scroll_row_start = scroll_position / main_square_size;
+    int scroll_row_end = ((scroll_position + clip_height) / main_square_size) + 1;
+    int columns = main_drawing_area_width / main_square_size;
+    int rows = main_drawing_area_height / main_square_size;
+    int squares = columns * rows;
+    if (columns <= 0 || rows <= 0 || squares <= 0)
+    {
+      return;
+    }
+
+    long long blocks_per_square = total_size / (squares - 1);
+    square_adjust = main_square_size / 32;
+    int adjustment = 1;
+    while (total_size > squares * blocks_per_square)
+    {
+      adjustment++;
+      blocks_per_square = total_size / (squares - adjustment);
+    }
+    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "total_size=%lld, squares*blocks_per_square=%lld\n", total_size, squares * blocks_per_square);
+    message_debug(tempmessage, 0);
+
+    int row_start = scroll_row_start;
+    if (row_start < 0)
+    {
+      row_start = 0;
+    }
+    int row_end = scroll_row_end;
+    if (row_end >= rows)
+    {
+      row_end = rows - 1;
+    }
+
+    for (int i = row_start; i <= row_end; i++)
+    {
+      if (i < scroll_row_start || i > scroll_row_end)
+      {
+        continue;
+      }
+      for (int n = 0; n < columns; n++)
+      {
+        int count = (i * columns) + n;
+        if (count >= squares)
+        {
+          break;
+        }
+
+        int color = 0;
+        int bad_head = 0;
+        int good_data = 0;
+        long long position = count * blocks_per_square;
+        int status_bits = get_block_status(position, blocks_per_square);
+        int time_bits = get_block_timing(position, blocks_per_square);
+        int in_domain = process_domain(position, blocks_per_square, FINISHED, FINISHED);
+        if (status_bits & NONTRIMMED_BIT)
+        {
+          color = nontrimmed_color;
+        }
+        else if (status_bits & NONDIVIDED_BIT)
+        {
+          color = nondivided_color;
+        }
+        else if (status_bits & NONSCRAPED_BIT)
+        {
+          color = nonscraped_color;
+        }
+        else if (status_bits & BAD_BIT)
+        {
+          color = bad_color;
+        }
+        else if (status_bits & NONTRIED_BIT)
+        {
+          color = nontried_color;
+        }
+        else if (status_bits & FINISHED_BIT)
+        {
+          color = good_color;
+        }
+        else if (status_bits & UNKNOWN_BIT)
+        {
+          color = unknown_color;
+        }
+        if (status_bits & BAD_HEAD_BIT)
+        {
+          bad_head = 1;
+        }
+        if (status_bits & FINISHED_BIT)
+        {
+          good_data = 1;
+        }
+        get_rgb_color(color);
+        r = rcolor;
+        g = gcolor;
+        b = bcolor;
+        cairo_set_source_rgb(cr, r, g, b);
+        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust - clip_left, (i * main_square_size) + 1 + square_adjust - clip_top, main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
+        cairo_fill(cr);
+
+        if (bad_head && show_bad_head)
+        {
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(bad_head_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_stroke(cr);
+        }
+
+        if (good_data && show_good_data)
+        {
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(good_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_stroke(cr);
+        }
+
+        if ((time_bits >= show_timing) && show_timing)
+        {
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(time_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_stroke(cr);
+        }
+
+        if ((in_domain) && show_domain)
+        {
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(domain_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_stroke(cr);
+        }
+      }
+    }
+
+    long long position = current_position / blocks_per_square;
+    int current_row = position / columns;
+    int current_col = position % columns;
+    if (current_row >= row_start && current_row <= row_end)
+    {
+      int spot_size = main_square_size - 3;
+      int spot_adjust = 2;
+      get_rgb_color(current_color);
+      r = rcolor;
+      g = gcolor;
+      b = bcolor;
+      cairo_set_source_rgb(cr, r, g, b);
+      cairo_rectangle(cr, (current_col * main_square_size) + spot_adjust - clip_left, (current_row * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+      cairo_stroke(cr);
+    }
+
+    for (int i = row_start; i <= row_end; i++)
+    {
+      if (i < scroll_row_start || i > scroll_row_end)
+      {
+        continue;
+      }
+      for (int n = 0; n < columns; n++)
+      {
+        int count = (i * columns) + n;
+        if (count >= squares)
+        {
+          break;
+        }
+
+        int xl = (n * main_square_size) + square_adjust;
+        int yl = (i * main_square_size) + square_adjust;
+        int xh = xl + main_square_size - (square_adjust * 2);
+        int yh = yl + main_square_size - (square_adjust * 2);
+        if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
+        {
+          int spot_size = main_square_size - 3;
+          int spot_adjust = 2;
+          get_rgb_color(selected_color);
+          r = rcolor;
+          g = gcolor;
+          b = bcolor;
+          cairo_set_source_rgb(cr, r, g, b);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_stroke(cr);
+          get_block_information(blocks_per_square * count, blocks_per_square);
+          mouse_x_old = mouse_x;
+          mouse_y_old = mouse_y;
+        }
+      }
+    }
+  }
+}
+
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge)
 {
   if (event->type == GDK_BUTTON_PRESS)
@@ -627,6 +1197,7 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
       mouse_y = event->y;
       snprintf(tempmessage, TEMP_MESSAGE_SIZE, "x=%d y=%d\n", mouse_x, mouse_y);
       message_debug(tempmessage, 0);
+      invalidate_render_caches(FALSE, TRUE, TRUE);
       gtk_widget_queue_draw(main_window);
     }
   }
@@ -849,231 +1420,48 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
 
 static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
+  double clip_x1 = 0;
+  double clip_y1 = 0;
+  double clip_x2 = 0;
+  double clip_y2 = 0;
+  cairo_clip_extents(cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
+
+  int clip_left = floor(clip_x1);
+  int clip_top = floor(clip_y1);
+  int clip_width = ceil(clip_x2) - clip_left;
+  int clip_height = ceil(clip_y2) - clip_top;
+
+  if (clip_width <= 0 || clip_height <= 0)
+  {
+    return 0;
+  }
+
   double total_squares = main_grid_size;
   double pixels = total_squares * main_square_size * main_square_size;
-
-  double x, y, w, l, r, g, b;
   int max_width = main_scrolled_window_width - 25;
   int adjusted_height = (pixels / max_width) + 1;
   gtk_widget_set_size_request(GTK_WIDGET(main_drawing_area), max_width, adjusted_height + 1);
 
-  // printf("redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
+  gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
+  gint scroll_key = (gint)scroll_position;
 
-  get_rgb_color(WHITE);
-  r = rcolor;
-  g = gcolor;
-  b = bcolor;
-  x = 0;
-  y = 0;
-  w = main_drawing_area_width;
-  l = main_drawing_area_height;
-  cairo_set_source_rgb(cr, r, g, b);
-  cairo_rectangle(cr, x, y, w, l);
-  cairo_fill(cr);
-
-  if (total_size > 0)
+  if (main_render_cache == NULL || main_render_cache_dirty || main_render_cache_width != clip_width || main_render_cache_height != clip_height || main_render_cache_scroll_position != scroll_key || main_render_cache_clip_x != clip_left || main_render_cache_clip_y != clip_top)
   {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "redrawing main width = %d, height = %d\n", main_drawing_area_width, main_drawing_area_height);
-    message_debug(tempmessage, 0);
-    gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "scroll = %f\n", scroll_position);
-    message_debug(tempmessage, 0);
-    int scroll_row_start = scroll_position / main_square_size;
-    int scroll_row_end = scroll_row_start + (main_drawing_vbox_height / main_square_size);
-    int columns = main_drawing_area_width / main_square_size;
-    int rows = main_drawing_area_height / main_square_size;
-    int squares = columns * rows;
-    long long blocks_per_square = total_size / (squares - 1);
-    square_adjust = main_square_size / 32;
-    int adjustment = 1;
-    while (total_size > squares * blocks_per_square)
-    {
-      adjustment++;
-      blocks_per_square = total_size / (squares - adjustment);
-    }
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "total_size=%lld, squares*blocks_per_square=%lld\n", total_size, squares * blocks_per_square);
-    message_debug(tempmessage, 0);
-
-    int count = 0;
-    int i = 0;
-    int n = 0;
-
-    while (count < squares)
-    {
-      if (i >= scroll_row_start && i <= scroll_row_end)
-      {
-        int color = 0;
-        int bad_head = 0;
-        int good_data = 0;
-        long long position = count * blocks_per_square;
-        int status_bits = get_block_status(position, blocks_per_square);
-        int time_bits = get_block_timing(position, blocks_per_square);
-        int in_domain = process_domain(position, blocks_per_square, FINISHED, FINISHED);
-        if (status_bits & NONTRIMMED_BIT)
-        {
-          color = nontrimmed_color;
-        }
-        else if (status_bits & NONDIVIDED_BIT)
-        {
-          color = nondivided_color;
-        }
-        else if (status_bits & NONSCRAPED_BIT)
-        {
-          color = nonscraped_color;
-        }
-        else if (status_bits & BAD_BIT)
-        {
-          color = bad_color;
-        }
-        else if (status_bits & NONTRIED_BIT)
-        {
-          color = nontried_color;
-        }
-        else if (status_bits & FINISHED_BIT)
-        {
-          color = good_color;
-        }
-        else if (status_bits & UNKNOWN_BIT)
-        {
-          color = unknown_color;
-        }
-        if (status_bits & BAD_HEAD_BIT)
-        {
-          bad_head = 1;
-        }
-        if (status_bits & FINISHED_BIT)
-        {
-          good_data = 1;
-        }
-        get_rgb_color(color);
-        r = rcolor;
-        g = gcolor;
-        b = bcolor;
-        cairo_set_source_rgb(cr, r, g, b);
-        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust, (i * main_square_size) + 1 + square_adjust, main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
-        cairo_fill(cr);
-
-        if (bad_head && show_bad_head)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(bad_head_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-        }
-
-        if (good_data && show_good_data)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(good_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-        }
-
-        if ((time_bits >= show_timing) && show_timing)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(time_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-        }
-
-        if ((in_domain) && show_domain)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(domain_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-        }
-      }
-      count++;
-      if (count > squares)
-      {
-        snprintf(tempmessage, TEMP_MESSAGE_SIZE, "main count out of range\n");
-        message_debug(tempmessage, 0);
-        break;
-      }
-      n++;
-      if (n >= columns)
-      {
-        n = 0;
-        i++;
-        if (i >= rows)
-        {
-          snprintf(tempmessage, TEMP_MESSAGE_SIZE, "main rows out of range\n");
-          message_debug(tempmessage, 0);
-          break;
-        }
-      }
-    }
-
-    long long position = current_position / blocks_per_square;
-    count = 0;
-    for (i = 0; i < rows; i++)
-    {
-      for (n = 0; n < columns; n++)
-      {
-        if (position == count)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(current_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-        }
-
-        // int xl = (n * main_square_size) + 1 + square_adjust;
-        // int yl = (i * main_square_size) + 1 + square_adjust;
-        // int xh = xl + main_square_size - 1 - (square_adjust * 2);
-        // int yh = yl + main_square_size - 1 - (square_adjust * 2);
-        int xl = (n * main_square_size) + square_adjust;
-        int yl = (i * main_square_size) + square_adjust;
-        int xh = xl + main_square_size - (square_adjust * 2);
-        int yh = yl + main_square_size - (square_adjust * 2);
-        if (mouse_x != mouse_x_old && mouse_y != mouse_y_old && mouse_x >= xl && mouse_x <= xh && mouse_y >= yl && mouse_y <= yh)
-        {
-          int spot_size = main_square_size - 3;
-          int spot_adjust = 2;
-          get_rgb_color(selected_color);
-          r = rcolor;
-          g = gcolor;
-          b = bcolor;
-          cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust, (i * main_square_size) + spot_adjust, spot_size, spot_size);
-          cairo_stroke(cr);
-          get_block_information(blocks_per_square * count, blocks_per_square);
-          mouse_x_old = mouse_x;
-          mouse_y_old = mouse_y;
-        }
-
-        count++;
-      }
-    }
+    clear_render_cache(&main_render_cache, &main_render_cache_width, &main_render_cache_height);
+    main_render_cache = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, clip_width, clip_height);
+    cairo_t *cache_cr = cairo_create(main_render_cache);
+    render_main_contents(cache_cr, clip_left, clip_top, clip_width, clip_height, scroll_position);
+    cairo_destroy(cache_cr);
+    main_render_cache_dirty = FALSE;
+    main_render_cache_width = clip_width;
+    main_render_cache_height = clip_height;
+    main_render_cache_scroll_position = scroll_key;
+    main_render_cache_clip_x = clip_left;
+    main_render_cache_clip_y = clip_top;
   }
 
+  cairo_set_source_surface(cr, main_render_cache, clip_left, clip_top);
+  cairo_paint(cr);
   return 0;
 }
 
@@ -1274,6 +1662,7 @@ void select_file(void)
       }
     }
 
+    invalidate_render_caches(FALSE, TRUE, TRUE);
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -1319,6 +1708,7 @@ void select_domain(void)
     //   }
     // }
 
+    invalidate_render_caches(FALSE, TRUE, TRUE);
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -1355,6 +1745,7 @@ void select_dmde_domain(void)
       gtk_label_set_text(GTK_LABEL(domain_log_label), tempmessage);
     }
 
+    invalidate_render_caches(FALSE, TRUE, TRUE);
     gtk_widget_queue_draw(main_window);
   }
   gtk_widget_destroy(dialog);
@@ -1391,6 +1782,12 @@ gint reload_file(void)
     }
   }
 
+  if (follow_current_on_update && auto_update_interval > 0)
+  {
+    jump_to_current(NULL, NULL);
+  }
+
+  invalidate_render_caches(FALSE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 
   return 1;
@@ -1398,51 +1795,28 @@ gint reload_file(void)
 
 void set_autoupdate_timer(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (autotimer_on)
   {
     g_source_remove(timeout_tag);
     autotimer_on = 0;
   }
-  int time = GPOINTER_TO_INT(data);
-  if (time > 0)
-  {
-    timeout_tag = g_timeout_add(time, (GSourceFunc)reload_file, NULL);
-    autotimer_on = 1;
-  }
-
-  if (!autotimer_on)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("Off"));
-  }
-  else if (time == 5000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 seconds"));
-  }
-  else if (time == 10000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("10 seconds"));
-  }
-  else if (time == 30000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("30 seconds"));
-  }
-  else if (time == 60000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("1 minute"));
-  }
-  else if (time == 120000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("2 minutes"));
-  }
-  else if (time == 300000)
-  {
-    snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%s: %s", _("Auto-Update"), _("5 minutes"));
-  }
-  gtk_label_set_text(GTK_LABEL(auto_update_label), tempmessage);
+  apply_auto_update_interval(GPOINTER_TO_INT(data));
+  write_config_file();
+  sync_preference_widgets();
 }
 
 void toggle_showbad(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_bad_head = 1;
@@ -1452,11 +1826,19 @@ void toggle_showbad(GtkWidget *w, gpointer data)
     show_bad_head = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void toggle_showgood(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_good_data = 1;
@@ -1466,18 +1848,34 @@ void toggle_showgood(GtkWidget *w, gpointer data)
     show_good_data = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void set_show_timing(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   show_timing = GPOINTER_TO_INT(data);
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void toggle_showdomain(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)))
   {
     show_domain = 1;
@@ -1487,7 +1885,22 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
     show_domain = 0;
   }
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
+}
+
+void toggle_follow_current_menu(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  follow_current_on_update = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
 }
 
 void change_left_resolution(GtkWidget *w, gpointer data)
@@ -1495,6 +1908,7 @@ void change_left_resolution(GtkWidget *w, gpointer data)
   g_print("%d\n", GPOINTER_TO_INT(data));
   left_square_size = GPOINTER_TO_INT(data);
 
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
@@ -1504,15 +1918,194 @@ void change_main_resolution(GtkWidget *w, gpointer data)
   message_debug(tempmessage, 0);
   main_square_size = GPOINTER_TO_INT(data);
 
+  invalidate_render_caches(TRUE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 }
 
 void change_main_grid_size(GtkWidget *w, gpointer data)
 {
+  if (updating_preferences)
+  {
+    return;
+  }
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_grid_size = GPOINTER_TO_INT(data);
 
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_main_grid_size_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])))
+  {
+    return;
+  }
+
+  main_grid_size = main_grid_size_values[index];
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_auto_update_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])))
+  {
+    return;
+  }
+
+  apply_auto_update_interval(auto_update_interval_values[index]);
+  write_config_file();
+  sync_preference_widgets();
+}
+
+void settings_show_timing_changed(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  int index = gtk_combo_box_get_active(GTK_COMBO_BOX(w));
+  if (index < 0 || index >= (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])))
+  {
+    return;
+  }
+
+  show_timing = show_timing_values[index];
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_good(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_good_data = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_bad(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_bad_head = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_show_domain(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  show_domain = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
+}
+
+void settings_toggle_follow_current(GtkWidget *w, gpointer data)
+{
+  if (updating_preferences)
+  {
+    return;
+  }
+
+  follow_current_on_update = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)) ? 1 : 0;
+  write_config_file();
+  sync_preference_widgets();
+}
+
+void jump_to_current(GtkWidget *w, gpointer data)
+{
+  if (total_size <= 0 || main_square_size <= 0 || main_scrolled_window == NULL)
+  {
+    return;
+  }
+
+  int columns = main_drawing_area_width / main_square_size;
+  int rows = main_drawing_area_height / main_square_size;
+  int squares = columns * rows;
+  if (columns <= 0 || rows <= 0 || squares <= 0)
+  {
+    return;
+  }
+
+  long long blocks_per_square = total_size / (squares - 1);
+  int adjustment = 1;
+  while (total_size > squares * blocks_per_square && (squares - adjustment) > 0)
+  {
+    adjustment++;
+    blocks_per_square = total_size / (squares - adjustment);
+  }
+  if (blocks_per_square <= 0)
+  {
+    blocks_per_square = 1;
+  }
+
+  long long current_square = current_position / blocks_per_square;
+  int current_row = current_square / columns;
+  int current_col = current_square % columns;
+  gdouble target = (current_row * main_square_size) - (main_scrolled_window_height / 2.0) + (main_square_size / 2.0);
+
+  GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window));
+  gdouble lower = gtk_adjustment_get_lower(vadj);
+  gdouble upper = gtk_adjustment_get_upper(vadj) - gtk_adjustment_get_page_size(vadj);
+  if (upper < lower)
+  {
+    upper = lower;
+  }
+  if (target < lower)
+  {
+    target = lower;
+  }
+  if (target > upper)
+  {
+    target = upper;
+  }
+
+  mouse_x = (current_col * main_square_size) + square_adjust + (main_square_size / 2);
+  mouse_y = (current_row * main_square_size) + square_adjust + (main_square_size / 2);
+  mouse_x_old = mouse_x - 1;
+  mouse_y_old = mouse_y - 1;
+
+  gtk_adjustment_set_value(vadj, target);
+  invalidate_render_caches(FALSE, TRUE, FALSE);
   gtk_widget_queue_draw(main_window);
 }
 
@@ -3226,6 +3819,7 @@ int print_gui_error_message(char *message, char *title, int type)
 
 void show_settings_window(void)
 {
+  sync_preference_widgets();
   gtk_widget_show_all(settings_window);
 
   GdkRGBA good_color_rgba;
@@ -3357,6 +3951,8 @@ void set_color(GtkWidget *widget, gpointer data)
   }
 
   write_config_file();
+  invalidate_render_caches(TRUE, TRUE, TRUE);
+  gtk_widget_queue_draw(main_window);
 }
 
 void read_config_file(void)
@@ -3460,6 +4056,53 @@ void read_config_file(void)
     }
   }
 
+  // view settings
+  group = config_setting_get_member(root, "view");
+  if (group != NULL)
+  {
+    setting = config_setting_get_member(group, "main_grid_size");
+    if (setting != NULL)
+    {
+      main_grid_size = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "auto_update_interval");
+    if (setting != NULL)
+    {
+      auto_update_interval = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_good_data");
+    if (setting != NULL)
+    {
+      show_good_data = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_bad_head");
+    if (setting != NULL)
+    {
+      show_bad_head = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_timing");
+    if (setting != NULL)
+    {
+      show_timing = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "show_domain");
+    if (setting != NULL)
+    {
+      show_domain = config_setting_get_int(setting);
+    }
+
+    setting = config_setting_get_member(group, "follow_current_on_update");
+    if (setting != NULL)
+    {
+      follow_current_on_update = config_setting_get_int(setting);
+    }
+  }
+
   config_destroy(&config);
 
   fclose(config_file);
@@ -3532,6 +4175,30 @@ void write_config_file(void)
   setting = config_setting_add(group, "selected_color", CONFIG_TYPE_INT);
   config_setting_set_format(setting, CONFIG_FORMAT_HEX);
   config_setting_set_int(setting, selected_color);
+
+  // view settings
+  group = config_setting_add(root, "view", CONFIG_TYPE_GROUP);
+
+  setting = config_setting_add(group, "main_grid_size", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, main_grid_size);
+
+  setting = config_setting_add(group, "auto_update_interval", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, auto_update_interval);
+
+  setting = config_setting_add(group, "show_good_data", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_good_data);
+
+  setting = config_setting_add(group, "show_bad_head", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_bad_head);
+
+  setting = config_setting_add(group, "show_timing", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_timing);
+
+  setting = config_setting_add(group, "show_domain", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, show_domain);
+
+  setting = config_setting_add(group, "follow_current_on_update", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, follow_current_on_update);
 
   config_write(&config, config_file);
 

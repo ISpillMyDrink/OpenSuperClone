@@ -11,16 +11,16 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# OpenSuperClone version 2.5.0
+# OpenSuperClone version 2.5.1
 project(OpenSuperClone
-        VERSION 2.5.0
+        VERSION 2.5.1
         DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C
 )
 
-# OSCDriver version 2.6.6
-set(OSC_DRIVER_VERSION 2.6.6 CACHE STRING "OSCDriver Version")
+# OSCDriver version 2.6.8
+set(OSC_DRIVER_VERSION 2.6.8 CACHE STRING "OSCDriver Version")
 
 # MiniNVMe version 1.0.0
 set(MININVME_VERSION 1.0.0 CACHE STRING "MiniNVMe Version")
@@ -40,13 +40,13 @@ if(DEBUG)
     add_definitions(-DDEBUG)
 endif()
 
-# Copyright year 2024
-set(COPYRIGHT_YEAR 2024 CACHE STRING "Copyright Year")
+# Copyright year 2026
+set(COPYRIGHT_YEAR 2026 CACHE STRING "Copyright Year")
 
 # Path variables for language and script files
 set(OSC_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin/" CACHE STRING "OpenSuperClone Installation Directory")
 set(OSC_SCRIPT_PATH "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/" CACHE STRING "OpenSuperClone Script Directory")
-set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu" CACHE STRING "OpenSuperClone Script Menu File")
+set(OSC_SCRIPT_MENU "${CMAKE_INSTALL_PREFIX}/bin/oscscripts/hddmenu.osc" CACHE STRING "OpenSuperClone Script Menu File")
 set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/locale/" CACHE STRING "OpenSuperClone Language Directory")
 set(OSC_RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/opensuperclone/" CACHE STRING "OpenSuperClone Resource Directory")
 

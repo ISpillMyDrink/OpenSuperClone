@@ -756,7 +756,11 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
 }
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
 static int hddscbd_getgeo(struct block_device *block_device, struct hd_geometry *geo)
+#else
+static int hddscbd_getgeo(struct gendisk *disk, struct hd_geometry *geo)
+#endif
 {
   geo->cylinders = data_device.chs_cylinders;
   geo->heads = data_device.chs_heads;
@@ -1521,7 +1525,9 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.tag_set.queue_depth = 1;
       data_device.tag_set.numa_node = NUMA_NO_NODE;
       data_device.tag_set.cmd_size = sizeof(sblkdev_cmd_t);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 14, 0)
       data_device.tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+#endif
       // data_device.tag_set.driver_data = data_device;
 
       if (blk_mq_alloc_tag_set(&data_device.tag_set))

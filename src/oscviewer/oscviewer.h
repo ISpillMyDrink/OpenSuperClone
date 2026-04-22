@@ -103,6 +103,23 @@ GtkWidget *left_drawing_area;
 GtkWidget *main_scrolled_window;
 GtkWidget *main_drawing_vbox;
 
+// cached render surfaces
+cairo_surface_t *top_render_cache;
+cairo_surface_t *main_render_cache;
+cairo_surface_t *left_render_cache;
+gboolean top_render_cache_dirty;
+gboolean main_render_cache_dirty;
+gboolean left_render_cache_dirty;
+gint top_render_cache_width;
+gint top_render_cache_height;
+gint main_render_cache_width;
+gint main_render_cache_height;
+gdouble main_render_cache_scroll_position;
+gint main_render_cache_clip_x;
+gint main_render_cache_clip_y;
+gint left_render_cache_width;
+gint left_render_cache_height;
+
 // main window widgets
 GtkWidget *progress_log_label;
 GtkWidget *domain_log_label;
@@ -134,6 +151,14 @@ GtkWidget *time_color_label;
 GtkWidget *domain_color_label;
 GtkWidget *block_color_label;
 GtkWidget *marker_color_label;
+GtkWidget *settings_view_label;
+GtkWidget *settings_main_grid_size_combo;
+GtkWidget *settings_auto_update_combo;
+GtkWidget *settings_show_good_data_check;
+GtkWidget *settings_show_bad_head_check;
+GtkWidget *settings_show_domain_check;
+GtkWidget *settings_show_timing_combo;
+GtkWidget *settings_follow_current_check;
 
 // file menu
 GtkWidget *filemenu;
@@ -179,6 +204,7 @@ GtkWidget *mainsizebutton2m;
 GtkWidget *mainsizebutton4m;
 GtkWidget *mainsizebutton8m;
 GtkWidget *mainsizebutton16m;
+GtkWidget *jumpcurrentmi;
 GtkWidget *autoupdatemi;
 GtkWidget *autoupdatemenu;
 GtkWidget *autoupdatebuttonoff;
@@ -190,6 +216,7 @@ GtkWidget *autoupdatebutton2m;
 GtkWidget *autoupdatebutton5m;
 GtkWidget *showbadcheck;
 GtkWidget *showdomaincheck;
+GtkWidget *followcurrentcheck;
 GtkWidget *optionsw;
 GSList *leftresgroup = NULL;
 GSList *mainresgroup = NULL;
@@ -276,12 +303,15 @@ int selected_color = WHITE;
 int time_color = MAGENTA;
 int domain_color = MYBLUE;
 int main_grid_size = MAINGRIDSIZE;
+int auto_update_interval = 0;
 gint timeout_tag = 0;
 int autotimer_on = 0;
 int show_bad_head = 0;
 int show_good_data = 0;
 int show_timing = 0;
 int show_domain = 0;
+int follow_current_on_update = 0;
+gboolean updating_preferences = FALSE;
 int mouse_x = 0;
 int mouse_y = 0;
 int mouse_x_old = 0;
@@ -301,6 +331,10 @@ static gboolean left_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
 static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data);
 
+static void invalidate_render_caches(gboolean top_dirty, gboolean main_dirty, gboolean left_dirty);
+
+static void clear_render_cache(cairo_surface_t **surface, gint *width, gint *height);
+
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data);
 
 void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data);
@@ -315,7 +349,23 @@ void change_main_resolution(GtkWidget *w, gpointer data);
 
 void change_main_grid_size(GtkWidget *w, gpointer data);
 
+void settings_main_grid_size_changed(GtkWidget *w, gpointer data);
+
+void settings_auto_update_changed(GtkWidget *w, gpointer data);
+
+void settings_show_timing_changed(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_good(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_bad(GtkWidget *w, gpointer data);
+
+void settings_toggle_show_domain(GtkWidget *w, gpointer data);
+
+void settings_toggle_follow_current(GtkWidget *w, gpointer data);
+
 void change_left_resolution(GtkWidget *w, gpointer data);
+
+void jump_to_current(GtkWidget *w, gpointer data);
 
 int initialize_memory(void);
 
@@ -360,6 +410,8 @@ void toggle_showgood(GtkWidget *w, gpointer data);
 void set_show_timing(GtkWidget *w, gpointer data);
 
 void toggle_showdomain(GtkWidget *w, gpointer data);
+
+void toggle_follow_current_menu(GtkWidget *w, gpointer data);
 
 int check_log(void);
 

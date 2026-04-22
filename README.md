@@ -36,6 +36,7 @@
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Virtual-Disk-Mode">Virtual Disk Mode</a> for targeted data extraction
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Direct-Modes">Direct AHCI/IDE</a> capability to circumvent OS drivers
 * <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Relay-Operation">USB Relay Control</a> for automatic power cycling of drives
+* <a href="https://github.com/ISpillMyDrink/OpenSuperClone/wiki/Script-Reference">Script Engine</a> for advanced interaction with drives
 
 #### 📋 Planned Changes
 
@@ -55,6 +56,12 @@ Documentation for OpenSuperClone can be found on the <a href="https://github.com
 Note that the Wiki is currently a work-in-progress and incomplete.
 
 ## ✏️ Changelog
+
+#### OpenSuperClone 2.5.1 (Work-In-Progress)
+
+* OSCDriver 2.6.8: add support up to kernel 6.18.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/30">piernov</a>)
+* Add ability to save and load recovery settings, and change default settings for program start
+* OSCViewer: performance improvements and improved UI
 
 #### OpenSuperClone 2.5
 

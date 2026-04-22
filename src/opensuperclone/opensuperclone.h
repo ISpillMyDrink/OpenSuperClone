@@ -23,6 +23,7 @@
 #define USB1PRODUCTID 518
 #define DEBUGOUT 519
 #define VERBOSEOUT 520
+#define PORT 521
 
 #define NONTRIED 0
 #define NONTRIMMED 0x10
@@ -336,6 +337,7 @@ struct
   bool ultra_dma_mode4_selected;      // word 88 bit 12
   bool ultra_dma_mode5_selected;      // word 88 bit 13
   bool ultra_dma_mode6_selected;      // word 88 bit 14
+  bool solid_state_drive;             // word 217 bit 0
 } identify_flags_ccc;
 
 int do_command_line_ccc(void);

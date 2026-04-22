@@ -49,6 +49,12 @@ target_link_libraries(opensuperclone ${GTK3_LIBRARIES})
 # Add LibUSB dependency
 target_link_libraries(opensuperclone ${LIBUSB_LIBRARIES})
 
+# Add libconfig dependency
+target_include_directories(opensuperclone PRIVATE ${LIBCONFIG_INCLUDE_DIRS})
+target_link_directories(opensuperclone PRIVATE ${LIBCONFIG_LIBRARY_DIRS})
+target_compile_options(opensuperclone PRIVATE ${LIBCONFIG_CFLAGS_OTHER})
+target_link_libraries(opensuperclone ${LIBCONFIG_LIBRARIES})
+
 target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})
 
 # Install executable
@@ -75,5 +81,8 @@ install(FILES ${CMAKE_SOURCE_DIR}/res/opensupertool.desktop
 
 # Install resources
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/img
+        DESTINATION share/opensuperclone
+)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/templates
         DESTINATION share/opensuperclone
 )
