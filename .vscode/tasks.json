@@ -26,6 +26,22 @@
             }
         },
         {
+            // Run OpenSuperClone with GDBServer (as root)
+            "label": "🐞 Run OpenSuperClone with GDBServer",
+            "type": "shell",
+            "linux": {
+                "command": "[ -f ./Debug/bin/opensuperclone ] || ./build.sh debug && sudo gdbserver localhost:2345 ${workspaceFolder}/Debug/bin/opensuperclone"
+            }
+        },
+        {
+            // Run OSCViewer with GDBServer
+            "label": "🐞 Run OSCViewer with GDBServer",
+            "type": "shell",
+            "linux": {
+                "command": "[ -f ./Debug/bin/oscviewer ] || ./build.sh debug && gdbserver localhost:2345 ${workspaceFolder}/Debug/bin/opensuperclone"
+            }
+        },
+        {
             //  Build Release.
             "label": "🔧 Build Release",
             "type": "shell",
