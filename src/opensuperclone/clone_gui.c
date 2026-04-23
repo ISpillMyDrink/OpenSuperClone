@@ -3923,6 +3923,8 @@ void open_primary_relay_dialog_ccc(void)
   primary_relay_settings_info_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_settings_info_label"));
   label_current_primary_relay_board_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "label_current_primary_relay_board"));
   data_current_relay_board_a_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "data_current_relay_board_a"));
+  asclepius_relay_source_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_relay_source_label"));
+  asclepius_relay_source_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_relay_source_combobox"));
   primary_relay_board_settings_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_settings_label"));
   primary_relay_activation_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_activation_label"));
   activate_primary_relay1_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay1_checkbutton"));
@@ -3958,6 +3960,12 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_label_ccc), "");
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_info_label_ccc), _("Primary relay board settings"));
   gtk_label_set_text(GTK_LABEL(label_current_primary_relay_board_ccc), _("Current relay board"));
+  gtk_label_set_text(GTK_LABEL(asclepius_relay_source_label_ccc), _("Asclepius Relay Source"));
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("12V"));
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("5V"));
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("USB"));
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("MOLEX"));
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("All"));
   gtk_label_set_text(GTK_LABEL(primary_relay_board_settings_label_ccc), _("Relay board settings"));
   gtk_label_set_text(GTK_LABEL(primary_relay_activation_label_ccc), _("Activation condition"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay1_checkbutton_ccc), _("Energize relay 1"));
@@ -4024,6 +4032,29 @@ void update_primary_relay_settings_from_buttons_ccc(void)
   primary_relay_settings_ccc.deactivate_primary_relay8 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(deactivate_primary_relay8_checkbutton_ccc));
   primary_relay_settings_ccc.primary_relay_activation_time = gtk_spin_button_get_value(GTK_SPIN_BUTTON(primary_relay_energize_time_spinbutton_ccc));
   primary_relay_settings_ccc.primary_relay_delay_time = gtk_spin_button_get_value(GTK_SPIN_BUTTON(primary_relay_delay_time_spinbutton_ccc));
+  if (asclepius_relay_source_combobox_ccc)
+  {
+    int relay_source = gtk_combo_box_get_active(GTK_COMBO_BOX(asclepius_relay_source_combobox_ccc));
+    switch (relay_source)
+    {
+    case 0:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN12V;
+      break;
+    case 1:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN5V;
+      break;
+    case 2:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_USB5V;
+      break;
+    case 3:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MOLEX;
+      break;
+    case 4:
+    default:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_ALL;
+      break;
+    }
+  }
 
   // = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON());
   // = gtk_spin_button_get_value(GTK_SPIN_BUTTON());
@@ -4136,9 +4167,15 @@ void do_test_primary_relay_ccc(void)
 
 int cycle_primary_relay_ccc(void)
 {
+  int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
+  if (asclepius_relay_source < ASCLEPIUS_MAIN12V || asclepius_relay_source > ASCLEPIUS_ALL)
+  {
+    asclepius_relay_source = ASCLEPIUS_ALL;
+  }
+
   if(asclepius_get_connection_status())
   {
-    asclepius_disable_channel(ASCLEPIUS_ALL);
+    asclepius_disable_channel(asclepius_relay_source);
 
     // wait to deactivate
     unsigned int i;
@@ -4148,7 +4185,7 @@ int cycle_primary_relay_ccc(void)
       do_nanosleep_ccc(1000000000);
     }
 
-    asclepius_enable_channel(ASCLEPIUS_ALL);
+    asclepius_enable_channel(asclepius_relay_source);
 
     // wait for delay time
     for (i = primary_relay_delay_time_ccc; i > 0; i--)
@@ -4784,6 +4821,31 @@ void update_primary_relay_button_settings_ccc(void)
   gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(primary_relay_delay_time_spinbutton_ccc), gtk_adjustment_ccc);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(primary_relay_delay_time_spinbutton_ccc), primary_relay_settings_ccc.primary_relay_delay_time);
 
+  int relay_source_index;
+  switch (primary_relay_settings_ccc.asclepius_relay_source)
+  {
+  case ASCLEPIUS_MAIN12V:
+    relay_source_index = 0;
+    break;
+  case ASCLEPIUS_MAIN5V:
+    relay_source_index = 1;
+    break;
+  case ASCLEPIUS_USB5V:
+    relay_source_index = 2;
+    break;
+  case ASCLEPIUS_MOLEX:
+    relay_source_index = 3;
+    break;
+  case ASCLEPIUS_ALL:
+  default:
+    relay_source_index = 4;
+    break;
+  }
+  if (asclepius_relay_source_combobox_ccc)
+  {
+    gtk_combo_box_set_active(GTK_COMBO_BOX(asclepius_relay_source_combobox_ccc), relay_source_index);
+  }
+
   // gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON (), primary_relay_settings_ccc. );
 
   // gtk_adjustment_ccc = (GtkAdjustment *) gtk_adjustment_new (0, 1, 1, 1, 1, 0);
@@ -5232,9 +5294,39 @@ void clear_usbr1_ccc(void)
 
 void do_activate_primary_relay_ccc(void)
 {
+  if (asclepius_relay_source_combobox_ccc)
+  {
+    int relay_source = gtk_combo_box_get_active(GTK_COMBO_BOX(asclepius_relay_source_combobox_ccc));
+    switch (relay_source)
+    {
+    case 0:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN12V;
+      break;
+    case 1:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN5V;
+      break;
+    case 2:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_USB5V;
+      break;
+    case 3:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MOLEX;
+      break;
+    case 4:
+    default:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_ALL;
+      break;
+    }
+  }
+
+  int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
+  if (asclepius_relay_source < ASCLEPIUS_MAIN12V || asclepius_relay_source > ASCLEPIUS_ALL)
+  {
+    asclepius_relay_source = ASCLEPIUS_ALL;
+  }
+
   if(asclepius_get_connection_status())
   {
-    asclepius_disable_channel(ASCLEPIUS_ALL);
+    asclepius_disable_channel(asclepius_relay_source);
 
     return;
   }
@@ -5301,9 +5393,39 @@ void do_activate_primary_relay_ccc(void)
 
 void do_deactivate_primary_relay_ccc(void)
 {
+  if (asclepius_relay_source_combobox_ccc)
+  {
+    int relay_source = gtk_combo_box_get_active(GTK_COMBO_BOX(asclepius_relay_source_combobox_ccc));
+    switch (relay_source)
+    {
+    case 0:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN12V;
+      break;
+    case 1:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MAIN5V;
+      break;
+    case 2:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_USB5V;
+      break;
+    case 3:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_MOLEX;
+      break;
+    case 4:
+    default:
+      primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_ALL;
+      break;
+    }
+  }
+
+  int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
+  if (asclepius_relay_source < ASCLEPIUS_MAIN12V || asclepius_relay_source > ASCLEPIUS_ALL)
+  {
+    asclepius_relay_source = ASCLEPIUS_ALL;
+  }
+
   if(asclepius_get_connection_status())
   {
-    asclepius_enable_channel(ASCLEPIUS_ALL);
+    asclepius_enable_channel(asclepius_relay_source);
 
     return;
   }
@@ -5370,9 +5492,15 @@ void do_deactivate_primary_relay_ccc(void)
 
 void do_activate_primary_relay_main_ccc(void)
 {
+  int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
+  if (asclepius_relay_source < ASCLEPIUS_MAIN12V || asclepius_relay_source > ASCLEPIUS_ALL)
+  {
+    asclepius_relay_source = ASCLEPIUS_ALL;
+  }
+
   if(asclepius_get_connection_status())
   {
-    asclepius_disable_channel(ASCLEPIUS_ALL);
+    asclepius_disable_channel(asclepius_relay_source);
 
     return;
   }
@@ -5397,9 +5525,15 @@ void do_activate_primary_relay_main_ccc(void)
 
 void do_deactivate_primary_relay_main_ccc(void)
 {
+  int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
+  if (asclepius_relay_source < ASCLEPIUS_MAIN12V || asclepius_relay_source > ASCLEPIUS_ALL)
+  {
+    asclepius_relay_source = ASCLEPIUS_ALL;
+  }
+
   if(asclepius_get_connection_status())
   {
-    asclepius_enable_channel(ASCLEPIUS_ALL);
+    asclepius_enable_channel(asclepius_relay_source);
 
     return;
   }
@@ -6157,7 +6291,17 @@ void read_config_file_with_name_ccc(char* filename)
     if (setting != NULL)
     {
       primary_relay_settings_ccc.primary_relay_delay_time = config_setting_get_int64(setting);
-    } 
+    }
+
+    setting = config_setting_get_member(group, "asclepius_relay_source");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_relay_source = config_setting_get_int(setting);
+      if (primary_relay_settings_ccc.asclepius_relay_source < ASCLEPIUS_MAIN12V || primary_relay_settings_ccc.asclepius_relay_source > ASCLEPIUS_ALL)
+      {
+        primary_relay_settings_ccc.asclepius_relay_source = ASCLEPIUS_ALL;
+      }
+    }
 
     // setting = config_setting_get_member(group, "primary_relay_name");;
     // if (setting != NULL)
@@ -6552,6 +6696,9 @@ void write_config_file_with_name_ccc(char* filename)
 
   setting = config_setting_add(group, "primary_relay_delay_time", CONFIG_TYPE_INT64);
   config_setting_set_int64(setting, primary_relay_settings_ccc.primary_relay_delay_time);
+
+  setting = config_setting_add(group, "asclepius_relay_source", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_relay_source);
 
   // setting = config_setting_add(group, "primary_relay_name", CONFIG_TYPE_STRING);
   // config_setting_set_string(setting, primary_relay_settings_ccc.primary_relay_name);

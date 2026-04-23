@@ -357,6 +357,8 @@ GtkWidget *primary_relay_settings_label_ccc;
 GtkWidget *primary_relay_settings_info_label_ccc;
 GtkWidget *label_current_primary_relay_board_ccc;
 GtkWidget *data_current_relay_board_a_ccc;
+GtkWidget *asclepius_relay_source_label_ccc;
+GtkWidget *asclepius_relay_source_combobox_ccc;
 GtkWidget *primary_relay_board_settings_label_ccc;
 GtkWidget *primary_relay_activation_label_ccc;
 GtkWidget *activate_primary_relay1_checkbutton_ccc;

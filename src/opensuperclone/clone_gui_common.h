@@ -270,6 +270,7 @@ struct
   bool deactivate_primary_relay8;
   unsigned long long primary_relay_activation_time;
   unsigned long long primary_relay_delay_time;
+  int asclepius_relay_source;
   char primary_relay_name[MAX_RELAY_NAME_LENGTH];
 } primary_relay_settings_ccc;
 

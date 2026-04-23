@@ -7867,6 +7867,40 @@ no data</property>
                                       </packing>
                                     </child>
                                     <child>
+                                      <object class="GtkFrame" id="frame_asclepius_relay_source">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label-xalign">0</property>
+                                        <property name="shadow-type">in</property>
+                                        <child>
+                                          <object class="GtkAlignment" id="alignment_asclepius_relay_source">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="left-padding">12</property>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="asclepius_relay_source_combobox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel" id="asclepius_relay_source_label">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">asclepius relay source</property>
+                                            <property name="use-markup">True</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">4</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <object class="GtkHBox" id="hbox36">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
@@ -7947,7 +7981,7 @@ no data</property>
                                       <packing>
                                         <property name="expand">True</property>
                                         <property name="fill">True</property>
-                                        <property name="position">4</property>
+                                        <property name="position">5</property>
                                       </packing>
                                     </child>
                                   </object>
