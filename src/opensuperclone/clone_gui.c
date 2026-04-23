@@ -2215,7 +2215,7 @@ void set_disconnected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), TRUE);
-  if(usbr1_chosen_ccc)
+  if(usbr1_chosen_ccc || asclepius_get_connection_status())
   {
     gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
