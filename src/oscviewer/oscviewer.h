@@ -399,7 +399,7 @@ int find_domain_block(long long position);
 
 int delete_domain_line(int line);
 
-gint reload_file(void);
+gboolean reload_file(gpointer data);
 
 void set_autoupdate_timer(GtkWidget *w, gpointer data);
 

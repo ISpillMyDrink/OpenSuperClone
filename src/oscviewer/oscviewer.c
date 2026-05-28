@@ -228,7 +228,7 @@ static void apply_auto_update_interval(int interval)
 
   if (auto_update_interval > 0)
   {
-    timeout_tag = g_timeout_add(auto_update_interval, (GSourceFunc)reload_file, NULL);
+    timeout_tag = g_timeout_add(auto_update_interval, reload_file, NULL);
     autotimer_on = 1;
   }
 
@@ -1189,6 +1189,9 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
 
 static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWindowEdge edge)
 {
+  (void)widget;
+  (void)edge;
+
   if (event->type == GDK_BUTTON_PRESS)
   {
     if (event->button == 1)
@@ -1206,6 +1209,9 @@ static gboolean on_button_press(GtkWidget *widget, GdkEventButton *event, GdkWin
 
 static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
+  (void)self;
+  (void)user_data;
+
   double x, y, w, l, r, g, b;
 
   get_rgb_color(WHITE);
@@ -1420,6 +1426,9 @@ static gboolean top_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer 
 
 static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
+  (void)self;
+  (void)user_data;
+
   double clip_x1 = 0;
   double clip_y1 = 0;
   double clip_x2 = 0;
@@ -1467,6 +1476,9 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
 static gboolean left_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer user_data)
 {
+  (void)self;
+  (void)user_data;
+
   double x, y, w, l, r, g, b;
 
   get_rgb_color(WHITE);
@@ -1582,6 +1594,9 @@ static gboolean left_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
 
 void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
+  (void)widget;
+  (void)data;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "top_drawing_area width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
   top_drawing_area_width = allocation->width;
@@ -1590,6 +1605,9 @@ void getsize_top_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void
 
 void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
+  (void)widget;
+  (void)data;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "main drawing area width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
   main_drawing_area_width = allocation->width;
@@ -1598,6 +1616,9 @@ void getsize_main_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
 
 void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
+  (void)widget;
+  (void)data;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "main drawing vbox width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
   main_drawing_vbox_width = allocation->width;
@@ -1606,6 +1627,9 @@ void getsize_main_drawing_vbox(GtkWidget *widget, GtkAllocation *allocation, voi
 
 void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
+  (void)widget;
+  (void)data;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "main_scrolled_window width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
   main_scrolled_window_width = allocation->width;
@@ -1614,6 +1638,9 @@ void getsize_main_scrolled_window(GtkWidget *widget, GtkAllocation *allocation, 
 
 void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, void *data)
 {
+  (void)widget;
+  (void)data;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "left drawing area width = %d, height = %d\n", allocation->width, allocation->height);
   message_debug(tempmessage, 0);
   left_drawing_area_width = allocation->width;
@@ -1751,8 +1778,10 @@ void select_dmde_domain(void)
   gtk_widget_destroy(dialog);
 }
 
-gint reload_file(void)
+gboolean reload_file(gpointer data)
 {
+  (void)data;
+
   printf("%s\n", log_file);
   total_size = 0;
   int ret = read_log_file(log_file);
@@ -1790,11 +1819,13 @@ gint reload_file(void)
   invalidate_render_caches(FALSE, TRUE, TRUE);
   gtk_widget_queue_draw(main_window);
 
-  return 1;
+  return TRUE;
 }
 
 void set_autoupdate_timer(GtkWidget *w, gpointer data)
 {
+  (void)w;
+
   if (updating_preferences)
   {
     return;
@@ -1812,6 +1843,8 @@ void set_autoupdate_timer(GtkWidget *w, gpointer data)
 
 void toggle_showbad(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1834,6 +1867,8 @@ void toggle_showbad(GtkWidget *w, gpointer data)
 
 void toggle_showgood(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1856,6 +1891,8 @@ void toggle_showgood(GtkWidget *w, gpointer data)
 
 void set_show_timing(GtkWidget *w, gpointer data)
 {
+  (void)w;
+
   if (updating_preferences)
   {
     return;
@@ -1871,6 +1908,8 @@ void set_show_timing(GtkWidget *w, gpointer data)
 
 void toggle_showdomain(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1893,6 +1932,8 @@ void toggle_showdomain(GtkWidget *w, gpointer data)
 
 void toggle_follow_current_menu(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1905,6 +1946,8 @@ void toggle_follow_current_menu(GtkWidget *w, gpointer data)
 
 void change_left_resolution(GtkWidget *w, gpointer data)
 {
+  (void)w;
+
   g_print("%d\n", GPOINTER_TO_INT(data));
   left_square_size = GPOINTER_TO_INT(data);
 
@@ -1914,6 +1957,8 @@ void change_left_resolution(GtkWidget *w, gpointer data)
 
 void change_main_resolution(GtkWidget *w, gpointer data)
 {
+  (void)w;
+
   snprintf(tempmessage, TEMP_MESSAGE_SIZE, "%d\n", GPOINTER_TO_INT(data));
   message_debug(tempmessage, 0);
   main_square_size = GPOINTER_TO_INT(data);
@@ -1924,6 +1969,8 @@ void change_main_resolution(GtkWidget *w, gpointer data)
 
 void change_main_grid_size(GtkWidget *w, gpointer data)
 {
+  (void)w;
+
   if (updating_preferences)
   {
     return;
@@ -1941,6 +1988,8 @@ void change_main_grid_size(GtkWidget *w, gpointer data)
 
 void settings_main_grid_size_changed(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1961,6 +2010,8 @@ void settings_main_grid_size_changed(GtkWidget *w, gpointer data)
 
 void settings_auto_update_changed(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1979,6 +2030,8 @@ void settings_auto_update_changed(GtkWidget *w, gpointer data)
 
 void settings_show_timing_changed(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -1999,6 +2052,8 @@ void settings_show_timing_changed(GtkWidget *w, gpointer data)
 
 void settings_toggle_show_good(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -2013,6 +2068,8 @@ void settings_toggle_show_good(GtkWidget *w, gpointer data)
 
 void settings_toggle_show_bad(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -2027,6 +2084,8 @@ void settings_toggle_show_bad(GtkWidget *w, gpointer data)
 
 void settings_toggle_show_domain(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -2041,6 +2100,8 @@ void settings_toggle_show_domain(GtkWidget *w, gpointer data)
 
 void settings_toggle_follow_current(GtkWidget *w, gpointer data)
 {
+  (void)data;
+
   if (updating_preferences)
   {
     return;
@@ -2053,6 +2114,9 @@ void settings_toggle_follow_current(GtkWidget *w, gpointer data)
 
 void jump_to_current(GtkWidget *w, gpointer data)
 {
+  (void)w;
+  (void)data;
+
   if (total_size <= 0 || main_square_size <= 0 || main_scrolled_window == NULL)
   {
     return;
