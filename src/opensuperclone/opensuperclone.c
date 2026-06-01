@@ -822,7 +822,7 @@ int begin_driver_ccc(void)
 
   int error = 0;
   int stop = 0;
-  int n = 0;
+  // int n = 0;
   last_small_read_size_ccc = 0;
   last_big_read_size_ccc = 0;
   last_actual_read_size_ccc = 0;
@@ -830,7 +830,7 @@ int begin_driver_ccc(void)
   write_ctrl_data_ccc(CTRL_DATA_READY, 0);
   while (1)
   {
-    n++;
+    // n++;
     snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Idle"));
 
     if (aggressive_driver_ccc)
@@ -14168,7 +14168,7 @@ int extract_smart_data_ccc(void)
     if (threshold_data_valid && id > 0)
     {
       int tcount = 0;
-      int toffset = 2;
+      // int toffset = 2;
       while (tcount < 30)
       {
         uint8_t tid;
@@ -14177,7 +14177,7 @@ int extract_smart_data_ccc(void)
         {
           memcpy(&threshold, threshold_data + offset + 1, 1);
         }
-        toffset += 12;
+        // toffset += 12;
         tcount++;
       }
     }

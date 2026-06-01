@@ -9552,11 +9552,11 @@ int wait_not_busy_or_drq_ccc(unsigned long long time, int check)
   int drq = 1;
   int err = 0;
   int ncq = 0;
-  long long busycount = 0;
-  long long drqcount = 0;
-  long long errcount = 0;
-  long long ncqcount = 0;
-  long long dscount = 0;
+  // long long busycount = 0;
+  // long long drqcount = 0;
+  // long long errcount = 0;
+  // long long ncqcount = 0;
+  // long long dscount = 0;
   if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
   {
     ncq = 1;
@@ -9598,29 +9598,29 @@ int wait_not_busy_or_drq_ccc(unsigned long long time, int check)
       memcpy(&ata_error_ccc, &current_error, 1);
       memcpy(&ata_status_ccc, &current_status, 1);
       memcpy(&io_singlebyte_ccc, port_virt_addr_ccc + 0x34, 1);
-      if (io_singlebyte_ccc)
-      {
-        dscount++;
-      }
-      if (busy)
-      {
-        busycount++;
-      }
-      if (drq)
-      {
-        drqcount++;
-      }
-      if (err)
-      {
-        errcount++;
-      }
+      // if (io_singlebyte_ccc)
+      // {
+      //   dscount++;
+      // }
+      // if (busy)
+      // {
+      //   busycount++;
+      // }
+      // if (drq)
+      // {
+      //   drqcount++;
+      // }
+      // if (err)
+      // {
+      //   errcount++;
+      // }
       if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
       {
-        ncq = io_singlebyte_ccc & 1;
-        if (ncq)
-        {
-          ncqcount++;
-        }
+        // ncq = io_singlebyte_ccc & 1;
+        // if (ncq)
+        // {
+        //   ncqcount++;
+        // }
         if (err)
         {
           // timeout = 4;
@@ -9668,12 +9668,12 @@ int wait_drdy_not_busy_or_drq_ccc(unsigned long long time, int check)
   int drq = 1;
   int err = 0;
   int ncq = 0;
-  long long busycount = 0;
-  long long drdycount = 0;
-  long long drqcount = 0;
-  long long errcount = 0;
-  long long ncqcount = 0;
-  long long dscount = 0;
+  // long long busycount = 0;
+  // long long drdycount = 0;
+  // long long drqcount = 0;
+  // long long errcount = 0;
+  // long long ncqcount = 0;
+  // long long dscount = 0;
   if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
   {
     ncq = 1;
@@ -9716,33 +9716,33 @@ int wait_drdy_not_busy_or_drq_ccc(unsigned long long time, int check)
       memcpy(&ata_error_ccc, &current_error, 1);
       memcpy(&ata_status_ccc, &current_status, 1);
       memcpy(&io_singlebyte_ccc, port_virt_addr_ccc + 0x34, 1);
-      if (io_singlebyte_ccc)
-      {
-        dscount++;
-      }
-      if (busy)
-      {
-        busycount++;
-      }
-      if (!drdy)
-      {
-        drdycount++;
-      }
-      if (drq)
-      {
-        drqcount++;
-      }
-      if (err)
-      {
-        errcount++;
-      }
+      // if (io_singlebyte_ccc)
+      // {
+      //   dscount++;
+      // }
+      // if (busy)
+      // {
+      //   busycount++;
+      // }
+      // if (!drdy)
+      // {
+      //   drdycount++;
+      // }
+      // if (drq)
+      // {
+      //   drqcount++;
+      // }
+      // if (err)
+      // {
+      //   errcount++;
+      // }
       if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
       {
-        ncq = io_singlebyte_ccc & 1;
-        if (ncq)
-        {
-          ncqcount++;
-        }
+        // ncq = io_singlebyte_ccc & 1;
+        // if (ncq)
+        // {
+        //   ncqcount++;
+        // }
         if (err)
         {
           // timeout = 4;
