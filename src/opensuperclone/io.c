@@ -6496,7 +6496,7 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
         port_address_ccc[device_count_ccc] = potential_hba_start + 0x100 + (i * 0x80);
         memcpy(&io_doubleword_ccc, port_virt_addr_ccc + 0x128 + (i * 0x80), 4);
         port_status_ccc[device_count_ccc] = io_doubleword_ccc;
-        if (port_status_ccc == 0)
+        if (port_status_ccc[device_count_ccc] == 0)
         {
           device_present_ccc[device_count_ccc] = false;
         }
