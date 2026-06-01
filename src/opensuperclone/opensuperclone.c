@@ -1715,7 +1715,7 @@ int read_log_file_ccc(char *log_file)
             }
             else
             {
-              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "");
+              current_status_string_ccc[0] = '\0';
             }
           }
           found_current = 1;
@@ -10275,7 +10275,7 @@ int write_chunk_ccc(long long position, int size)
 
   int sector_size_bak = sector_size_ccc;
   long long main_buffer_size_bak = ccc_main_buffer_size_ccc;
-  void *temp_buffer;
+  void *temp_buffer = NULL;
   if (output_sector_size_adjustment_ccc != 0)
   {
     // sanity check
@@ -10290,6 +10290,16 @@ int write_chunk_ccc(long long position, int size)
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     temp_buffer = malloc(main_buffer_size_bak);
+    if (!temp_buffer)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
+      message_error_ccc(tempmessage_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nallocation failure");
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      return OUTPUT_DEVICE_ERROR_RETURN_CODE;
+    }
     memcpy(temp_buffer, ccc_buffer_ccc, main_buffer_size_bak);
     sector_size_ccc = sector_size_ccc + output_sector_size_adjustment_ccc;
     ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
