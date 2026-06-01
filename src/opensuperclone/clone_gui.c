@@ -1031,7 +1031,7 @@ static void load_log_file_ccc(char *log_file)
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   log_file_ccc = malloc(1024);
   memset(log_file_ccc, 0, 1024);
-  strncpy(log_file_ccc, log_file, 1024);
+  snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
 
   // initialize memory
@@ -1090,7 +1090,7 @@ static void load_ddrescue_log_file_ccc(char *log_file)
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   ddilog_file_ccc = malloc(1024);
   memset(ddilog_file_ccc, 0, 1024);
-  strncpy(ddilog_file_ccc, log_file, 1024);
+  snprintf(ddilog_file_ccc, 1024, "%s", log_file);
   printf("%s\n", ddilog_file_ccc);
 
   // initialize memory
@@ -1223,7 +1223,7 @@ static void new_log_file_ccc(char *log_file)
 {
   log_file_ccc = malloc(1024);
   memset(log_file_ccc, 0, 1024);
-  strncpy(log_file_ccc, log_file, 1024);
+  snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
 
   clear_domain_ccc();

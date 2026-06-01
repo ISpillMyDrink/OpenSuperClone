@@ -7932,7 +7932,7 @@ int identify_device_passthrough_ccc(char *name, int count)
   if (disk_fd == -1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "Error(%s)", strerror(errno));
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (1);
   }
 
@@ -8132,7 +8132,7 @@ int identify_device_scsi_ccc(char *name, int count)
 
   if (command_status_ccc != 0)
   {
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     close(disk_fd);
     return (2);
   }
@@ -8140,7 +8140,7 @@ int identify_device_scsi_ccc(char *name, int count)
   if (sense_key_ccc > 1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "sense-data %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     close(disk_fd);
     return (3);
   }
