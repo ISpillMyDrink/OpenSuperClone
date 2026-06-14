@@ -1295,20 +1295,32 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     sgio4_obj = kmalloc(sizeof(struct sg_io_v4), GFP_KERNEL);
     if (copy_from_user(sgio_obj, (void *)arg, sizeof(struct sg_io_hdr)))
     {
-      printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+      printk(KERN_WARNING "oscdriver: failed to copy sg_io_hdr\n");
+      kfree(sgio4_obj);
+      kfree(sgio_obj);
+      next_queue();
+      return -EFAULT;
     }
     // SG_IO v4
     if (sgio_obj->interface_id == 'Q')
     {
       if (copy_from_user(sgio4_obj, (void *)arg, sizeof(struct sg_io_v4)))
       {
-        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy sg_io_v4\n");
+        kfree(sgio4_obj);
+        kfree(sgio_obj);
+        next_queue();
+        return -EFAULT;
       }
       // printk(KERN_INFO "osc_block_device interface_id %c\n", sgio4_obj->guard);    //debug
       // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio4_obj->request_len);    //debug
       if (copy_from_user(cdb, (const void *)(uintptr_t)sgio4_obj->request, sgio4_obj->request_len))
       {
-        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy v4 cdb\n");
+        kfree(sgio4_obj);
+        kfree(sgio_obj);
+        next_queue();
+        return -EFAULT;
       }
       if (0)
       {
@@ -1439,7 +1451,11 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio_obj->cmd_len);    //debug
       if (copy_from_user(cdb, sgio_obj->cmdp, sgio_obj->cmd_len))
       {
-        printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        printk(KERN_WARNING "oscdriver: failed to copy v3 cdb\n");
+        kfree(sgio4_obj);
+        kfree(sgio_obj);
+        next_queue();
+        return -EFAULT;
       }
       if (0)
       {
@@ -1744,7 +1760,9 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
     if (copy_from_user(control_obj, (void *)arg, sizeof(struct control_data)))
     {
-      printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+      printk(KERN_WARNING "oscdriver: failed to copy control data from user\n");
+      kfree(control_obj);
+      return -EFAULT;
     }
 
     if (control_obj->command == START_DRIVE_COMMAND)
