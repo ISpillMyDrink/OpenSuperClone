@@ -84,6 +84,25 @@
 #define SCSI_READCAPACITY16SERVICEACTION 0X10
 #define SCSI_WRITE10 0x2A
 #define SCSI_WRITE16 0x8A
+#define SCSI_TEST_UNIT_READY 0x00
+#define SCSI_REZERO_UNIT 0x01
+#define SCSI_REQUEST_SENSE 0x03
+#define SCSI_FORMAT_UNIT 0x04
+#define SCSI_START_STOP_UNIT 0x1B
+#define SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL 0x1E
+#define SCSI_READ_FORMAT_CAPACITIES 0x23
+#define SCSI_MODE_SENSE6 0x1A
+#define SCSI_MODE_SENSE10 0x5A
+#define SCSI_MODE_SELECT6 0x15
+#define SCSI_MODE_SELECT10 0x55
+#define SCSI_SYNCHRONIZE_CACHE10 0x35
+#define SCSI_SYNCHRONIZE_CACHE16 0x91
+#define SCSI_VERIFY10 0x2F
+#define SCSI_VERIFY16 0x8F
+#define SCSI_READ_DEFECT_DATA10 0x37
+#define SCSI_READ_DEFECT_DATA12 0xB7
+#define SCSI_SERVICE_ACTION_IN 0x9E
+#define SCSI_REPORT_LUNS 0xA0
 
 #define LOCAL_DEBUG 0
 #define LOCAL_REPORT()                                      \
@@ -958,6 +977,138 @@ static int process_inquiry(const unsigned char *cdb, unsigned char *buffer, cons
   return real_len;
 }
 
+static int process_request_sense(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 18;
+  unsigned char sbuf[18];
+  memset(sbuf, 0, sizeof(sbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  sbuf[0] = 0x70;          // current error, no sense key
+  sbuf[1] = 0;             // obsolete
+  sbuf[2] = 0x00;          // NO SENSE
+  sbuf[7] = 10;            // additional sense length
+  // bytes 8-17 = zeroed (no information, no CSG, no ASC/ASCQ)
+  if (copy_to_user(buffer, sbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
+static int process_mode_sense6(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 4;
+  unsigned char mbuf[4];
+  memset(mbuf, 0, sizeof(mbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  mbuf[0] = real_len - 1;  // mode data length (does not include this byte)
+  mbuf[1] = 0;             // medium type
+  mbuf[2] = 0x80;          // device-specific parameter: read-only
+  mbuf[3] = 0;             // block descriptor length
+  if (copy_to_user(buffer, mbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
+static int process_mode_sense10(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 8;
+  unsigned char mbuf[8];
+  memset(mbuf, 0, sizeof(mbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  mbuf[0] = 0;             // mode data length (MSB)
+  mbuf[1] = real_len - 2;  // mode data length (LSB), does not include these 2 bytes
+  mbuf[2] = 0;             // medium type
+  mbuf[3] = 0x80;          // device-specific parameter: read-only
+  mbuf[4] = 0;             // reserved
+  mbuf[5] = 0;             // reserved
+  mbuf[6] = 0;             // block descriptor length (MSB)
+  mbuf[7] = 0;             // block descriptor length (LSB)
+  if (copy_to_user(buffer, mbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
+static int process_read_format_capacities(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 12;
+  unsigned char fbuf[12];
+  memset(fbuf, 0, sizeof(fbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  // capacity list header
+  fbuf[0] = 0;             // reserved
+  fbuf[1] = 0;             // reserved
+  fbuf[2] = 0;             // reserved
+  fbuf[3] = 8;             // capacity list length
+  // current capacity descriptor
+  fbuf[4] = 0;             // reserved
+  fbuf[5] = 0x10;          // formattable, unformatted
+  fbuf[6] = 0;
+  fbuf[7] = 0;             // number of blocks (MSB)
+  fbuf[8] = 0;
+  fbuf[9] = 0;
+  fbuf[10] = 0;
+  fbuf[11] = 0;            // number of blocks (LSB) -- 0 = unknown
+  if (copy_to_user(buffer, fbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
+static int process_read_defect_data12(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 8;
+  unsigned char dbuf[8];
+  memset(dbuf, 0, sizeof(dbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  // defect list header, P/G list format, no entries
+  dbuf[0] = 0;             // reserved
+  dbuf[1] = 0;             // reserved
+  dbuf[2] = 0;             // reserved
+  dbuf[3] = 0;             // reserved
+  dbuf[4] = 0x20;          // P/G list format (bit 5 = 1)
+  dbuf[5] = 0;             // reserved
+  dbuf[6] = 0;             // defect list length (MSB)
+  dbuf[7] = 0;             // defect list length (LSB), zero = no entries
+  if (copy_to_user(buffer, dbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
+static int process_report_luns(const unsigned char *cdb, unsigned char *buffer, const int max_len)
+{
+  int real_len = 16;
+  unsigned char lbuf[16];
+  memset(lbuf, 0, sizeof(lbuf));
+  if (max_len < real_len)
+    return -EINVAL;
+  // REPORT LUNS data: one LUN (LUN 0)
+  lbuf[0] = 0;             // LUN list length (MSB)
+  lbuf[1] = 0;             // LUN list length
+  lbuf[2] = 0;             // LUN list length
+  lbuf[3] = 8;             // LUN list length (LSB), 8 bytes for one LUN
+  // LUN 0: addressing method=peripheral, TID=0, LUN=0
+  lbuf[4] = 0; lbuf[5] = 0; lbuf[6] = 0; lbuf[7] = 0;
+  // Rest of LUNs (none) = zeroed
+  if (copy_to_user(buffer, lbuf, real_len))
+  {
+    printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+  }
+  return real_len;
+}
+
 static int process_readcapacity10(const unsigned char *cdb, unsigned char *buffer, const int max_len)
 {
   int real_len = 8;
@@ -1208,6 +1359,56 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       {
         set_sense_buffer_v4(-EROFS, sgio4_obj);
       }
+      else if (cdb[0] == SCSI_TEST_UNIT_READY || cdb[0] == SCSI_REZERO_UNIT)
+      {
+        set_sense_buffer_v4(0, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_REQUEST_SENSE)
+      {
+        ret = process_request_sense(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_START_STOP_UNIT || cdb[0] == SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL)
+      {
+        set_sense_buffer_v4(0, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SENSE6)
+      {
+        ret = process_mode_sense6(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SENSE10)
+      {
+        ret = process_mode_sense10(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SELECT6 || cdb[0] == SCSI_MODE_SELECT10 || cdb[0] == SCSI_FORMAT_UNIT)
+      {
+        set_sense_buffer_v4(-EROFS, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_SYNCHRONIZE_CACHE10 || cdb[0] == SCSI_SYNCHRONIZE_CACHE16)
+      {
+        set_sense_buffer_v4(0, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_VERIFY10 || cdb[0] == SCSI_VERIFY16)
+      {
+        set_sense_buffer_v4(0, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_READ_FORMAT_CAPACITIES)
+      {
+        ret = process_read_format_capacities(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_READ_DEFECT_DATA10 || cdb[0] == SCSI_READ_DEFECT_DATA12)
+      {
+        ret = process_read_defect_data12(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
+      else if (cdb[0] == SCSI_REPORT_LUNS)
+      {
+        ret = process_report_luns(cdb, (unsigned char *)(uintptr_t)sgio4_obj->din_xferp, sgio4_obj->din_xfer_len);
+        set_sense_buffer_v4(ret, sgio4_obj);
+      }
       else
       {
         printk(KERN_INFO "oscdriver: unsupported SCSI command 0x%02x\n", cdb[0]);
@@ -1287,6 +1488,56 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       else if (cdb[0] == SCSI_WRITE16)
       {
         set_sense_buffer(-EROFS, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_TEST_UNIT_READY || cdb[0] == SCSI_REZERO_UNIT)
+      {
+        set_sense_buffer(0, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_REQUEST_SENSE)
+      {
+        ret = process_request_sense(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_START_STOP_UNIT || cdb[0] == SCSI_PREVENT_ALLOW_MEDIUM_REMOVAL)
+      {
+        set_sense_buffer(0, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SENSE6)
+      {
+        ret = process_mode_sense6(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SENSE10)
+      {
+        ret = process_mode_sense10(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_MODE_SELECT6 || cdb[0] == SCSI_MODE_SELECT10 || cdb[0] == SCSI_FORMAT_UNIT)
+      {
+        set_sense_buffer(-EROFS, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_SYNCHRONIZE_CACHE10 || cdb[0] == SCSI_SYNCHRONIZE_CACHE16)
+      {
+        set_sense_buffer(0, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_VERIFY10 || cdb[0] == SCSI_VERIFY16)
+      {
+        set_sense_buffer(0, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_READ_FORMAT_CAPACITIES)
+      {
+        ret = process_read_format_capacities(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_READ_DEFECT_DATA10 || cdb[0] == SCSI_READ_DEFECT_DATA12)
+      {
+        ret = process_read_defect_data12(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
+      }
+      else if (cdb[0] == SCSI_REPORT_LUNS)
+      {
+        ret = process_report_luns(cdb, sgio_obj->dxferp, sgio_obj->dxfer_len);
+        set_sense_buffer(ret, sgio_obj);
       }
       else
       {
