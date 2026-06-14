@@ -1572,6 +1572,8 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       return -EINVAL;
     }
 
+    kfree(sgio4_obj);
+    kfree(sgio_obj);
     next_queue();
     return return_value;
   }
@@ -1990,7 +1992,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
     else if (control_obj->command == READ_MEMORY_DRIVE_COMMAND)
     {
       if (!capable(CAP_SYS_RAWIO))
+      {
+        kfree(control_obj);
         return -EPERM;
+      }
       unsigned char *mapbuffer;
       // long long physmap;
       // long long busmap;
@@ -2095,7 +2100,7 @@ static int mmapfop_close_m(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   main_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 5);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
@@ -2178,7 +2183,7 @@ static int mmapfop_close_tb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   transfer_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 10);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
@@ -2261,7 +2266,7 @@ static int mmapfop_close_mdb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   main_data_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 10);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
