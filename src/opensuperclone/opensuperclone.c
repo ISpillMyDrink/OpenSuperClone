@@ -13570,8 +13570,8 @@ int process_source_ccc(void)
     raw_alignment[0] = '\0';
     sscanf(line, "%s %s %s %s %s %[^\n]", name, raw_size, raw_bytes_per_log_sec, raw_bytes_per_phy_sec, raw_alignment, model);
     fprintf(stdout, "model=%s\n", model);
-    strncpy(current_model_ccc, model, sizeof(current_model_ccc));
-    strncpy(current_source_model_ccc, model, sizeof(current_source_model_ccc));
+    strncpy(current_model_ccc, model, sizeof(current_model_ccc) - 1);
+    strncpy(current_source_model_ccc, model, sizeof(current_source_model_ccc) - 1);
     // get device info
     long long size = strtoull(raw_size, NULL, 0);
     long long bytes_per_log_sec = strtoull(raw_bytes_per_log_sec, NULL, 0);
