@@ -14,6 +14,7 @@
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <linux/errno.h>
+#include <linux/capability.h>
 #include <linux/types.h>
 #include <linux/vmalloc.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
@@ -1988,6 +1989,8 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
     else if (control_obj->command == READ_MEMORY_DRIVE_COMMAND)
     {
+      if (!capable(CAP_SYS_RAWIO))
+        return -EPERM;
       unsigned char *mapbuffer;
       // long long physmap;
       // long long busmap;
