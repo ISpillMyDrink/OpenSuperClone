@@ -512,7 +512,7 @@ bool device_present_ccc[MAX_DEVICES];
 bool device_visable_ccc[MAX_DEVICES];
 char device_reference_ccc[MAX_DEVICES][32];
 char device_name_ccc[MAX_DEVICES][32];
-char model_ccc[MAX_DEVICES][41];
+  char model_ccc[MAX_DEVICES][256];
 char serial_ccc[MAX_DEVICES][21];
 char drive_list_ccc[MAX_DEVICES][64];
 long long drive_size_ccc[MAX_DEVICES];

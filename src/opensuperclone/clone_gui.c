@@ -4148,7 +4148,8 @@ void update_ports_ccc(void)
     {
       snprintf(temp, sizeof(temp), ",%u:disable", port);
     }
-    strncat(new_ports_ccc, temp, sizeof(new_ports_ccc) - strlen(new_ports_ccc) - 1);
+    size_t port_len = strlen(new_ports_ccc);
+    snprintf(new_ports_ccc + port_len, sizeof(new_ports_ccc) - port_len, "%s", temp);
     first = 0;
     count++;
     scanline--;

@@ -3800,7 +3800,8 @@ int message_error(char *message)
   {
     fprintf(stdout, "%s", message);
   }
-  strncat(error_message, message, ERROR_MESSAGE_SIZE - strlen(error_message) - 1);
+  size_t msg_len = strlen(error_message);
+  snprintf(error_message + msg_len, ERROR_MESSAGE_SIZE - msg_len, "%s", message);
   return 0;
 }
 

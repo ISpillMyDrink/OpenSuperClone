@@ -106,7 +106,7 @@ int find_all_usb_devices_ccc(void)
         int bytesreceived = usb_control_msg(dev_handle, requesttype, request, value, index, buffer, length, timer);
         if (bytesreceived == length)
         {
-          strncpy(usb_extra_id_string_ccc[usb_device_count_ccc], buffer, relay_id_length);
+          snprintf(usb_extra_id_string_ccc[usb_device_count_ccc], sizeof(usb_extra_id_string_ccc[usb_device_count_ccc]), "%.*s", relay_id_length, buffer);
         }
         else
         {

@@ -1616,7 +1616,8 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         fprintf(stdout, "setbuffer> ");
         char input_text[MAX_LINE_LENGTH];
         fflush(stdout);
-        fgets(input_text, sizeof input_text, stdin);
+        if (!fgets(input_text, sizeof input_text, stdin))
+          input_text[0] = '\0';
         full_line = input_text;
       }
       else
@@ -4696,8 +4697,8 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
   while (1)
   {
     // fprintf (stdout, "line=%s\n", line);
-    strcpy(raw_byte, "");
-    strcpy(leftover, "");
+    raw_byte[0] = '\0';
+    leftover[0] = '\0';
     sscanf(line, "%s %[^\n]", raw_byte, leftover);
     // fprintf (stdout, "raw_byte=%s  leftover=%s\n", raw_byte, leftover);
     if ((strcmp(raw_byte, "endscratchpad") == 0) || (strcmp(raw_byte, "ENDSCRATCHPAD") == 0))
@@ -4714,7 +4715,8 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
         fprintf(stdout, "setscratchpad> ");
         char input_text[MAX_LINE_LENGTH];
         fflush(stdout);
-        fgets(input_text, sizeof input_text, stdin);
+        if (!fgets(input_text, sizeof input_text, stdin))
+          input_text[0] = '\0';
         full_line = input_text;
       }
       else
@@ -6605,7 +6607,8 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         fprintf(stdout, "setusbbuffer> ");
         char input_text[MAX_LINE_LENGTH];
         fflush(stdout);
-        fgets(input_text, sizeof input_text, stdin);
+        if (!fgets(input_text, sizeof input_text, stdin))
+          input_text[0] = '\0';
         full_line = input_text;
       }
       else

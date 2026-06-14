@@ -7940,7 +7940,7 @@ int identify_device_passthrough_ccc(char *name, int count)
 
   if (command_status_ccc != 0)
   {
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (2);
   }
 
@@ -7950,7 +7950,7 @@ int identify_device_passthrough_ccc(char *name, int count)
     if (sense_key_ccc != 4 || asc_ccc != 0 || ascq_ccc != 0)
     {
       snprintf(error_string_ccc, sizeof(error_string_ccc), "sense-data %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
-      strncpy(model_ccc[count], error_string_ccc, 40);
+      snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
       return (3);
     }
   }
@@ -8121,7 +8121,7 @@ int identify_device_scsi_ccc(char *name, int count)
   if (disk_fd == -1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "Error(%s)", strerror(errno));
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (1);
   }
 
@@ -10568,7 +10568,7 @@ int start_driver_ccc(void)
   }
   unsigned long request = IOCTL_CMD_HDDSC;
   // strcpy(driver_control_data_ccc.buffer, virtual_driver_name_ccc);
-  strncpy(driver_control_data_ccc.name, virtual_driver_name_ccc, sizeof(driver_control_data_ccc.name));
+  snprintf(driver_control_data_ccc.name, sizeof(driver_control_data_ccc.name), "%s", virtual_driver_name_ccc);
   // fprintf (stdout, "sizeofstructdata = %d\n", sizeof(driver_control_data_ccc));    // debug
   int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)
