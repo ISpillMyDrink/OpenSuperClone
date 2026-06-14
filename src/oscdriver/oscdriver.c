@@ -193,6 +193,7 @@ static int sg_version_num = 40000;
 static unsigned int working_queue = 0;
 static unsigned int request_queue = 0;
 static int queue_count = 0;
+static DEFINE_SPINLOCK(driver_lock);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0)
 static struct lock_class_key hddsc_bio_compl_lkclass;
 #endif
@@ -261,6 +262,8 @@ static int check_io_error_bitmap(unsigned long long sect, unsigned long long nse
 
 static void next_queue(void)
 {
+  unsigned long flags;
+  spin_lock_irqsave(&driver_lock, flags);
   working_queue++;
   if (working_queue > 65535)
   {
@@ -272,10 +275,12 @@ static void next_queue(void)
     queue_count = 0;
     printk(KERN_NOTICE "oscdriver: internal error, queue count less than 0\n");
   }
+  spin_unlock_irqrestore(&driver_lock, flags);
 }
 
 static int wait_for_queue(const int current_queue)
 {
+  unsigned long flags;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
   struct timeval tv1, tv2;
 #else
@@ -283,6 +288,7 @@ static int wait_for_queue(const int current_queue)
 #endif
   long long elapsed_usec = 0;
   int queue_limit = 2;
+  spin_lock_irqsave(&driver_lock, flags);
   request_queue++;
   if (request_queue > 65535)
   {
@@ -291,19 +297,21 @@ static int wait_for_queue(const int current_queue)
   queue_count++;
   if (queue_count > queue_limit)
   {
+    spin_unlock_irqrestore(&driver_lock, flags);
     printk(KERN_NOTICE "oscdriver: too many requests, queue full\n");
     return -EBUSY;
   }
   // printk(KERN_INFO "osc wait_for_queue %d %d %d\n", current_queue, working_queue, queue_count);    //debug
   if (current_queue != working_queue)
   {
+    spin_unlock_irqrestore(&driver_lock, flags);
     printk(KERN_INFO "oscdriver: queue wait %d %d %d\n", current_queue, working_queue, queue_count);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
     do_gettimeofday(&tv1);
 #else
     ktime_get_real_ts64(&tv1);
 #endif
-    while (current_queue != working_queue)
+    while (current_queue != READ_ONCE(working_queue))
     {
       usleep_range(1, 1);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
@@ -320,6 +328,7 @@ static int wait_for_queue(const int current_queue)
       }
     }
   }
+  spin_unlock_irqrestore(&driver_lock, flags);
   return 0;
 }
 
@@ -335,15 +344,15 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
   struct timespec64 tv1, tv2;
 #endif
 
-  // printk(KERN_INFO "oscdriver: request %lld buffer sect %lld count %lld total %lld active %d stop %d\n", request_number, (unsigned long long)sect, nsect, tsect, data_drive_active, stop_signal);    //debug
+  // printk(KERN_INFO "oscdriver: request %lld buffer sect %lld count %lld total %lld active %d stop %d\n", request_number, (unsigned long long)sect, nsect, tsect, READ_ONCE(data_drive_active), READ_ONCE(stop_signal));    //debug
 
-  if (io_scsi_only && !blockio)
+  if (READ_ONCE(io_scsi_only) && !blockio)
   {
     memset(buffer, 0, nbytes);
     return 0;
   }
 
-  if (!data_drive_active)
+  if (!READ_ONCE(data_drive_active))
   {
     if (blockio)
     {
@@ -359,7 +368,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     return 0;
   }
-  if (stop_signal || read_ctrl_data(CTRL_STOP_SIGNAL))
+  if (READ_ONCE(stop_signal) || read_ctrl_data(CTRL_STOP_SIGNAL))
   {
     if (blockio)
     {
@@ -375,7 +384,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     return -EIO;
   }
-  if (lockup_detected && !read_ctrl_data(CTRL_RESET_READ_TIMER))
+  if (READ_ONCE(lockup_detected) && !read_ctrl_data(CTRL_RESET_READ_TIMER))
   {
     if (blockio)
     {
@@ -429,7 +438,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     else
     {
       // printk(KERN_INFO "oscdriver: IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
-      if (return_zeros_on_error == 1)
+      if (READ_ONCE(return_zeros_on_error) == 1)
       {
         if (blockio)
         {
@@ -445,7 +454,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
         }
         return 0;
       }
-      else if (return_zeros_on_error == 2)
+      else if (READ_ONCE(return_zeros_on_error) == 2)
       {
         unsigned long long n = 0;
         char *message = "HDDSUPERFILLMARK";
@@ -529,7 +538,7 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
         ktime_get_real_ts64(&tv1);
 #endif
         write_ctrl_data(CTRL_RESET_READ_TIMER, 0);
-        lockup_detected = 0;
+        WRITE_ONCE(lockup_detected, 0);
       }
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
       do_gettimeofday(&tv2);
@@ -542,17 +551,17 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       {
         printk(KERN_NOTICE "oscdriver: timeout reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
         write_ctrl_data(CTRL_DATA_REQUEST, 0);
-        lockup_detected = 1;
+        WRITE_ONCE(lockup_detected, 1);
         return -EAGAIN;
       }
       if (!read_ctrl_data(CTRL_ACK_REQUEST) && elapsed_usec > read_ctrl_data(CTRL_ACK_TIMEOUT))
       {
         printk(KERN_NOTICE "oscdriver: no ack reading sect %lld count %lld time %lld\n", (unsigned long long)sect, nsect, elapsed_usec);
         write_ctrl_data(CTRL_DATA_REQUEST, 0);
-        lockup_detected = 1;
+        WRITE_ONCE(lockup_detected, 1);
         return -EAGAIN;
       }
-      if (stop_signal || read_ctrl_data(CTRL_STOP_SIGNAL))
+      if (READ_ONCE(stop_signal) || read_ctrl_data(CTRL_STOP_SIGNAL))
       {
         printk(KERN_NOTICE "oscdriver: request stop\n");
         return -EIO;
@@ -600,13 +609,13 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
         {
           memcpy(buffer, transfer_buffer + ((sect - read_ctrl_data(CTRL_KSECTOR_START)) * KERNEL_SECTOR_SIZE), nbytes);
         }
-        if (return_zeros_on_error == 1)
+        if (READ_ONCE(return_zeros_on_error) == 1)
         {
           // zero fill of unread data is already done in main program, so no need to zero here
           // memset(buffer, 0, nbytes);
           return 0;
         }
-        else if (return_zeros_on_error == 2)
+        else if (READ_ONCE(return_zeros_on_error) == 2)
         {
           // marking of unread data is now done in main program, so no need to mark here
           // unsigned long long n = 0;
@@ -688,7 +697,7 @@ static void main_data_request(struct request_queue *q)
     elapsed_usec = ((long long)tv2.tv_usec + (1000000 * (long long)tv2.tv_sec)) - ((long long)tv1.tv_usec + (1000000 * (long long)tv1.tv_sec));
     if (elapsed_usec > read_ctrl_data(CTRL_REQUEST_TIMEOUT))
     {
-      stop_signal = 1;
+      WRITE_ONCE(stop_signal, 1);
       write_ctrl_data(CTRL_STOP_SIGNAL, 1);
       printk(KERN_NOTICE "oscdriver: request timeout, stop request\n");
     }
@@ -753,7 +762,7 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
     elapsed_usec = (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
     if (elapsed_usec > read_ctrl_data(CTRL_REQUEST_TIMEOUT))
     {
-      stop_signal = 1;
+      WRITE_ONCE(stop_signal, 1);
       write_ctrl_data(CTRL_STOP_SIGNAL, 1);
       printk(KERN_NOTICE "oscdriver: request timeout, stop request\n");
     }
@@ -1610,7 +1619,6 @@ static int device_open(struct inode *inode, struct file *file)
     printk(KERN_INFO "oscdriver: device already open\n");
     return -EBUSY;
   }
-  device_is_open = 1;
   return 0;
 }
 
@@ -1736,20 +1744,20 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
     if (control_obj->command == START_DRIVE_COMMAND)
     {
-      stop_signal = 1;
+      WRITE_ONCE(stop_signal, 1);
       if (data_drive_active)
       {
         msleep(100);
         unregister_data_drive();
-        data_drive_active = 0;
+        WRITE_ONCE(data_drive_active, 0);
       }
-      stop_signal = 0;
+      WRITE_ONCE(stop_signal, 0);
       write_ctrl_data(CTRL_STOP_SIGNAL, 0);
       write_ctrl_data(CTRL_READ_TIMEOUT, control_obj->read_timeout);
       write_ctrl_data(CTRL_REQUEST_TIMEOUT, control_obj->request_timeout);
       write_ctrl_data(CTRL_ACK_TIMEOUT, control_obj->ack_timeout);
-      return_zeros_on_error = control_obj->return_zeros_on_error;
-      io_scsi_only = control_obj->io_scsi_only;
+      WRITE_ONCE(return_zeros_on_error, control_obj->return_zeros_on_error);
+      WRITE_ONCE(io_scsi_only, control_obj->io_scsi_only);
       process_id = control_obj->process_id;
       data_device.size = control_obj->total_logical_sectors * control_obj->logical_block_size;
       data_device.sectors = control_obj->total_logical_sectors;
@@ -1758,9 +1766,14 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.chs_sectors = control_obj->chs_sectors;
       data_device.chs_cylinders = control_obj->chs_cylinders;
       strncpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name) - 1);
-      working_queue = 0;
-      request_queue = 0;
-      queue_count = 0;
+      {
+        unsigned long __flags;
+        spin_lock_irqsave(&driver_lock, __flags);
+        working_queue = 0;
+        request_queue = 0;
+        queue_count = 0;
+        spin_unlock_irqrestore(&driver_lock, __flags);
+      }
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
       spin_lock_init(&data_device.lock);
@@ -1864,7 +1877,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       }
 #endif
 
-      data_drive_active = 0;
+      WRITE_ONCE(data_drive_active, 0);
       write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
       kfree(control_obj);
       return 0;
@@ -1881,10 +1894,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
     {
       if (data_drive_active)
       {
-        stop_signal = 1;
+        WRITE_ONCE(stop_signal, 1);
         write_ctrl_data(CTRL_STOP_SIGNAL, 1);
         unregister_data_drive();
-        data_drive_active = 0;
+        WRITE_ONCE(data_drive_active, 0);
         write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
         process_id = 0;
         kfree(control_obj);
@@ -1894,20 +1907,20 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
     else if (control_obj->command == START_FILE_COMMAND)
     {
-      stop_signal = 1;
+      WRITE_ONCE(stop_signal, 1);
       if (data_drive_active)
       {
         msleep(100);
         unregister_data_file();
-        data_drive_active = 0;
+        WRITE_ONCE(data_drive_active, 0);
       }
-      stop_signal = 0;
+      WRITE_ONCE(stop_signal, 0);
       write_ctrl_data(CTRL_STOP_SIGNAL, 0);
       write_ctrl_data(CTRL_READ_TIMEOUT, control_obj->read_timeout);
       write_ctrl_data(CTRL_REQUEST_TIMEOUT, control_obj->request_timeout);
       write_ctrl_data(CTRL_ACK_TIMEOUT, control_obj->ack_timeout);
-      return_zeros_on_error = control_obj->return_zeros_on_error;
-      io_scsi_only = control_obj->io_scsi_only;
+      WRITE_ONCE(return_zeros_on_error, control_obj->return_zeros_on_error);
+      WRITE_ONCE(io_scsi_only, control_obj->io_scsi_only);
       process_id = control_obj->process_id;
       data_device.size = control_obj->total_logical_sectors * control_obj->logical_block_size;
       data_device.block_size = control_obj->logical_block_size;
@@ -1930,7 +1943,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 
       proc_create(data_device.device_name, 0, NULL, &device_fops);
 
-      data_drive_active = 0;
+      WRITE_ONCE(data_drive_active, 0);
       write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
       kfree(control_obj);
       return data_major_num;
@@ -1940,11 +1953,11 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
     {
       if (data_drive_active)
       {
-        stop_signal = 1;
+        WRITE_ONCE(stop_signal, 1);
         write_ctrl_data(CTRL_STOP_SIGNAL, 1);
         unregister_data_file();
         remove_proc_entry(data_device.device_name, NULL);
-        data_drive_active = 0;
+        WRITE_ONCE(data_drive_active, 0);
         write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 0);
         process_id = 0;
         kfree(control_obj);
@@ -1956,7 +1969,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
     {
       if (!data_drive_active)
       {
-        data_drive_active = 1;
+        WRITE_ONCE(data_drive_active, 1);
         write_ctrl_data(CTRL_DATA_DRIVE_ACTIVE, 1);
         kfree(control_obj);
         return 0;
@@ -2323,9 +2336,9 @@ static void __exit exit_driver(void)
 {
   if (data_drive_active)
   {
-    stop_signal = 1;
+    WRITE_ONCE(stop_signal, 1);
     unregister_data_drive();
-    data_drive_active = 0;
+    WRITE_ONCE(data_drive_active, 0);
   }
   vfree(block_io_buffer);
 
