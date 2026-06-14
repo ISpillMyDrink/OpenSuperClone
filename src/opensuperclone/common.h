@@ -392,6 +392,8 @@ struct __attribute__((packed))
   uint64_t process_id;
   char name[16];
   char buffer[DRIVER_TRANSFER_BUFFER_SIZE / 2];
+  char model[40];
+  char serial[20];
 } driver_control_data_ccc;
 
 unsigned long reg_base_address_ccc;

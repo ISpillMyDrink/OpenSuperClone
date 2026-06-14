@@ -811,6 +811,8 @@ int begin_driver_ccc(void)
   driver_control_data_ccc.process_id = process_id_ccc;
   driver_control_data_ccc.return_zeros_on_error = driver_return_zeros_on_error_ccc;
   driver_control_data_ccc.io_scsi_only = driver_io_scsi_only_ccc;
+  snprintf(driver_control_data_ccc.model, sizeof(driver_control_data_ccc.model), "%s", current_source_model_ccc);
+  snprintf(driver_control_data_ccc.serial, sizeof(driver_control_data_ccc.serial), "%s", current_source_serial_ccc);
   write_ctrl_data_ccc(CTRL_RETURN_NO_DATA_FAST, 0);
   write_ctrl_data_ccc(CTRL_DATA_READY, 0);
   ret = start_driver_ccc();

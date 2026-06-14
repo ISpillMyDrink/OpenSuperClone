@@ -171,6 +171,8 @@ struct __attribute__((packed)) control_data
   uint64_t process_id;
   char name[16];
   char buffer[USER_DATA_BUFFER_SIZE];
+  char model[40];
+  char serial[20];
 };
 
 static unsigned char *main_buffer = NULL;
@@ -186,6 +188,8 @@ static long long read_number = 0;
 static long long return_zeros_on_error = 0;
 static long long io_scsi_only = 0;
 static unsigned long long process_id;
+static char inquiry_model[40];
+static char inquiry_serial[20];
 static int device_is_open = 0;
 static int operation_in_progress = 0;
 static long long current_offset = 0;
@@ -975,10 +979,8 @@ static int process_inquiry(const unsigned char *cdb, unsigned char *buffer, cons
   {
     real_len = max_len;
   }
-  strncpy(ibuf + 8, "hmodel", 16);
-  strncpy(ibuf + 36, "hserial", 8);
-  // strncpy (ibuf + 8, data_device.device_name, 16);
-  // strncpy (ibuf + 36, data_device.device_name, 8);
+  snprintf(ibuf + 8, 24, "%s", inquiry_model);
+  snprintf(ibuf + 36, 8, "%s", inquiry_serial);
   if (copy_to_user(buffer, ibuf, real_len))
   {
     printk(KERN_WARNING "oscdriver: failed to copy user data\n");
@@ -1759,6 +1761,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       WRITE_ONCE(return_zeros_on_error, control_obj->return_zeros_on_error);
       WRITE_ONCE(io_scsi_only, control_obj->io_scsi_only);
       process_id = control_obj->process_id;
+      memcpy(inquiry_model, control_obj->model, sizeof(inquiry_model));
+      memcpy(inquiry_serial, control_obj->serial, sizeof(inquiry_serial));
+      inquiry_model[sizeof(inquiry_model) - 1] = '\0';
+      inquiry_serial[sizeof(inquiry_serial) - 1] = '\0';
       data_device.size = control_obj->total_logical_sectors * control_obj->logical_block_size;
       data_device.sectors = control_obj->total_logical_sectors;
       data_device.block_size = control_obj->logical_block_size;
@@ -1922,6 +1928,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       WRITE_ONCE(return_zeros_on_error, control_obj->return_zeros_on_error);
       WRITE_ONCE(io_scsi_only, control_obj->io_scsi_only);
       process_id = control_obj->process_id;
+      memcpy(inquiry_model, control_obj->model, sizeof(inquiry_model));
+      memcpy(inquiry_serial, control_obj->serial, sizeof(inquiry_serial));
+      inquiry_model[sizeof(inquiry_model) - 1] = '\0';
+      inquiry_serial[sizeof(inquiry_serial) - 1] = '\0';
       data_device.size = control_obj->total_logical_sectors * control_obj->logical_block_size;
       data_device.block_size = control_obj->logical_block_size;
       data_device.chs_heads = control_obj->chs_heads;
