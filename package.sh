@@ -1,5 +1,12 @@
 #!/bin/sh
 
+for arg in "$@"; do
+    if [ "$arg" = "clean" ]; then
+        ./clean.sh
+        break
+    fi
+done
+
 [ ! -d build ] && mkdir build
 
 echo "Configuring..."
