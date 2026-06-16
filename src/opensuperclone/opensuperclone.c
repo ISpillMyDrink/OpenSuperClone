@@ -229,7 +229,7 @@ int main(int argc, char **argv)
   {
     path_fail_ccc = true;
   }
-  strncpy(called_name_ccc, argv[0], sizeof(called_name_ccc) - 1);
+  snprintf(called_name_ccc, sizeof(called_name_ccc), "%s", argv[0]);
   called_name_ccc[sizeof(called_name_ccc) - 1] = '\0';
   if (called_name_ccc[0] == '/')
   {
@@ -824,7 +824,7 @@ int begin_driver_ccc(void)
 
   int error = 0;
   int stop = 0;
-  int n = 0;
+  // int n = 0;
   last_small_read_size_ccc = 0;
   last_big_read_size_ccc = 0;
   last_actual_read_size_ccc = 0;
@@ -832,7 +832,7 @@ int begin_driver_ccc(void)
   write_ctrl_data_ccc(CTRL_DATA_READY, 0);
   while (1)
   {
-    n++;
+    // n++;
     snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Idle"));
 
     if (aggressive_driver_ccc)
@@ -1717,7 +1717,7 @@ int read_log_file_ccc(char *log_file)
             }
             else
             {
-              snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), "");
+              current_status_string_ccc[0] = '\0';
             }
           }
           found_current = 1;
@@ -1879,13 +1879,13 @@ int read_log_file_ccc(char *log_file)
             }
             else if (strcmp(raw_command, "model") == 0)
             {
-              strncpy(current_model_ccc, raw_data, sizeof(current_model_ccc) - 1);
-              strncpy(current_source_model_ccc, raw_data, sizeof(current_source_model_ccc) - 1);
+              snprintf(current_model_ccc, sizeof(current_model_ccc), "%s", raw_data);
+              snprintf(current_source_model_ccc, sizeof(current_source_model_ccc), "%s", raw_data);
             }
             else if (strcmp(raw_command, "serial") == 0)
             {
-              strncpy(current_serial_ccc, raw_data, sizeof(current_serial_ccc) - 1);
-              strncpy(current_source_serial_ccc, raw_data, sizeof(current_source_serial_ccc) - 1);
+              snprintf(current_serial_ccc, sizeof(current_serial_ccc), "%s", raw_data);
+              snprintf(current_source_serial_ccc, sizeof(current_source_serial_ccc), "%s", raw_data);
             }
             else if (strcmp(raw_command, "verbose") == 0)
             {
@@ -5332,7 +5332,7 @@ int update_display_ccc(int time_ms)
       }
     }
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
-    strncpy(display_output_ccc.longestreadtime, tempmessage_ccc, sizeof(display_output_ccc.longestreadtime) - 1);
+    snprintf(display_output_ccc.longestreadtime, sizeof(display_output_ccc.longestreadtime), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Current/Recent/Longest %lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
     message_display_ccc(tempmessage_ccc);
     longest_read_time_ccc = 0;
@@ -5343,10 +5343,10 @@ int update_display_ccc(int time_ms)
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Logfile: %s\n", log_file_ccc);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s ", log_file_ccc);
-    strncpy(display_output_ccc.logfile, tempmessage_ccc, sizeof(display_output_ccc.logfile) - 1);
+    snprintf(display_output_ccc.logfile, sizeof(display_output_ccc.logfile), "%s", tempmessage_ccc);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s ", domain_file_ccc);
-    strncpy(display_output_ccc.domainfile, tempmessage_ccc, sizeof(display_output_ccc.domainfile) - 1);
+    snprintf(display_output_ccc.domainfile, sizeof(display_output_ccc.domainfile), "%s", tempmessage_ccc);
 
     char data_preview[DISPLAY_BUFFER_SIZE * 8] = "";
     int offset = 0;
@@ -5378,36 +5378,36 @@ int update_display_ccc(int time_ms)
       strcat(data_preview, tempmessage_ccc);
     }
     memset(display_buffer_ccc, 0, DISPLAY_BUFFER_SIZE);
-    strncpy(display_output_ccc.datapreview, data_preview, sizeof(display_output_ccc.datapreview) - 1);
+    snprintf(display_output_ccc.datapreview, sizeof(display_output_ccc.datapreview), "%s", data_preview);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Source: %10s (%s, %s)\n", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
-    strncpy(display_output_ccc.source, tempmessage_ccc, sizeof(display_output_ccc.source) - 1);
+    snprintf(display_output_ccc.source, sizeof(display_output_ccc.source), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#Destination: %10s (%s, %s)\n", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
-    strncpy(display_output_ccc.destination, tempmessage_ccc, sizeof(display_output_ccc.destination) - 1);
+    snprintf(display_output_ccc.destination, sizeof(display_output_ccc.destination), "%s", tempmessage_ccc);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", source_total_size_ccc, (double)(source_total_size_ccc * sector_size_ccc) / 1000000000);
-    strncpy(display_output_ccc.totallba, tempmessage_ccc, sizeof(display_output_ccc.totallba) - 1);
+    snprintf(display_output_ccc.totallba, sizeof(display_output_ccc.totallba), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
-    strncpy(display_output_ccc.lbatoread, tempmessage_ccc, sizeof(display_output_ccc.lbatoread) - 1);
+    snprintf(display_output_ccc.lbatoread, sizeof(display_output_ccc.lbatoread), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
-    strncpy(display_output_ccc.domainsize, tempmessage_ccc, sizeof(display_output_ccc.domainsize) - 1);
+    snprintf(display_output_ccc.domainsize, sizeof(display_output_ccc.domainsize), "%s", tempmessage_ccc);
     if (do_domain_ccc || driver_mode_ccc)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to read: %10lld (%lld)\n", source_total_size_ccc, read_size_ccc, total_domain_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", total_domain_size_ccc, (double)(total_domain_size_ccc * sector_size_ccc) / 1000000000);
-      strncpy(display_output_ccc.domainsize, tempmessage_ccc, sizeof(display_output_ccc.domainsize) - 1);
+      snprintf(display_output_ccc.domainsize, sizeof(display_output_ccc.domainsize), "%s", tempmessage_ccc);
     }
     else if (fill_mode_ccc)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to fill: %10lld\n", source_total_size_ccc, fill_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", fill_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
-      strncpy(display_output_ccc.lbatoread, tempmessage_ccc, sizeof(display_output_ccc.lbatoread) - 1);
+      snprintf(display_output_ccc.lbatoread, sizeof(display_output_ccc.lbatoread), "%s", tempmessage_ccc);
     }
     else
     {
@@ -5418,18 +5418,18 @@ int update_display_ccc(int time_ms)
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Run time: %1d:%02d:%02d:%02d        Remaining:%4d:%02d:%02d:%02d\n", days, hours, minutes, seconds, remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", days, hours, minutes, seconds);
-    strncpy(display_output_ccc.runtime, tempmessage_ccc, sizeof(display_output_ccc.runtime) - 1);
+    snprintf(display_output_ccc.runtime, sizeof(display_output_ccc.runtime), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
-    strncpy(display_output_ccc.remainingtime, tempmessage_ccc, sizeof(display_output_ccc.remainingtime) - 1);
+    snprintf(display_output_ccc.remainingtime, sizeof(display_output_ccc.remainingtime), "%s", tempmessage_ccc);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "       Rate: %10lld %s   Recent: %lld %s  Total: %lld %s\n", rate, modifier, avergage_rate, avg_modifier, total_rate, total_modifier);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", rate, modifier);
-    strncpy(display_output_ccc.currentrate, tempmessage_ccc, sizeof(display_output_ccc.currentrate) - 1);
+    snprintf(display_output_ccc.currentrate, sizeof(display_output_ccc.currentrate), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", avergage_rate, avg_modifier);
-    strncpy(display_output_ccc.recentrate, tempmessage_ccc, sizeof(display_output_ccc.recentrate) - 1);
+    snprintf(display_output_ccc.recentrate, sizeof(display_output_ccc.recentrate), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", total_rate, total_modifier);
-    strncpy(display_output_ccc.totalrate, tempmessage_ccc, sizeof(display_output_ccc.totalrate) - 1);
+    snprintf(display_output_ccc.totalrate, sizeof(display_output_ccc.totalrate), "%s", tempmessage_ccc);
 
     display_output_ccc.totalfilled[0] = '\0';
     display_output_ccc.retried[0] = '\0';
@@ -5439,7 +5439,7 @@ int update_display_ccc(int time_ms)
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld, %lld, %lld", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
-      strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
+      snprintf(display_output_ccc.totalfilled, sizeof(display_output_ccc.totalfilled), "%s", tempmessage_ccc);
     }
     if (running_analyze_ccc)
     {
@@ -5469,75 +5469,75 @@ int update_display_ccc(int time_ms)
         total_slow_reads = total_slow_reads + analyze_slow_reads_ccc[i];
       }
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d, %d, %d (%d), %d", total_read_attempts, total_good_reads, total_bad_reads, total_timeouts, total_slow_reads);
-      strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
+      snprintf(display_output_ccc.totalfilled, sizeof(display_output_ccc.totalfilled), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", analyze_slow_total_reads_ccc);
-      strncpy(display_output_ccc.retried, tempmessage_ccc, sizeof(display_output_ccc.retried) - 1);
+      snprintf(display_output_ccc.retried, sizeof(display_output_ccc.retried), "%s", tempmessage_ccc);
     }
     if (fill_mode_ccc)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Filled: %10lld (%f%%)\n", total_filled_ccc, filled_percent);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%f%%)", total_filled_ccc, filled_percent);
-      strncpy(display_output_ccc.totalfilled, tempmessage_ccc, sizeof(display_output_ccc.totalfilled) - 1);
+      snprintf(display_output_ccc.totalfilled, sizeof(display_output_ccc.totalfilled), "%s", tempmessage_ccc);
     }
     else if (current_status_ccc == RETRYING)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "    Retried: %10lld        Remaining retry passes: %d\n", retried_lba_count_ccc, retries_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld", retried_lba_count_ccc);
-      strncpy(display_output_ccc.retried, tempmessage_ccc, sizeof(display_output_ccc.retried) - 1);
+      snprintf(display_output_ccc.retried, sizeof(display_output_ccc.retried), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", retries_ccc);
-      strncpy(display_output_ccc.retrypasses, tempmessage_ccc, sizeof(display_output_ccc.retrypasses) - 1);
+      snprintf(display_output_ccc.retrypasses, sizeof(display_output_ccc.retrypasses), "%s", tempmessage_ccc);
     }
     else
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Skip size: %10lld  Skips: %d  Slow: %d  Runs: %d  Resets: %d  Run size: %lld\n", min_skip_size_ccc, total_skip_count_ccc, total_slow_skips_ccc, total_skip_runs_ccc, total_skip_resets_ccc, last_total_skip_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", min_skip_size_ccc, (double)(min_skip_size_ccc * sector_size_ccc) / 1000000);
-      strncpy(display_output_ccc.skipsize, tempmessage_ccc, sizeof(display_output_ccc.skipsize) - 1);
+      snprintf(display_output_ccc.skipsize, sizeof(display_output_ccc.skipsize), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_count_ccc);
-      strncpy(display_output_ccc.skips, tempmessage_ccc, sizeof(display_output_ccc.skips) - 1);
+      snprintf(display_output_ccc.skips, sizeof(display_output_ccc.skips), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_slow_skips_ccc);
-      strncpy(display_output_ccc.slowskips, tempmessage_ccc, sizeof(display_output_ccc.skips) - 1);
+      snprintf(display_output_ccc.slowskips, sizeof(display_output_ccc.slowskips), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_runs_ccc);
-      strncpy(display_output_ccc.skipruns, tempmessage_ccc, sizeof(display_output_ccc.skipruns) - 1);
+      snprintf(display_output_ccc.skipruns, sizeof(display_output_ccc.skipruns), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_resets_ccc);
-      strncpy(display_output_ccc.skipresets, tempmessage_ccc, sizeof(display_output_ccc.skipresets) - 1);
+      snprintf(display_output_ccc.skipresets, sizeof(display_output_ccc.skipresets), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", last_total_skip_size_ccc, (double)(last_total_skip_size_ccc * sector_size_ccc) / 1000000);
-      strncpy(display_output_ccc.runsize, tempmessage_ccc, sizeof(display_output_ccc.runsize) - 1);
+      snprintf(display_output_ccc.runsize, sizeof(display_output_ccc.runsize), "%s", tempmessage_ccc);
     }
     // fprintf (stdout, "  Skip hist: %10lld   %lld   %lld   %lld   %lld    \n", skip_history_ccc[0], skip_history_ccc[1], skip_history_ccc[2], skip_history_ccc[3], skip_history_ccc[4]);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Position: %10lld        Status: %10s\n", current_position_ccc, current_status_string_ccc);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", current_position_ccc, (double)(current_position_ccc * sector_size_ccc) / 1000000000);
-    strncpy(display_output_ccc.currentposition, tempmessage_ccc, sizeof(display_output_ccc.currentposition) - 1);
+    snprintf(display_output_ccc.currentposition, sizeof(display_output_ccc.currentposition), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", current_status_string_ccc);
-    strncpy(display_output_ccc.currentstatus, tempmessage_ccc, sizeof(display_output_ccc.currentstatus) - 1);
+    snprintf(display_output_ccc.currentstatus, sizeof(display_output_ccc.currentstatus), "%s", tempmessage_ccc);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Finished: %10lld (%d areas %f%%)\n", finished_size_ccc, finished_count_ccc, finished_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", finished_size_ccc, (double)(finished_size_ccc * sector_size_ccc) / 1000000000, finished_count_ccc, finished_percent);
-    strncpy(display_output_ccc.finished, tempmessage_ccc, sizeof(display_output_ccc.finished) - 1);
+    snprintf(display_output_ccc.finished, sizeof(display_output_ccc.finished), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Non-tried: %10lld (%d areas %f%%)\n", nontried_size_ccc, nontried_count_ccc, nontried_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontried_size_ccc, (double)(nontried_size_ccc * sector_size_ccc) / 1000000000, nontried_count_ccc, nontried_percent);
-    strncpy(display_output_ccc.nontried, tempmessage_ccc, sizeof(display_output_ccc.nontried) - 1);
+    snprintf(display_output_ccc.nontried, sizeof(display_output_ccc.nontried), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-trimmed: %10lld (%d areas %f%%)\n", nontrimmed_size_ccc, nontrimmed_count_ccc, nontrimmed_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontrimmed_size_ccc, (double)(nontrimmed_size_ccc * sector_size_ccc) / 1000000000, nontrimmed_count_ccc, nontrimmed_percent);
-    strncpy(display_output_ccc.nontrimmed, tempmessage_ccc, sizeof(display_output_ccc.nontrimmed) - 1);
+    snprintf(display_output_ccc.nontrimmed, sizeof(display_output_ccc.nontrimmed), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-divided: %10lld (%d areas %f%%)\n", nondivided_size_ccc, nondivided_count_ccc, nondivided_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nondivided_size_ccc, (double)(nondivided_size_ccc * sector_size_ccc) / 1000000000, nondivided_count_ccc, nondivided_percent);
-    strncpy(display_output_ccc.nondivided, tempmessage_ccc, sizeof(display_output_ccc.nondivided) - 1);
+    snprintf(display_output_ccc.nondivided, sizeof(display_output_ccc.nondivided), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-scraped: %10lld (%d areas %f%%)\n", nonscraped_size_ccc, nonscraped_count_ccc, nonscraped_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nonscraped_size_ccc, (double)(nonscraped_size_ccc * sector_size_ccc) / 1000000000, nonscraped_count_ccc, nonscraped_percent);
-    strncpy(display_output_ccc.nonscraped, tempmessage_ccc, sizeof(display_output_ccc.nonscraped) - 1);
+    snprintf(display_output_ccc.nonscraped, sizeof(display_output_ccc.nonscraped), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "        Bad: %10lld (%d areas %f%%)\n", error_size_ccc, error_count_ccc, bad_percent);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", error_size_ccc, (double)(error_size_ccc * sector_size_ccc) / 1000000000, error_count_ccc, bad_percent);
-    strncpy(display_output_ccc.bad, tempmessage_ccc, sizeof(display_output_ccc.bad) - 1);
+    snprintf(display_output_ccc.bad, sizeof(display_output_ccc.bad), "%s", tempmessage_ccc);
 
     rate_modifier_ccc = 0;
     highest_skip_ccc = 0;
@@ -10277,7 +10277,7 @@ int write_chunk_ccc(long long position, int size)
 
   int sector_size_bak = sector_size_ccc;
   long long main_buffer_size_bak = ccc_main_buffer_size_ccc;
-  void *temp_buffer;
+  void *temp_buffer = NULL;
   if (output_sector_size_adjustment_ccc != 0)
   {
     // sanity check
@@ -10292,6 +10292,16 @@ int write_chunk_ccc(long long position, int size)
       return OUTPUT_DEVICE_ERROR_RETURN_CODE;
     }
     temp_buffer = malloc(main_buffer_size_bak);
+    if (!temp_buffer)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
+      message_error_ccc(tempmessage_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nallocation failure");
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      return OUTPUT_DEVICE_ERROR_RETURN_CODE;
+    }
     memcpy(temp_buffer, ccc_buffer_ccc, main_buffer_size_bak);
     sector_size_ccc = sector_size_ccc + output_sector_size_adjustment_ccc;
     ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
@@ -13562,8 +13572,8 @@ int process_source_ccc(void)
     raw_alignment[0] = '\0';
     sscanf(line, "%s %s %s %s %s %[^\n]", name, raw_size, raw_bytes_per_log_sec, raw_bytes_per_phy_sec, raw_alignment, model);
     fprintf(stdout, "model=%s\n", model);
-    strncpy(current_model_ccc, model, sizeof(current_model_ccc));
-    strncpy(current_source_model_ccc, model, sizeof(current_source_model_ccc));
+    snprintf(current_model_ccc, sizeof(current_model_ccc), "%s", model);
+    snprintf(current_source_model_ccc, sizeof(current_source_model_ccc), "%s", model);
     // get device info
     long long size = strtoull(raw_size, NULL, 0);
     long long bytes_per_log_sec = strtoull(raw_bytes_per_log_sec, NULL, 0);
@@ -14170,7 +14180,7 @@ int extract_smart_data_ccc(void)
     if (threshold_data_valid && id > 0)
     {
       int tcount = 0;
-      int toffset = 2;
+      // int toffset = 2;
       while (tcount < 30)
       {
         uint8_t tid;
@@ -14179,7 +14189,7 @@ int extract_smart_data_ccc(void)
         {
           memcpy(&threshold, threshold_data + offset + 1, 1);
         }
-        toffset += 12;
+        // toffset += 12;
         tcount++;
       }
     }
@@ -15364,7 +15374,7 @@ void disable_ports_ccc(void)
             }
             strncpy(current_ports, line + n, i - n);
             confirm = open_ports_dialog_ccc(current_ports);
-            strncat(newline, new_ports_ccc, strlen(new_ports_ccc));
+            strncat(newline, new_ports_ccc, sizeof(newline) - strlen(newline) - 1);
             n = i - 1;
           }
           else

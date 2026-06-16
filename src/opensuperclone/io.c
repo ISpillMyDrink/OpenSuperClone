@@ -6496,7 +6496,7 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
         port_address_ccc[device_count_ccc] = potential_hba_start + 0x100 + (i * 0x80);
         memcpy(&io_doubleword_ccc, port_virt_addr_ccc + 0x128 + (i * 0x80), 4);
         port_status_ccc[device_count_ccc] = io_doubleword_ccc;
-        if (port_status_ccc == 0)
+        if (port_status_ccc[device_count_ccc] == 0)
         {
           device_present_ccc[device_count_ccc] = false;
         }
@@ -7932,7 +7932,7 @@ int identify_device_passthrough_ccc(char *name, int count)
   if (disk_fd == -1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "Error(%s)", strerror(errno));
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (1);
   }
 
@@ -7940,7 +7940,7 @@ int identify_device_passthrough_ccc(char *name, int count)
 
   if (command_status_ccc != 0)
   {
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (2);
   }
 
@@ -7950,7 +7950,7 @@ int identify_device_passthrough_ccc(char *name, int count)
     if (sense_key_ccc != 4 || asc_ccc != 0 || ascq_ccc != 0)
     {
       snprintf(error_string_ccc, sizeof(error_string_ccc), "sense-data %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
-      strncpy(model_ccc[count], error_string_ccc, 40);
+      snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
       return (3);
     }
   }
@@ -8121,7 +8121,7 @@ int identify_device_scsi_ccc(char *name, int count)
   if (disk_fd == -1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "Error(%s)", strerror(errno));
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     return (1);
   }
 
@@ -8132,7 +8132,7 @@ int identify_device_scsi_ccc(char *name, int count)
 
   if (command_status_ccc != 0)
   {
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     close(disk_fd);
     return (2);
   }
@@ -8140,7 +8140,7 @@ int identify_device_scsi_ccc(char *name, int count)
   if (sense_key_ccc > 1)
   {
     snprintf(error_string_ccc, sizeof(error_string_ccc), "sense-data %02x %02x %02x", sense_key_ccc, asc_ccc, ascq_ccc);
-    strncpy(model_ccc[count], error_string_ccc, 40);
+    snprintf(model_ccc[count], sizeof(model_ccc[count]), "%s", error_string_ccc);
     close(disk_fd);
     return (3);
   }
@@ -9552,11 +9552,11 @@ int wait_not_busy_or_drq_ccc(unsigned long long time, int check)
   int drq = 1;
   int err = 0;
   int ncq = 0;
-  long long busycount = 0;
-  long long drqcount = 0;
-  long long errcount = 0;
-  long long ncqcount = 0;
-  long long dscount = 0;
+  // long long busycount = 0;
+  // long long drqcount = 0;
+  // long long errcount = 0;
+  // long long ncqcount = 0;
+  // long long dscount = 0;
   if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
   {
     ncq = 1;
@@ -9598,29 +9598,29 @@ int wait_not_busy_or_drq_ccc(unsigned long long time, int check)
       memcpy(&ata_error_ccc, &current_error, 1);
       memcpy(&ata_status_ccc, &current_status, 1);
       memcpy(&io_singlebyte_ccc, port_virt_addr_ccc + 0x34, 1);
-      if (io_singlebyte_ccc)
-      {
-        dscount++;
-      }
-      if (busy)
-      {
-        busycount++;
-      }
-      if (drq)
-      {
-        drqcount++;
-      }
-      if (err)
-      {
-        errcount++;
-      }
+      // if (io_singlebyte_ccc)
+      // {
+      //   dscount++;
+      // }
+      // if (busy)
+      // {
+      //   busycount++;
+      // }
+      // if (drq)
+      // {
+      //   drqcount++;
+      // }
+      // if (err)
+      // {
+      //   errcount++;
+      // }
       if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
       {
-        ncq = io_singlebyte_ccc & 1;
-        if (ncq)
-        {
-          ncqcount++;
-        }
+        // ncq = io_singlebyte_ccc & 1;
+        // if (ncq)
+        // {
+        //   ncqcount++;
+        // }
         if (err)
         {
           // timeout = 4;
@@ -9668,12 +9668,12 @@ int wait_drdy_not_busy_or_drq_ccc(unsigned long long time, int check)
   int drq = 1;
   int err = 0;
   int ncq = 0;
-  long long busycount = 0;
-  long long drdycount = 0;
-  long long drqcount = 0;
-  long long errcount = 0;
-  long long ncqcount = 0;
-  long long dscount = 0;
+  // long long busycount = 0;
+  // long long drdycount = 0;
+  // long long drqcount = 0;
+  // long long errcount = 0;
+  // long long ncqcount = 0;
+  // long long dscount = 0;
   if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
   {
     ncq = 1;
@@ -9716,33 +9716,33 @@ int wait_drdy_not_busy_or_drq_ccc(unsigned long long time, int check)
       memcpy(&ata_error_ccc, &current_error, 1);
       memcpy(&ata_status_ccc, &current_status, 1);
       memcpy(&io_singlebyte_ccc, port_virt_addr_ccc + 0x34, 1);
-      if (io_singlebyte_ccc)
-      {
-        dscount++;
-      }
-      if (busy)
-      {
-        busycount++;
-      }
-      if (!drdy)
-      {
-        drdycount++;
-      }
-      if (drq)
-      {
-        drqcount++;
-      }
-      if (err)
-      {
-        errcount++;
-      }
+      // if (io_singlebyte_ccc)
+      // {
+      //   dscount++;
+      // }
+      // if (busy)
+      // {
+      //   busycount++;
+      // }
+      // if (!drdy)
+      // {
+      //   drdycount++;
+      // }
+      // if (drq)
+      // {
+      //   drqcount++;
+      // }
+      // if (err)
+      // {
+      //   errcount++;
+      // }
       if (use_fpdma_ccc && wait_for_ds_bit_ccc && !performing_reset_ccc)
       {
-        ncq = io_singlebyte_ccc & 1;
-        if (ncq)
-        {
-          ncqcount++;
-        }
+        // ncq = io_singlebyte_ccc & 1;
+        // if (ncq)
+        // {
+        //   ncqcount++;
+        // }
         if (err)
         {
           // timeout = 4;
@@ -10568,7 +10568,7 @@ int start_driver_ccc(void)
   }
   unsigned long request = IOCTL_CMD_HDDSC;
   // strcpy(driver_control_data_ccc.buffer, virtual_driver_name_ccc);
-  strncpy(driver_control_data_ccc.name, virtual_driver_name_ccc, sizeof(driver_control_data_ccc.name));
+  snprintf(driver_control_data_ccc.name, sizeof(driver_control_data_ccc.name), "%s", virtual_driver_name_ccc);
   // fprintf (stdout, "sizeofstructdata = %d\n", sizeof(driver_control_data_ccc));    // debug
   int ret = ioctl(main_driver_fd_ccc, request, &driver_control_data_ccc);
   if (ret < 0)

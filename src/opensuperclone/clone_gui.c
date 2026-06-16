@@ -649,7 +649,7 @@ int print_gui_error_message_ccc(char *message, char *title, int type)
   {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *dialog;
-    GtkDialogFlags message_type;
+    GtkMessageType message_type;
     if (type)
     {
       message_type = GTK_MESSAGE_WARNING;
@@ -1083,7 +1083,7 @@ static void load_log_file_ccc(char *log_file)
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   log_file_ccc = malloc(1024);
   memset(log_file_ccc, 0, 1024);
-  strncpy(log_file_ccc, log_file, 1024);
+  snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
 
   // initialize memory
@@ -1142,7 +1142,7 @@ static void load_ddrescue_log_file_ccc(char *log_file)
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   ddilog_file_ccc = malloc(1024);
   memset(ddilog_file_ccc, 0, 1024);
-  strncpy(ddilog_file_ccc, log_file, 1024);
+  snprintf(ddilog_file_ccc, 1024, "%s", log_file);
   printf("%s\n", ddilog_file_ccc);
 
   // initialize memory
@@ -1275,7 +1275,7 @@ static void new_log_file_ccc(char *log_file)
 {
   log_file_ccc = malloc(1024);
   memset(log_file_ccc, 0, 1024);
-  strncpy(log_file_ccc, log_file, 1024);
+  snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
 
   clear_domain_ccc();
@@ -4269,7 +4269,8 @@ void update_ports_ccc(void)
     {
       snprintf(temp, sizeof(temp), ",%u:disable", port);
     }
-    strncat(new_ports_ccc, temp, sizeof(new_ports_ccc) - strlen(new_ports_ccc) - 1);
+    size_t port_len = strlen(new_ports_ccc);
+    snprintf(new_ports_ccc + port_len, sizeof(new_ports_ccc) - port_len, "%s", temp);
     first = 0;
     count++;
     scanline--;

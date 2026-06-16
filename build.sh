@@ -1,16 +1,25 @@
 #!/bin/sh
 
-[ ! -d build ] && mkdir build
+for arg in "$@"; do
+    if [ "$arg" = "clean" ]; then
+        ./clean.sh
+        break
+    fi
+done
 
 CMAKE_OPTIONS=""
 CMAKE_BUILD_TYPE=Release
 CMAKE_INSTALL_PREFIX=./Release
 
-if [ "$1" = "debug" ]; then
-    CMAKE_OPTIONS="-DDEBUG=ON"
-    CMAKE_BUILD_TYPE=Debug
-    CMAKE_INSTALL_PREFIX=./Debug
-fi
+for arg in "$@"; do
+    if [ "$arg" = "debug" ]; then
+        CMAKE_OPTIONS="-DDEBUG=ON"
+        CMAKE_BUILD_TYPE=Debug
+        CMAKE_INSTALL_PREFIX=./Debug
+    fi
+done
+
+[ ! -d build ] && mkdir build
 
 echo "Configuring for $CMAKE_BUILD_TYPE..."
 cmake -S . -B ./build -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX $CMAKE_OPTIONS

@@ -63,6 +63,9 @@ set(CC_OPTIONS
     -Wall
     -Wextra
     -Wno-deprecated-declarations
+    -Wno-unused-parameter
+    -Wno-unused-result
+    -Wno-format-truncation
     -fcommon
 )
 
