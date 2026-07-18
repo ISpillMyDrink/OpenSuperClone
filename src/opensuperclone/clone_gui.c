@@ -555,13 +555,12 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     write_config_file_with_name_ccc(filename);
   }
 
+  gdk_threads_add_timeout(500, display_status_update_asclepius_action, NULL);
   asclepius_connect();
 
   if(asclepius_get_connection_status())
   {
     print_gui_error_message_ccc(_("Asclepius companion board was detected.\nEnabling default settings for Asclepius support."), _("Asclepius Connection"), 0);
-
-    gdk_threads_add_timeout(500, display_status_update_asclepius_action, NULL);
 
     gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
