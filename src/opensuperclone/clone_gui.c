@@ -7274,6 +7274,12 @@ void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
       GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
       GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
       if (script_btn) gtk_widget_set_sensitive(script_btn, TRUE);
+      guint old_tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
+      if (!old_tid)
+      {
+        guint timer_id = gdk_threads_add_timeout(100, on_ext_terminal_poll_ccc, dialog);
+        g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(timer_id));
+      }
       append_ext_terminal_line(textview, "INF:", "Connected");
       update_ext_status(dialog);
     }
@@ -7287,6 +7293,12 @@ void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
   }
   else
   {
+    guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
+    if (tid)
+    {
+      g_source_remove(tid);
+      g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(0));
+    }
     asclepius_ext_close();
     gtk_button_set_label(GTK_BUTTON(button), _("Connect"));
     GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
@@ -7416,6 +7428,7 @@ void on_ext_terminal_dialog_response_ccc(GtkDialog *dialog, gint response_id, gp
 {
   guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
   if (tid) g_source_remove(tid);
+  g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(0));
   asclepius_ext_output_ccc = NULL;
   ext_terminal_output_textview = NULL;
   ext_terminal_open = false;
