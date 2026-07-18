@@ -7324,7 +7324,14 @@ void on_ext_terminal_script_clicked_ccc(GtkWidget *button)
       script_status = process_lines_ccc();
     }
 
-    snprintf(line, sizeof(line), "Script finished (return: %d)\n", return_value_ccc);
+    if (return_value_ccc == -100 || return_value_ccc == -101 || return_value_ccc == 0)
+    {
+      snprintf(line, sizeof(line), "Script finished successfully\n");
+    }
+    else
+    {
+      snprintf(line, sizeof(line), "Script finished (error: %d)\n", return_value_ccc);
+    }
     append_ext_terminal_text(textview, line, EXT_TAG_SCRIPT);
 
     g_free(filename);

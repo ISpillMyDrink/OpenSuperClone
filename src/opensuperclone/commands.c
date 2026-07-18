@@ -7577,17 +7577,35 @@ int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     }
     else
     {
-      // Hex dump up to 64 bytes
-      char hexbuf[256];
-      int pos = 0;
-      int show = n < 64 ? n : 64;
-      for (i = 0; i < show && pos < (int)sizeof(hexbuf) - 4; i++)
+      // Extract and display printable line segments; skip non-printable portions
+      char fmt[8320];
+      int line_start = -1;
+      for (i = 0; i <= n; i++)
       {
-        pos += snprintf(hexbuf + pos, sizeof(hexbuf) - pos, "%02x ", buf[i]);
+        bool is_line_end = (i == n || buf[i] == '\n');
+        bool is_printable = !is_line_end && buf[i] != '\r' && buf[i] != '\t' && isprint(buf[i]);
+
+        if (is_printable && line_start < 0)
+          line_start = i;
+
+        if (!is_printable && line_start >= 0)
+        {
+          int seg_len = i - line_start;
+          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
+            seg_len--;
+          if (seg_len > 0)
+          {
+            int plen = snprintf(fmt, sizeof(fmt), "RCV: ");
+            int copy_len = seg_len < (int)(sizeof(fmt) - plen - 1) ? seg_len : (int)(sizeof(fmt) - plen - 1);
+            memcpy(fmt + plen, buf + line_start, copy_len);
+            fmt[plen + copy_len] = '\0';
+            asclepius_ext_output_ccc(fmt, seg_len);
+          }
+          line_start = -1;
+        }
+        if (is_line_end)
+          line_start = -1;
       }
-      char line[256];
-      snprintf(line, sizeof(line), "RCV: (%d bytes) %s", n, hexbuf);
-      asclepius_ext_output_ccc(line, n);
     }
   }
 
