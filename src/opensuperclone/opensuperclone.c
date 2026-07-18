@@ -205,6 +205,7 @@ int main(int argc, char **argv)
   primary_relay_activation_time_ccc = PRIMARY_RELAY_ACTIVATION_TIME;
   primary_relay_delay_time_ccc = PRIMARY_RELAY_DELAY_TIME;
   asclepius_relay_source_ccc = ASCLEPIUS_ALL;
+  strcpy(asclepius_tty_device_ccc, "/dev/ttyascl");
   use_rebuild_assist_ccc = false;
   rebuild_assist_enabled_ccc = false;
   drive_port_ccc = -1;

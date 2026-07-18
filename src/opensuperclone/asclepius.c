@@ -104,30 +104,14 @@ static bool asclepius_read_status_packet(void)
     return true;
 }
 
-void asclepius_connect(void)
+static int asclepius_setup_tty(void)
 {
-    if(asclepius_connected)
-    {
-        asclepius_disconnect();
-    }
-
-    asclepius_serial_port = open(ASCLEPIUS_TTY_DEVICE, O_RDWR | O_NOCTTY);
-
-    if(asclepius_serial_port < 0)
-    {
-        printf("Error %i from open: %s\n", errno, strerror(errno));
-        asclepius_connected = false;
-        return;
-    }
-
     struct termios tty;
 
     if(tcgetattr(asclepius_serial_port, &tty) != 0)
     {
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-        asclepius_connected = false;
-        close(asclepius_serial_port);
-        return;
+        return -1;
     }
 
     tty.c_cflag &= ~PARENB;  // No parity
@@ -158,14 +142,64 @@ void asclepius_connect(void)
     if(tcsetattr(asclepius_serial_port, TCSANOW, &tty) != 0)
     {
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
-        asclepius_connected = false;
-        close(asclepius_serial_port);
-        return;
+        return -1;
     }
 
     tcflush(asclepius_serial_port, TCIOFLUSH);
+    return 0;
+}
+
+static bool asclepius_reconnect(void)
+{
+    if(asclepius_serial_port >= 0)
+    {
+        close(asclepius_serial_port);
+        asclepius_serial_port = -1;
+    }
+
+    asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY);
+
+    if(asclepius_serial_port < 0)
+    {
+        printf("Error %i from open: %s\n", errno, strerror(errno));
+        return false;
+    }
+
+    if(asclepius_setup_tty() != 0)
+    {
+        close(asclepius_serial_port);
+        asclepius_serial_port = -1;
+        return false;
+    }
+
+    return true;
+}
+
+int asclepius_connect(void)
+{
+    if(asclepius_connected)
+    {
+        asclepius_disconnect();
+    }
+
+    asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY);
+
+    if(asclepius_serial_port < 0)
+    {
+        printf("Error %i from open: %s\n", errno, strerror(errno));
+        asclepius_connected = false;
+        return -1;
+    }
+
+    if(asclepius_setup_tty() != 0)
+    {
+        asclepius_connected = false;
+        close(asclepius_serial_port);
+        return -1;
+    }
 
     asclepius_connected = true;
+    return 0;
 }
 
 void asclepius_disconnect(void)
@@ -186,37 +220,65 @@ bool asclepius_get_connection_status()
     return asclepius_connected;
 }
 
-void asclepius_enable_channel(uint8_t channel)
+int asclepius_enable_channel(uint8_t channel)
 {
     if(!asclepius_connected)
     {
-        return;
+        return -1;
     }
 
     asclepius_command.command = ASCLEPIUS_TURNON_IOCMD;
     asclepius_command.channel = channel;
 
-    asclepius_write_all(&asclepius_command, sizeof(asclepius_command));
+    if(!asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+    {
+        asclepius_connected = false;
+        if(asclepius_reconnect())
+        {
+            asclepius_connected = true;
+            if(asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+            {
+                return 0;
+            }
+        }
+        return -1;
+    }
+
+    return 0;
 }
 
-void asclepius_disable_channel(uint8_t channel)
+int asclepius_disable_channel(uint8_t channel)
 {
     if(!asclepius_connected)
     {
-        return;
+        return -1;
     }
 
     asclepius_command.command = ASCLEPIUS_TURNOFF_IOCMD;
     asclepius_command.channel = channel;
 
-    asclepius_write_all(&asclepius_command, sizeof(asclepius_command));
+    if(!asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+    {
+        asclepius_connected = false;
+        if(asclepius_reconnect())
+        {
+            asclepius_connected = true;
+            if(asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+            {
+                return 0;
+            }
+        }
+        return -1;
+    }
+
+    return 0;
 }
 
-void asclepius_get_status(void)
+int asclepius_get_status(void)
 {
     if(!asclepius_connected)
     {
-        return;
+        return -1;
     }
 
     asclepius_command.command = ASCLEPIUS_STATUS_IOCMD;
@@ -224,8 +286,37 @@ void asclepius_get_status(void)
 
     if(!asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
     {
-        return;
+        asclepius_connected = false;
+        if(asclepius_reconnect())
+        {
+            asclepius_connected = true;
+            if(asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+            {
+                if(asclepius_read_status_packet())
+                {
+                    return 0;
+                }
+            }
+        }
+        return -1;
     }
 
-    asclepius_read_status_packet();
+    if(!asclepius_read_status_packet())
+    {
+        asclepius_connected = false;
+        if(asclepius_reconnect())
+        {
+            asclepius_connected = true;
+            if(asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
+            {
+                if(asclepius_read_status_packet())
+                {
+                    return 0;
+                }
+            }
+        }
+        return -1;
+    }
+
+    return 0;
 }

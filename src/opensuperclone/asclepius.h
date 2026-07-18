@@ -13,7 +13,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define ASCLEPIUS_TTY_DEVICE "/dev/ttyascl"
+extern char asclepius_tty_device_ccc[256];
 #define ASCLEPIUS_BAUDRATE B115200
 
 #define ASCLEPIUS_STATUS_IOCMD 1
@@ -49,14 +49,14 @@ struct
     bool usb5v_enabled;
 } asclepius_status;
 
-void asclepius_connect(void);
+int asclepius_connect(void);
 
 void asclepius_disconnect(void);
 
 bool asclepius_get_connection_status(void);
 
-void asclepius_enable_channel(uint8_t channel);
+int asclepius_enable_channel(uint8_t channel);
 
-void asclepius_disable_channel(uint8_t channel);
+int asclepius_disable_channel(uint8_t channel);
 
-void asclepius_get_status(void);
+int asclepius_get_status(void);

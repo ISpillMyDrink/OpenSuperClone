@@ -117,6 +117,7 @@ char primary_relay_name_ccc[MAX_RELAY_NAME_LENGTH];
 unsigned long long primary_relay_activation_time_ccc;
 unsigned long long primary_relay_delay_time_ccc;
 int asclepius_relay_source_ccc;
+char asclepius_tty_device_ccc[256];
 bool rebuild_assist_enabled_ccc;
 bool use_fpdma_ccc;
 bool wait_for_ds_bit_ccc;
@@ -272,6 +273,7 @@ struct
   unsigned long long primary_relay_activation_time;
   unsigned long long primary_relay_delay_time;
   int asclepius_relay_source;
+  char asclepius_tty_device[256];
   char primary_relay_name[MAX_RELAY_NAME_LENGTH];
 } primary_relay_settings_ccc;
 
