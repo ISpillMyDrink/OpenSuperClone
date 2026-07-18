@@ -7387,11 +7387,6 @@ int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     }
   }
 
-  if (device[0] != '\0')
-  {
-    snprintf(asclepius_ext_tty_device_ccc, sizeof(asclepius_ext_tty_device_ccc), "%s", device);
-  }
-
   // If already connected with matching settings, no-op
   if (asclepius_ext_connected)
   {
@@ -7403,6 +7398,11 @@ int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (match)
       return 0;
     asclepius_ext_close();
+  }
+
+  if (device[0] != '\0')
+  {
+    snprintf(asclepius_ext_tty_device_ccc, sizeof(asclepius_ext_tty_device_ccc), "%s", device);
   }
 
   if (baud > 0)
