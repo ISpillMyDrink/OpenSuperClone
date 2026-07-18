@@ -201,6 +201,7 @@ int asclepius_connect(void)
 
     if(asclepius_setup_tty() != 0)
     {
+        printf("Error setting up TTY for %s\n", asclepius_tty_device_ccc);
         asclepius_connected = false;
         close(asclepius_serial_port);
         return -1;
@@ -412,6 +413,7 @@ int asclepius_ext_open(void)
 
     if(asclepius_ext_setup_tty() != 0)
     {
+        printf("Error setting up TTY for %s\n", asclepius_ext_tty_device_ccc);
         asclepius_ext_connected = false;
         close(asclepius_ext_serial_port);
         asclepius_ext_serial_port = -1;
