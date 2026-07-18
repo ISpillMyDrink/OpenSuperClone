@@ -204,7 +204,6 @@ int main(int argc, char **argv)
   usb_read_residue_ccc = 0;
   primary_relay_activation_time_ccc = PRIMARY_RELAY_ACTIVATION_TIME;
   primary_relay_delay_time_ccc = PRIMARY_RELAY_DELAY_TIME;
-  asclepius_relay_source_ccc = ASCLEPIUS_ALL;
   strcpy(asclepius_tty_device_ccc, "/dev/ttyascl");
   strcpy(asclepius_ext_tty_device_ccc, "/dev/ttyasclext");
   asclepius_ext_baud_rate_ccc = 38400;
