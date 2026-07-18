@@ -1,0 +1,77 @@
+# Seagate F3 Clear SMART
+# Clears the SMART table on a Seagate F3 drive.
+# Useful as a standalone step when SMART values show false errors
+# or when clearing SMART resolves LED:000000BD / FAddr:00009887
+# media cache related errors.
+# Default baud: 38400, 8N1, no flow control.
+#
+# Steps: show current SMART, clear SMART, verify
+#
+# WARNING: This resets SMART attribute values. Power-on hours,
+# error counts, and reallocated sector counts will be cleared.
+# Use for diagnostics, not to conceal genuine drive health issues.
+
+echo "============================================"
+echo " Seagate F3 Clear SMART"
+echo "============================================"
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Changing to level 1..."
+serialsend \x2f\x31\x0d
+usleep 200000
+
+echo "--- Current SMART Values (N5) ---"
+serialsend \x4e\x35\x0d
+usleep 500000
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "=== Clearing SMART (N1) ==="
+serialsend \x4e\x31\x0d
+usleep 500000
+
+echo "--- Clear Response ---"
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "--- SMART After Clear (N5) ---"
+serialsend \x4e\x35\x0d
+usleep 500000
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "Returning to level T..."
+serialsend \x2f\x54\x0d
+usleep 200000
+
+echo ""
+echo "============================================"
+echo " SMART clear complete."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

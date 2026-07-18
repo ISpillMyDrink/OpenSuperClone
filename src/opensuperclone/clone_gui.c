@@ -7303,6 +7303,7 @@ void on_ext_terminal_script_clicked_ccc(GtkWidget *button)
       _("_Cancel"), GTK_RESPONSE_CANCEL,
       _("_Open"), GTK_RESPONSE_ACCEPT,
       NULL);
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser), OSC_SCRIPT_PATH);
 
   if (gtk_dialog_run(GTK_DIALOG(filechooser)) == GTK_RESPONSE_ACCEPT)
   {

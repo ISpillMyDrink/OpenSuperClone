@@ -1,0 +1,69 @@
+# Seagate F3 CAP and Drive Info
+# Retrieves comprehensive identification from a Seagate F3 drive:
+#   Ctrl+A   - Package version, serial, model, servo FW
+#   Ctrl+L   - Head count, preamp type, family ID
+#   T>J      - CAP info (internal model, family ID, serials)
+#   T>V1     - User slip defect list (confirms translator loaded)
+# Default baud: 38400, 8N1, no flow control.
+#
+# Useful when the drive label is missing or when you need
+# detailed firmware/family information before repair.
+
+echo "============================================"
+echo " Seagate F3 CAP and Drive Info"
+echo "============================================"
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "--- Drive Info (Ctrl+A) ---"
+serialsend \x01
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "--- Detailed Drive Info (Ctrl+L) ---"
+serialsend \x0c
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "--- CAP Info (J command) ---"
+serialsend \x4a\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "--- User Slip List / Translator check (V1) ---"
+serialsend \x56\x31\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "============================================"
+echo " Info collection complete."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

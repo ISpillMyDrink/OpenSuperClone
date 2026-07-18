@@ -13,7 +13,6 @@ int asclepius_serial_port = -1;
 
 bool asclepius_ext_connected = false;
 int asclepius_ext_serial_port = -1;
-char asclepius_ext_tty_device_ccc[256];
 int asclepius_ext_baud_rate_ccc = 38400;
 void (*asclepius_ext_output_ccc)(const char *text, int byte_count) = NULL;
 

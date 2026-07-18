@@ -1,0 +1,78 @@
+# Seagate F3 Tune for Imaging
+# Disables retries, sparing, and background tasks so the drive
+# won't hang or reallocate sectors during ddrescue/imaging.
+# Run this BEFORE cloning a failing Seagate F3 drive.
+# Default baud: 38400, 8N1, no flow control.
+#
+# Changes made (all reversible with F,,22 reset to defaults):
+#   RWRecoveryFlags = 00  (disable read/write sparing, enable ECC correction)
+#   BGMSFlags       = 00  (disable background media scan)
+#   PerformanceFlags = 0060 (disable offline sparing, deferred realloc, idle activities)
+#   ReadRetries     = 00  (disable read retries)
+#
+# Power-cycle the drive after imaging to restore defaults.
+
+echo "============================================"
+echo " Seagate F3 Tune for Imaging"
+echo "============================================"
+echo ""
+echo "Disables retries/sparing/BGMS to prevent hangs."
+echo "Power-cycle after imaging to restore defaults."
+echo ""
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Setting RWRecoveryFlags = 00 (disable sparing, enable correction)..."
+serialsend \x46\x22\x52\x57\x52\x65\x63\x6f\x76\x65\x72\x79\x46\x6c\x61\x67\x73\x22\x2c\x30\x30\x2c\x32\x32\x0d
+usleep 300000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Setting BGMSFlags = 00 (disable background media scan)..."
+serialsend \x46\x22\x42\x47\x4d\x53\x46\x6c\x61\x67\x73\x22\x2c\x30\x30\x2c\x32\x32\x0d
+usleep 300000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Setting PerformanceFlags = 0060 (disable sparing/idle)..."
+serialsend \x46\x22\x50\x65\x72\x66\x6f\x72\x6d\x61\x6e\x63\x65\x46\x6c\x61\x67\x73\x22\x2c\x30\x30\x36\x30\x2c\x32\x32\x0d
+usleep 300000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Setting ReadRetries = 00 (disable read retries)..."
+serialsend \x46\x22\x52\x65\x61\x64\x52\x65\x74\x72\x69\x65\x73\x22\x2c\x30\x30\x2c\x32\x32\x0d
+usleep 300000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "============================================"
+echo " Tuning complete. Ready for imaging."
+echo " POWER-CYCLE the drive after imaging"
+echo " to restore default F parameters."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

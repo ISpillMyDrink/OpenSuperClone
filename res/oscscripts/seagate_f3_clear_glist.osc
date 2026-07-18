@@ -1,0 +1,78 @@
+# Seagate F3 Clear G-List
+# Clears the Grown Defect List (G-List) on a Seagate F3 drive.
+# Useful as a standalone step before translator regeneration
+# or when G-List corruption is suspected.
+# Default baud: 38400, 8N1, no flow control.
+#
+# WARNING: Sectors reallocated into the G-List will be lost.
+# The LBAs they occupied will map back to the original (defective)
+# physical sectors.
+
+echo "============================================"
+echo " Seagate F3 Clear G-List"
+echo "============================================"
+echo ""
+echo "WARNING: Sectors in G-list will be lost from user data."
+echo ""
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "--- G-List before clear (V4) ---"
+serialsend \x56\x34\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "--- Resident G-List before clear (V80) ---"
+serialsend \x56\x38\x30\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "=== Clearing G-List (i4,1,22) ==="
+serialsend \x69\x34\x2c\x31\x2c\x32\x32\x0d
+usleep 500000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "--- G-List after clear (V4) ---"
+serialsend \x56\x34\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "--- Resident G-List after clear (V80) ---"
+serialsend \x56\x38\x30\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "============================================"
+echo " G-List clear complete."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

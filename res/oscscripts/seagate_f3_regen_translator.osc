@@ -1,0 +1,152 @@
+# Seagate F3 Translator Regeneration
+# Safe workflow for BSY/LED or translator corruption on Seagate F3 drives.
+#
+# PREREQUISITES:
+#   1. Backup SA modules before running (especially 0x02B, 0x02A, 0x02C)
+#      using Y-Modem transfer (r command) via your terminal program.
+#      OSC serial commands do NOT support Y-Modem, so this must be done
+#      externally or skipped if you accept the risk.
+#   2. Default baud: 38400, 8N1, no flow control.
+#   3. Power-cycle the drive after this script completes.
+#
+# This script will:
+#   - Wake the terminal and display drive info
+#   - Snapshot defect lists (V1, V4, V10, V40, V80) for documentation
+#   - Clear G-list (i4,1,22)
+#   - Clear SMART (1>N1)
+#   - Regenerate translator (m0,6,2)
+#   - Verify translator loaded (V1)
+#   - Remind you to power-cycle
+
+echo "============================================"
+echo " Seagate F3 Translator Regeneration"
+echo "============================================"
+echo ""
+echo "IMPORTANT: Back up SA modules before proceeding!"
+echo "  r0x2B,3,1  (translator module)"
+echo "  r0x2A,3,1  (related module)"
+echo "  r0x2C,3,1"
+echo ""
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+echo "Sending Ctrl+L for drive info..."
+serialsend \x0c
+usleep 300000
+
+echo "--- Drive Info ---"
+serialread 2048
+printbuffer 0 2048
+
+echo "--- Snapshot: User Slip List (V1) ---"
+serialsend \x56\x31\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo "--- Snapshot: G-List before clear (V4) ---"
+serialsend \x56\x34\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo "--- Snapshot: P-List (V10) ---"
+serialsend \x56\x31\x30\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo "--- Snapshot: Non-resident G-List (V40) ---"
+serialsend \x56\x34\x30\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo "--- Snapshot: Resident G-List (V80) ---"
+serialsend \x56\x38\x30\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "=== Clearing G-List (i4,1,22) ==="
+echo "WARNING: Sectors in G-list will be lost from user data."
+echo "         Comment out lines 93-95 to skip this step."
+serialsend \x69\x34\x2c\x31\x2c\x32\x32\x0d
+usleep 500000
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "=== Clearing SMART (1>N1) ==="
+echo "Changing to level 1..."
+serialsend \x2f\x31\x0d
+usleep 200000
+serialsend \x4e\x31\x0d
+usleep 500000
+serialread 1024
+printbuffer 0 1024
+
+echo "Returning to level T..."
+serialsend \x2f\x54\x0d
+usleep 200000
+
+echo ""
+echo "=== Regenerating Translator (m0,6,2) ==="
+echo "This may take 30-120 seconds. Reading progress..."
+serialsend \x6d\x30\x2c\x36\x2c\x32\x2c\x2c\x2c\x2c\x2c\x32\x32\x0d
+usleep 5000000
+
+echo "--- Initial status (5s) ---"
+serialread 1024
+printbuffer 0 1024
+usleep 60000000
+
+echo "--- Progress (65s) ---"
+serialread 1024
+printbuffer 0 1024
+usleep 60000000
+
+echo "--- Final status (125s) ---"
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "=== Verification: Translator check (V1) ==="
+serialsend \x56\x31\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "=== Verification: G-List after regen (V4) ==="
+serialsend \x56\x34\x0d
+usleep 300000
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "============================================"
+echo " Translator regeneration complete."
+echo " POWER-CYCLE the drive before use."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

@@ -1,0 +1,67 @@
+# Seagate F3 Head Resistance Test
+# Tests read/write head resistance on a Seagate F3 drive.
+# Run at level 7 with the X command.
+# Default baud: 38400, 8N1, no flow control.
+#
+# Head resistance values are displayed as hex for each head.
+# Normal range varies by family, but values significantly
+# higher or lower than others may indicate a damaged head.
+
+echo "============================================"
+echo " Seagate F3 Head Resistance Test"
+echo "============================================"
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo "Changing to level 7..."
+serialsend \x2f\x37\x0d
+usleep 300000
+
+echo "--- Level Change ---"
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "Running head resistance test (X command)..."
+serialsend \x58\x0d
+usleep 500000
+
+echo "--- Head Resistance Results ---"
+serialread 2048
+printbuffer 0 2048
+
+echo ""
+echo "Returning to level T..."
+serialsend \x2f\x54\x0d
+usleep 200000
+
+echo "--- Level T ---"
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "============================================"
+echo " Head resistance test complete."
+echo " Each head shows a hex resistance value."
+echo " Compare across heads -- outliers may be bad."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

@@ -1,0 +1,53 @@
+# Seagate F3 Restore F Parameters to Defaults
+# Resets all F parameters (RWRecoveryFlags, BGMSFlags,
+# PerformanceFlags, ReadRetries, etc.) to factory defaults.
+# Default baud: 38400, 8N1, no flow control.
+#
+# Use after running tune_for_imaging to re-enable read retries,
+# sparing, and background media scan without a power cycle.
+#
+# Command: T> F,,22
+#
+# WARNING: Also resets any custom F tuning that may have been
+# set for data recovery purposes. Power-cycle after imaging
+# is still recommended for complete reset.
+
+echo "============================================"
+echo " Seagate F3 Restore F Defaults"
+echo "============================================"
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "=== Restoring F parameters to defaults (F,,22) ==="
+serialsend \x46\x2c\x2c\x32\x32\x0d
+usleep 300000
+
+echo "--- Response ---"
+serialread 1024
+printbuffer 0 1024
+
+echo ""
+echo "============================================"
+echo " F parameters restored to factory defaults."
+echo "============================================"
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end
