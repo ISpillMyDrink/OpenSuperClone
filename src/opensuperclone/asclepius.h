@@ -14,6 +14,10 @@
 #include <unistd.h>
 
 extern char asclepius_tty_device_ccc[256];
+extern char asclepius_ext_tty_device_ccc[256];
+extern int asclepius_ext_baud_rate_ccc;
+extern bool asclepius_ext_connected;
+extern int asclepius_ext_serial_port;
 #define ASCLEPIUS_BAUDRATE B115200
 
 #define ASCLEPIUS_STATUS_IOCMD 1
@@ -60,3 +64,12 @@ int asclepius_enable_channel(uint8_t channel);
 int asclepius_disable_channel(uint8_t channel);
 
 int asclepius_get_status(void);
+
+int asclepius_ext_open(void);
+void asclepius_ext_close(void);
+int asclepius_ext_send(const char *data, size_t len);
+int asclepius_ext_read(char *buffer, size_t max_len);
+int asclepius_parse_escapes(const char *input, char *output, size_t max);
+
+// Function pointer set by GUI to capture serial output to the terminal textview
+extern void (*asclepius_ext_output_ccc)(const char *text, int byte_count);

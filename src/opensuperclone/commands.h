@@ -196,3 +196,8 @@ int usb_raw_read_ccc(bool perform_check, unsigned int line_number, char *rest_of
 int usb_raw_write_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
 
 int usb_reset_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
+
+int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
+int serial_close_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
+int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
+int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);

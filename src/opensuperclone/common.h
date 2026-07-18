@@ -651,6 +651,8 @@ int set_number_variable_ccc(int var_num, char *raw_value);
 
 int set_string_variable_ccc(int var_num, char *raw_value);
 
+int initialize_script_variables_ccc(void);
+
 int find_command_ccc(char *search_command, unsigned int start_line);
 
 int find_command_plus1_ccc(char *search_command, char *search_command_cap, char *first_item, unsigned int start_line);

@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "commands.h"
+#include "asclepius.h"
 
 // function to either check or execute a command
 int execute_line_ccc(bool perform_check, unsigned int line_number, char *command, char *rest_of_line)
@@ -523,6 +524,26 @@ int execute_line_ccc(bool perform_check, unsigned int line_number, char *command
     return_value_ccc = usbtimeout_ccc(perform_check, line_number, rest_of_line);
   }
 
+  else if ((strcasecmp(command, "serialopen") == 0))
+  {
+    return_value_ccc = serial_open_ccc(perform_check, line_number, rest_of_line);
+  }
+
+  else if ((strcasecmp(command, "serialclose") == 0))
+  {
+    return_value_ccc = serial_close_ccc(perform_check, line_number, rest_of_line);
+  }
+
+  else if ((strcasecmp(command, "serialsend") == 0))
+  {
+    return_value_ccc = serial_send_ccc(perform_check, line_number, rest_of_line);
+  }
+
+  else if ((strcasecmp(command, "serialread") == 0))
+  {
+    return_value_ccc = serial_read_ccc(perform_check, line_number, rest_of_line);
+  }
+
   else // default:
   {
     if (!setting_buffer_ccc && !setting_scratchpad_ccc && !setting_usbbuffer_ccc)
@@ -649,6 +670,22 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   if (!perform_check)
   {
     fprintf(stdout, "\n");
+    if (asclepius_ext_output_ccc)
+    {
+      // Strip surrounding quotes for display
+      const char *msg = rest_of_line;
+      int len = strlen(msg);
+      if (len >= 2 && ((msg[0] == '"' && msg[len-1] == '"') || (msg[0] == '\'' && msg[len-1] == '\'')))
+      {
+        msg++;
+        len -= 2;
+      }
+      while (len > 0 && (msg[len - 1] == '\n' || msg[len - 1] == '\r'))
+        len--;
+      char buf[128 + 8192];
+      snprintf(buf, sizeof(buf), "INF: %.*s", len, msg);
+      asclepius_ext_output_ccc(buf, 0);
+    }
   }
 
   return (0);
@@ -7319,5 +7356,241 @@ int usb_reset_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
     return_value_ccc = do_usb_reset_ccc();
     // return (return_value_ccc);
   }
+  return 0;
+}
+
+int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  char token1[256] = "", token2[256] = "";
+  int n = sscanf(rest_of_line, "%255s %255s", token1, token2);
+
+  char device[256] = "";
+  int baud = 0;
+
+  if (n >= 1)
+  {
+    if (token1[0] == '/')
+    {
+      snprintf(device, sizeof(device), "%s", token1);
+      if (n >= 2) baud = atoi(token2);
+    }
+    else
+    {
+      baud = atoi(token1);
+      if (n >= 2 && token2[0] == '/')
+        snprintf(device, sizeof(device), "%s", token2);
+    }
+  }
+
+  if (device[0] != '\0')
+  {
+    snprintf(asclepius_ext_tty_device_ccc, sizeof(asclepius_ext_tty_device_ccc), "%s", device);
+  }
+
+  // If already connected with matching settings, no-op
+  if (asclepius_ext_connected)
+  {
+    bool match = true;
+    if (baud > 0 && baud != asclepius_ext_baud_rate_ccc)
+      match = false;
+    if (device[0] != '\0' && strcmp(device, asclepius_ext_tty_device_ccc) != 0)
+      match = false;
+    if (match)
+      return 0;
+    asclepius_ext_close();
+  }
+
+  if (baud > 0)
+  {
+    asclepius_ext_baud_rate_ccc = baud;
+  }
+
+  return_value_ccc = asclepius_ext_open();
+  return return_value_ccc;
+}
+
+int serial_close_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  asclepius_ext_close();
+  return 0;
+}
+
+int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  if (!asclepius_ext_connected)
+  {
+    fprintf(stdout, "ERROR on line %u: ext serial port not open\n", line_number - 1);
+    return -1;
+  }
+
+  char parsed[8192];
+  int len = asclepius_parse_escapes(rest_of_line, parsed, sizeof(parsed));
+
+  if (asclepius_ext_send(parsed, len) != 0)
+  {
+    return -1;
+  }
+
+  if (asclepius_ext_output_ccc)
+  {
+    char buf[128 + 8192];
+    // Show printable ASCII or hex dump of what was sent
+    unsigned char *p = (unsigned char *)parsed;
+    bool all_printable = true;
+    int i;
+    for (i = 0; i < len && i < 64; i++)
+    {
+      if (p[i] != '\n' && p[i] != '\r' && p[i] != '\t' && !isprint(p[i]))
+      {
+        all_printable = false;
+        break;
+      }
+    }
+    if (all_printable)
+    {
+      int slen = len < 80 ? len : 80;
+      char printable[128];
+      int j = 0;
+      for (i = 0; i < slen && j < (int)sizeof(printable) - 1; i++)
+      {
+        if (p[i] == '\n') { printable[j++] = '\\'; printable[j++] = 'n'; }
+        else if (p[i] == '\r') { printable[j++] = '\\'; printable[j++] = 'r'; }
+        else if (p[i] == '\t') { printable[j++] = '\\'; printable[j++] = 't'; }
+        else if (p[i] >= 32) printable[j++] = p[i];
+      }
+      printable[j] = '\0';
+      snprintf(buf, sizeof(buf), "SND: %s", printable);
+      if (len > 80) strcat(buf, "...");
+    }
+    else
+    {
+      char hexbuf[256];
+      int pos = 0;
+      int show = len < 64 ? len : 64;
+      for (i = 0; i < show && pos < (int)sizeof(hexbuf) - 4; i++)
+      {
+        pos += snprintf(hexbuf + pos, sizeof(hexbuf) - pos, "%02x ", p[i]);
+      }
+      snprintf(buf, sizeof(buf), "SND: (%d bytes) %s", len, hexbuf);
+    }
+    asclepius_ext_output_ccc(buf, len);
+  }
+
+  return 0;
+}
+
+int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  if (!asclepius_ext_connected)
+  {
+    fprintf(stdout, "ERROR on line %u: ext serial port not open\n", line_number - 1);
+    return -1;
+  }
+
+  unsigned long length = strtoul(rest_of_line, NULL, 0);
+  if (length == 0)
+  {
+    length = 256;
+  }
+
+  if (length > ccc_main_buffer_size_ccc)
+  {
+    ccc_main_buffer_size_ccc = length;
+    if (set_main_buffer_ccc() != 0)
+    {
+      return -1;
+    }
+  }
+
+  // Temporarily clear O_NONBLOCK so read respects VTIME/VMIN timeout
+  int flags = fcntl(asclepius_ext_serial_port, F_GETFL, 0);
+  if(flags != -1 && (flags & O_NONBLOCK))
+    fcntl(asclepius_ext_serial_port, F_SETFL, flags & ~O_NONBLOCK);
+
+  int n = asclepius_ext_read(ccc_buffer_ccc, length);
+
+  // Restore O_NONBLOCK
+  if(flags != -1 && (flags & O_NONBLOCK))
+    fcntl(asclepius_ext_serial_port, F_SETFL, flags);
+
+  if (n < 0)
+  {
+    return -1;
+  }
+
+  if (asclepius_ext_output_ccc && n > 0)
+  {
+    unsigned char *buf = (unsigned char *)ccc_buffer_ccc;
+    bool all_printable = true;
+    int i;
+    for (i = 0; i < n; i++)
+    {
+      if (buf[i] != '\n' && buf[i] != '\r' && buf[i] != '\t' && !isprint(buf[i]))
+      {
+        all_printable = false;
+        break;
+      }
+    }
+    if (all_printable)
+    {
+      // Split on newlines, display each line separately
+      char fmt[8320];
+      int line_start = 0;
+      for (i = 0; i <= n; i++)
+      {
+        if (i == n || buf[i] == '\n')
+        {
+          int seg_len = i - line_start;
+          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
+            seg_len--;
+          if (seg_len > 0)
+          {
+            int plen = snprintf(fmt, sizeof(fmt), "RCV: ");
+            int copy_len = seg_len < (int)(sizeof(fmt) - plen - 1) ? seg_len : (int)(sizeof(fmt) - plen - 1);
+            memcpy(fmt + plen, buf + line_start, copy_len);
+            fmt[plen + copy_len] = '\0';
+            asclepius_ext_output_ccc(fmt, seg_len);
+          }
+          line_start = i + 1;
+        }
+      }
+    }
+    else
+    {
+      // Hex dump up to 64 bytes
+      char hexbuf[256];
+      int pos = 0;
+      int show = n < 64 ? n : 64;
+      for (i = 0; i < show && pos < (int)sizeof(hexbuf) - 4; i++)
+      {
+        pos += snprintf(hexbuf + pos, sizeof(hexbuf) - pos, "%02x ", buf[i]);
+      }
+      char line[256];
+      snprintf(line, sizeof(line), "RCV: (%d bytes) %s", n, hexbuf);
+      asclepius_ext_output_ccc(line, n);
+    }
+  }
+
+  set_number_variable_value_ccc("$data_transferred", n);
   return 0;
 }

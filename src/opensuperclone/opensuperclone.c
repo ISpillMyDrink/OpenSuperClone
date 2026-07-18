@@ -206,6 +206,8 @@ int main(int argc, char **argv)
   primary_relay_delay_time_ccc = PRIMARY_RELAY_DELAY_TIME;
   asclepius_relay_source_ccc = ASCLEPIUS_ALL;
   strcpy(asclepius_tty_device_ccc, "/dev/ttyascl");
+  strcpy(asclepius_ext_tty_device_ccc, "/dev/ttyasclext");
+  asclepius_ext_baud_rate_ccc = 38400;
   use_rebuild_assist_ccc = false;
   rebuild_assist_enabled_ccc = false;
   drive_port_ccc = -1;

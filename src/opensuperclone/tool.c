@@ -506,6 +506,144 @@ int initialize_tool_memory_ccc(void)
   return (0);
 }
 
+int initialize_script_variables_ccc(void)
+{
+  total_number_variables_ccc = 0;
+  unsigned int cols = MAX_VARIABLE_LENGTH;
+  unsigned int i;
+
+  number_variable_name_buffer_ccc = malloc(number_variable_rows_ccc * cols * sizeof(*number_variable_name_buffer_ccc));
+  if (number_variable_name_buffer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    return (-1);
+  }
+  number_variable_name_pointer_ccc = malloc(number_variable_rows_ccc * sizeof(*number_variable_name_pointer_ccc));
+  if (number_variable_name_pointer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    return (-1);
+  }
+  for (i = 0; i < number_variable_rows_ccc; ++i)
+    number_variable_name_pointer_ccc[i] = &number_variable_name_buffer_ccc[i * cols];
+
+  number_variable_buffer_ccc = malloc(number_variable_rows_ccc * sizeof(*number_variable_buffer_ccc));
+  if (number_variable_buffer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    free(number_variable_name_pointer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    number_variable_name_pointer_ccc = NULL;
+    return (-1);
+  }
+
+  total_string_variables_ccc = 0;
+  string_variable_name_buffer_ccc = malloc(string_variable_rows_ccc * cols * sizeof(*string_variable_name_buffer_ccc));
+  if (string_variable_name_buffer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    free(number_variable_name_pointer_ccc);
+    free(number_variable_buffer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    number_variable_name_pointer_ccc = NULL;
+    number_variable_buffer_ccc = NULL;
+    return (-1);
+  }
+  string_variable_name_pointer_ccc = malloc(string_variable_rows_ccc * sizeof(*string_variable_name_pointer_ccc));
+  if (string_variable_name_pointer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    free(number_variable_name_pointer_ccc);
+    free(number_variable_buffer_ccc);
+    free(string_variable_name_buffer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    number_variable_name_pointer_ccc = NULL;
+    number_variable_buffer_ccc = NULL;
+    string_variable_name_buffer_ccc = NULL;
+    return (-1);
+  }
+  for (i = 0; i < string_variable_rows_ccc; ++i)
+    string_variable_name_pointer_ccc[i] = &string_variable_name_buffer_ccc[i * cols];
+
+  string_variable_buffer_ccc = malloc(string_variable_rows_ccc * cols * sizeof(*string_variable_buffer_ccc));
+  if (string_variable_buffer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    free(number_variable_name_pointer_ccc);
+    free(number_variable_buffer_ccc);
+    free(string_variable_name_buffer_ccc);
+    free(string_variable_name_pointer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    number_variable_name_pointer_ccc = NULL;
+    number_variable_buffer_ccc = NULL;
+    string_variable_name_buffer_ccc = NULL;
+    string_variable_name_pointer_ccc = NULL;
+    return (-1);
+  }
+  string_variable_pointer_ccc = malloc(string_variable_rows_ccc * sizeof(*string_variable_pointer_ccc));
+  if (string_variable_pointer_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    free(number_variable_name_buffer_ccc);
+    free(number_variable_name_pointer_ccc);
+    free(number_variable_buffer_ccc);
+    free(string_variable_name_buffer_ccc);
+    free(string_variable_name_pointer_ccc);
+    free(string_variable_buffer_ccc);
+    number_variable_name_buffer_ccc = NULL;
+    number_variable_name_pointer_ccc = NULL;
+    number_variable_buffer_ccc = NULL;
+    string_variable_name_buffer_ccc = NULL;
+    string_variable_name_pointer_ccc = NULL;
+    string_variable_buffer_ccc = NULL;
+    return (-1);
+  }
+  for (i = 0; i < string_variable_rows_ccc; ++i)
+    string_variable_pointer_ccc[i] = &string_variable_buffer_ccc[i * cols];
+
+  create_number_variable_ccc("error_level");
+  create_number_variable_ccc("io_sense_key");
+  create_number_variable_ccc("io_asc");
+  create_number_variable_ccc("io_ascq");
+  create_number_variable_ccc("io_status");
+  create_number_variable_ccc("io_masked_status");
+  create_number_variable_ccc("io_msg_status");
+  create_number_variable_ccc("io_sb_len_wr");
+  create_number_variable_ccc("io_host_status");
+  create_number_variable_ccc("io_driver_status");
+  create_number_variable_ccc("io_resid");
+  create_number_variable_ccc("io_duration");
+  create_number_variable_ccc("io_info");
+  create_number_variable_ccc("time");
+  create_number_variable_ccc("ata_return_error");
+  create_number_variable_ccc("ata_return_count");
+  create_number_variable_ccc("ata_return_lba");
+  create_number_variable_ccc("ata_return_device");
+  create_number_variable_ccc("ata_return_status");
+  create_number_variable_ccc("ata_alternate_status");
+  create_number_variable_ccc("data_transferred");
+  create_number_variable_ccc("command_status");
+  create_number_variable_ccc("bus_master_status");
+  create_number_variable_ccc("direct_mode");
+  create_number_variable_ccc("ahci_mode");
+  create_number_variable_ccc("usb_return_status");
+  create_number_variable_ccc("usb_return_error");
+  create_number_variable_ccc("gui_mode");
+  {
+    int var_num = find_number_variable_ccc("gui_mode");
+    if (var_num >= 0)
+      set_number_variable_ccc(var_num, "1");
+  }
+
+  return 0;
+}
+
 // function to increase total number variable memory
 int increase_number_variable_memory_ccc(void)
 {
@@ -617,6 +755,12 @@ int process_arguments_ccc(void)
   create_number_variable_ccc("ahci_mode");
   create_number_variable_ccc("usb_return_status");
   create_number_variable_ccc("usb_return_error");
+  create_number_variable_ccc("gui_mode");
+  {
+    int var_num = find_number_variable_ccc("gui_mode");
+    if (var_num >= 0)
+      set_number_variable_ccc(var_num, superclone_ccc ? "1" : "0");
+  }
 
   // initially set direct mode variable if needed
   if (direct_mode_ccc)
@@ -888,6 +1032,8 @@ int read_script_file_ccc(char *script_file_ccc)
     if (line_too_long)
     {
       fprintf(stderr, "ERROR! Line %u of %s is too long.\n", i - 1, script_file_ccc);
+      if (superclone_ccc)
+        return (3);
       exit(1);
     }
 
@@ -1084,6 +1230,8 @@ int process_lines_ccc(void)
             if (i + n >= MAX_LINE_LENGTH)
             {
               fprintf(stderr, "Indentation exceeded maximum line length on line %u. Exiting without saving...\n", line_number + 1);
+              if (superclone_ccc)
+                return (-1);
               supertool_cleanup_ccc();
               exit(1);
             }
@@ -1093,6 +1241,8 @@ int process_lines_ccc(void)
         if (strlen(command) + strlen(rest_of_line) + strlen(new_line) + 2 >= MAX_LINE_LENGTH)
         {
           fprintf(stderr, "Line %u is too long with new indentation. Exiting without saving...\n", line_number + 1);
+          if (superclone_ccc)
+            return (-1);
           supertool_cleanup_ccc();
           exit(1);
         }
@@ -1116,6 +1266,8 @@ int process_lines_ccc(void)
           if (return_value_ccc == -99)
           {
             fprintf(stdout, "Command not supported by current license type. Exiting...\n");
+            if (superclone_ccc)
+              return (-1);
             supertool_cleanup_ccc();
             exit(1);
           }
@@ -1123,6 +1275,8 @@ int process_lines_ccc(void)
           {
             fprintf(stdout, "%s", script_line_pointer_ccc[line_number]);
             fprintf(stdout, "There was an error processing the script \'%s\'. Exiting...\n", script_file_ccc);
+            if (superclone_ccc)
+              return (-1);
             supertool_cleanup_ccc();
             exit(1);
           }
@@ -1135,6 +1289,8 @@ int process_lines_ccc(void)
   {
     fprintf(stderr, "\nError: IF count does not match ENDIF count (too many IF),\n");
     fprintf(stdout, "There was an error processing the script \'%s\'. Exiting...\n", script_file_ccc);
+    if (superclone_ccc)
+      return (-1);
     supertool_cleanup_ccc();
     exit(1);
   }
@@ -1142,6 +1298,8 @@ int process_lines_ccc(void)
   {
     fprintf(stderr, "\nError: WHILE count does not match DONE count (too many WHILE),\n");
     fprintf(stdout, "There was an error processing the script \'%s\'. Exiting...\n", script_file_ccc);
+    if (superclone_ccc)
+      return (-1);
     supertool_cleanup_ccc();
     exit(1);
   }
@@ -1241,6 +1399,8 @@ int process_lines_ccc(void)
           else if (return_value_ccc == -99)
           {
             fprintf(stdout, "Command not supported by current license type. Exiting...\n");
+            if (superclone_ccc)
+              return (-1);
             supertool_cleanup_ccc();
             exit(1);
           }
@@ -1248,6 +1408,8 @@ int process_lines_ccc(void)
           {
             fprintf(stdout, "%s", script_line_pointer_ccc[line_number]);
             fprintf(stdout, "There was an error processing the script \'%s\'. Exiting...\n", script_file_ccc);
+            if (superclone_ccc)
+              return (-1);
             supertool_cleanup_ccc();
             exit(1);
           }

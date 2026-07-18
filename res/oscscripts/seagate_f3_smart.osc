@@ -1,0 +1,46 @@
+# Seagate F3 SMART
+# Demonstrates reading SMART values on a Seagate F3 drive.
+# Default tty device: /dev/ttyUSB0
+# Default baud: 38400, 8N1, no flow control.
+
+echo "=== Seagate F3 SMART Operations ==="
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Waking terminal (Ctrl+Z)..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Banner ---"
+buffersize 1024
+serialread 1024
+printbuffer 0 1024
+
+echo "Changing to level 1..."
+serialsend \x2f\x31
+serialsend \x0d
+usleep 200000
+echo "--- Level Change ---"
+serialread 1024
+printbuffer 0 1024
+
+echo "Reading SMART values (N5)..."
+serialsend \x4e\x35
+serialsend \x0d
+usleep 500000
+
+echo "--- SMART Values ---"
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

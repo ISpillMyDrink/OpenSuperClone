@@ -1,0 +1,38 @@
+# Seagate F3 Get Drive Info
+# Demonstrates ext serial commands by connecting to a Seagate F3 drive
+# and retrieving identification info via the terminal.
+# Default tty device: /dev/ttyUSB0
+# Default baud: 38400, 8N1, no flow control.
+
+echo "=== Seagate F3 Get Drive Info ==="
+
+if $gui_mode = 0
+  serialopen /dev/ttyUSB0 38400
+else
+  serialopen
+endif
+usleep 200000
+
+echo "Sending Ctrl+Z to wake terminal..."
+serialsend \x1a
+usleep 500000
+
+echo "--- Terminal Banner ---"
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+echo "Sending Ctrl+L for drive info..."
+serialsend \x0c
+usleep 300000
+
+echo "--- Drive Info ---"
+buffersize 2048
+serialread 2048
+printbuffer 0 2048
+
+if $gui_mode = 0
+  serialclose
+endif
+echo "=== Done ==="
+end

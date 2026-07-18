@@ -181,6 +181,7 @@ GtkWidget *displayanalyzemi_ccc;
 GtkWidget *displaysmartmi_ccc;
 GtkWidget *primaryrelaymi_ccc;
 GtkWidget *chooseprimaryrelaymi_ccc;
+GtkWidget *asclepiusextmi_ccc;
 GtkWidget *disableusbmassmi_ccc;
 GtkWidget *restoreusbmassmi_ccc;
 GtkWidget *loadconfigmi_ccc;
@@ -621,3 +622,5 @@ void write_config_file_with_name_ccc(char *filename);
 void write_config_file_ccc(void);
 
 void check_source_against_templates_ccc(void);
+
+void open_asclepius_ext_terminal_ccc(void);

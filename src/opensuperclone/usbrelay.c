@@ -1247,6 +1247,8 @@ void load_primary_relay_settings_ccc(void)
   }
   strcpy(primary_relay_settings_ccc.primary_relay_name, primary_relay_name_ccc);
   strcpy(primary_relay_settings_ccc.asclepius_tty_device, asclepius_tty_device_ccc);
+  strcpy(primary_relay_settings_ccc.asclepius_ext_tty_device, asclepius_ext_tty_device_ccc);
+  primary_relay_settings_ccc.asclepius_ext_baud_rate = asclepius_ext_baud_rate_ccc;
 }
 
 void update_primary_relay_settings_ccc(void)
@@ -1280,6 +1282,8 @@ void update_primary_relay_settings_ccc(void)
   }
   strcpy(primary_relay_name_ccc, primary_relay_settings_ccc.primary_relay_name);
   strcpy(asclepius_tty_device_ccc, primary_relay_settings_ccc.asclepius_tty_device);
+  strcpy(asclepius_ext_tty_device_ccc, primary_relay_settings_ccc.asclepius_ext_tty_device);
+  asclepius_ext_baud_rate_ccc = primary_relay_settings_ccc.asclepius_ext_baud_rate;
 }
 
 int get_primary_relay_settings_ccc(void)

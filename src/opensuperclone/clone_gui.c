@@ -9,6 +9,9 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 #include "asclepius.h"
+#include <ctype.h>
+
+extern int process_lines_ccc(void);
 #include <libconfig.h>
 
 int start_gtk_ccc(int argc, char **argv, char *title, char *version)
@@ -32,6 +35,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     exitcode_ccc = GENERAL_ERROR_EXIT_CODE;
     return -1;
   }
+
+  initialize_script_variables_ccc();
 
   char window_title[256];
   snprintf(window_title, sizeof(window_title), "%s %s", title, version);
@@ -188,6 +193,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   displaysmartmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "displaysmartmi"));
   primaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primaryrelaymi"));
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
+  asclepiusextmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepiusextmi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
   loadconfigmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "loadconfigmi"));
@@ -250,6 +256,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(displaysmartmi_ccc), _("Display SMART Results"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), _("Primary Relay Settings"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(asclepiusextmi_ccc), _("Open Terminal (UART)"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(loadconfigmi_ccc), _("Open Settings File"));
@@ -278,6 +285,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_add_accelerator(cleardomainmi_ccc, "activate", accel_group, GDK_KEY_C, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   // gtk_widget_add_accelerator(adddomainmi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(savedomainmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+
+  gtk_widget_add_accelerator(asclepiusextmi_ccc,"activate", accel_group, GDK_KEY_T, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
@@ -2185,6 +2194,7 @@ void set_connected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(asclepiusextmi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(hard_reset_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), driver_only_ccc ? FALSE : TRUE);
@@ -2215,6 +2225,7 @@ void set_disconnected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(asclepiusextmi_ccc), TRUE);
   if(usbr1_chosen_ccc || asclepius_get_connection_status())
   {
     gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
@@ -4521,52 +4532,88 @@ void update_asclepius_status(void)
     if (asclepius_status.main12v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_on_path);
+      gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Active"));
     }
     else
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_off_path);
+      gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Inactive"));
     }
-    if (asclepius_status.main12v_enabled && (asclepius_status.main12v_voltage < 10800 || asclepius_status.main12v_voltage > 13200))
+    if (asclepius_status.main12v_enabled)
     {
-      gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_warn_icon_path);
+      if (asclepius_status.main12v_voltage < 10800)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (<10.8V)"));
+      }
+      else if (asclepius_status.main12v_voltage > 13200)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (>13.2V)"));
+      }
     }
     if (asclepius_status.main12v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), error_icon_on_path);
+      gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Overcurrent Detected!"));
     }
 
     if(asclepius_status.main5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_on_path);
+      gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Active"));
     }
     else
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_off_path);
+      gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Inactive"));
     }
-    if (asclepius_status.main5v_enabled && (asclepius_status.main5v_voltage < 4750 || asclepius_status.main5v_voltage > 5250))
+    if (asclepius_status.main5v_enabled)
     {
-      gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_warn_icon_path);
+      if (asclepius_status.main5v_voltage < 4750)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Out of Spec (<4.75V)"));
+      }
+      else if (asclepius_status.main5v_voltage > 5250)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Out of Spec (>5.25V)"));
+      }
     }
     if (asclepius_status.main5v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), error_icon_on_path);
+      gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Overcurrent Detected!"));
     }
 
     if(asclepius_status.usb5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_on_path);
+      gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Active"));
     }
     else
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_off_path);
+      gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Inactive"));
     }
-    if (asclepius_status.usb5v_enabled && (asclepius_status.main5v_voltage < 4750 || asclepius_status.main5v_voltage > 5250))
+    if (asclepius_status.usb5v_enabled)
     {
-      gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_warn_icon_path);
+      if (asclepius_status.main5v_voltage < 4750)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Out of Spec (<4.75V)"));
+      }
+      else if (asclepius_status.main5v_voltage > 5250)
+      {
+        gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_warn_icon_path);
+        gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Out of Spec (>5.25V)"));
+      }
     }
     if (asclepius_status.usb5v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), error_icon_on_path);
+        gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Overcurrent Detected"));
     }
 
     char temp[16];
@@ -6386,6 +6433,19 @@ void read_config_file_with_name_ccc(char* filename)
       snprintf(primary_relay_settings_ccc.asclepius_tty_device, sizeof(primary_relay_settings_ccc.asclepius_tty_device), "%s", atd);
     }
 
+    setting = config_setting_get_member(group, "asclepius_ext_tty_device");
+    if (setting != NULL)
+    {
+      const char *atd = config_setting_get_string(setting);
+      snprintf(primary_relay_settings_ccc.asclepius_ext_tty_device, sizeof(primary_relay_settings_ccc.asclepius_ext_tty_device), "%s", atd);
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ext_baud_rate");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ext_baud_rate = config_setting_get_int(setting);
+    }
+
     // setting = config_setting_get_member(group, "primary_relay_name");;
     // if (setting != NULL)
     // {
@@ -6786,6 +6846,12 @@ void write_config_file_with_name_ccc(char* filename)
   setting = config_setting_add(group, "asclepius_tty_device", CONFIG_TYPE_STRING);
   config_setting_set_string(setting, primary_relay_settings_ccc.asclepius_tty_device);
 
+  setting = config_setting_add(group, "asclepius_ext_tty_device", CONFIG_TYPE_STRING);
+  config_setting_set_string(setting, primary_relay_settings_ccc.asclepius_ext_tty_device);
+
+  setting = config_setting_add(group, "asclepius_ext_baud_rate", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_ext_baud_rate);
+
   // setting = config_setting_add(group, "primary_relay_name", CONFIG_TYPE_STRING);
   // config_setting_set_string(setting, primary_relay_settings_ccc.primary_relay_name);
 
@@ -6873,4 +6939,598 @@ void check_source_against_templates_ccc(void)
       message_now_ccc(tempmessage_ccc);
     }
   }
+}
+
+// -----------------------------------------------------------------------
+// Ext Terminal (UART) dialog
+// -----------------------------------------------------------------------
+
+static const int ext_terminal_baud_rates[] = {9600, 19200, 38400, 57600, 115200, 230400, 921600};
+#define EXT_TERMINAL_NUM_BAUDS (sizeof(ext_terminal_baud_rates) / sizeof(ext_terminal_baud_rates[0]))
+
+#define EXT_TAG_TS    "ext_tag_ts"
+#define EXT_TAG_INF   "ext_tag_inf"
+#define EXT_TAG_SND   "ext_tag_snd"
+#define EXT_TAG_RCV   "ext_tag_rcv"
+#define EXT_TAG_ERR   "ext_tag_err"
+#define EXT_TAG_SCRIPT "ext_tag_script"
+
+static const char *ext_prefix_tag(const char *prefix)
+{
+  if (strncmp(prefix, "INF:", 4) == 0) return EXT_TAG_INF;
+  if (strncmp(prefix, "SND:", 4) == 0) return EXT_TAG_SND;
+  if (strncmp(prefix, "RCV:", 4) == 0) return EXT_TAG_RCV;
+  if (strncmp(prefix, "ERR:", 4) == 0) return EXT_TAG_ERR;
+  return NULL;
+}
+
+static void ext_maybe_scroll_to_mark(GtkWidget *textview, GtkTextMark *mark)
+{
+  GtkWidget *dialog = gtk_widget_get_toplevel(textview);
+  if (GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_autoscroll")))
+    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(textview), mark, 0.0, FALSE, 0.0, 0.0);
+}
+
+static void append_ext_terminal_text(GtkWidget *textview, const char *text, const char *tag_name)
+{
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+  GtkTextIter iter;
+  gtk_text_buffer_get_iter_at_mark(buf, &iter, gtk_text_buffer_get_insert(buf));
+  gtk_text_buffer_insert_with_tags_by_name(buf, &iter, text, -1, tag_name, NULL);
+  GtkTextMark *mark = gtk_text_buffer_get_insert(buf);
+  ext_maybe_scroll_to_mark(textview, mark);
+}
+
+static void append_ext_terminal_line(GtkWidget *textview, const char *prefix, const char *data)
+{
+  char timestamp[32];
+  time_t now = time(NULL);
+  strftime(timestamp, sizeof(timestamp), "%H:%M:%S", localtime(&now));
+
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+  GtkTextIter iter;
+  gtk_text_buffer_get_iter_at_mark(buf, &iter, gtk_text_buffer_get_insert(buf));
+
+  gtk_text_buffer_insert_with_tags_by_name(buf, &iter, timestamp, -1, EXT_TAG_TS, NULL);
+  gtk_text_buffer_insert(buf, &iter, " ", 1);
+
+  const char *tag = ext_prefix_tag(prefix);
+  if (tag)
+    gtk_text_buffer_insert_with_tags_by_name(buf, &iter, prefix, -1, tag, NULL);
+  else
+    gtk_text_buffer_insert(buf, &iter, prefix, -1);
+
+  gtk_text_buffer_insert(buf, &iter, " ", 1);
+  gtk_text_buffer_insert(buf, &iter, data, -1);
+  gtk_text_buffer_insert(buf, &iter, "\n", 1);
+
+  GtkTextMark *mark = gtk_text_buffer_get_insert(buf);
+  ext_maybe_scroll_to_mark(textview, mark);
+}
+
+static void update_ext_status(GtkWidget *dialog)
+{
+  GtkWidget *label = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_status_label"));
+  if (!label) return;
+  unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
+  unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
+  char text[320];
+  if (asclepius_ext_connected)
+  {
+    snprintf(text, sizeof(text), _("%s @ %d  |  RX: %u  TX: %u"),
+             asclepius_ext_tty_device_ccc, asclepius_ext_baud_rate_ccc, rx, tx);
+  }
+  else
+  {
+    snprintf(text, sizeof(text), _("Disconnected  |  RX: %u  TX: %u"), rx, tx);
+  }
+  gtk_label_set_text(GTK_LABEL(label), text);
+}
+
+void on_ext_terminal_send_byte_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+  if (!asclepius_ext_connected)
+  {
+    append_ext_terminal_line(textview, "ERR:", "Not connected");
+    return;
+  }
+
+  unsigned int byte = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(button), "ext_byte_value"));
+  const char *display = (const char *)g_object_get_data(G_OBJECT(button), "ext_display_text");
+
+  unsigned char b = (unsigned char)byte;
+  if (asclepius_ext_send((const char *)&b, 1) != 0)
+  {
+    append_ext_terminal_line(textview, "ERR:", "Send failed");
+    return;
+  }
+
+  append_ext_terminal_line(textview, "SND:", display);
+
+  unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
+  tx++;
+  g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(tx));
+  update_ext_status(dialog);
+}
+
+void on_ext_terminal_clear_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+  gtk_text_buffer_set_text(buf, "", -1);
+  g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(0));
+  g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(0));
+  update_ext_status(dialog);
+}
+
+void on_ext_terminal_save_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+
+  GtkWidget *fc = gtk_file_chooser_dialog_new(
+      _("Save Log"),
+      GTK_WINDOW(dialog),
+      GTK_FILE_CHOOSER_ACTION_SAVE,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+      NULL);
+
+  {
+    char default_name[64];
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+    strftime(default_name, sizeof(default_name), "serial_log_%Y%m%d_%H%M%S.txt", tm);
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(fc), default_name);
+  }
+
+  if (gtk_dialog_run(GTK_DIALOG(fc)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fc));
+    GtkTextIter start, end;
+    gtk_text_buffer_get_bounds(buf, &start, &end);
+    char *content = gtk_text_buffer_get_text(buf, &start, &end, FALSE);
+
+    FILE *f = fopen(filename, "w");
+    if (f)
+    {
+      fputs(content, f);
+      fclose(f);
+    }
+    else
+    {
+      GtkWidget *err = gtk_message_dialog_new(
+          GTK_WINDOW(dialog),
+          GTK_DIALOG_DESTROY_WITH_PARENT,
+          GTK_MESSAGE_ERROR,
+          GTK_BUTTONS_OK,
+          _("Failed to save log:\n%s"), strerror(errno));
+      gtk_dialog_run(GTK_DIALOG(err));
+      gtk_widget_destroy(err);
+    }
+
+    g_free(content);
+    g_free(filename);
+  }
+  gtk_widget_destroy(fc);
+}
+
+void on_ext_terminal_autoscroll_toggled_ccc(GtkToggleButton *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+  int active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
+  g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(active ? 1 : 0));
+}
+
+void on_ext_terminal_send_ccc(GtkWidget *sender)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(sender));
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+  GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_entry"));
+
+  const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
+
+  if (!asclepius_ext_connected)
+  {
+    append_ext_terminal_line(textview, "ERR:", "Not connected");
+    return;
+  }
+
+  char parsed[8192];
+  int len = asclepius_parse_escapes(text, parsed, sizeof(parsed));
+  if (asclepius_ext_send(parsed, len) != 0)
+  {
+    append_ext_terminal_line(textview, "ERR:", "Send failed");
+    return;
+  }
+
+  append_ext_terminal_line(textview, "SND:", text);
+  unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
+  tx += len;
+  g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(tx));
+  update_ext_status(dialog);
+  gtk_entry_set_text(GTK_ENTRY(entry), "");
+}
+
+gboolean on_ext_terminal_poll_ccc(gpointer data)
+{
+  GtkWidget *dialog = GTK_WIDGET(data);
+  if (!asclepius_ext_connected)
+  {
+    return G_SOURCE_CONTINUE;
+  }
+
+  char buf[4096];
+  int n = asclepius_ext_read(buf, sizeof(buf) - 1);
+  const int n_received = n;
+  if (n > 0)
+  {
+    buf[n] = '\0';
+    GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+
+    // Check if mostly printable
+    bool printable = true;
+    int i;
+    for (i = 0; i < n; i++)
+    {
+      if (buf[i] != '\n' && buf[i] != '\r' && buf[i] != '\t' && !isprint((unsigned char)buf[i]))
+      {
+        printable = false;
+        break;
+      }
+    }
+
+    if (printable)
+    {
+      // Split on newlines, display each line separately with RCV: prefix
+      int line_start = 0;
+      int i;
+      for (i = 0; i <= n; i++)
+      {
+        if (i == n || buf[i] == '\n')
+        {
+          int seg_len = i - line_start;
+          // Strip trailing \r
+          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
+            seg_len--;
+          if (seg_len > 0)
+          {
+            char saved = buf[line_start + seg_len];
+            buf[line_start + seg_len] = '\0';
+            append_ext_terminal_line(textview, "RCV:", buf + line_start);
+            buf[line_start + seg_len] = saved;
+          }
+          line_start = i + 1;
+        }
+      }
+    }
+    else
+    {
+      // Hex dump
+      char hex[512];
+      int offset = 0;
+      int max_bytes = (sizeof(hex) - 4) / 3;
+      int show = n < max_bytes ? n : max_bytes;
+      for (i = 0; i < show; i++)
+      {
+        offset += snprintf(hex + offset, sizeof(hex) - offset, "%02x ", (unsigned char)buf[i]);
+      }
+      if (show < n)
+      {
+        memcpy(hex + offset - 3, "...", 4);
+      }
+      append_ext_terminal_line(textview, "RCV:", hex);
+    }
+    unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
+    rx += n_received;
+    g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(rx));
+    update_ext_status(dialog);
+  }
+
+  return G_SOURCE_CONTINUE;
+}
+
+void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+  {
+    GtkWidget *tty_text = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_tty_text"));
+    GtkWidget *baud_combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_baud_combo"));
+
+    if (tty_text)
+    {
+      const char *path = gtk_entry_get_text(GTK_ENTRY(tty_text));
+      snprintf(asclepius_ext_tty_device_ccc, sizeof(asclepius_ext_tty_device_ccc), "%s", path);
+    }
+
+    if (baud_combo)
+    {
+      int idx = gtk_combo_box_get_active(GTK_COMBO_BOX(baud_combo));
+      if (idx >= 0 && idx < (int)EXT_TERMINAL_NUM_BAUDS)
+      {
+        asclepius_ext_baud_rate_ccc = ext_terminal_baud_rates[idx];
+      }
+    }
+
+    // Sync struct for config persistence
+    primary_relay_settings_ccc.asclepius_ext_baud_rate = asclepius_ext_baud_rate_ccc;
+    snprintf(primary_relay_settings_ccc.asclepius_ext_tty_device, sizeof(primary_relay_settings_ccc.asclepius_ext_tty_device), "%s", asclepius_ext_tty_device_ccc);
+
+    if (asclepius_ext_open() == 0)
+    {
+      gtk_button_set_label(GTK_BUTTON(button), _("Disconnect"));
+      GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+      GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
+      if (script_btn) gtk_widget_set_sensitive(script_btn, TRUE);
+      append_ext_terminal_line(textview, "INF:", "Connected");
+      update_ext_status(dialog);
+    }
+    else
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+      GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+      append_ext_terminal_line(textview, "ERR:", "Failed to connect");
+      update_ext_status(dialog);
+    }
+  }
+  else
+  {
+    asclepius_ext_close();
+    gtk_button_set_label(GTK_BUTTON(button), _("Connect"));
+    GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+    GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
+    if (script_btn) gtk_widget_set_sensitive(script_btn, FALSE);
+    append_ext_terminal_line(textview, "INF:", "Disconnected");
+    update_ext_status(dialog);
+  }
+}
+
+void on_ext_terminal_script_clicked_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+
+  GtkWidget *filechooser = gtk_file_chooser_dialog_new(
+      _("Select Script"),
+      GTK_WINDOW(dialog),
+      GTK_FILE_CHOOSER_ACTION_OPEN,
+      _("_Cancel"), GTK_RESPONSE_CANCEL,
+      _("_Open"), GTK_RESPONSE_ACCEPT,
+      NULL);
+
+  if (gtk_dialog_run(GTK_DIALOG(filechooser)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser));
+
+    char line[1024];
+    snprintf(line, sizeof(line), "Running script: %s\n", filename);
+    append_ext_terminal_text(textview, line, EXT_TAG_SCRIPT);
+
+    // Execute script using the tool.c execution loop pattern
+    int script_status = 1;
+    char file_copy[1024];
+    snprintf(file_copy, sizeof(file_copy), "%s", filename);
+
+    while (script_status == 1)
+    {
+      return_value_ccc = read_script_file_ccc(file_copy);
+      script_status = process_lines_ccc();
+    }
+
+    snprintf(line, sizeof(line), "Script finished (return: %d)\n", return_value_ccc);
+    append_ext_terminal_text(textview, line, EXT_TAG_SCRIPT);
+
+    g_free(filename);
+  }
+  gtk_widget_destroy(filechooser);
+}
+
+// Forward output from script serialsend/serialread to the terminal textview
+static GtkWidget *ext_terminal_output_textview = NULL;
+
+static void ext_terminal_output_callback(const char *text, int byte_count)
+{
+  if (!ext_terminal_output_textview) return;
+
+  GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(ext_terminal_output_textview));
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ext_terminal_output_textview));
+  GtkTextIter iter;
+  gtk_text_buffer_get_iter_at_mark(buf, &iter, gtk_text_buffer_get_insert(buf));
+
+  char timestamp[32];
+  time_t now = time(NULL);
+  strftime(timestamp, sizeof(timestamp), "%H:%M:%S", localtime(&now));
+  gtk_text_buffer_insert_with_tags_by_name(buf, &iter, timestamp, -1, EXT_TAG_TS, NULL);
+  gtk_text_buffer_insert(buf, &iter, " ", 1);
+
+  const char *colon = strchr(text, ':');
+  if (colon && colon > text && colon - text <= 5)
+  {
+    int plen = colon - text + 1;
+    char prefix[8];
+    snprintf(prefix, sizeof(prefix), "%.*s", plen, text);
+    const char *tag = ext_prefix_tag(prefix);
+    if (tag)
+      gtk_text_buffer_insert_with_tags_by_name(buf, &iter, prefix, -1, tag, NULL);
+    else
+      gtk_text_buffer_insert(buf, &iter, prefix, plen);
+    gtk_text_buffer_insert(buf, &iter, " ", 1);
+    gtk_text_buffer_insert(buf, &iter, text + plen, -1);
+
+    // Update RX/TX counters using tag from ext_prefix_tag
+    if (tag && byte_count > 0)
+    {
+      if (strcmp(tag, EXT_TAG_SND) == 0)
+      {
+        unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
+        tx += byte_count;
+        g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(tx));
+        update_ext_status(dialog);
+      }
+      else if (strcmp(tag, EXT_TAG_RCV) == 0)
+      {
+        unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
+        rx += byte_count;
+        g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(rx));
+        update_ext_status(dialog);
+      }
+    }
+  }
+  else
+  {
+    gtk_text_buffer_insert(buf, &iter, text, -1);
+  }
+
+  gtk_text_buffer_insert(buf, &iter, "\n", 1);
+
+  if (GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_autoscroll")))
+  {
+    GtkTextMark *mark = gtk_text_buffer_get_insert(buf);
+    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(ext_terminal_output_textview), mark, 0.0, FALSE, 0.0, 0.0);
+  }
+}
+
+static bool ext_terminal_open = false;
+
+void on_ext_terminal_dialog_response_ccc(GtkDialog *dialog, gint response_id, gpointer user_data)
+{
+  guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
+  if (tid) g_source_remove(tid);
+  asclepius_ext_output_ccc = NULL;
+  ext_terminal_output_textview = NULL;
+  ext_terminal_open = false;
+  asclepius_ext_close();
+  gtk_widget_destroy(GTK_WIDGET(dialog));
+}
+
+void open_asclepius_ext_terminal_ccc(void)
+{
+  if (ext_terminal_open) return;
+
+  GtkBuilder *builder = gtk_builder_new();
+  gtk_builder_add_from_string(builder, (const gchar *)opensuperclone_glade, opensuperclone_glade_len, NULL);
+
+  gtk_builder_connect_signals(builder, NULL);
+  GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_terminal_dialog"));
+  if (!dialog) { g_object_unref(builder); return; }
+
+  GtkWidget *textview = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_terminal_textview"));
+  GtkWidget *entry = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_entry"));
+  GtkWidget *tty_text = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_tty_device_text"));
+  GtkWidget *baud_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_baud_rate_combobox"));
+  GtkWidget *script_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_script_button"));
+
+  // Store references in dialog
+  if (textview) g_object_set_data(G_OBJECT(dialog), "ext_terminal_textview", textview);
+  if (entry) g_object_set_data(G_OBJECT(dialog), "ext_terminal_entry", entry);
+  if (tty_text) g_object_set_data(G_OBJECT(dialog), "ext_terminal_tty_text", tty_text);
+  if (baud_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_baud_combo", baud_combo);
+  if (script_btn) g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
+
+  if (!textview || !entry) { g_object_unref(builder); return; }
+
+  // Populate baud combo
+  if (baud_combo)
+  {
+    int i;
+    for (i = 0; i < (int)EXT_TERMINAL_NUM_BAUDS; i++)
+    {
+      char buf[16];
+      snprintf(buf, sizeof(buf), "%d", ext_terminal_baud_rates[i]);
+      gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(baud_combo), buf);
+    }
+  }
+
+  // Set current values from globals
+  if (tty_text) gtk_entry_set_text(GTK_ENTRY(tty_text), asclepius_ext_tty_device_ccc);
+  if (baud_combo)
+  {
+    int idx = 2;
+    int i;
+    for (i = 0; i < (int)EXT_TERMINAL_NUM_BAUDS; i++)
+    {
+      if (ext_terminal_baud_rates[i] == asclepius_ext_baud_rate_ccc)
+      {
+        idx = i;
+        break;
+      }
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(baud_combo), idx);
+  }
+
+  if (tty_text) gtk_entry_set_max_length(GTK_ENTRY(tty_text), 255);
+
+  // Set monospace font via CSS
+  {
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider, "textview { font-family: monospace; }", -1, NULL);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(textview), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
+  }
+
+  // Connect escape sequence button signals (custom data needed per-button)
+  {
+    static const struct { const char *id; const char *label; unsigned int byte; } esc[] = {
+      {"ext_terminal_esc_z", "^Z", 0x1A},
+      {"ext_terminal_esc_c", "^C", 0x03},
+      {"ext_terminal_esc_l", "^L", 0x0C},
+      {"ext_terminal_esc_x", "^X", 0x18},
+    };
+    int i;
+    for (i = 0; i < (int)(sizeof(esc) / sizeof(esc[0])); i++)
+    {
+      GtkWidget *btn = GTK_WIDGET(gtk_builder_get_object(builder, esc[i].id));
+      if (btn)
+      {
+        g_object_set_data(G_OBJECT(btn), "ext_byte_value", GUINT_TO_POINTER(esc[i].byte));
+        g_object_set_data(G_OBJECT(btn), "ext_display_text", (gpointer)esc[i].label);
+        g_signal_connect(btn, "clicked", G_CALLBACK(on_ext_terminal_send_byte_ccc), NULL);
+      }
+    }
+  }
+
+  // Store status label reference for RX/TX counter
+  {
+    GtkWidget *status_label = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_status_label"));
+    if (status_label) g_object_set_data(G_OBJECT(dialog), "ext_status_label", status_label);
+  }
+
+  g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(1));
+  g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(0));
+  g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(0));
+
+  gtk_window_set_modal(GTK_WINDOW(dialog), FALSE);
+  update_ext_status(dialog);
+
+  // Create color tags for terminal output
+  {
+    GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+    gtk_text_buffer_create_tag(buf, EXT_TAG_TS, "foreground", "#888888", NULL);
+    gtk_text_buffer_create_tag(buf, EXT_TAG_INF, "foreground", "#00BFFF", NULL);
+    gtk_text_buffer_create_tag(buf, EXT_TAG_SND, "foreground", "#FFD700", NULL);
+    gtk_text_buffer_create_tag(buf, EXT_TAG_RCV, "foreground", "#32CD32", NULL);
+    gtk_text_buffer_create_tag(buf, EXT_TAG_ERR, "foreground", "#FF4444", "weight", PANGO_WEIGHT_BOLD, NULL);
+    gtk_text_buffer_create_tag(buf, EXT_TAG_SCRIPT, "foreground", "#AAAAAA", "style", PANGO_STYLE_ITALIC, NULL);
+  }
+
+  // Route script serialsend/serialread output to this textview
+  asclepius_ext_output_ccc = ext_terminal_output_callback;
+  ext_terminal_output_textview = textview;
+
+  // Start poll timer
+  guint timer_id = gdk_threads_add_timeout(100, on_ext_terminal_poll_ccc, dialog);
+  g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(timer_id));
+
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Terminal (UART)"));
+
+  ext_terminal_open = true;
+  g_signal_connect(dialog, "response", G_CALLBACK(on_ext_terminal_dialog_response_ccc), NULL);
+  gtk_widget_show_all(dialog);
+  g_object_unref(builder);
 }
