@@ -5593,12 +5593,18 @@ void do_asclepius_connect_ccc(void)
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
+    return;
   }
+
+  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
 }
 
 void do_asclepius_disconnect_ccc(void)
 {
   asclepius_disconnect();
+  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
 
 void do_activate_primary_relay_main_ccc(void)
