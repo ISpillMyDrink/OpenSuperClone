@@ -13,11 +13,6 @@
 #include <termios.h>
 #include <unistd.h>
 
-extern char asclepius_tty_device_ccc[256];
-extern char asclepius_ext_tty_device_ccc[256];
-extern int asclepius_ext_baud_rate_ccc;
-extern bool asclepius_ext_connected;
-extern int asclepius_ext_serial_port;
 #define ASCLEPIUS_BAUDRATE B115200
 
 #define ASCLEPIUS_STATUS_IOCMD 1
@@ -30,13 +25,21 @@ extern int asclepius_ext_serial_port;
 #define ASCLEPIUS_MOLEX 4
 #define ASCLEPIUS_ALL 5
 
+#define ASCLEPIUS_STATUS_PACKET_SIZE 28
+
+#define ASCLEPIUS_UI_UPDATE_TIMER 500
+
+extern char asclepius_tty_device_ccc[256];
+extern char asclepius_ext_tty_device_ccc[256];
+extern int asclepius_ext_baud_rate_ccc;
+extern bool asclepius_ext_connected;
+extern int asclepius_ext_serial_port;
+
 struct
 {
     uint8_t command;
     uint8_t channel;
 } asclepius_command;
-
-#define ASCLEPIUS_STATUS_PACKET_SIZE 28
 
 struct
 {
@@ -66,9 +69,13 @@ int asclepius_disable_channel(uint8_t channel);
 int asclepius_get_status(void);
 
 int asclepius_ext_open(void);
+
 void asclepius_ext_close(void);
+
 int asclepius_ext_send(const char *data, size_t len);
+
 int asclepius_ext_read(char *buffer, size_t max_len);
+
 int asclepius_parse_escapes(const char *input, char *output, size_t max);
 
 // Function pointer set by GUI to capture serial output to the terminal textview

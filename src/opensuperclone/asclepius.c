@@ -154,6 +154,7 @@ static int asclepius_setup_tty(void)
     }
 
     tcflush(asclepius_serial_port, TCIOFLUSH);
+
     return 0;
 }
 
@@ -329,10 +330,6 @@ int asclepius_get_status(void)
 
     return 0;
 }
-
-// -----------------------------------------------------------------------
-// Ext UART (secondary serial port)
-// -----------------------------------------------------------------------
 
 static int asclepius_ext_baud_to_constant(int baud)
 {

@@ -555,7 +555,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
     write_config_file_with_name_ccc(filename);
   }
 
-  gdk_threads_add_timeout(500, display_status_update_asclepius_action, NULL);
+  gdk_threads_add_timeout(ASCLEPIUS_UI_UPDATE_TIMER, display_status_update_asclepius_action, NULL);
   asclepius_connect();
 
   if(asclepius_get_connection_status())
