@@ -8,6 +8,23 @@
 #include "clone_gui_common.h"
 #include "asclepius.h"
 
+bool activate_primary_relay1_ccc = true;
+bool activate_primary_relay2_ccc = true;
+bool activate_primary_relay3_ccc = true;
+bool activate_primary_relay4_ccc = true;
+bool activate_primary_relay5_ccc = true;
+bool activate_primary_relay6_ccc = true;
+bool activate_primary_relay7_ccc = true;
+bool activate_primary_relay8_ccc = true;
+bool deactivate_primary_relay1_ccc = false;
+bool deactivate_primary_relay2_ccc = false;
+bool deactivate_primary_relay3_ccc = false;
+bool deactivate_primary_relay4_ccc = false;
+bool deactivate_primary_relay5_ccc = false;
+bool deactivate_primary_relay6_ccc = false;
+bool deactivate_primary_relay7_ccc = false;
+bool deactivate_primary_relay8_ccc = false;
+
 int find_all_usb_devices_ccc(void)
 {
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Finding USB devices\n");

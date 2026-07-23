@@ -3,6 +3,9 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#ifndef ASCLEPIUS_H
+#define ASCLEPIUS_H
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -35,13 +38,14 @@ extern int asclepius_ext_baud_rate_ccc;
 extern bool asclepius_ext_connected;
 extern int asclepius_ext_serial_port;
 
-struct
+struct asclepius_command_t
 {
     uint8_t command;
     uint8_t channel;
-} asclepius_command;
+};
+extern struct asclepius_command_t asclepius_command;
 
-struct
+struct asclepius_status_t
 {
     bool main12v_ocp;
     bool main5v_ocp;
@@ -54,7 +58,8 @@ struct
     bool main12v_enabled;
     bool main5v_enabled;
     bool usb5v_enabled;
-} asclepius_status;
+};
+extern struct asclepius_status_t asclepius_status;
 
 int asclepius_connect(void);
 
@@ -80,3 +85,5 @@ int asclepius_parse_escapes(const char *input, char *output, size_t max);
 
 // Function pointer set by GUI to capture serial output to the terminal textview
 extern void (*asclepius_ext_output_ccc)(const char *text, int byte_count);
+
+#endif

@@ -6,6 +6,31 @@
 #include "common.h"
 #include "tool.h"
 
+unsigned int script_rows_ccc = 1000;
+unsigned int number_variable_rows_ccc = 100;
+unsigned int string_variable_rows_ccc = 100;
+char *menufile1_ccc = "hddmenu.osc";
+char *menufile2_ccc = "oscscripts/hddmenu.osc";
+char *menufile3_ccc = OSC_SCRIPT_MENU;
+char script_directory1_ccc[PATH_MAX] = "";
+char script_directory2_ccc[PATH_MAX] = "oscscripts/";
+char script_directory3_ccc[PATH_MAX] = OSC_SCRIPT_PATH;
+char script_directory4_ccc[PATH_MAX] = "";
+char *current_script_directory_ccc = "";
+char full_script_path_ccc[PATH_MAX];
+char *script_line_buffer_ccc = NULL;
+char **script_line_pointer_ccc = NULL;
+unsigned int total_script_lines_ccc = 0;
+char *number_variable_name_buffer_ccc = NULL;
+char **number_variable_name_pointer_ccc = NULL;
+unsigned int total_number_variables_ccc = 0;
+char *string_variable_name_buffer_ccc = NULL;
+char **string_variable_name_pointer_ccc = NULL;
+char *string_variable_buffer_ccc = NULL;
+unsigned int total_string_variables_ccc = 0;
+char full_line[MAX_LINE_LENGTH] = "";
+char rest_of_line[MAX_LINE_LENGTH] = "";
+
 int supertooltool_ccc(void)
 {
   if (!check_only_ccc && !supertool_mode_chosen_ccc)

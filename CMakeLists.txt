@@ -68,7 +68,6 @@ set(CC_OPTIONS
     -Wno-unused-parameter
     -Wno-unused-result
     -Wno-format-truncation
-    -fcommon
 )
 
 # Set linker flags

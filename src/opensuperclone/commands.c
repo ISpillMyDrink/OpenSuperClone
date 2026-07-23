@@ -9,6 +9,26 @@
 #include "commands.h"
 #include "asclepius.h"
 
+unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
+unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
+unsigned int subroutine_endif_stack_ccc[MAX_SUB_LEVEL];
+int subroutine_stack_counter_ccc = 0;
+int subroutine_count_ccc = 0;
+int return_count_ccc = 0;
+unsigned int ccc_endif_stack_ccc[MAX_ENDIF_LEVEL];
+int endif_stack_counter_ccc = 0;
+bool statement_condition_ccc[MAX_ENDIF_LEVEL];
+unsigned int ccc_while_stack_ccc[MAX_WHILE_LEVEL];
+unsigned int while_endif_stack_ccc[MAX_WHILE_LEVEL];
+unsigned int done_stack_ccc[MAX_WHILE_LEVEL];
+bool while_condition_ccc[MAX_WHILE_LEVEL];
+int while_stack_counter_ccc = 0;
+bool setting_buffer_ccc = false;
+bool setting_scratchpad_ccc = false;
+bool setting_usbbuffer_ccc = false;
+char script_list_ccc[MAX_SCRIPT_DEPTH][MAX_LINE_LENGTH];
+int script_count_ccc = 0;
+
 // function to either check or execute a command
 int execute_line_ccc(bool perform_check, unsigned int line_number, char *command, char *rest_of_line)
 {

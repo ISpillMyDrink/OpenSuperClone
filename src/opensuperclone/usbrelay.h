@@ -3,6 +3,9 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#ifndef USBRELAY_H
+#define USBRELAY_H
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -59,19 +62,21 @@
 #define YEPKIT_USB_ENDPOINT_IN 0x81
 #define YEPKIT_USB_INTERRUPT_TIMEOUT 5000 // in milliseconds
 
-bool activate_primary_relay1_ccc = true;
-bool activate_primary_relay2_ccc = true;
-bool activate_primary_relay3_ccc = true;
-bool activate_primary_relay4_ccc = true;
-bool activate_primary_relay5_ccc = true;
-bool activate_primary_relay6_ccc = true;
-bool activate_primary_relay7_ccc = true;
-bool activate_primary_relay8_ccc = true;
-bool deactivate_primary_relay1_ccc = false;
-bool deactivate_primary_relay2_ccc = false;
-bool deactivate_primary_relay3_ccc = false;
-bool deactivate_primary_relay4_ccc = false;
-bool deactivate_primary_relay5_ccc = false;
-bool deactivate_primary_relay6_ccc = false;
-bool deactivate_primary_relay7_ccc = false;
-bool deactivate_primary_relay8_ccc = false;
+extern bool activate_primary_relay1_ccc;
+extern bool activate_primary_relay2_ccc;
+extern bool activate_primary_relay3_ccc;
+extern bool activate_primary_relay4_ccc;
+extern bool activate_primary_relay5_ccc;
+extern bool activate_primary_relay6_ccc;
+extern bool activate_primary_relay7_ccc;
+extern bool activate_primary_relay8_ccc;
+extern bool deactivate_primary_relay1_ccc;
+extern bool deactivate_primary_relay2_ccc;
+extern bool deactivate_primary_relay3_ccc;
+extern bool deactivate_primary_relay4_ccc;
+extern bool deactivate_primary_relay5_ccc;
+extern bool deactivate_primary_relay6_ccc;
+extern bool deactivate_primary_relay7_ccc;
+extern bool deactivate_primary_relay8_ccc;
+
+#endif

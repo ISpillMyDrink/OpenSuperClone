@@ -3,29 +3,34 @@
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
 
+#ifndef COMMANDS_H
+#define COMMANDS_H
+
+#include "common.h"
+
 #define MAX_SUB_LEVEL 256
 #define MAX_ENDIF_LEVEL 256
 #define MAX_WHILE_LEVEL 256
 
-unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
-unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
-unsigned int subroutine_endif_stack_ccc[MAX_SUB_LEVEL];
-int subroutine_stack_counter_ccc = 0;
-int subroutine_count_ccc = 0;
-int return_count_ccc = 0;
-unsigned int ccc_endif_stack_ccc[MAX_ENDIF_LEVEL];
-int endif_stack_counter_ccc = 0;
-bool statement_condition_ccc[MAX_ENDIF_LEVEL];
-unsigned int ccc_while_stack_ccc[MAX_WHILE_LEVEL];
-unsigned int while_endif_stack_ccc[MAX_WHILE_LEVEL];
-unsigned int done_stack_ccc[MAX_WHILE_LEVEL];
-bool while_condition_ccc[MAX_WHILE_LEVEL];
-int while_stack_counter_ccc = 0;
-bool setting_buffer_ccc = false;
-bool setting_scratchpad_ccc = false;
-bool setting_usbbuffer_ccc = false;
-char script_list_ccc[MAX_SCRIPT_DEPTH][MAX_LINE_LENGTH];
-int script_count_ccc = 0;
+extern unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
+extern unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
+extern unsigned int subroutine_endif_stack_ccc[MAX_SUB_LEVEL];
+extern int subroutine_stack_counter_ccc;
+extern int subroutine_count_ccc;
+extern int return_count_ccc;
+extern unsigned int ccc_endif_stack_ccc[MAX_ENDIF_LEVEL];
+extern int endif_stack_counter_ccc;
+extern bool statement_condition_ccc[MAX_ENDIF_LEVEL];
+extern unsigned int ccc_while_stack_ccc[MAX_WHILE_LEVEL];
+extern unsigned int while_endif_stack_ccc[MAX_WHILE_LEVEL];
+extern unsigned int done_stack_ccc[MAX_WHILE_LEVEL];
+extern bool while_condition_ccc[MAX_WHILE_LEVEL];
+extern int while_stack_counter_ccc;
+extern bool setting_buffer_ccc;
+extern bool setting_scratchpad_ccc;
+extern bool setting_usbbuffer_ccc;
+extern char script_list_ccc[MAX_SCRIPT_DEPTH][MAX_LINE_LENGTH];
+extern int script_count_ccc;
 
 int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
 
@@ -201,3 +206,5 @@ int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int serial_close_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
 int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
 int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_line);
+
+#endif

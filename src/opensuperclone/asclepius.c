@@ -11,10 +11,16 @@
 bool asclepius_connected = false;
 int asclepius_serial_port = -1;
 
+char asclepius_tty_device_ccc[256] = "";
+char asclepius_ext_tty_device_ccc[256] = "";
+
 bool asclepius_ext_connected = false;
 int asclepius_ext_serial_port = -1;
 int asclepius_ext_baud_rate_ccc = 38400;
 void (*asclepius_ext_output_ccc)(const char *text, int byte_count) = NULL;
+
+struct asclepius_command_t asclepius_command;
+struct asclepius_status_t asclepius_status;
 
 static bool asclepius_write_all(const void *buffer, size_t length)
 {
