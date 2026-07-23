@@ -48,6 +48,8 @@ set(OSC_LANG_PATH "${CMAKE_INSTALL_PREFIX}/share/locale/" CACHE STRING "OpenSupe
 set(OSC_RESOURCE_PATH "${CMAKE_INSTALL_PREFIX}/share/opensuperclone/" CACHE STRING "OpenSuperClone Resource Directory")
 
 # If Git is installed, save the current revision number
+set(GIT_REVISION "Unknown Revision")
+
 find_package(Git)
 
 if(Git_FOUND)
