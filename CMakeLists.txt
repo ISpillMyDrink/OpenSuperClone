@@ -11,9 +11,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# OpenSuperClone version 2.5.1
+# OpenSuperClone version 2.6
 project(OpenSuperClone
-        VERSION 2.5.1
+        VERSION 2.6
         DESCRIPTION "Advanced disk cloning utility"
         HOMEPAGE_URL "https://github.com/ISpillMyDrink/OpenSuperClone"
         LANGUAGES C

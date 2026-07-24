@@ -57,7 +57,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 
 ## ✏️ Changelog
 
-#### OpenSuperClone 2.5.1 (Work-In-Progress)
+#### OpenSuperClone 2.6 (Work-In-Progress)
 
 * OSCDriver 2.6.8: add support up to kernel 6.18.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/30">piernov</a>)
 * Add ability to save and load recovery settings, and change default settings for program start
