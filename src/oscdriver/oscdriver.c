@@ -947,10 +947,15 @@ static int process_inquiry(const unsigned char *cdb, unsigned char *buffer, cons
   {
     real_len = max_len;
   }
+#if LINUX_VERSION_CODE < KERNEL_VERSION(7, 2, 0)
   strncpy(ibuf + 8, "hmodel", 16);
   strncpy(ibuf + 36, "hserial", 8);
   // strncpy (ibuf + 8, data_device.device_name, 16);
   // strncpy (ibuf + 36, data_device.device_name, 8);
+#else
+  strscpy(ibuf + 8, "hmodel", 16);
+  strscpy(ibuf + 36, "hserial", 8);
+#endif
   if (copy_to_user(buffer, ibuf, real_len))
   {
     printk(KERN_WARNING "oscdriver: failed to copy user data\n");
@@ -1506,7 +1511,11 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.chs_heads = control_obj->chs_heads;
       data_device.chs_sectors = control_obj->chs_sectors;
       data_device.chs_cylinders = control_obj->chs_cylinders;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(7, 2, 0)
       strncpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name) - 1);
+#else
+      strscpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name));
+#endif
       working_queue = 0;
       request_queue = 0;
       queue_count = 0;
@@ -1663,7 +1672,11 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.chs_heads = control_obj->chs_heads;
       data_device.chs_sectors = control_obj->chs_sectors;
       data_device.chs_cylinders = control_obj->chs_cylinders;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(7, 2, 0)
       strncpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name) - 1);
+#else
+      strscpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name));
+#endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
       data_major_num = register_chrdev(0, data_device.device_name, &device_ffops);
