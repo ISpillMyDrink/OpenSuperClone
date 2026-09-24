@@ -4169,8 +4169,7 @@ int write_ddrescue_logfile_ccc(char *log_file)
   }
 
   get_the_time_ccc();
-  fprintf(writefile, "# Disk progress log file created by OpenSuperClone version %s\n", version_number_ccc);
-  fprintf(writefile, "# ddrescue export\n");
+  fprintf(writefile, "# Rescue Logfile. Created by GNU ddrescue export of OpenSuperClone version %s\n", version_number_ccc);
   fprintf(writefile, "# %s\n", current_date_ccc);
   fprintf(writefile, "# current_pos  current_status\n");
   char new_status;
