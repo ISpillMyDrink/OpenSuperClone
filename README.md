@@ -59,7 +59,7 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 
 #### OpenSuperClone 2.6.0 (Work-In-Progress)
 
-* OSCDriver 2.6.8: add support up to kernel 6.18.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/30">piernov</a>)
+* OSCDriver 2.6.9: add support up to kernel 7.2.0 (thanks to <a href="https://github.com/ISpillMyDrink/OpenSuperClone/pull/30">piernov</a>)
 * Add ability to save and load recovery settings, and change default settings for program start
 * OSCViewer: performance improvements and improved UI
 * Add UART terminal and script support for Seagate F3 drives (experimental)
