@@ -378,6 +378,18 @@ GtkWidget *label_current_primary_relay_board_ccc = NULL;
 GtkWidget *data_current_relay_board_a_ccc = NULL;
 GtkWidget *asclepius_relay_source_label_ccc = NULL;
 GtkWidget *asclepius_relay_source_combobox_ccc = NULL;
+GtkWidget *asclepius_soft_ocp_label_ccc = NULL;
+GtkWidget *asclepius_poll_interval_label_ccc = NULL;
+GtkWidget *asclepius_poll_interval_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_12v_label_ccc = NULL;
+GtkWidget *asclepius_ocp_5v_label_ccc = NULL;
+GtkWidget *asclepius_ocp_usb_label_ccc = NULL;
+GtkWidget *asclepius_ocp_action_12v_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_action_5v_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_action_usb_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_limit_12v_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_limit_5v_combobox_ccc = NULL;
+GtkWidget *asclepius_ocp_limit_usb_combobox_ccc = NULL;
 GtkWidget *asclepius_tty_device_text_ccc = NULL;
 GtkWidget *asclepius_connect_button_ccc = NULL;
 GtkWidget *asclepius_disconnect_button_ccc = NULL;
@@ -4408,6 +4420,32 @@ int set_lun_dialog_ccc(int max_lun)
   return ret;
 }
 
+// Preset status poll rates for the Asclepius poller thread. The millisecond
+// value itself is persisted, so reordering this list cannot corrupt a config.
+static const unsigned int asclepius_poll_intervals_ccc[] = { 10, 25, 50, 100, 250, 500, 1000 };
+#define ASCLEPIUS_NUM_POLL_INTERVALS (sizeof(asclepius_poll_intervals_ccc) / sizeof(asclepius_poll_intervals_ccc[0]))
+
+// Preset software OCP trip limits in mA. As with the poll rate, the mA value
+// is persisted rather than an index into this table.
+static const unsigned int asclepius_ocp_limits_ccc[] = { 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500 };
+#define ASCLEPIUS_NUM_OCP_LIMITS (sizeof(asclepius_ocp_limits_ccc) / sizeof(asclepius_ocp_limits_ccc[0]))
+
+// Index of the first preset at or above value, clamped into the table
+static int asclepius_preset_index_ccc(const unsigned int *presets, size_t count, unsigned int value)
+{
+  size_t i;
+
+  for (i = 0; i < count; i++)
+  {
+    if (presets[i] >= value)
+    {
+      return (int)i;
+    }
+  }
+
+  return (int)(count - 1);
+}
+
 void open_primary_relay_dialog_ccc(void)
 {
   GtkBuilder *builder = gtk_builder_new();
@@ -4424,6 +4462,18 @@ void open_primary_relay_dialog_ccc(void)
   data_current_relay_board_a_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "data_current_relay_board_a"));
   asclepius_relay_source_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_relay_source_label"));
   asclepius_relay_source_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_relay_source_combobox"));
+  asclepius_soft_ocp_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_soft_ocp_label"));
+  asclepius_poll_interval_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_poll_interval_label"));
+  asclepius_poll_interval_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_poll_interval_combobox"));
+  asclepius_ocp_12v_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_12v_label"));
+  asclepius_ocp_5v_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_5v_label"));
+  asclepius_ocp_usb_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_usb_label"));
+  asclepius_ocp_action_12v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_action_12v_combobox"));
+  asclepius_ocp_action_5v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_action_5v_combobox"));
+  asclepius_ocp_action_usb_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_action_usb_combobox"));
+  asclepius_ocp_limit_12v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_12v_combobox"));
+  asclepius_ocp_limit_5v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_5v_combobox"));
+  asclepius_ocp_limit_usb_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_usb_combobox"));
   asclepius_tty_device_text_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_tty_device_text"));
   asclepius_connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_connect_button"));
   asclepius_disconnect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_disconnect_button"));
@@ -4463,6 +4513,11 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_info_label_ccc), _("Primary relay board settings"));
   gtk_label_set_text(GTK_LABEL(label_current_primary_relay_board_ccc), _("Current relay board"));
   gtk_label_set_text(GTK_LABEL(asclepius_relay_source_label_ccc), _("Asclepius Relay Source"));
+  gtk_label_set_text(GTK_LABEL(asclepius_soft_ocp_label_ccc), _("Asclepius soft OCP"));
+  gtk_label_set_text(GTK_LABEL(asclepius_poll_interval_label_ccc), _("Status poll interval"));
+  gtk_label_set_text(GTK_LABEL(asclepius_ocp_12v_label_ccc), _("12V software OCP"));
+  gtk_label_set_text(GTK_LABEL(asclepius_ocp_5v_label_ccc), _("5V software OCP"));
+  gtk_label_set_text(GTK_LABEL(asclepius_ocp_usb_label_ccc), _("USB 5V software OCP"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("12V"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("5V"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("USB"));
@@ -4494,6 +4549,31 @@ void open_primary_relay_dialog_ccc(void)
   gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay_button_ccc), _("Deactivate (Power On)"));
   gtk_button_set_label(GTK_BUTTON(asclepius_connect_button_ccc), _("Connect Asclepius"));
   gtk_button_set_label(GTK_BUTTON(asclepius_disconnect_button_ccc), _("Disconnect Asclepius"));
+
+  char rate_text[32];
+  size_t i;
+  for (i = 0; i < ASCLEPIUS_NUM_POLL_INTERVALS; i++)
+  {
+    snprintf(rate_text, sizeof(rate_text), "%u ms", asclepius_poll_intervals_ccc[i]);
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_poll_interval_combobox_ccc), rate_text);
+  }
+
+  char limit_text[32];
+  for (i = 0; i < ASCLEPIUS_NUM_OCP_LIMITS; i++)
+  {
+    snprintf(limit_text, sizeof(limit_text), "%.1f A", (float)asclepius_ocp_limits_ccc[i] / 1000);
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_ocp_limit_12v_combobox_ccc), limit_text);
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_ocp_limit_5v_combobox_ccc), limit_text);
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_ocp_limit_usb_combobox_ccc), limit_text);
+  }
+
+  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
+  for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Off"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Warn only"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Cut power"));
+  }
 
   // gtk_entry_set_max_length (GTK_ENTRY (power_command_to_call_text_ccc), MAX_CALL_LENGTH);
   gtk_entry_set_max_length(GTK_ENTRY(asclepius_tty_device_text_ccc), 255);
@@ -4564,6 +4644,62 @@ void update_primary_relay_settings_from_buttons_ccc(void)
 
   const gchar *tty_entry_text = gtk_entry_get_text(GTK_ENTRY(asclepius_tty_device_text_ccc));
   strcpy(primary_relay_settings_ccc.asclepius_tty_device, tty_entry_text);
+
+  if (asclepius_poll_interval_combobox_ccc)
+  {
+    int poll_index = gtk_combo_box_get_active(GTK_COMBO_BOX(asclepius_poll_interval_combobox_ccc));
+    if (poll_index >= 0 && (size_t)poll_index < ASCLEPIUS_NUM_POLL_INTERVALS)
+    {
+      primary_relay_settings_ccc.asclepius_poll_interval_ms = asclepius_poll_intervals_ccc[poll_index];
+    }
+  }
+
+  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
+  GtkWidget *limit_combos[] = { asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc };
+  size_t i;
+
+  for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
+  {
+    if (action_combos[i])
+    {
+      int action_index = gtk_combo_box_get_active(GTK_COMBO_BOX(action_combos[i]));
+      if (action_index >= 0 && action_index <= ASCLEPIUS_OCP_CUT)
+      {
+        if (i == 0)
+        {
+          primary_relay_settings_ccc.asclepius_ocp_action_12v = action_index;
+        }
+        else if (i == 1)
+        {
+          primary_relay_settings_ccc.asclepius_ocp_action_5v = action_index;
+        }
+        else
+        {
+          primary_relay_settings_ccc.asclepius_ocp_action_usb = action_index;
+        }
+      }
+    }
+
+    if (limit_combos[i])
+    {
+      int limit_index = gtk_combo_box_get_active(GTK_COMBO_BOX(limit_combos[i]));
+      if (limit_index >= 0 && (size_t)limit_index < ASCLEPIUS_NUM_OCP_LIMITS)
+      {
+        if (i == 0)
+        {
+          primary_relay_settings_ccc.asclepius_ocp_limit_12v = asclepius_ocp_limits_ccc[limit_index];
+        }
+        else if (i == 1)
+        {
+          primary_relay_settings_ccc.asclepius_ocp_limit_5v = asclepius_ocp_limits_ccc[limit_index];
+        }
+        else
+        {
+          primary_relay_settings_ccc.asclepius_ocp_limit_usb = asclepius_ocp_limits_ccc[limit_index];
+        }
+      }
+    }
+  }
 
   // = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON());
   // = gtk_spin_button_get_value(GTK_SPIN_BUTTON());
@@ -4674,6 +4810,19 @@ void do_test_primary_relay_ccc(void)
   update_primary_relay_settings_ccc();
 }
 
+// A manual power command takes a rail out of any latched software OCP trip
+static void clear_asclepius_soft_ocp_ccc(uint8_t channel)
+{
+  if (channel == ASCLEPIUS_ALL)
+  {
+    asclepius_ocp_reset();
+  }
+  else
+  {
+    asclepius_ocp_clear_channel(channel);
+  }
+}
+
 int cycle_primary_relay_ccc(void)
 {
   int asclepius_relay_source = primary_relay_settings_ccc.asclepius_relay_source;
@@ -4689,6 +4838,8 @@ int cycle_primary_relay_ccc(void)
       return 1;
     }
 
+    clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
+
     // wait to deactivate
     unsigned int i;
     for (i = primary_relay_activation_time_ccc; i > 0; i--)
@@ -4701,6 +4852,8 @@ int cycle_primary_relay_ccc(void)
     {
       return 1;
     }
+
+    clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
 
     // wait for delay time
     for (i = primary_relay_delay_time_ccc; i > 0; i--)
@@ -5008,16 +5161,35 @@ void update_status_buttons_ccc(void)
   }
 }
 
+// Tooltip for a rail that tripped its software OCP limit
+static void set_asclepius_soft_ocp_tooltip_ccc(GtkWidget *icon, const char *rail_name, const struct asclepius_ocp_rail_t *ocp)
+{
+  char tooltip[128];
+
+  snprintf(tooltip, sizeof(tooltip), _("%s Channel - Software OCP tripped at %.2fA (limit %.2fA%s)"), rail_name, (float)ocp->trip_ma / 1000, (float)ocp->limit_ma / 1000, ocp->action == ASCLEPIUS_OCP_CUT ? ", channel off" : "");
+
+  gtk_image_set_from_file(GTK_IMAGE(icon), error_icon_on_path);
+  gtk_widget_set_tooltip_text(icon, tooltip);
+}
+
 void update_asclepius_status(void)
 {
   if (asclepius_get_connection_status())
   {
-    if (asclepius_get_status() != 0)
-    {
-      return;
-    }
+    struct asclepius_status_t status;
+    struct asclepius_ocp_rail_t ocp12v;
+    struct asclepius_ocp_rail_t ocp5v;
+    struct asclepius_ocp_rail_t ocpusb;
 
-    if (asclepius_status.main12v_enabled)
+    asclepius_lock();
+    status = asclepius_status;
+    asclepius_unlock();
+
+    asclepius_ocp_get_rail_state(ASCLEPIUS_MAIN12V, &ocp12v);
+    asclepius_ocp_get_rail_state(ASCLEPIUS_MAIN5V, &ocp5v);
+    asclepius_ocp_get_rail_state(ASCLEPIUS_USB5V, &ocpusb);
+
+    if (status.main12v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Active"));
@@ -5027,26 +5199,30 @@ void update_asclepius_status(void)
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_off_path);
       gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Inactive"));
     }
-    if (asclepius_status.main12v_enabled)
+    if (status.main12v_enabled)
     {
-      if (asclepius_status.main12v_voltage < 10800)
+      if (status.main12v_voltage < ASCLEPIUS_V12_MIN_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_warn_icon_path);
-        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (<10.8V)"));
+        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (<11.4V)"));
       }
-      else if (asclepius_status.main12v_voltage > 13200)
+      else if (status.main12v_voltage > ASCLEPIUS_V12_MAX_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_warn_icon_path);
-        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (>13.2V)"));
+        gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Out of Spec (>12.6V)"));
       }
     }
-    if (asclepius_status.main12v_ocp)
+    if (ocp12v.tripped)
+    {
+      set_asclepius_soft_ocp_tooltip_ccc(asclepius_12v_icon, "12V", &ocp12v);
+    }
+    if (status.main12v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), error_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Overcurrent Detected!"));
     }
 
-    if(asclepius_status.main5v_enabled)
+    if(status.main5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Active"));
@@ -5056,26 +5232,30 @@ void update_asclepius_status(void)
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_off_path);
       gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Inactive"));
     }
-    if (asclepius_status.main5v_enabled)
+    if (status.main5v_enabled)
     {
-      if (asclepius_status.main5v_voltage < 4750)
+      if (status.main5v_voltage < ASCLEPIUS_V5_MIN_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_warn_icon_path);
         gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Out of Spec (<4.75V)"));
       }
-      else if (asclepius_status.main5v_voltage > 5250)
+      else if (status.main5v_voltage > ASCLEPIUS_V5_MAX_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_warn_icon_path);
         gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Out of Spec (>5.25V)"));
       }
     }
-    if (asclepius_status.main5v_ocp)
+    if (ocp5v.tripped)
+    {
+      set_asclepius_soft_ocp_tooltip_ccc(asclepius_5v_icon, "5V", &ocp5v);
+    }
+    if (status.main5v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), error_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Overcurrent Detected!"));
     }
 
-    if(asclepius_status.usb5v_enabled)
+    if(status.usb5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Active"));
@@ -5085,31 +5265,35 @@ void update_asclepius_status(void)
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_off_path);
       gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Inactive"));
     }
-    if (asclepius_status.usb5v_enabled)
+    if (status.usb5v_enabled)
     {
-      if (asclepius_status.main5v_voltage < 4750)
+      if (status.main5v_voltage < ASCLEPIUS_V5_MIN_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_warn_icon_path);
         gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Out of Spec (<4.75V)"));
       }
-      else if (asclepius_status.main5v_voltage > 5250)
+      else if (status.main5v_voltage > ASCLEPIUS_V5_MAX_MV)
       {
         gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_warn_icon_path);
         gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Out of Spec (>5.25V)"));
       }
     }
-    if (asclepius_status.usb5v_ocp)
+    if (ocpusb.tripped)
+    {
+      set_asclepius_soft_ocp_tooltip_ccc(asclepius_usb_icon, "USB 5V", &ocpusb);
+    }
+    if (status.usb5v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), error_icon_on_path);
         gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Overcurrent Detected"));
     }
 
     char temp[16];
-    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main12v_voltage / 1000, asclepius_status.main12v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)status.main12v_voltage / 1000, status.main12v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_12v_label), temp);
-    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main5v_voltage / 1000, asclepius_status.main5v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)status.main5v_voltage / 1000, status.main5v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_5v_label), temp);
-    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)asclepius_status.main5v_voltage / 1000, asclepius_status.usb5v_current);
+    snprintf(temp, sizeof(temp), _("%.1fV / %dmA"), (float)status.main5v_voltage / 1000, status.usb5v_current);
     gtk_label_set_text(GTK_LABEL(asclepius_usb_label), temp);
   }
 }
@@ -5414,6 +5598,29 @@ void update_primary_relay_button_settings_ccc(void)
   }
 
   gtk_entry_set_text(GTK_ENTRY(asclepius_tty_device_text_ccc), primary_relay_settings_ccc.asclepius_tty_device);
+
+  if (asclepius_poll_interval_combobox_ccc)
+  {
+    gtk_combo_box_set_active(GTK_COMBO_BOX(asclepius_poll_interval_combobox_ccc), asclepius_preset_index_ccc(asclepius_poll_intervals_ccc, ASCLEPIUS_NUM_POLL_INTERVALS, primary_relay_settings_ccc.asclepius_poll_interval_ms));
+  }
+
+  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
+  int actions[] = { primary_relay_settings_ccc.asclepius_ocp_action_12v, primary_relay_settings_ccc.asclepius_ocp_action_5v, primary_relay_settings_ccc.asclepius_ocp_action_usb };
+  GtkWidget *limit_combos[] = { asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc };
+  unsigned int limits[] = { primary_relay_settings_ccc.asclepius_ocp_limit_12v, primary_relay_settings_ccc.asclepius_ocp_limit_5v, primary_relay_settings_ccc.asclepius_ocp_limit_usb };
+  size_t i;
+
+  for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
+  {
+    if (action_combos[i])
+    {
+      gtk_combo_box_set_active(GTK_COMBO_BOX(action_combos[i]), asclepius_ocp_clamp_action(actions[i]));
+    }
+    if (limit_combos[i])
+    {
+      gtk_combo_box_set_active(GTK_COMBO_BOX(limit_combos[i]), asclepius_preset_index_ccc(asclepius_ocp_limits_ccc, ASCLEPIUS_NUM_OCP_LIMITS, limits[i]));
+    }
+  }
 
   // gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON (), primary_relay_settings_ccc. );
 
@@ -5902,6 +6109,10 @@ void do_activate_primary_relay_ccc(void)
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
+    else
+    {
+      clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
+    }
 
     return;
   }
@@ -6006,6 +6217,10 @@ void do_deactivate_primary_relay_ccc(void)
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
+    }
+    else
+    {
+      clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
     }
 
     return;
@@ -6112,6 +6327,10 @@ void do_activate_primary_relay_main_ccc(void)
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
     }
+    else
+    {
+      clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
+    }
 
     return;
   }
@@ -6150,6 +6369,10 @@ void do_deactivate_primary_relay_main_ccc(void)
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
+    }
+    else
+    {
+      clear_asclepius_soft_ocp_ccc((uint8_t)asclepius_relay_source);
     }
 
     return;
@@ -6940,6 +7163,53 @@ void read_config_file_with_name_ccc(char* filename)
       primary_relay_settings_ccc.asclepius_ext_baud_rate = config_setting_get_int(setting);
     }
 
+    setting = config_setting_get_member(group, "asclepius_poll_interval_ms");
+    if (setting != NULL)
+    {
+      int poll_ms = config_setting_get_int(setting);
+      if (poll_ms < ASCLEPIUS_POLL_INTERVAL_MIN_MS || poll_ms > ASCLEPIUS_POLL_INTERVAL_MAX_MS)
+      {
+        poll_ms = ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS;
+      }
+      primary_relay_settings_ccc.asclepius_poll_interval_ms = (unsigned int)poll_ms;
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_action_12v");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_action_12v = asclepius_ocp_clamp_action(config_setting_get_int(setting));
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_action_5v");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_action_5v = asclepius_ocp_clamp_action(config_setting_get_int(setting));
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_action_usb");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_action_usb = asclepius_ocp_clamp_action(config_setting_get_int(setting));
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_limit_12v");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_limit_12v = asclepius_ocp_clamp_limit_mA((unsigned int)config_setting_get_int(setting));
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_limit_5v");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_limit_5v = asclepius_ocp_clamp_limit_mA((unsigned int)config_setting_get_int(setting));
+    }
+
+    setting = config_setting_get_member(group, "asclepius_ocp_limit_usb");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_ocp_limit_usb = asclepius_ocp_clamp_limit_mA((unsigned int)config_setting_get_int(setting));
+    }
+
     // setting = config_setting_get_member(group, "primary_relay_name");;
     // if (setting != NULL)
     // {
@@ -7345,6 +7615,27 @@ void write_config_file_with_name_ccc(char* filename)
 
   setting = config_setting_add(group, "asclepius_ext_baud_rate", CONFIG_TYPE_INT);
   config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_ext_baud_rate);
+
+  setting = config_setting_add(group, "asclepius_poll_interval_ms", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_poll_interval_ms);
+
+  setting = config_setting_add(group, "asclepius_ocp_action_12v", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_ocp_action_12v);
+
+  setting = config_setting_add(group, "asclepius_ocp_action_5v", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_ocp_action_5v);
+
+  setting = config_setting_add(group, "asclepius_ocp_action_usb", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_ocp_action_usb);
+
+  setting = config_setting_add(group, "asclepius_ocp_limit_12v", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_ocp_limit_12v);
+
+  setting = config_setting_add(group, "asclepius_ocp_limit_5v", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_ocp_limit_5v);
+
+  setting = config_setting_add(group, "asclepius_ocp_limit_usb", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_ocp_limit_usb);
 
   // setting = config_setting_add(group, "primary_relay_name", CONFIG_TYPE_STRING);
   // config_setting_set_string(setting, primary_relay_settings_ccc.primary_relay_name);

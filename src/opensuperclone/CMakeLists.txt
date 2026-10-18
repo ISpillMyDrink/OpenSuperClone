@@ -7,7 +7,10 @@ set(SOURCES
     common.c
     clone_gui.c
     asclepius.c
+    monitor.c
 )
+
+find_package(Threads REQUIRED)
 
 # Generate header files from resources
 add_custom_command(
@@ -55,6 +58,9 @@ target_include_directories(opensuperclone PRIVATE ${LIBCONFIG_INCLUDE_DIRS})
 target_link_directories(opensuperclone PRIVATE ${LIBCONFIG_LIBRARY_DIRS})
 target_compile_options(opensuperclone PRIVATE ${LIBCONFIG_CFLAGS_OTHER})
 target_link_libraries(opensuperclone ${LIBCONFIG_LIBRARIES})
+
+# Add pthread dependency (Asclepius status poller thread)
+target_link_libraries(opensuperclone Threads::Threads)
 
 target_compile_options(opensuperclone PRIVATE ${CC_OPTIONS})
 

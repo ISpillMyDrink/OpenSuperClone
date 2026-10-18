@@ -415,6 +415,13 @@ int main(int argc, char **argv)
   strcpy(asclepius_tty_device_ccc, "/dev/ttyascl");
   strcpy(asclepius_ext_tty_device_ccc, "/dev/ttyasclext");
   asclepius_ext_baud_rate_ccc = 38400;
+  primary_relay_settings_ccc.asclepius_poll_interval_ms = ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS;
+  primary_relay_settings_ccc.asclepius_ocp_action_12v = ASCLEPIUS_OCP_CUT;
+  primary_relay_settings_ccc.asclepius_ocp_action_5v = ASCLEPIUS_OCP_CUT;
+  primary_relay_settings_ccc.asclepius_ocp_action_usb = ASCLEPIUS_OCP_CUT;
+  primary_relay_settings_ccc.asclepius_ocp_limit_12v = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
+  primary_relay_settings_ccc.asclepius_ocp_limit_5v = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
+  primary_relay_settings_ccc.asclepius_ocp_limit_usb = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
   use_rebuild_assist_ccc = false;
   rebuild_assist_enabled_ccc = false;
   drive_port_ccc = -1;
@@ -876,6 +883,8 @@ void cleanup_ccc(void)
 
   dissconnect_usbr1_ccc();
   dissconnect_usbd1_ccc();
+
+  asclepius_disconnect();
 
   free(ccc_buffer_ccc);
   free(ccc_scratchpad_ccc);

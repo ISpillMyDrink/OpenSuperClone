@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdatomic.h>
 #include <string.h>
 
 #include <fcntl.h>
@@ -29,6 +30,13 @@
 #define ASCLEPIUS_ALL 5
 
 #define ASCLEPIUS_STATUS_PACKET_SIZE 28
+#define ASCLEPIUS_STATUS_TIMEOUT_MS 300
+
+// ATX spec voltage limits (in millivolts), +/-5%
+#define ASCLEPIUS_V12_MIN_MV 11400
+#define ASCLEPIUS_V12_MAX_MV 12600
+#define ASCLEPIUS_V5_MIN_MV 4750
+#define ASCLEPIUS_V5_MAX_MV 5250
 
 #define ASCLEPIUS_UI_UPDATE_TIMER 500
 
@@ -72,6 +80,65 @@ int asclepius_enable_channel(uint8_t channel);
 int asclepius_disable_channel(uint8_t channel);
 
 int asclepius_get_status(void);
+
+// Status poll interval for the background poller thread, in milliseconds
+#define ASCLEPIUS_POLL_INTERVAL_MIN_MS 25
+#define ASCLEPIUS_POLL_INTERVAL_MAX_MS 1000
+#define ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS 100
+extern _Atomic unsigned int asclepius_poll_interval_ms;
+
+// Clamp a poll interval to the supported range
+unsigned int asclepius_poll_clamp_interval_ms(unsigned int interval_ms);
+
+// Lock/unlock the control port for a snapshot of the asclepius_status global
+void asclepius_lock(void);
+
+void asclepius_unlock(void);
+
+// Software OCP trip limits (mA). The board's sense range tops out at 4.5 A.
+// A trip acts on the next poll: this is a safety net for custom limits, NOT
+// fast-acting hardware protection.
+#define ASCLEPIUS_OCP_LIMIT_MIN_MA 500
+#define ASCLEPIUS_OCP_LIMIT_MAX_MA 4500
+#define ASCLEPIUS_OCP_LIMIT_DEFAULT_MA 4500
+#define ASCLEPIUS_OCP_NUM_LIMITS 9
+
+// Action taken when a rail trips its software OCP limit
+typedef enum
+{
+    ASCLEPIUS_OCP_OFF = 0,  // no software monitoring on this rail
+    ASCLEPIUS_OCP_WARN = 1, // latch and report, leave the rail powered
+    ASCLEPIUS_OCP_CUT = 2   // latch and command the rail off
+} asclepius_ocp_action_t;
+
+struct asclepius_ocp_rail_t
+{
+    bool tripped;                 // latched until the user intervenes
+    uint32_t trip_ma;             // current at the moment of the trip
+    unsigned int limit_ma;
+    asclepius_ocp_action_t action;
+};
+extern struct asclepius_ocp_rail_t asclepius_ocp_12v_ccc;
+extern struct asclepius_ocp_rail_t asclepius_ocp_5v_ccc;
+extern struct asclepius_ocp_rail_t asclepius_ocp_usb_ccc;
+
+// Reason for the currently latched trips, empty when nothing is latched
+extern char asclepius_soft_ocp_status[256];
+
+// Snapshot of one rail's software OCP state (channel is 12V/5V/USB)
+void asclepius_ocp_get_rail_state(uint8_t channel, struct asclepius_ocp_rail_t *state);
+
+// Clamp a limit to the supported range
+unsigned int asclepius_ocp_clamp_limit_mA(unsigned int limit_ma);
+
+// Clamp an action to a valid mode
+asclepius_ocp_action_t asclepius_ocp_clamp_action(int action);
+
+// Drop every latched trip (board lost, or user reset)
+void asclepius_ocp_reset(void);
+
+// Drop the latched trip for one channel after a manual power command
+void asclepius_ocp_clear_channel(uint8_t channel);
 
 int asclepius_ext_open(void);
 

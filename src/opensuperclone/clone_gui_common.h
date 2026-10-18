@@ -291,6 +291,13 @@ struct primary_relay_settings_t
   char asclepius_tty_device[256];
   char asclepius_ext_tty_device[256];
   int asclepius_ext_baud_rate;
+  unsigned int asclepius_poll_interval_ms;
+  int asclepius_ocp_action_12v;
+  int asclepius_ocp_action_5v;
+  int asclepius_ocp_action_usb;
+  unsigned int asclepius_ocp_limit_12v;
+  unsigned int asclepius_ocp_limit_5v;
+  unsigned int asclepius_ocp_limit_usb;
   char primary_relay_name[MAX_RELAY_NAME_LENGTH];
 };
 extern struct primary_relay_settings_t primary_relay_settings_ccc;

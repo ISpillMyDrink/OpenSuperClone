@@ -1261,6 +1261,13 @@ void load_primary_relay_settings_ccc(void)
   strcpy(primary_relay_settings_ccc.asclepius_tty_device, asclepius_tty_device_ccc);
   strcpy(primary_relay_settings_ccc.asclepius_ext_tty_device, asclepius_ext_tty_device_ccc);
   primary_relay_settings_ccc.asclepius_ext_baud_rate = asclepius_ext_baud_rate_ccc;
+  primary_relay_settings_ccc.asclepius_poll_interval_ms = atomic_load(&asclepius_poll_interval_ms);
+  primary_relay_settings_ccc.asclepius_ocp_action_12v = asclepius_ocp_12v_ccc.action;
+  primary_relay_settings_ccc.asclepius_ocp_action_5v = asclepius_ocp_5v_ccc.action;
+  primary_relay_settings_ccc.asclepius_ocp_action_usb = asclepius_ocp_usb_ccc.action;
+  primary_relay_settings_ccc.asclepius_ocp_limit_12v = asclepius_ocp_12v_ccc.limit_ma;
+  primary_relay_settings_ccc.asclepius_ocp_limit_5v = asclepius_ocp_5v_ccc.limit_ma;
+  primary_relay_settings_ccc.asclepius_ocp_limit_usb = asclepius_ocp_usb_ccc.limit_ma;
 }
 
 void update_primary_relay_settings_ccc(void)
@@ -1291,6 +1298,17 @@ void update_primary_relay_settings_ccc(void)
   strcpy(asclepius_tty_device_ccc, primary_relay_settings_ccc.asclepius_tty_device);
   strcpy(asclepius_ext_tty_device_ccc, primary_relay_settings_ccc.asclepius_ext_tty_device);
   asclepius_ext_baud_rate_ccc = primary_relay_settings_ccc.asclepius_ext_baud_rate;
+
+  // The poller re-reads the interval every cycle, so a new value applies live
+  unsigned int poll_ms = asclepius_poll_clamp_interval_ms(primary_relay_settings_ccc.asclepius_poll_interval_ms);
+  atomic_store(&asclepius_poll_interval_ms, poll_ms);
+
+  asclepius_ocp_12v_ccc.action = asclepius_ocp_clamp_action(primary_relay_settings_ccc.asclepius_ocp_action_12v);
+  asclepius_ocp_5v_ccc.action = asclepius_ocp_clamp_action(primary_relay_settings_ccc.asclepius_ocp_action_5v);
+  asclepius_ocp_usb_ccc.action = asclepius_ocp_clamp_action(primary_relay_settings_ccc.asclepius_ocp_action_usb);
+  asclepius_ocp_12v_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_12v);
+  asclepius_ocp_5v_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_5v);
+  asclepius_ocp_usb_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_usb);
 }
 
 int get_primary_relay_settings_ccc(void)
