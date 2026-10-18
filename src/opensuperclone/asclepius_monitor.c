@@ -964,15 +964,22 @@ void update_asclepius_monitor_ccc(void)
 
     if(!connected)
     {
-      snprintf(text, sizeof(text), "Disconnected");
+      snprintf(text, sizeof(text), "%s", _("Disconnected"));
     }
     else if(asclepius_soft_ocp_status[0] != '\0')
     {
-      snprintf(text, sizeof(text), "Connected - %s", asclepius_soft_ocp_status);
+      snprintf(text, sizeof(text), "%s", _("Connected - soft OCP"));
     }
     else
     {
-      snprintf(text, sizeof(text), "Connected - %u samples", mon_sample_count(&asclepius_monitor));
+      snprintf(text, sizeof(text), _("Connected - %u samples"), mon_sample_count(&asclepius_monitor));
+    }
+
+    if(asclepius_soft_ocp_status[0] != '\0')
+    {
+      // The trip detail is assembled by the poller and is not a catalog entry.
+      size_t used = strlen(text);
+      snprintf(text + used, sizeof(text) - used, " - %s", asclepius_soft_ocp_status);
     }
 
     gtk_label_set_text(GTK_LABEL(asclepius_mon_status_label_ccc), text);
@@ -1175,6 +1182,32 @@ void open_asclepius_monitor_dialog_ccc(void)
   GtkWidget *v12 = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_v12_drawing"));
   GtkWidget *v5 = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_v5_drawing"));
   GtkWidget *current = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_current_drawing"));
+
+  // The captions are marked translatable in the glade, which makes GtkBuilder
+  // translate them at parse time, but only if their msgids reached the
+  // catalog. xgettext never reads the glade, so every string that is not also
+  // wrapped in _() here stays untranslated.
+  GtkWidget *power_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_power_label"));
+  GtkWidget *voltage_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_voltage_label"));
+
+  gtk_window_set_title(GTK_WINDOW(dialog), _("Asclepius Monitor"));
+  if(power_label != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(power_label), _("Power"));
+  }
+  if(voltage_label != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(voltage_label), _("Voltage"));
+  }
+  // Shown until the first refresh delivers real statistics.
+  if(voltage_stats != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(voltage_stats), _("No samples"));
+  }
+  if(current_stats != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(current_stats), _("No samples"));
+  }
 
   if(v12 != NULL)
   {

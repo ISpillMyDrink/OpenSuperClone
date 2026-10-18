@@ -185,6 +185,7 @@ extern GtkWidget *displaysmartmi_ccc;
 extern GtkWidget *primaryrelaymi_ccc;
 extern GtkWidget *chooseprimaryrelaymi_ccc;
 extern GtkWidget *asclepiusextmi_ccc;
+extern GtkWidget *asclepiusmonitormi_ccc;
 extern GtkWidget *disableusbmassmi_ccc;
 extern GtkWidget *restoreusbmassmi_ccc;
 extern GtkWidget *loadconfigmi_ccc;

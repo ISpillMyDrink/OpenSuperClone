@@ -240,6 +240,7 @@ GtkWidget *displaysmartmi_ccc = NULL;
 GtkWidget *primaryrelaymi_ccc = NULL;
 GtkWidget *chooseprimaryrelaymi_ccc = NULL;
 GtkWidget *asclepiusextmi_ccc = NULL;
+GtkWidget *asclepiusmonitormi_ccc = NULL;
 GtkWidget *disableusbmassmi_ccc = NULL;
 GtkWidget *restoreusbmassmi_ccc = NULL;
 GtkWidget *loadconfigmi_ccc = NULL;
@@ -431,6 +432,7 @@ GtkWidget *asclepius_disconnect_button_ccc = NULL;
 GtkWidget *primary_relay_board_settings_label_ccc = NULL;
 GtkWidget *primary_relay_board_type_frame_ccc = NULL;
 GtkWidget *primary_relay_board_type_label_ccc = NULL;
+GtkWidget *primary_relay_board_type_frame_label_ccc = NULL;
 GtkWidget *primary_relay_board_generic_radio_ccc = NULL;
 GtkWidget *primary_relay_board_asclepius_radio_ccc = NULL;
 
@@ -741,6 +743,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   primaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primaryrelaymi"));
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
   asclepiusextmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepiusextmi"));
+  asclepiusmonitormi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepiusmonitormi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
   loadconfigmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "loadconfigmi"));
@@ -804,6 +807,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(primaryrelaymi_ccc), _("Primary Relay Settings"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(asclepiusextmi_ccc), _("Open Terminal (UART)"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(asclepiusmonitormi_ccc), _("Open Monitor (Asclepius)"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(loadconfigmi_ccc), _("Open Settings File"));
@@ -4586,6 +4590,7 @@ void open_primary_relay_dialog_ccc(void)
   // starts out active in its own singleton group.
   primary_relay_board_type_frame_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "frame_primary_relay_board_type"));
   primary_relay_board_type_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_type_label"));
+  primary_relay_board_type_frame_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_type_frame_label"));
   primary_relay_board_generic_radio_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_generic_radio"));
   primary_relay_board_asclepius_radio_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_asclepius_radio"));
 
@@ -4650,9 +4655,12 @@ void open_primary_relay_dialog_ccc(void)
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("All"));
   gtk_label_set_text(GTK_LABEL(primary_relay_board_settings_label_ccc), _("Relay board settings"));
 
-  if(primary_relay_board_type_frame_ccc != NULL)
+  // The caption lives in the frame's label child, not the frame itself.
+  // Passing the GtkFrame to gtk_label_set_text() only trips an assertion and
+  // leaves the untranslated glade string in place.
+  if(primary_relay_board_type_frame_label_ccc != NULL)
   {
-    gtk_label_set_text(GTK_LABEL(primary_relay_board_type_frame_ccc), _("Relay board in use"));
+    gtk_label_set_text(GTK_LABEL(primary_relay_board_type_frame_label_ccc), _("Relay board in use"));
   }
   if(primary_relay_board_type_label_ccc != NULL)
   {
