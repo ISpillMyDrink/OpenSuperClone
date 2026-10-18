@@ -4526,7 +4526,6 @@ void update_primary_relay_board_type_visibility_ccc(void)
   }
 }
 
-// Radio button handler: switches which board the relay controls drive.
 void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
 {
   (void)data;
@@ -5327,7 +5326,6 @@ void update_status_buttons_ccc(void)
   }
 }
 
-// Tooltip for a rail that tripped its software OCP limit
 static void set_asclepius_soft_ocp_tooltip_ccc(GtkWidget *icon, const char *rail_name, const struct asclepius_ocp_rail_t *ocp)
 {
   char tooltip[128];

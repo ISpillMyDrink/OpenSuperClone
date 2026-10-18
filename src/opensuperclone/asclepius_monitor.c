@@ -201,7 +201,6 @@ static void mon_draw_zone_bands(cairo_t *cr, const mon_plot_t *p, double spec_mi
     cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
     cairo_clip(cr);
 
-    // Out-of-spec regions
     mon_set_source_rgba(cr, 0.78, 0.20, 0.20, 0.15);
     double above_y = mon_map_y(p, spec_max);
     if(above_y > p->y0)
@@ -217,7 +216,6 @@ static void mon_draw_zone_bands(cairo_t *cr, const mon_plot_t *p, double spec_mi
         cairo_fill(cr);
     }
 
-    // In-spec band
     mon_set_source_rgba(cr, 0.20, 0.72, 0.36, 0.12);
     cairo_rectangle(cr, p->x0, above_y, p->w, below_y - above_y);
     cairo_fill(cr);
@@ -243,7 +241,6 @@ static void mon_draw_dashed_limit(cairo_t *cr, const mon_plot_t *p, double value
     cairo_stroke(cr);
     cairo_restore(cr);
 
-    // Value chip on the right edge
     char text[24];
     snprintf(text, sizeof(text), "%.2f V", value);
     cairo_save(cr);
@@ -266,7 +263,6 @@ static void mon_draw_grid(cairo_t *cr, const mon_plot_t *p, const char *unit)
 {
     cairo_save(cr);
 
-    // Horizontal gridlines with value labels
     cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size(cr, 10.0);
 
@@ -291,7 +287,6 @@ static void mon_draw_grid(cairo_t *cr, const mon_plot_t *p, const char *unit)
         cairo_show_text(cr, text);
     }
 
-    // Vertical gridlines with relative time labels
     for(int i = 0; i <= 6; i++)
     {
         double frac = (double)i / 6.0;
@@ -362,7 +357,6 @@ static void mon_draw_series(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, 
     {
         cairo_stroke(cr);
 
-        // Latest value dot
         double lx = mon_map_x(p, mon_points_ccc[p->count - 1].t_ms);
         double ly = mon_map_y(p, fn(&mon_points_ccc[p->count - 1]));
         cairo_arc(cr, lx, ly, 2.5, 0, 2 * M_PI);
@@ -475,7 +469,6 @@ static void mon_draw_hover(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, d
         return;
     }
 
-    // Nearest sample to the hovered time
     int best = 0;
     uint32_t best_delta = UINT32_MAX;
     for(int i = 0; i < p->count; i++)
@@ -496,14 +489,12 @@ static void mon_draw_hover(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, d
     cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
     cairo_clip(cr);
 
-    // Vertical cursor
     mon_set_source(cr, 0.75, 0.75, 0.75);
     cairo_set_line_width(cr, 1.0);
     cairo_move_to(cr, x, p->y0);
     cairo_line_to(cr, x, p->y0 + p->h);
     cairo_stroke(cr);
 
-    // Marker on the series
     cairo_set_source_rgb(cr, r, g, b);
     cairo_arc(cr, x, y, 3.5, 0, 2 * M_PI);
     cairo_fill(cr);
@@ -928,7 +919,6 @@ void update_asclepius_monitor_ccc(void)
     }
   }
 
-  // Statistics rows
   if(asclepius_mon_voltage_stats_label_ccc != NULL)
   {
     char row12[256];
@@ -1231,7 +1221,6 @@ void open_asclepius_monitor_dialog_ccc(void)
     gtk_widget_add_events(current, GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK);
   }
 
-  // Window selector
   if(window_label != NULL)
   {
     gtk_label_set_text(GTK_LABEL(window_label), _("Window"));

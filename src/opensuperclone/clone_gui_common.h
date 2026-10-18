@@ -313,7 +313,6 @@ extern struct primary_relay_settings_t primary_relay_settings_ccc;
 #define PRIMARY_RELAY_BOARD_GENERIC 0
 #define PRIMARY_RELAY_BOARD_ASCLEPIUS 1
 
-// Clamps a stored or user-supplied board type to a valid one.
 int primary_relay_board_type_valid(int board_type);
 
 struct display_output_t
@@ -456,7 +455,6 @@ void update_primary_relay_settings_ccc(void);
 
 void update_primary_relay_button_settings_ccc(void);
 
-// Shows only the relay settings that apply to the selected board type.
 void update_primary_relay_board_type_visibility_ccc(void);
 
 void update_primary_relay_settings_from_buttons_ccc(void);

@@ -198,7 +198,6 @@ int mon_copy_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms, mon_sam
 
     pthread_mutex_lock(&mon_mutex);
 
-    // Locate the first and last sample inside the window.
     for(i = 0; i < m->hist.len; i++)
     {
         uint32_t t = m->hist.buf[(m->hist.head - m->hist.len + i + 2 * MON_HISTORY_MAX) % MON_HISTORY_MAX].t_ms;
@@ -216,7 +215,6 @@ int mon_copy_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms, mon_sam
 
     if(in_range > 0 && in_range <= max_out)
     {
-        // Everything fits: copy it all.
         for(i = first; i <= last; i++)
         {
             out[count++] = m->hist.buf[(m->hist.head - m->hist.len + i + 2 * MON_HISTORY_MAX) % MON_HISTORY_MAX];
