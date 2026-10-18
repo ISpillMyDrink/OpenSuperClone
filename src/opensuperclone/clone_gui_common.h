@@ -125,6 +125,9 @@ extern bool color_statusbar_ccc;
 extern char primary_relay_name_ccc[MAX_RELAY_NAME_LENGTH];
 extern unsigned long long primary_relay_activation_time_ccc;
 extern unsigned long long primary_relay_delay_time_ccc;
+
+// Which board the relay controls currently drive (PRIMARY_RELAY_BOARD_*).
+extern int primary_relay_board_type_ccc;
 extern char asclepius_tty_device_ccc[256];
 extern char asclepius_ext_tty_device_ccc[256];
 extern int asclepius_ext_baud_rate_ccc;
@@ -287,6 +290,7 @@ struct primary_relay_settings_t
   bool deactivate_primary_relay8;
   unsigned long long primary_relay_activation_time;
   unsigned long long primary_relay_delay_time;
+  int primary_relay_board_type;
   int asclepius_relay_source;
   char asclepius_tty_device[256];
   char asclepius_ext_tty_device[256];
@@ -301,6 +305,16 @@ struct primary_relay_settings_t
   char primary_relay_name[MAX_RELAY_NAME_LENGTH];
 };
 extern struct primary_relay_settings_t primary_relay_settings_ccc;
+
+// Which board the primary-relay controls drive. The choice is explicit so the
+// user can see which board is in use rather than have one silently override
+// the other. Connecting a board selects it, so a freshly attached Asclepius
+// behaves as it always has until the user picks otherwise.
+#define PRIMARY_RELAY_BOARD_GENERIC 0
+#define PRIMARY_RELAY_BOARD_ASCLEPIUS 1
+
+// Clamps a stored or user-supplied board type to a valid one.
+int primary_relay_board_type_valid(int board_type);
 
 struct display_output_t
 {
@@ -441,6 +455,9 @@ void load_primary_relay_settings_ccc(void);
 void update_primary_relay_settings_ccc(void);
 
 void update_primary_relay_button_settings_ccc(void);
+
+// Shows only the relay settings that apply to the selected board type.
+void update_primary_relay_board_type_visibility_ccc(void);
 
 void update_primary_relay_settings_from_buttons_ccc(void);
 

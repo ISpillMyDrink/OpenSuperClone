@@ -415,6 +415,7 @@ int main(int argc, char **argv)
   strcpy(asclepius_tty_device_ccc, "/dev/ttyascl");
   strcpy(asclepius_ext_tty_device_ccc, "/dev/ttyasclext");
   asclepius_ext_baud_rate_ccc = 38400;
+  primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_GENERIC;
   primary_relay_settings_ccc.asclepius_poll_interval_ms = ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS;
   primary_relay_settings_ccc.asclepius_ocp_action_12v = ASCLEPIUS_OCP_CUT;
   primary_relay_settings_ccc.asclepius_ocp_action_5v = ASCLEPIUS_OCP_CUT;

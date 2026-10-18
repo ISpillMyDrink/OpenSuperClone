@@ -82,6 +82,41 @@ bool color_statusbar_ccc = false;
 char primary_relay_name_ccc[MAX_RELAY_NAME_LENGTH] = "";
 unsigned long long primary_relay_activation_time_ccc = 0;
 unsigned long long primary_relay_delay_time_ccc = 0;
+int primary_relay_board_type_ccc = PRIMARY_RELAY_BOARD_GENERIC;
+
+int primary_relay_board_type_valid(int board_type)
+{
+  if (board_type != PRIMARY_RELAY_BOARD_GENERIC && board_type != PRIMARY_RELAY_BOARD_ASCLEPIUS)
+  {
+    return PRIMARY_RELAY_BOARD_GENERIC;
+  }
+
+  return board_type;
+}
+
+// True when the board the user selected is actually reachable, so the relay
+// controls can say so instead of silently doing nothing.
+bool primary_relay_board_is_connected_ccc(int board_type)
+{
+  if (primary_relay_board_type_valid(board_type) == PRIMARY_RELAY_BOARD_ASCLEPIUS)
+  {
+    return asclepius_get_connection_status();
+  }
+
+  return usbr1_chosen_ccc ? true : false;
+}
+
+// True when a relay operation should be sent to Asclepius, i.e. the user has
+// Asclepius selected as the relay board.
+//
+// Dispatching on the selection rather than on "is Asclepius connected" keeps
+// the choice visible: when Asclepius is selected but not connected the command
+// below fails and reports an error, rather than quietly driving the other
+// board instead.
+static bool relay_controls_use_asclepius_ccc(void)
+{
+  return primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
+}
 // asclepius_tty_device_ccc, asclepius_ext_tty_device_ccc, asclepius_ext_baud_rate_ccc
 // are defined in asclepius.c
 bool rebuild_assist_enabled_ccc = false;
@@ -394,6 +429,17 @@ GtkWidget *asclepius_tty_device_text_ccc = NULL;
 GtkWidget *asclepius_connect_button_ccc = NULL;
 GtkWidget *asclepius_disconnect_button_ccc = NULL;
 GtkWidget *primary_relay_board_settings_label_ccc = NULL;
+GtkWidget *primary_relay_board_type_frame_ccc = NULL;
+GtkWidget *primary_relay_board_type_label_ccc = NULL;
+GtkWidget *primary_relay_board_generic_radio_ccc = NULL;
+GtkWidget *primary_relay_board_asclepius_radio_ccc = NULL;
+
+// Frames that only make sense for one board type. "Relay board settings"
+// mixes the generic USB relay's Energize 1..8 sequencing with the Asclepius
+// device settings, so the two groups are shown according to the selection
+// instead of both appearing at once.
+static GtkWidget *primary_relay_generic_frames_ccc[4] = { NULL, NULL, NULL, NULL };
+static GtkWidget *primary_relay_asclepius_frames_ccc[4] = { NULL, NULL, NULL, NULL };
 GtkWidget *primary_relay_activation_label_ccc = NULL;
 GtkWidget *activate_primary_relay1_checkbutton_ccc = NULL;
 GtkWidget *activate_primary_relay2_checkbutton_ccc = NULL;
@@ -4422,7 +4468,7 @@ int set_lun_dialog_ccc(int max_lun)
 
 // Preset status poll rates for the Asclepius poller thread. The millisecond
 // value itself is persisted, so reordering this list cannot corrupt a config.
-static const unsigned int asclepius_poll_intervals_ccc[] = { 10, 25, 50, 100, 250, 500, 1000 };
+static const unsigned int asclepius_poll_intervals_ccc[] = { 25, 50, 100, 200, 500, 1000, 2000, 5000 };
 #define ASCLEPIUS_NUM_POLL_INTERVALS (sizeof(asclepius_poll_intervals_ccc) / sizeof(asclepius_poll_intervals_ccc[0]))
 
 // Preset software OCP trip limits in mA. As with the poll rate, the mA value
@@ -4444,6 +4490,61 @@ static int asclepius_preset_index_ccc(const unsigned int *presets, size_t count,
   }
 
   return (int)(count - 1);
+}
+
+// Shows only the settings that apply to the selected board type, so the
+// window reads as one relay board at a time rather than two bolted together.
+void update_primary_relay_board_type_visibility_ccc(void)
+{
+  bool asclepius = primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
+
+  for(int i = 0; i < 4; i++)
+  {
+    if(primary_relay_generic_frames_ccc[i] != NULL)
+    {
+      gtk_widget_set_visible(primary_relay_generic_frames_ccc[i], !asclepius);
+    }
+    if(primary_relay_asclepius_frames_ccc[i] != NULL)
+    {
+      gtk_widget_set_visible(primary_relay_asclepius_frames_ccc[i], asclepius);
+    }
+  }
+
+  // The relay buttons only work when the selected board is actually reachable.
+  bool connected = primary_relay_board_is_connected_ccc(primary_relay_board_type_ccc);
+  if(activate_primary_relay_button_ccc != NULL)
+  {
+    gtk_widget_set_sensitive(activate_primary_relay_button_ccc, connected);
+  }
+  if(deactivate_primary_relay_button_ccc != NULL)
+  {
+    gtk_widget_set_sensitive(deactivate_primary_relay_button_ccc, connected);
+  }
+}
+
+// Radio button handler: switches which board the relay controls drive.
+void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
+{
+  (void)data;
+
+  // Both radios fire this handler, so only act on the one that became active.
+  if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+  {
+    return;
+  }
+
+  int board_type = PRIMARY_RELAY_BOARD_GENERIC;
+
+  if(button == primary_relay_board_asclepius_radio_ccc)
+  {
+    board_type = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  }
+
+  primary_relay_board_type_ccc = board_type;
+  primary_relay_settings_ccc.primary_relay_board_type = board_type;
+
+  update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_settings_ccc();
 }
 
 void open_primary_relay_dialog_ccc(void)
@@ -4478,6 +4579,30 @@ void open_primary_relay_dialog_ccc(void)
   asclepius_connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_connect_button"));
   asclepius_disconnect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_disconnect_button"));
   primary_relay_board_settings_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_settings_label"));
+
+  // Board-type selector and the per-type setting frames. The two radios are
+  // grouped by the "group" property in the glade: GTK3 does not group radio
+  // buttons merely by sharing a container, and an ungrouped radio button
+  // starts out active in its own singleton group.
+  primary_relay_board_type_frame_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "frame_primary_relay_board_type"));
+  primary_relay_board_type_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_type_label"));
+  primary_relay_board_generic_radio_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_generic_radio"));
+  primary_relay_board_asclepius_radio_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_board_asclepius_radio"));
+
+  // The generic USB relay's sequencing model: "Activation condition" is
+  // frame100 (the Energize relay 1..8 checkbuttons), "Deactivation condition"
+  // is frame96, hbox34 holds the two timers and frame99 the test button. None
+  // of it applies to Asclepius, whose rails are switched directly.
+  primary_relay_generic_frames_ccc[0] = GTK_WIDGET(gtk_builder_get_object(builder, "frame100"));
+  primary_relay_generic_frames_ccc[1] = GTK_WIDGET(gtk_builder_get_object(builder, "frame96"));
+  primary_relay_generic_frames_ccc[2] = GTK_WIDGET(gtk_builder_get_object(builder, "hbox34"));
+  primary_relay_generic_frames_ccc[3] = GTK_WIDGET(gtk_builder_get_object(builder, "frame99"));
+
+  primary_relay_asclepius_frames_ccc[0] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_relay_source"));
+  primary_relay_asclepius_frames_ccc[1] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_tty_device"));
+  primary_relay_asclepius_frames_ccc[2] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_soft_ocp"));
+  primary_relay_asclepius_frames_ccc[3] = GTK_WIDGET(gtk_builder_get_object(builder, "hbox_asclepius_buttons"));
+
   primary_relay_activation_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_activation_label"));
   activate_primary_relay1_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay1_checkbutton"));
   activate_primary_relay2_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay2_checkbutton"));
@@ -4512,7 +4637,7 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_label_ccc), "");
   gtk_label_set_text(GTK_LABEL(primary_relay_settings_info_label_ccc), _("Primary relay board settings"));
   gtk_label_set_text(GTK_LABEL(label_current_primary_relay_board_ccc), _("Current relay board"));
-  gtk_label_set_text(GTK_LABEL(asclepius_relay_source_label_ccc), _("Asclepius Relay Source"));
+  gtk_label_set_text(GTK_LABEL(asclepius_relay_source_label_ccc), _("Rail driven by power-cycling"));
   gtk_label_set_text(GTK_LABEL(asclepius_soft_ocp_label_ccc), _("Asclepius soft OCP"));
   gtk_label_set_text(GTK_LABEL(asclepius_poll_interval_label_ccc), _("Status poll interval"));
   gtk_label_set_text(GTK_LABEL(asclepius_ocp_12v_label_ccc), _("12V software OCP"));
@@ -4524,6 +4649,23 @@ void open_primary_relay_dialog_ccc(void)
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("MOLEX"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("All"));
   gtk_label_set_text(GTK_LABEL(primary_relay_board_settings_label_ccc), _("Relay board settings"));
+
+  if(primary_relay_board_type_frame_ccc != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(primary_relay_board_type_frame_ccc), _("Relay board in use"));
+  }
+  if(primary_relay_board_type_label_ccc != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(primary_relay_board_type_label_ccc), _("Board type"));
+  }
+  if(primary_relay_board_generic_radio_ccc != NULL)
+  {
+    gtk_button_set_label(GTK_BUTTON(primary_relay_board_generic_radio_ccc), _("USB relay"));
+  }
+  if(primary_relay_board_asclepius_radio_ccc != NULL)
+  {
+    gtk_button_set_label(GTK_BUTTON(primary_relay_board_asclepius_radio_ccc), _("Asclepius"));
+  }
   gtk_label_set_text(GTK_LABEL(primary_relay_activation_label_ccc), _("Activation condition"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay1_checkbutton_ccc), _("Energize relay 1"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay2_checkbutton_ccc), _("Energize relay 2"));
@@ -4584,6 +4726,22 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), primary_relay_settings_ccc.primary_relay_name);
   gtk_entry_set_text(GTK_ENTRY(asclepius_tty_device_text_ccc), primary_relay_settings_ccc.asclepius_tty_device);
   update_primary_relay_button_settings_ccc();
+
+  // Reflect the saved board type in the selector, then show the matching
+  // settings. Setting the radio fires the toggled handler, so do this before
+  // the visibility update rather than after.
+  primary_relay_board_type_ccc = primary_relay_board_type_valid(primary_relay_settings_ccc.primary_relay_board_type);
+  {
+    // Setting the active radio fires on_primary_relay_board_type_changed_ccc,
+    // which stores the choice and shows the matching settings section.
+    bool asclepius = primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
+    GtkWidget *target = asclepius ? primary_relay_board_asclepius_radio_ccc : primary_relay_board_generic_radio_ccc;
+    if(target != NULL)
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(target), TRUE);
+    }
+  }
+  update_primary_relay_board_type_visibility_ccc();
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Primary Relay Settings"));
 
@@ -4831,7 +4989,7 @@ int cycle_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(asclepius_get_connection_status())
+  if(relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -6045,6 +6203,12 @@ void choose_primary_usb_ccc(void)
       snprintf(name, MAX_RELAY_NAME_LENGTH, "%04x:%04x %s %s %s\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc, usbr1_vendor_string_ccc, usbr1_product_string_ccc, usbr1_extra_id_string_ccc);
       strcpy(primary_relay_settings_ccc.primary_relay_name, name);
       strcpy(primary_relay_name_ccc, name);
+      // Choosing a generic relay makes it the board the relay controls drive,
+      // matching the Asclepius connect path.
+      primary_relay_board_type_ccc = PRIMARY_RELAY_BOARD_GENERIC;
+      primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_GENERIC;
+      update_primary_relay_button_settings_ccc();
+      update_primary_relay_settings_ccc();
       gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
       gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
     }
@@ -6100,7 +6264,7 @@ void do_activate_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(asclepius_get_connection_status())
+  if(relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -6209,7 +6373,7 @@ void do_deactivate_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(asclepius_get_connection_status())
+  if(relay_controls_use_asclepius_ccc())
   {
     if (asclepius_enable_channel(asclepius_relay_source) != 0)
     {
@@ -6299,6 +6463,18 @@ void do_asclepius_connect_ccc(void)
     return;
   }
 
+  // Name the board like a generic USB relay so the settings window shows
+  // which board the relay controls are actually driving.
+  snprintf(primary_relay_settings_ccc.primary_relay_name, MAX_RELAY_NAME_LENGTH, "%s", _("Asclepius"));
+  strcpy(primary_relay_name_ccc, primary_relay_settings_ccc.primary_relay_name);
+
+  // Attaching a board selects it, so a freshly connected Asclepius takes over
+  // the relay controls exactly as it did before the choice became explicit.
+  primary_relay_board_type_ccc = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  update_primary_relay_button_settings_ccc();
+  update_primary_relay_settings_ccc();
+
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
 }
@@ -6318,7 +6494,7 @@ void do_activate_primary_relay_main_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(asclepius_get_connection_status())
+  if(relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -6361,7 +6537,7 @@ void do_deactivate_primary_relay_main_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(asclepius_get_connection_status())
+  if(relay_controls_use_asclepius_ccc())
   {
     if (asclepius_enable_channel(asclepius_relay_source) != 0)
     {
@@ -7133,6 +7309,12 @@ void read_config_file_with_name_ccc(char* filename)
       primary_relay_settings_ccc.primary_relay_delay_time = config_setting_get_int64(setting);
     }
 
+    setting = config_setting_get_member(group, "primary_relay_board_type");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.primary_relay_board_type = primary_relay_board_type_valid(config_setting_get_int(setting));
+    }
+
     setting = config_setting_get_member(group, "asclepius_relay_source");
     if (setting != NULL)
     {
@@ -7603,6 +7785,9 @@ void write_config_file_with_name_ccc(char* filename)
 
   setting = config_setting_add(group, "primary_relay_delay_time", CONFIG_TYPE_INT64);
   config_setting_set_int64(setting, primary_relay_settings_ccc.primary_relay_delay_time);
+
+  setting = config_setting_add(group, "primary_relay_board_type", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, primary_relay_settings_ccc.primary_relay_board_type);
 
   setting = config_setting_add(group, "asclepius_relay_source", CONFIG_TYPE_INT);
   config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_relay_source);
@@ -8214,6 +8399,10 @@ void on_ext_terminal_dialog_response_ccc(GtkDialog *dialog, gint response_id, gp
   asclepius_ext_close();
   gtk_widget_destroy(GTK_WIDGET(dialog));
 }
+
+// The Asclepius Monitor window lives in its own translation unit; GTK finds
+// this handler through the prototype in clone_gui.h.
+void open_asclepius_monitor_dialog_ccc(void);
 
 void open_asclepius_ext_terminal_ccc(void)
 {

@@ -10,9 +10,10 @@
 
 #include "asclepius.h"
 
-// Ring buffer length. At a 100 ms poll this holds ~6.8 minutes,
-// enough for the longest selectable graph window.
-#define MON_HISTORY_MAX 4096
+// Ring buffer length. At the 25 ms default poll this holds ~6.8 minutes,
+// enough for the longest selectable graph window. Power of two keeps the
+// ring index math cheap.
+#define MON_HISTORY_MAX 16384
 
 typedef struct
 {
@@ -63,6 +64,28 @@ void mon_reset(mon_t *m);
 void mon_push(mon_t *m, const struct asclepius_status_t *st, uint32_t t_ms);
 
 // Sample i of the ring, 0 = oldest, len-1 = newest.
+// Not synchronized: only safe for a caller that owns a private copy, or when
+// no poller is running. The GUI uses the mon_copy_* helpers below instead.
 const mon_sample_t *mon_sample(const mon_history_t *h, int i);
+
+// All of the following are safe to call from the GUI thread while the poller
+// thread is running: each takes the internal lock only for a memcpy.
+
+uint32_t mon_sample_count(const mon_t *m);
+
+// Number of valid samples currently retained (0..MON_HISTORY_MAX)
+int mon_history_len(const mon_t *m);
+
+// Rolling min/avg/max accumulators per rail. Pass NULL for a rail to skip it.
+void mon_copy_stats(const mon_t *m, mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
+
+// Copies samples spanning [t_min_ms, t_max_ms] into out, oldest first.
+// When the range holds more than max_out samples, the range is decimated
+// evenly so the copy still covers the whole window; the first and last
+// in-range samples are always included. Returns the number copied.
+int mon_copy_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms, mon_sample_t *out, int max_out);
+
+// Timestamps of the oldest and newest retained samples. False when empty.
+bool mon_time_span(const mon_t *m, uint32_t *oldest_ms, uint32_t *newest_ms);
 
 #endif

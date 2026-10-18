@@ -622,6 +622,10 @@ int asclepius_connect(void)
 
     pthread_mutex_unlock(&asclepius_serial_mutex);
 
+    // A fresh session starts with an empty history so plotted windows and
+    // min/avg/max never mix readings from a previous connection.
+    mon_reset(&asclepius_monitor);
+
     if(!asclepius_poller_running)
     {
         asclepius_stop_poller = false;
@@ -662,6 +666,9 @@ void asclepius_disconnect(void)
     asclepius_soft_ocp_status[0] = '\0';
 
     pthread_mutex_unlock(&asclepius_serial_mutex);
+
+    // Drop the history too: the readings belonged to the session that ended
+    mon_reset(&asclepius_monitor);
 }
 
 bool asclepius_get_connection_status()

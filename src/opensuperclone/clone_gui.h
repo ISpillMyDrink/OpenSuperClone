@@ -639,5 +639,9 @@ void write_config_file_ccc(void);
 void check_source_against_templates_ccc(void);
 
 void open_asclepius_ext_terminal_ccc(void);
+void open_asclepius_monitor_dialog_ccc(void);
+
+// GtkRadioButton handler that switches which board the relay controls drive.
+void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data);
 
 #endif

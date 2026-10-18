@@ -8,6 +8,7 @@ set(SOURCES
     clone_gui.c
     asclepius.c
     monitor.c
+    asclepius_monitor.c
 )
 
 find_package(Threads REQUIRED)

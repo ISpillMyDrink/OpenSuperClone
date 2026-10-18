@@ -83,8 +83,8 @@ int asclepius_get_status(void);
 
 // Status poll interval for the background poller thread, in milliseconds
 #define ASCLEPIUS_POLL_INTERVAL_MIN_MS 25
-#define ASCLEPIUS_POLL_INTERVAL_MAX_MS 1000
-#define ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS 100
+#define ASCLEPIUS_POLL_INTERVAL_MAX_MS 5000
+#define ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS 25
 extern _Atomic unsigned int asclepius_poll_interval_ms;
 
 // Clamp a poll interval to the supported range

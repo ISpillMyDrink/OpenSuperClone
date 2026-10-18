@@ -1257,6 +1257,7 @@ void load_primary_relay_settings_ccc(void)
   primary_relay_settings_ccc.deactivate_primary_relay8 = deactivate_primary_relay8_ccc;
   primary_relay_settings_ccc.primary_relay_activation_time = primary_relay_activation_time_ccc;
   primary_relay_settings_ccc.primary_relay_delay_time = primary_relay_delay_time_ccc;
+  primary_relay_settings_ccc.primary_relay_board_type = primary_relay_board_type_ccc;
   strcpy(primary_relay_settings_ccc.primary_relay_name, primary_relay_name_ccc);
   strcpy(primary_relay_settings_ccc.asclepius_tty_device, asclepius_tty_device_ccc);
   strcpy(primary_relay_settings_ccc.asclepius_ext_tty_device, asclepius_ext_tty_device_ccc);
@@ -1294,6 +1295,7 @@ void update_primary_relay_settings_ccc(void)
 
   primary_relay_activation_time_ccc = primary_relay_settings_ccc.primary_relay_activation_time;
   primary_relay_delay_time_ccc = primary_relay_settings_ccc.primary_relay_delay_time;
+  primary_relay_board_type_ccc = primary_relay_board_type_valid(primary_relay_settings_ccc.primary_relay_board_type);
   strcpy(primary_relay_name_ccc, primary_relay_settings_ccc.primary_relay_name);
   strcpy(asclepius_tty_device_ccc, primary_relay_settings_ccc.asclepius_tty_device);
   strcpy(asclepius_ext_tty_device_ccc, primary_relay_settings_ccc.asclepius_ext_tty_device);
