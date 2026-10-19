@@ -564,6 +564,31 @@ int execute_line_ccc(bool perform_check, unsigned int line_number, char *command
     return_value_ccc = serial_read_ccc(perform_check, line_number, rest_of_line);
   }
 
+  else if ((strcasecmp(command, "asclepiusstatus") == 0))
+  {
+    return_value_ccc = asclepius_status_ccc(perform_check, line_number, rest_of_line);
+  }
+
+  else if ((strcasecmp(command, "asclepiuson") == 0))
+  {
+    return_value_ccc = asclepius_power_ccc(perform_check, line_number, rest_of_line, true);
+  }
+
+  else if ((strcasecmp(command, "asclepiusoff") == 0))
+  {
+    return_value_ccc = asclepius_power_ccc(perform_check, line_number, rest_of_line, false);
+  }
+
+  else if ((strcasecmp(command, "asclepiusgetocp") == 0))
+  {
+    return_value_ccc = asclepius_getocp_ccc(perform_check, line_number, rest_of_line);
+  }
+
+  else if ((strcasecmp(command, "asclepiussetocp") == 0))
+  {
+    return_value_ccc = asclepius_setocp_ccc(perform_check, line_number, rest_of_line);
+  }
+
   else // default:
   {
     if (!setting_buffer_ccc && !setting_scratchpad_ccc && !setting_usbbuffer_ccc)
@@ -7630,5 +7655,244 @@ int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   }
 
   set_number_variable_value_ccc("$data_transferred", n);
+  return 0;
+}
+
+// ---------------------------------------------------------------- asclepius
+//
+// Scripting surface for the Asclepius relay board, alongside the serial*
+// commands above. These talk to the control port directly rather than going
+// through the relay power-cycle path, so a script can switch a rail without
+// disturbing the per-relay enable settings in the GUI.
+
+static const char *asclepius_rail_display_name(uint8_t channel)
+{
+  switch (channel)
+  {
+    case ASCLEPIUS_MAIN12V:
+      return "12V";
+    case ASCLEPIUS_MAIN5V:
+      return "5V";
+    case ASCLEPIUS_USB5V:
+      return "USB";
+    case ASCLEPIUS_MOLEX:
+      return "MOLEX";
+    case ASCLEPIUS_ALL:
+      return "all";
+    default:
+      return "unknown";
+  }
+}
+
+// Accepts the names the monitor dialog uses, the bare numbers, and the
+// board's own channel constants. Returns 0 for an unrecognised rail.
+static uint8_t asclepius_channel_from_name(const char *name)
+{
+  if (strcasecmp(name, "12v") == 0 || strcasecmp(name, "main12v") == 0 || strcmp(name, "1") == 0)
+    return ASCLEPIUS_MAIN12V;
+  if (strcasecmp(name, "5v") == 0 || strcasecmp(name, "main5v") == 0 || strcmp(name, "2") == 0)
+    return ASCLEPIUS_MAIN5V;
+  if (strcasecmp(name, "usb") == 0 || strcasecmp(name, "usb5v") == 0 || strcmp(name, "3") == 0)
+    return ASCLEPIUS_USB5V;
+  if (strcasecmp(name, "molex") == 0 || strcmp(name, "4") == 0)
+    return ASCLEPIUS_MOLEX;
+  if (strcasecmp(name, "all") == 0 || strcmp(name, "5") == 0)
+    return ASCLEPIUS_ALL;
+
+  return 0;
+}
+
+static void asclepius_list_rails(void)
+{
+  fprintf(stdout, "       valid rails: 12v, 5v, usb, molex, all\n");
+}
+
+int asclepius_status_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  (void)rest_of_line;
+
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  if (!asclepius_get_connection_status())
+  {
+    fprintf(stdout, "ERROR on line %u: Asclepius is not connected\n", line_number - 1);
+    return -1;
+  }
+
+  asclepius_lock();
+
+  fprintf(stdout, "Asclepius %s: %s", asclepius_rail_display_name(ASCLEPIUS_MAIN12V), asclepius_status.main12v_enabled ? "on " : "off");
+  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main12v_voltage / 1000.0, asclepius_status.main12v_current / 1000.0, asclepius_status.main12v_ocp ? "  (hardware OCP)" : "");
+
+  fprintf(stdout, "Asclepius %s: %s", asclepius_rail_display_name(ASCLEPIUS_MAIN5V), asclepius_status.main5v_enabled ? "on " : "off");
+  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main5v_voltage / 1000.0, asclepius_status.main5v_current / 1000.0, asclepius_status.main5v_ocp ? "  (hardware OCP)" : "");
+
+  // The USB rail is derived from the 5V rail, so the board reports no voltage
+  // for it and only the current is meaningful.
+  fprintf(stdout, "Asclepius %s: %s", asclepius_rail_display_name(ASCLEPIUS_USB5V), asclepius_status.usb5v_enabled ? "on " : "off");
+  fprintf(stdout, "        %6.3f A%s\n", asclepius_status.usb5v_current / 1000.0, asclepius_status.usb5v_ocp ? "  (hardware OCP)" : "");
+
+  if (asclepius_soft_ocp_status[0] != '\0')
+  {
+    fprintf(stdout, "Asclepius: %s\n", asclepius_soft_ocp_status);
+  }
+
+  asclepius_unlock();
+
+  return 0;
+}
+
+int asclepius_power_ccc(bool perform_check, unsigned int line_number, char *rest_of_line, bool turn_on)
+{
+  char rail[64] = "";
+  uint8_t channel;
+  int result;
+
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  if (sscanf(rest_of_line, "%63s", rail) != 1)
+  {
+    fprintf(stdout, "ERROR on line %u: %s needs a rail\n", line_number - 1, turn_on ? "asclepiuson" : "asclepiusoff");
+    asclepius_list_rails();
+    return -1;
+  }
+
+  channel = asclepius_channel_from_name(rail);
+  if (channel == 0)
+  {
+    fprintf(stdout, "ERROR on line %u: '%s' is not an Asclepius rail\n", line_number - 1, rail);
+    asclepius_list_rails();
+    return -1;
+  }
+
+  if (!asclepius_get_connection_status())
+  {
+    fprintf(stdout, "ERROR on line %u: Asclepius is not connected\n", line_number - 1);
+    return -1;
+  }
+
+  // A manual command is an acknowledgement that the load has been dealt with,
+  // so drop any latched software OCP trip first. Without this a CUT-mode trip
+  // would immediately re-trip the moment the script re-enables the rail.
+  if (channel == ASCLEPIUS_ALL)
+  {
+    asclepius_ocp_reset();
+  }
+  else if (channel != ASCLEPIUS_MOLEX)
+  {
+    asclepius_ocp_clear_channel(channel);
+  }
+
+  result = turn_on ? asclepius_enable_channel(channel) : asclepius_disable_channel(channel);
+
+  if (result != 0)
+  {
+    fprintf(stdout, "ERROR on line %u: Asclepius %s failed for %s\n", line_number - 1, turn_on ? "on" : "off", asclepius_rail_display_name(channel));
+    return -1;
+  }
+
+  fprintf(stdout, "Asclepius %s %s\n", asclepius_rail_display_name(channel), turn_on ? "on" : "off");
+  return 0;
+}
+
+static const char *asclepius_ocp_action_name(asclepius_ocp_action_t action)
+{
+  switch (action)
+  {
+    case ASCLEPIUS_OCP_OFF:
+      return "off";
+    case ASCLEPIUS_OCP_WARN:
+      return "warn";
+    case ASCLEPIUS_OCP_CUT:
+      return "cut";
+    default:
+      return "unknown";
+  }
+}
+
+int asclepius_getocp_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  static const uint8_t channels[] = { ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V };
+  size_t i;
+
+  (void)rest_of_line;
+
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  for (i = 0; i < sizeof(channels) / sizeof(channels[0]); i++)
+  {
+    struct asclepius_ocp_rail_t rail;
+
+    asclepius_ocp_get_rail_state(channels[i], &rail);
+
+    fprintf(stdout, "Asclepius OCP %s: limit %u mA action %s%s\n", asclepius_rail_display_name(channels[i]), rail.limit_ma, asclepius_ocp_action_name(rail.action), rail.tripped ? "  (tripped)" : "");
+  }
+
+  return 0;
+}
+
+int asclepius_setocp_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
+{
+  char rail[64] = "";
+  unsigned long limit = 0;
+  uint8_t channel;
+  unsigned int clamped;
+
+  if (perform_check)
+  {
+    return 0;
+  }
+
+  if (sscanf(rest_of_line, "%63s %lu", rail, &limit) != 2)
+  {
+    fprintf(stdout, "ERROR on line %u: asclepiussetocp needs a rail and a limit in mA\n", line_number - 1);
+    asclepius_list_rails();
+    return -1;
+  }
+
+  channel = asclepius_channel_from_name(rail);
+
+  // MOLEX and ALL are composite commands over the switchable rails, so there is
+  // no single limit to store for them.
+  if (channel == 0 || channel == ASCLEPIUS_MOLEX || channel == ASCLEPIUS_ALL)
+  {
+    fprintf(stdout, "ERROR on line %u: asclepiussetocp needs a single rail (12v, 5v or usb)\n", line_number - 1);
+    return -1;
+  }
+
+  clamped = asclepius_ocp_clamp_limit_mA((unsigned int)limit);
+
+  if (clamped != (unsigned int)limit)
+  {
+    fprintf(stdout, "Asclepius: limit %lu mA clamped to %u mA (supported range %u-%u mA)\n", limit, clamped, ASCLEPIUS_OCP_LIMIT_MIN_MA, ASCLEPIUS_OCP_LIMIT_MAX_MA);
+  }
+
+  asclepius_lock();
+
+  if (channel == ASCLEPIUS_MAIN12V)
+  {
+    asclepius_ocp_12v_ccc.limit_ma = clamped;
+  }
+  else if (channel == ASCLEPIUS_MAIN5V)
+  {
+    asclepius_ocp_5v_ccc.limit_ma = clamped;
+  }
+  else
+  {
+    asclepius_ocp_usb_ccc.limit_ma = clamped;
+  }
+
+  asclepius_unlock();
+
+  fprintf(stdout, "Asclepius OCP %s: limit set to %u mA\n", asclepius_rail_display_name(channel), clamped);
   return 0;
 }
