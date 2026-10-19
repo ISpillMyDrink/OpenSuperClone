@@ -7986,6 +7986,7 @@ typedef enum
 #define EXT_TAG_RCV   "ext_tag_rcv"
 #define EXT_TAG_ERR   "ext_tag_err"
 #define EXT_TAG_SCRIPT "ext_tag_script"
+#define EXT_TERMINAL_MAX_LOG_CHARS (1024 * 1024)
 
 static const char *ext_prefix_tag(const char *prefix)
 {
@@ -8003,6 +8004,23 @@ static void ext_maybe_scroll_to_mark(GtkWidget *textview, GtkTextMark *mark)
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(textview), mark, 0.0, FALSE, 0.0, 0.0);
 }
 
+static void ext_trim_terminal_log(GtkTextBuffer *buf)
+{
+  int count = gtk_text_buffer_get_char_count(buf);
+
+  if(count <= EXT_TERMINAL_MAX_LOG_CHARS)
+  {
+    return;
+  }
+
+  GtkTextIter start;
+  GtkTextIter cut;
+  gtk_text_buffer_get_start_iter(buf, &start);
+  cut = start;
+  gtk_text_iter_forward_chars(&cut, count - EXT_TERMINAL_MAX_LOG_CHARS);
+  gtk_text_buffer_delete(buf, &start, &cut);
+}
+
 static void append_ext_terminal_text(GtkWidget *textview, const char *text, const char *tag_name)
 {
   GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
@@ -8010,6 +8028,7 @@ static void append_ext_terminal_text(GtkWidget *textview, const char *text, cons
   gtk_text_buffer_get_iter_at_mark(buf, &iter, gtk_text_buffer_get_insert(buf));
   gtk_text_buffer_insert_with_tags_by_name(buf, &iter, text, -1, tag_name, NULL);
   GtkTextMark *mark = gtk_text_buffer_get_insert(buf);
+  ext_trim_terminal_log(buf);
   ext_maybe_scroll_to_mark(textview, mark);
 }
 
@@ -8037,6 +8056,7 @@ static void append_ext_terminal_line(GtkWidget *textview, const char *prefix, co
   gtk_text_buffer_insert(buf, &iter, "\n", 1);
 
   GtkTextMark *mark = gtk_text_buffer_get_insert(buf);
+  ext_trim_terminal_log(buf);
   ext_maybe_scroll_to_mark(textview, mark);
 }
 
@@ -8156,6 +8176,15 @@ void on_ext_terminal_autoscroll_toggled_ccc(GtkToggleButton *button)
   GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(button)));
   int active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
   g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(active ? 1 : 0));
+}
+
+void on_ext_terminal_pause_toggled_ccc(GtkToggleButton *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+  gboolean paused = gtk_toggle_button_get_active(button);
+
+  g_object_set_data(G_OBJECT(dialog), "ext_display_paused", GUINT_TO_POINTER(paused ? 1 : 0));
+  gtk_button_set_label(GTK_BUTTON(button), paused ? _("Resume Display") : _("Pause Display"));
 }
 
 // Describe the bytes that were actually sent. Echoing what was typed is
@@ -8390,9 +8419,32 @@ gboolean on_ext_terminal_poll_ccc(gpointer data)
 
   char buf[4096];
   int n = asclepius_ext_read(buf, sizeof(buf));
+  if (n < 0)
+  {
+    GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+    GtkWidget *connect_button = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_connect_button"));
+
+    append_ext_terminal_line(textview, "ERR:", _("Connection lost while reading"));
+    asclepius_ext_close();
+
+    if (connect_button != NULL)
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(connect_button), FALSE);
+    }
+    else
+    {
+      update_ext_status(dialog);
+    }
+
+    return G_SOURCE_CONTINUE;
+  }
+
   if (n > 0)
   {
-    ext_terminal_render(dialog, buf, (size_t)n);
+    if (!GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_display_paused")))
+    {
+      ext_terminal_render(dialog, buf, (size_t)n);
+    }
 
     unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
     rx += (unsigned int)n;
@@ -8777,6 +8829,7 @@ void open_asclepius_ext_terminal_ccc(void)
   GtkWidget *send_mode_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_send_mode_combobox"));
   GtkWidget *ctrl_check = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_ctrl_checkbutton"));
   GtkWidget *script_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_script_button"));
+  GtkWidget *connect_button = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_connect_button"));
 
   // Store references in dialog
   if (textview) g_object_set_data(G_OBJECT(dialog), "ext_terminal_textview", textview);
@@ -8787,6 +8840,7 @@ void open_asclepius_ext_terminal_ccc(void)
   if (send_mode_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo", send_mode_combo);
   if (ctrl_check) g_object_set_data(G_OBJECT(dialog), "ext_terminal_ctrl_check", ctrl_check);
   if (script_btn) g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
+  if (connect_button) g_object_set_data(G_OBJECT(dialog), "ext_terminal_connect_button", connect_button);
 
   // Held partial lines are owned by the dialog so they are freed with it.
   {
@@ -8893,6 +8947,7 @@ void open_asclepius_ext_terminal_ccc(void)
   }
 
   g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(1));
+  g_object_set_data(G_OBJECT(dialog), "ext_display_paused", GUINT_TO_POINTER(0));
   g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(0));
   g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(0));
 

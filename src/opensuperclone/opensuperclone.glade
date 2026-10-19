@@ -5343,6 +5343,21 @@ no data</property>
                     <property name="position">4</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkToggleButton" id="ext_terminal_pause_button">
+                    <property name="label" translatable="yes">Pause Display</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <signal name="toggled" handler="on_ext_terminal_pause_toggled_ccc" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack-type">end</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
