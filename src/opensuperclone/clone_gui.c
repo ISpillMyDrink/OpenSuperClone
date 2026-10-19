@@ -4547,6 +4547,13 @@ void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
   primary_relay_settings_ccc.primary_relay_board_type = board_type;
 
   update_primary_relay_board_type_visibility_ccc();
+
+  // Capture the rest of the window before applying the buffer. Applying it on
+  // its own pushes every other setting the buffer holds over whatever the user
+  // has typed since the dialog opened, so clicking this radio could undo a
+  // chosen tty. from_buttons() leaves board_type and the relay name alone, so
+  // the choice above still wins.
+  update_primary_relay_settings_from_buttons_ccc();
   update_primary_relay_settings_ccc();
 }
 
@@ -6464,6 +6471,14 @@ void do_asclepius_connect_ccc(void)
 {
   const gchar *tty_device = gtk_entry_get_text(GTK_ENTRY(asclepius_tty_device_text_ccc));
   strcpy(asclepius_tty_device_ccc, tty_device);
+
+  // Both refreshes below read from primary_relay_settings_ccc, which still
+  // holds whatever the dialog was opened with. Without syncing the selection
+  // into that buffer first they write the stale device back over this one and
+  // into the entry, so picking a tty here silently reverted it. The board type
+  // a few lines down is synced for the same reason.
+  snprintf(primary_relay_settings_ccc.asclepius_tty_device, sizeof(primary_relay_settings_ccc.asclepius_tty_device), "%s", tty_device);
+
   if (asclepius_connect() != 0)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error connecting to Asclepius, see console for more information"));
