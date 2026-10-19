@@ -155,6 +155,45 @@ int asclepius_ext_read(char *buffer, size_t max_len);
 
 int asclepius_parse_escapes(const char *input, char *output, size_t max);
 
+// Apply terminal Ctrl semantics to one byte: Ctrl-A..Ctrl-Z become 0x01..0x1A
+// and every other ASCII byte is masked to its low five bits.
+unsigned char asclepius_ctrl_byte(unsigned char c);
+
+// Parse whitespace-separated hex byte pairs, with or without spaces:
+// "48 65 6c" and "48656c" both yield "Hel". Returns the byte count, or -1 on a
+// malformed token or when the result would not fit.
+int asclepius_parse_hex(const char *input, char *output, size_t max);
+
+// Largest retained partial line. A serial read can split a message anywhere,
+// so the tail of a chunk is held until its terminator arrives.
+#define ASCLEPIUS_RX_LINE_MAX 4096
+
+struct asclepius_linebuf_t
+{
+    char buf[ASCLEPIUS_RX_LINE_MAX];
+    size_t len;
+};
+typedef struct asclepius_linebuf_t asclepius_linebuf_t;
+
+typedef void (*asclepius_line_cb)(const char *line, size_t line_len, void *user);
+
+void asclepius_linebuf_init(asclepius_linebuf_t *lb);
+
+// Feed received bytes, emitting each complete line through cb. A trailing
+// partial line is retained for the next chunk. Treating every read as a whole
+// set of lines is what split one reply into several entries.
+void asclepius_linebuf_feed(asclepius_linebuf_t *lb, const char *data, size_t len, asclepius_line_cb cb, void *user);
+
+// Emit any retained partial line, for use when the stream stops mid-message.
+void asclepius_linebuf_flush(asclepius_linebuf_t *lb, asclepius_line_cb cb, void *user);
+
+// Bytes per line in the hex view.
+#define ASCLEPIUS_HEX_PER_LINE 16
+
+// Render one offset-annotated hex line of up to ASCLEPIUS_HEX_PER_LINE bytes,
+// as "offset  hex  |ascii|". Returns the length written.
+int asclepius_format_hex_line(char *out, size_t out_size, const unsigned char *data, size_t len, unsigned long offset_base);
+
 // Function pointer set by GUI to capture serial output to the terminal textview
 extern void (*asclepius_ext_output_ccc)(const char *text, int byte_count);
 

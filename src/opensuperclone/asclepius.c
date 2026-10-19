@@ -1174,3 +1174,169 @@ int asclepius_parse_escapes(const char *input, char *output, size_t max)
     output[out] = '\0';
     return (int)out;
 }
+
+unsigned char asclepius_ctrl_byte(unsigned char c)
+{
+    if(c == '?')
+    {
+        return 0x7F; // Ctrl-? is DEL
+    }
+
+    if(c < 0x20)
+    {
+        return c; // already a control code, leave it alone
+    }
+
+    return (unsigned char)(c & 0x1F);
+}
+
+int asclepius_parse_hex(const char *input, char *output, size_t max)
+{
+    size_t out = 0;
+
+    if(input == NULL || output == NULL || max == 0)
+    {
+        return -1;
+    }
+
+    while(*input != '\0')
+    {
+        if(isspace((unsigned char)*input))
+        {
+            input++;
+            continue;
+        }
+
+        if(!isxdigit((unsigned char)input[0]) || !isxdigit((unsigned char)input[1]))
+        {
+            return -1;
+        }
+
+        if(out + 1 >= max)
+        {
+            return -1;
+        }
+
+        char pair[3] = { input[0], input[1], '\0' };
+        output[out++] = (char)strtol(pair, NULL, 16);
+        input += 2;
+    }
+
+    output[out] = '\0';
+    return (int)out;
+}
+
+void asclepius_linebuf_init(asclepius_linebuf_t *lb)
+{
+    lb->len = 0;
+    lb->buf[0] = '\0';
+}
+
+// Shared by feed and flush: drop the terminator and hand over the line. A bare
+// CR is not a terminator, so a message split as "...\r" followed by "\n..."
+// reassembles into one line instead of two.
+static void asclepius_linebuf_emit(asclepius_linebuf_t *lb, asclepius_line_cb cb, void *user)
+{
+    size_t len = lb->len;
+
+    while(len > 0 && (lb->buf[len - 1] == '\n' || lb->buf[len - 1] == '\r'))
+    {
+        len--;
+    }
+
+    lb->buf[len] = '\0';
+    cb(lb->buf, len, user);
+    lb->len = 0;
+}
+
+void asclepius_linebuf_feed(asclepius_linebuf_t *lb, const char *data, size_t len, asclepius_line_cb cb, void *user)
+{
+    size_t i;
+
+    if(lb == NULL || cb == NULL)
+    {
+        return;
+    }
+
+    for(i = 0; i < len; i++)
+    {
+        if(data[i] == '\r')
+        {
+            // CR is a line terminator in its own right, not just padding. Some
+            // boards end a line with LF and start the next one with CR, leaving
+            // a stray CR at the head of every message after the first.
+            // GtkTextView renders that CR as a line break, so each entry looked
+            // like "RCV:" followed by an empty line.
+            //
+            // CRLF is one terminator, not two.
+            if(i + 1 < len && data[i + 1] == '\n')
+            {
+                i++;
+            }
+
+            asclepius_linebuf_emit(lb, cb, user);
+            continue;
+        }
+
+        if(lb->len + 1 >= sizeof(lb->buf))
+        {
+            // A message longer than the buffer with no terminator in it. Emit
+            // what we have rather than dropping it, then carry on.
+            asclepius_linebuf_emit(lb, cb, user);
+        }
+
+        lb->buf[lb->len++] = data[i];
+
+        if(data[i] == '\n')
+        {
+            asclepius_linebuf_emit(lb, cb, user);
+        }
+    }
+}
+
+void asclepius_linebuf_flush(asclepius_linebuf_t *lb, asclepius_line_cb cb, void *user)
+{
+    if(lb == NULL || cb == NULL || lb->len == 0)
+    {
+        return;
+    }
+
+    asclepius_linebuf_emit(lb, cb, user);
+}
+
+int asclepius_format_hex_line(char *out, size_t out_size, const unsigned char *data, size_t len, unsigned long offset_base)
+{
+    char hex[ASCLEPIUS_HEX_PER_LINE * 3 + 1];
+    char ascii[ASCLEPIUS_HEX_PER_LINE + 1];
+    size_t i;
+    size_t at = 0;
+    int written;
+
+    if(out == NULL || out_size == 0)
+    {
+        return 0;
+    }
+
+    if(len > ASCLEPIUS_HEX_PER_LINE)
+    {
+        len = ASCLEPIUS_HEX_PER_LINE;
+    }
+
+    for(i = 0; i < len; i++)
+    {
+        at += (size_t)snprintf(hex + at, sizeof(hex) - at, "%02x ", data[i]);
+        ascii[i] = (data[i] >= 0x20 && data[i] < 0x7F) ? (char)data[i] : '.';
+    }
+    ascii[len] = '\0';
+
+    // Pad to a fixed width so the hex column and the ASCII gutter stay aligned
+    // from line to line, including for a short final line.
+    for(i = len; i < ASCLEPIUS_HEX_PER_LINE; i++)
+    {
+        at += (size_t)snprintf(hex + at, sizeof(hex) - at, "   ");
+    }
+    hex[at] = '\0';
+
+    written = snprintf(out, out_size, "%08lx  %-*s |%s|", offset_base, (int)(ASCLEPIUS_HEX_PER_LINE * 3), hex, ascii);
+    return written < 0 ? 0 : (written >= (int)out_size ? (int)out_size - 1 : written);
+}

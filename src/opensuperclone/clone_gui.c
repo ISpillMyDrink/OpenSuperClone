@@ -7950,6 +7950,24 @@ void check_source_against_templates_ccc(void)
 static const int ext_terminal_baud_rates[] = {9600, 19200, 38400, 57600, 115200, 230400, 921600};
 #define EXT_TERMINAL_NUM_BAUDS (sizeof(ext_terminal_baud_rates) / sizeof(ext_terminal_baud_rates[0]))
 
+// How received bytes are shown. Auto picks per chunk, which is what the
+// terminal always did; pinning Text or Hex is what stops it appearing to
+// change representation underneath you.
+typedef enum
+{
+  EXT_VIEW_TEXT = 0,
+  EXT_VIEW_HEX = 1,
+  EXT_VIEW_AUTO = 2
+} ext_view_t;
+
+// How the send entry is interpreted. Hex mode takes whitespace separated byte
+// pairs; Text mode takes the escape sequences.
+typedef enum
+{
+  EXT_SEND_TEXT = 0,
+  EXT_SEND_HEX = 1
+} ext_send_mode_t;
+
 #define EXT_TAG_TS    "ext_tag_ts"
 #define EXT_TAG_INF   "ext_tag_inf"
 #define EXT_TAG_SND   "ext_tag_snd"
@@ -8128,34 +8146,226 @@ void on_ext_terminal_autoscroll_toggled_ccc(GtkToggleButton *button)
   g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(active ? 1 : 0));
 }
 
+// Describe the bytes that were actually sent. Echoing what was typed is
+// misleading once Ctrl or hex mode is involved: typing "c" with Ctrl on sends
+// 0x03, not a letter.
+static void ext_terminal_format_payload(const char *data, size_t len, char *out, size_t out_size)
+{
+  size_t at = 0;
+  bool printable = len > 0;
+
+  for (size_t i = 0; i < len; i++)
+  {
+    unsigned char c = (unsigned char)data[i];
+
+    if (c < 0x20 || c >= 0x7F)
+    {
+      printable = false;
+      break;
+    }
+  }
+
+  if (len == 0)
+  {
+    snprintf(out, out_size, "(nothing)");
+    return;
+  }
+
+  if (printable)
+  {
+    size_t show = len < out_size - 1 ? len : out_size - 1;
+    memcpy(out, data, show);
+    out[show] = '\0';
+    return;
+  }
+
+  out[0] = '\0';
+  for (size_t i = 0; i < len && at + 4 < out_size; i++)
+  {
+    at += (size_t)snprintf(out + at, out_size - at, "%02x ", (unsigned char)data[i]);
+  }
+}
+
 void on_ext_terminal_send_ccc(GtkWidget *sender)
 {
   GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(sender));
   GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
   GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_entry"));
+  GtkWidget *mode_combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo"));
+  GtkWidget *ctrl_check = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_ctrl_check"));
 
   const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
 
   if (!asclepius_ext_connected)
   {
-    append_ext_terminal_line(textview, "ERR:", "Not connected");
+    append_ext_terminal_line(textview, "ERR:", _("Not connected"));
     return;
   }
+
+  int mode = mode_combo ? gtk_combo_box_get_active(GTK_COMBO_BOX(mode_combo)) : EXT_SEND_TEXT;
+  bool ctrl = ctrl_check && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctrl_check));
 
   char parsed[8192];
-  int len = asclepius_parse_escapes(text, parsed, sizeof(parsed));
-  if (asclepius_ext_send(parsed, len) != 0)
+  int len;
+
+  if (mode == EXT_SEND_HEX)
   {
-    append_ext_terminal_line(textview, "ERR:", "Send failed");
+    len = asclepius_parse_hex(text, parsed, sizeof(parsed));
+    if (len < 0)
+    {
+      append_ext_terminal_line(textview, "ERR:", _("Not valid hex: expected byte pairs, for example 48 65 6c 6c 6f"));
+      return;
+    }
+  }
+  else
+  {
+    len = asclepius_parse_escapes(text, parsed, sizeof(parsed));
+
+    if (ctrl)
+    {
+      // Ctrl-A..Ctrl-Z become 0x01..0x1A, which is how a real terminal
+      // delivers them and what devices expect for ^C, ^Z and friends.
+      for (int i = 0; i < len; i++)
+      {
+        parsed[i] = (char)asclepius_ctrl_byte((unsigned char)parsed[i]);
+      }
+    }
+  }
+
+  if (len == 0)
+  {
+    append_ext_terminal_line(textview, "ERR:", _("Nothing to send"));
     return;
   }
 
-  append_ext_terminal_line(textview, "SND:", text);
+  if (asclepius_ext_send(parsed, len) != 0)
+  {
+    append_ext_terminal_line(textview, "ERR:", _("Send failed"));
+    return;
+  }
+
+  char shown[512];
+  ext_terminal_format_payload(parsed, (size_t)len, shown, sizeof(shown));
+  append_ext_terminal_line(textview, "SND:", shown);
+
   unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
-  tx += len;
+  tx += (unsigned int)len;
   g_object_set_data(G_OBJECT(dialog), "ext_tx_count", GUINT_TO_POINTER(tx));
   update_ext_status(dialog);
   gtk_entry_set_text(GTK_ENTRY(entry), "");
+}
+
+// One assembled line from the receive buffer, ready to display.
+static void ext_terminal_on_line(const char *line, size_t line_len, void *user)
+{
+  (void)line_len;
+  GtkWidget *dialog = GTK_WIDGET(user);
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+
+  if (textview && line_len > 0)
+  {
+    append_ext_terminal_line(textview, "RCV:", line);
+  }
+}
+
+static int ext_terminal_view_mode(GtkWidget *dialog)
+{
+  GtkWidget *combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_view_combo"));
+  int active = combo ? gtk_combo_box_get_active(GTK_COMBO_BOX(combo)) : EXT_VIEW_AUTO;
+
+  return (active < 0) ? EXT_VIEW_AUTO : active;
+}
+
+static bool ext_terminal_chunk_is_text(const char *data, size_t len)
+{
+  size_t i;
+
+  for (i = 0; i < len; i++)
+  {
+    unsigned char c = (unsigned char)data[i];
+
+    if (c == '\n' || c == '\r' || c == '\t')
+    {
+      continue;
+    }
+
+    if (c < 0x20 || c >= 0x7F)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+static void ext_terminal_show_hex(GtkWidget *dialog, const char *data, size_t len)
+{
+  GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+  unsigned long offset = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_hex_offset"));
+  size_t at = 0;
+
+  if (!textview || len == 0)
+  {
+    return;
+  }
+
+  while (at < len)
+  {
+    char line[256];
+    size_t take = len - at;
+
+    if (take > ASCLEPIUS_HEX_PER_LINE)
+    {
+      take = ASCLEPIUS_HEX_PER_LINE;
+    }
+
+    asclepius_format_hex_line(line, sizeof(line), (const unsigned char *)data + at, take, offset);
+    append_ext_terminal_line(textview, "RCV:", line);
+
+    at += take;
+    offset += (unsigned long)take;
+  }
+
+  g_object_set_data(G_OBJECT(dialog), "ext_hex_offset", GUINT_TO_POINTER((guint)offset));
+}
+
+static void ext_terminal_render(GtkWidget *dialog, const char *data, size_t len)
+{
+  asclepius_linebuf_t *lb = g_object_get_data(G_OBJECT(dialog), "ext_linebuf");
+  int mode = ext_terminal_view_mode(dialog);
+  bool want_hex;
+  bool was_hex = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_was_hex")) ? true : false;
+
+  if (mode == EXT_VIEW_HEX)
+  {
+    want_hex = true;
+  }
+  else if (mode == EXT_VIEW_TEXT)
+  {
+    want_hex = false;
+  }
+  else
+  {
+    want_hex = !ext_terminal_chunk_is_text(data, len);
+  }
+
+  // A mode switch mid-message would show a half-line: settle whatever was held
+  // before changing representation.
+  if (want_hex != was_hex && lb != NULL)
+  {
+    asclepius_linebuf_flush(lb, ext_terminal_on_line, dialog);
+  }
+
+  if (want_hex)
+  {
+    ext_terminal_show_hex(dialog, data, len);
+  }
+  else if (lb != NULL)
+  {
+    asclepius_linebuf_feed(lb, data, len, ext_terminal_on_line, dialog);
+  }
+
+  g_object_set_data(G_OBJECT(dialog), "ext_was_hex", GUINT_TO_POINTER(want_hex ? 1 : 0));
 }
 
 gboolean on_ext_terminal_poll_ccc(gpointer data)
@@ -8167,68 +8377,13 @@ gboolean on_ext_terminal_poll_ccc(gpointer data)
   }
 
   char buf[4096];
-  int n = asclepius_ext_read(buf, sizeof(buf) - 1);
-  const int n_received = n;
+  int n = asclepius_ext_read(buf, sizeof(buf));
   if (n > 0)
   {
-    buf[n] = '\0';
-    GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
+    ext_terminal_render(dialog, buf, (size_t)n);
 
-    // Check if mostly printable
-    bool printable = true;
-    int i;
-    for (i = 0; i < n; i++)
-    {
-      if (buf[i] != '\n' && buf[i] != '\r' && buf[i] != '\t' && !isprint((unsigned char)buf[i]))
-      {
-        printable = false;
-        break;
-      }
-    }
-
-    if (printable)
-    {
-      // Split on newlines, display each line separately with RCV: prefix
-      int line_start = 0;
-      int i;
-      for (i = 0; i <= n; i++)
-      {
-        if (i == n || buf[i] == '\n')
-        {
-          int seg_len = i - line_start;
-          // Strip trailing \r
-          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
-            seg_len--;
-          if (seg_len > 0)
-          {
-            char saved = buf[line_start + seg_len];
-            buf[line_start + seg_len] = '\0';
-            append_ext_terminal_line(textview, "RCV:", buf + line_start);
-            buf[line_start + seg_len] = saved;
-          }
-          line_start = i + 1;
-        }
-      }
-    }
-    else
-    {
-      // Hex dump
-      char hex[512];
-      int offset = 0;
-      int max_bytes = (sizeof(hex) - 4) / 3;
-      int show = n < max_bytes ? n : max_bytes;
-      for (i = 0; i < show; i++)
-      {
-        offset += snprintf(hex + offset, sizeof(hex) - offset, "%02x ", (unsigned char)buf[i]);
-      }
-      if (show < n)
-      {
-        memcpy(hex + offset - 3, "...", 4);
-      }
-      append_ext_terminal_line(textview, "RCV:", hex);
-    }
     unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
-    rx += n_received;
+    rx += (unsigned int)n;
     g_object_set_data(G_OBJECT(dialog), "ext_rx_count", GUINT_TO_POINTER(rx));
     update_ext_status(dialog);
   }
@@ -8296,6 +8451,15 @@ void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
       g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(0));
     }
     asclepius_ext_close();
+    // The stream stopped, so any half-received message will never be
+    // completed: show it rather than dropping it silently.
+    {
+      asclepius_linebuf_t *lb = g_object_get_data(G_OBJECT(dialog), "ext_linebuf");
+      if (lb)
+      {
+        asclepius_linebuf_flush(lb, ext_terminal_on_line, dialog);
+      }
+    }
     gtk_button_set_label(GTK_BUTTON(button), _("Connect"));
     GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
     GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
@@ -8451,6 +8615,9 @@ void open_asclepius_ext_terminal_ccc(void)
   GtkWidget *entry = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_entry"));
   GtkWidget *tty_text = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_tty_device_text"));
   GtkWidget *baud_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_baud_rate_combobox"));
+  GtkWidget *view_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_view_combobox"));
+  GtkWidget *send_mode_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_send_mode_combobox"));
+  GtkWidget *ctrl_check = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_ctrl_checkbutton"));
   GtkWidget *script_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_script_button"));
 
   // Store references in dialog
@@ -8458,7 +8625,17 @@ void open_asclepius_ext_terminal_ccc(void)
   if (entry) g_object_set_data(G_OBJECT(dialog), "ext_terminal_entry", entry);
   if (tty_text) g_object_set_data(G_OBJECT(dialog), "ext_terminal_tty_text", tty_text);
   if (baud_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_baud_combo", baud_combo);
+  if (view_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_view_combo", view_combo);
+  if (send_mode_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo", send_mode_combo);
+  if (ctrl_check) g_object_set_data(G_OBJECT(dialog), "ext_terminal_ctrl_check", ctrl_check);
   if (script_btn) g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
+
+  // Held partial lines are owned by the dialog so they are freed with it.
+  {
+    asclepius_linebuf_t *lb = g_new0(asclepius_linebuf_t, 1);
+    asclepius_linebuf_init(lb);
+    g_object_set_data_full(G_OBJECT(dialog), "ext_linebuf", lb, g_free);
+  }
 
   if (!textview || !entry) { g_object_unref(builder); return; }
 
@@ -8472,6 +8649,24 @@ void open_asclepius_ext_terminal_ccc(void)
       snprintf(buf, sizeof(buf), "%d", ext_terminal_baud_rates[i]);
       gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(baud_combo), buf);
     }
+  }
+
+  // View and send mode. Auto is the default for the view, which is how the
+  // terminal behaved before these selectors existed; the point is that the
+  // choice is now visible and can be pinned instead of the terminal deciding
+  // to switch representation mid-stream.
+  if (view_combo)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(view_combo), _("Text"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(view_combo), _("Hex"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(view_combo), _("Auto"));
+    gtk_combo_box_set_active(GTK_COMBO_BOX(view_combo), EXT_VIEW_AUTO);
+  }
+  if (send_mode_combo)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(send_mode_combo), _("Text"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(send_mode_combo), _("Hex"));
+    gtk_combo_box_set_active(GTK_COMBO_BOX(send_mode_combo), EXT_SEND_TEXT);
   }
 
   // Set current values from globals

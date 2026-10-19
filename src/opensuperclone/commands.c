@@ -7404,12 +7404,20 @@ int usb_reset_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
   return 0;
 }
 
+// Held partial received lines for the script path. A reply split across two
+// reads used to be reported as two partial lines. Declared here because
+// serial_open_ccc resets it.
+static asclepius_linebuf_t serial_rx_linebuf;
+
 int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   if (perform_check)
   {
     return 0;
   }
+
+  // A reconnect must not splice a half-received message onto the new session.
+  asclepius_linebuf_init(&serial_rx_linebuf);
 
   char token1[256] = "", token2[256] = "";
   int n = sscanf(rest_of_line, "%255s %255s", token1, token2);
@@ -7467,6 +7475,7 @@ int serial_close_ccc(bool perform_check, unsigned int line_number, char *rest_of
   }
 
   asclepius_ext_close();
+  asclepius_linebuf_init(&serial_rx_linebuf);
   return 0;
 }
 
@@ -7539,6 +7548,29 @@ int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   return 0;
 }
 
+static void serial_rx_emit(const char *line, size_t line_len, void *user)
+{
+  (void)user;
+
+  if (line_len == 0 || asclepius_ext_output_ccc == NULL)
+  {
+    return;
+  }
+
+  char fmt[8320];
+  int plen = snprintf(fmt, sizeof(fmt), "RCV: ");
+  if (plen < 0)
+  {
+    return;
+  }
+
+  size_t room = sizeof(fmt) - (size_t)plen - 1;
+  size_t copy_len = line_len < room ? line_len : room;
+  memcpy(fmt + plen, line, copy_len);
+  fmt[plen + copy_len] = '\0';
+  asclepius_ext_output_ccc(fmt, (int)line_len);
+}
+
 int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   if (perform_check)
@@ -7569,13 +7601,13 @@ int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 
   // Temporarily clear O_NONBLOCK so read respects VTIME/VMIN timeout
   int flags = fcntl(asclepius_ext_serial_port, F_GETFL, 0);
-  if(flags != -1 && (flags & O_NONBLOCK))
+  if (flags != -1 && (flags & O_NONBLOCK))
     fcntl(asclepius_ext_serial_port, F_SETFL, flags & ~O_NONBLOCK);
 
   int n = asclepius_ext_read(ccc_buffer_ccc, length);
 
   // Restore O_NONBLOCK
-  if(flags != -1 && (flags & O_NONBLOCK))
+  if (flags != -1 && (flags & O_NONBLOCK))
     fcntl(asclepius_ext_serial_port, F_SETFL, flags);
 
   if (n < 0)
@@ -7585,71 +7617,42 @@ int serial_read_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 
   if (asclepius_ext_output_ccc && n > 0)
   {
-    unsigned char *buf = (unsigned char *)ccc_buffer_ccc;
-    bool all_printable = true;
-    int i;
-    for (i = 0; i < n; i++)
+    const unsigned char *buf = (const unsigned char *)ccc_buffer_ccc;
+    bool text = true;
+    for (int i = 0; i < n; i++)
     {
-      if (buf[i] != '\n' && buf[i] != '\r' && buf[i] != '\t' && !isprint(buf[i]))
+      unsigned char c = buf[i];
+
+      if (c == '\n' || c == '\r' || c == '\t')
       {
-        all_printable = false;
+        continue;
+      }
+
+      if (c < 0x20 || c >= 0x7F)
+      {
+        text = false;
         break;
       }
     }
-    if (all_printable)
+
+    if (text)
     {
-      // Split on newlines, display each line separately
-      char fmt[8320];
-      int line_start = 0;
-      for (i = 0; i <= n; i++)
-      {
-        if (i == n || buf[i] == '\n')
-        {
-          int seg_len = i - line_start;
-          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
-            seg_len--;
-          if (seg_len > 0)
-          {
-            int plen = snprintf(fmt, sizeof(fmt), "RCV: ");
-            int copy_len = seg_len < (int)(sizeof(fmt) - plen - 1) ? seg_len : (int)(sizeof(fmt) - plen - 1);
-            memcpy(fmt + plen, buf + line_start, copy_len);
-            fmt[plen + copy_len] = '\0';
-            asclepius_ext_output_ccc(fmt, seg_len);
-          }
-          line_start = i + 1;
-        }
-      }
+      asclepius_linebuf_feed(&serial_rx_linebuf, ccc_buffer_ccc, (size_t)n, serial_rx_emit, NULL);
     }
     else
     {
-      // Extract and display printable line segments; skip non-printable portions
-      char fmt[8320];
-      int line_start = -1;
-      for (i = 0; i <= n; i++)
+      // Settle any half-assembled text line first, so a binary chunk cannot be
+      // interleaved into the middle of one.
+      asclepius_linebuf_flush(&serial_rx_linebuf, serial_rx_emit, NULL);
+
+      char line[256];
+      char fmt[512];
+      for (int at = 0; at < n; at += ASCLEPIUS_HEX_PER_LINE)
       {
-        bool is_line_end = (i == n || buf[i] == '\n');
-        bool is_printable = !is_line_end && buf[i] != '\r' && buf[i] != '\t' && isprint(buf[i]);
-
-        if (is_printable && line_start < 0)
-          line_start = i;
-
-        if (!is_printable && line_start >= 0)
-        {
-          int seg_len = i - line_start;
-          while (seg_len > 0 && buf[line_start + seg_len - 1] == '\r')
-            seg_len--;
-          if (seg_len > 0)
-          {
-            int plen = snprintf(fmt, sizeof(fmt), "RCV: ");
-            int copy_len = seg_len < (int)(sizeof(fmt) - plen - 1) ? seg_len : (int)(sizeof(fmt) - plen - 1);
-            memcpy(fmt + plen, buf + line_start, copy_len);
-            fmt[plen + copy_len] = '\0';
-            asclepius_ext_output_ccc(fmt, seg_len);
-          }
-          line_start = -1;
-        }
-        if (is_line_end)
-          line_start = -1;
+        int take = (n - at) < ASCLEPIUS_HEX_PER_LINE ? (n - at) : ASCLEPIUS_HEX_PER_LINE;
+        asclepius_format_hex_line(line, sizeof(line), buf + at, (size_t)take, (unsigned long)at);
+        snprintf(fmt, sizeof(fmt), "RCV: %s", line);
+        asclepius_ext_output_ccc(fmt, (int)strlen(line));
       }
     }
   }
