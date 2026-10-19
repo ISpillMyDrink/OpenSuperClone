@@ -27,6 +27,9 @@ typedef struct
     uint8_t ocp12;
     uint8_t ocp5;
     uint8_t ocpusb;
+    uint8_t enabled12;
+    uint8_t enabled5;
+    uint8_t enabledusb;
     uint32_t t_ms; // monotonic time at sample time (ms)
 } mon_sample_t;
 
@@ -78,6 +81,10 @@ int mon_history_len(const mon_t *m);
 
 // Rolling min/avg/max accumulators per rail. Pass NULL for a rail to skip it.
 void mon_copy_stats(const mon_t *m, mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
+
+// Statistics for samples in the inclusive time range.
+void mon_copy_stats_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms,
+                          mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
 
 // Copies samples spanning [t_min_ms, t_max_ms] into out, oldest first.
 // When the range holds more than max_out samples, the range is decimated

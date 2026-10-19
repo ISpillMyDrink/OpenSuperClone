@@ -145,6 +145,14 @@ void asclepius_ocp_reset(void);
 // Drop the latched trip for one channel after a manual power command
 void asclepius_ocp_clear_channel(uint8_t channel);
 
+// Fill names with the serial device paths that could be an Asclepius board,
+// counting them. Matches the kernel's USB/ACM serial names plus the project's
+// own udev aliases. Returns the number found, up to max_ports; a truncated
+// result still reports how many were dropped.
+#define ASCLEPIUS_PORT_LIST_MAX 64
+#define ASCLEPIUS_PORT_NAME_MAX 256
+int asclepius_list_serial_ports(char (*names)[ASCLEPIUS_PORT_NAME_MAX], int max_ports);
+
 int asclepius_ext_open(void);
 
 // How long a passthrough write may wait for room in the transmit buffer before

@@ -83,6 +83,8 @@ unsigned int asclepius_monitor_window_index_ccc = 2; // last 1 minute
 static GtkWidget *asclepius_monitor_dialog_ccc = NULL;
 static GtkWidget *asclepius_mon_window_combobox_ccc = NULL;
 static GtkWidget *asclepius_mon_status_label_ccc = NULL;
+static GtkWidget *asclepius_mon_reset_ocp_button_ccc = NULL;
+static GtkWidget *asclepius_mon_pause_button_ccc = NULL;
 static GtkWidget *asclepius_mon_voltage_stats_label_ccc = NULL;
 static GtkWidget *asclepius_mon_current_stats_label_ccc = NULL;
 static GtkWidget *asclepius_mon_power_buttons_ccc[5] = { NULL, NULL, NULL, NULL, NULL };
@@ -93,6 +95,9 @@ static guint asclepius_monitor_timer_id = 0;
 static GtkWidget *asclepius_mon_v12_drawing_ccc = NULL;
 static GtkWidget *asclepius_mon_v5_drawing_ccc = NULL;
 static GtkWidget *asclepius_mon_current_drawing_ccc = NULL;
+static bool asclepius_mon_paused_ccc = false;
+static uint32_t asclepius_mon_paused_t_min_ccc = 0;
+static uint32_t asclepius_mon_paused_t_max_ccc = 1;
 
 // Scratch buffer for one plot's worth of samples. Decimated to roughly one
 // point per horizontal pixel column, so this stays small.
@@ -550,6 +555,13 @@ void asclepius_monitor_stop_refresh_ccc(void);
 
 static void mon_resolve_window(uint32_t *t_min, uint32_t *t_max)
 {
+  if(asclepius_mon_paused_ccc)
+  {
+    *t_min = asclepius_mon_paused_t_min_ccc;
+    *t_max = asclepius_mon_paused_t_max_ccc;
+    return;
+  }
+
     uint32_t oldest = 0;
     uint32_t newest = 0;
 
@@ -849,11 +861,6 @@ static void mon_format_stats(char *out, size_t out_size, const char *name, doubl
     strncat(flags, "  OVER-CURRENT", sizeof(flags) - strlen(flags) - 1);
   }
 
-  if(out_of_spec)
-  {
-    strncat(flags, "  OUT OF SPEC", sizeof(flags) - strlen(flags) - 1);
-  }
-
   if(!enabled)
   {
     strncat(flags, "  (off)", sizeof(flags) - strlen(flags) - 1);
@@ -889,8 +896,11 @@ void update_asclepius_monitor_ccc(void)
   asclepius_ocp_get_rail_state(ASCLEPIUS_MAIN5V, &ocp5v);
   asclepius_ocp_get_rail_state(ASCLEPIUS_USB5V, &ocpusb);
 
+  uint32_t range_min = 0;
+  uint32_t range_max = 1;
+  mon_resolve_window(&range_min, &range_max);
   mon_stats_t s12, s5, susb;
-  mon_copy_stats(&asclepius_monitor, &s12, &s5, &susb);
+  mon_copy_stats_range(&asclepius_monitor, range_min, range_max, &s12, &s5, &susb);
 
   // Power buttons reflect the board's actual enabled flags.
   static const uint8_t channels[5] = { ASCLEPIUS_MOLEX, ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V, ASCLEPIUS_ALL };
@@ -904,6 +914,8 @@ void update_asclepius_monitor_ccc(void)
 
     bool on = connected && mon_channel_enabled(channels[i], &st);
     const char *style = on ? "asclepius-rail-on" : "asclepius-rail-off";
+    const char *name = channels[i] == ASCLEPIUS_MOLEX ? "MOLEX" : channels[i] == ASCLEPIUS_MAIN12V ? "12V" : channels[i] == ASCLEPIUS_MAIN5V ? "5V" : channels[i] == ASCLEPIUS_USB5V ? "USB" : "ALL";
+    char button_label[32];
 
     if(gtk_widget_get_sensitive(button) != connected)
     {
@@ -917,6 +929,9 @@ void update_asclepius_monitor_ccc(void)
       gtk_style_context_remove_class(context, "asclepius-rail-off");
       gtk_style_context_add_class(context, style);
     }
+
+    snprintf(button_label, sizeof(button_label), "%s: %s", name, on ? _("ON") : _("OFF"));
+    gtk_button_set_label(GTK_BUTTON(button), button_label);
   }
 
   if(asclepius_mon_voltage_stats_label_ccc != NULL)
@@ -973,6 +988,21 @@ void update_asclepius_monitor_ccc(void)
     }
 
     gtk_label_set_text(GTK_LABEL(asclepius_mon_status_label_ccc), text);
+
+    GtkStyleContext *status_context = gtk_widget_get_style_context(asclepius_mon_status_label_ccc);
+    gtk_style_context_remove_class(status_context, "asclepius-status-ok");
+    gtk_style_context_remove_class(status_context, "asclepius-status-fault");
+    gtk_style_context_add_class(status_context, asclepius_soft_ocp_status[0] != '\0' || !connected ? "asclepius-status-fault" : "asclepius-status-ok");
+  }
+
+  if(asclepius_mon_reset_ocp_button_ccc != NULL)
+  {
+    gtk_widget_set_sensitive(asclepius_mon_reset_ocp_button_ccc, connected && asclepius_soft_ocp_status[0] != '\0');
+  }
+
+  if(asclepius_mon_pause_button_ccc != NULL)
+  {
+    gtk_button_set_label(GTK_BUTTON(asclepius_mon_pause_button_ccc), asclepius_mon_paused_ccc ? _("Resume") : _("Pause"));
   }
 
   if(asclepius_mon_v12_drawing_ccc != NULL)
@@ -992,9 +1022,34 @@ void update_asclepius_monitor_ccc(void)
 static gboolean mon_refresh_timer(gpointer data)
 {
   (void)data;
+  if(asclepius_mon_paused_ccc)
+  {
+    return G_SOURCE_CONTINUE;
+  }
   update_asclepius_monitor_ccc();
 
   return G_SOURCE_CONTINUE;
+}
+
+void asclepius_mon_pause_clicked_ccc(GtkButton *button, gpointer data)
+{
+  (void)button;
+  (void)data;
+
+  if(!asclepius_mon_paused_ccc)
+  {
+    mon_resolve_window(&asclepius_mon_paused_t_min_ccc, &asclepius_mon_paused_t_max_ccc);
+  }
+  asclepius_mon_paused_ccc = !asclepius_mon_paused_ccc;
+  update_asclepius_monitor_ccc();
+}
+
+void asclepius_mon_reset_ocp_clicked_ccc(GtkButton *button, gpointer data)
+{
+  (void)button;
+  (void)data;
+  asclepius_ocp_reset();
+  update_asclepius_monitor_ccc();
 }
 
 // Maps a hover over one of the drawing areas onto a timestamp, so the tooltip
@@ -1117,6 +1172,8 @@ void asclepius_monitor_stop_refresh_ccc(void)
 
   asclepius_mon_window_combobox_ccc = NULL;
   asclepius_mon_status_label_ccc = NULL;
+  asclepius_mon_reset_ocp_button_ccc = NULL;
+  asclepius_mon_pause_button_ccc = NULL;
   asclepius_mon_voltage_stats_label_ccc = NULL;
   asclepius_mon_current_stats_label_ccc = NULL;
   asclepius_mon_v12_drawing_ccc = NULL;
@@ -1166,6 +1223,8 @@ void open_asclepius_monitor_dialog_ccc(void)
   GtkWidget *window_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_window_label"));
   GtkWidget *window_combo = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_window_combobox"));
   GtkWidget *status_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_status_label"));
+  GtkWidget *reset_ocp_button = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_reset_ocp_button"));
+  GtkWidget *pause_button = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_pause_button"));
   GtkWidget *voltage_stats = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_voltage_stats_label"));
   GtkWidget *current_stats = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_current_stats_label"));
 
@@ -1197,6 +1256,17 @@ void open_asclepius_monitor_dialog_ccc(void)
   if(current_stats != NULL)
   {
     gtk_label_set_text(GTK_LABEL(current_stats), _("No samples"));
+  }
+
+  asclepius_mon_reset_ocp_button_ccc = reset_ocp_button;
+  asclepius_mon_pause_button_ccc = pause_button;
+  if(reset_ocp_button != NULL)
+  {
+    g_signal_connect(reset_ocp_button, "clicked", G_CALLBACK(asclepius_mon_reset_ocp_clicked_ccc), NULL);
+  }
+  if(pause_button != NULL)
+  {
+    g_signal_connect(pause_button, "clicked", G_CALLBACK(asclepius_mon_pause_clicked_ccc), NULL);
   }
 
   if(v12 != NULL)
@@ -1264,7 +1334,9 @@ void open_asclepius_monitor_dialog_ccc(void)
   gtk_css_provider_load_from_data(provider,
                                   "button.asclepius-rail-on { background-image: none; background-color: #2e7d32; color: #ffffff; }\n"
                                   "button.asclepius-rail-off { background-image: none; background-color: #4a4a4a; color: #dddddd; }\n"
-                                  "button.asclepius-rail-on:disabled, button.asclepius-rail-off:disabled { color: #888888; }\n",
+                                  "button.asclepius-rail-on:disabled, button.asclepius-rail-off:disabled { color: #888888; }\n"
+                                  "label.asclepius-status-ok { color: #2e7d32; }\n"
+                                  "label.asclepius-status-fault { color: #b71c1c; font-weight: bold; }\n",
                                   -1,
                                   NULL);
   gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

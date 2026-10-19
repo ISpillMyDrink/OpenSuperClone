@@ -640,6 +640,9 @@ void write_config_file_ccc(void);
 void check_source_against_templates_ccc(void);
 
 void open_asclepius_ext_terminal_ccc(void);
+
+// Serial port picker, shared by the control-port and passthrough entries.
+void on_asclepius_ports_clicked_ccc(GtkWidget *button);
 void open_asclepius_monitor_dialog_ccc(void);
 
 // GtkRadioButton handler that switches which board the relay controls drive.

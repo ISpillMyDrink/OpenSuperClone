@@ -2744,7 +2744,6 @@ void set_connected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(drivesmi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(asclepiusextmi_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(soft_reset_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(hard_reset_button_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(clone_mode_button_ccc), driver_only_ccc ? FALSE : TRUE);
@@ -4639,6 +4638,19 @@ void open_primary_relay_dialog_ccc(void)
   test_primary_relay_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "test_primary_relay_button"));
   activate_primary_relay_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay_button"));
   deactivate_primary_relay_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "deactivate_primary_relay_button"));
+
+  // Port picker, so the device does not have to be typed or guessed after a
+  // re-enumeration moves it to a different tty. Wired here rather than further
+  // down because the builder is released just below, and the handler needs a
+  // live GtkBuilder to reach the button.
+  {
+    GtkWidget *ports_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ports_button"));
+    if (ports_btn)
+    {
+      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer)"asclepius_tty_device_text");
+      g_signal_connect(ports_btn, "clicked", G_CALLBACK(on_asclepius_ports_clicked_ccc), NULL);
+    }
+  }
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
   // = GTK_WIDGET (gtk_builder_get_object (builder, ""));
@@ -8600,6 +8612,152 @@ void on_ext_terminal_dialog_response_ccc(GtkDialog *dialog, gint response_id, gp
 // this handler through the prototype in clone_gui.h.
 void open_asclepius_monitor_dialog_ccc(void);
 
+// Port picker, shared by the control-port and passthrough entries. Lists the
+// enumerated candidates with a Refresh button; picking one writes it into the
+// entry the button belongs to. The entry itself stays editable, so a path that
+// enumeration does not match can still be typed.
+static void asclepius_refresh_port_list(GtkWidget *list, GtkWidget *status)
+{
+  char names[ASCLEPIUS_PORT_LIST_MAX][ASCLEPIUS_PORT_NAME_MAX];
+
+  // Emptied by hand rather than with gtk_list_box_clear(), which is newer than
+  // the GTK this project builds against.
+  GList *kids = gtk_container_get_children(GTK_CONTAINER(list));
+  for(GList *k = kids; k != NULL; k = k->next)
+  {
+    gtk_widget_destroy(GTK_WIDGET(k->data));
+  }
+  g_list_free(kids);
+
+  int found = asclepius_list_serial_ports(names, ASCLEPIUS_PORT_LIST_MAX);
+  int shown = found < ASCLEPIUS_PORT_LIST_MAX ? found : ASCLEPIUS_PORT_LIST_MAX;
+
+  for(int i = 0; i < shown; i++)
+  {
+    GtkWidget *row = gtk_list_box_row_new();
+    GtkWidget *label = gtk_label_new(names[i]);
+
+    gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+    gtk_container_add(GTK_CONTAINER(row), label);
+    gtk_list_box_insert(GTK_LIST_BOX(list), GTK_WIDGET(row), -1);
+  }
+
+  g_object_set_data(G_OBJECT(list), "ext_port_count", GUINT_TO_POINTER(shown));
+
+  if(status != NULL)
+  {
+    char text[160];
+    if(found == 0)
+    {
+      snprintf(text, sizeof(text), "%s", _("No serial ports found"));
+    }
+    else if(found > shown)
+    {
+      snprintf(text, sizeof(text), _("Showing %d of %d ports"), shown, found);
+    }
+    else
+    {
+      snprintf(text, sizeof(text), _("%d port(s) found"), found);
+    }
+    gtk_label_set_text(GTK_LABEL(status), text);
+  }
+}
+
+static void on_ports_refresh_clicked_ccc(GtkWidget *button)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *list = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "asclepius_ports_list"));
+  GtkWidget *status = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "asclepius_ports_status"));
+
+  asclepius_refresh_port_list(list, status);
+}
+
+static void on_ports_row_activated_ccc(GtkWidget *row, gpointer data)
+{
+  (void)data;
+
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(row));
+  GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "asclepius_ports_target"));
+  GtkWidget *child = gtk_bin_get_child(GTK_BIN(row));
+  const char *text = child ? gtk_label_get_text(GTK_LABEL(child)) : NULL;
+
+  if(entry != NULL && text != NULL)
+  {
+    gtk_entry_set_text(GTK_ENTRY(entry), text);
+  }
+
+  gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+}
+
+void on_asclepius_ports_clicked_ccc(GtkWidget *button)
+{
+  const char *target_key = g_object_get_data(G_OBJECT(button), "asclepius_ports_target_key");
+
+  GtkWidget *parent = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(parent), target_key ? target_key : "asclepius_tty_device_text"));
+
+  GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Select Serial Port"), GTK_WINDOW(gtk_widget_get_toplevel(parent)),
+                                                  GTK_DIALOG_MODAL,
+                                                  _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                                  _("_Select"), GTK_RESPONSE_OK,
+                                                  NULL);
+  GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+  GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
+  GtkWidget *list = gtk_list_box_new();
+  GtkWidget *status = gtk_label_new("");
+
+  gtk_list_box_set_selection_mode(GTK_LIST_BOX(list), GTK_SELECTION_SINGLE);
+  gtk_widget_set_size_request(scroll, 380, 240);
+  gtk_label_set_xalign(GTK_LABEL(status), 0.0);
+
+  g_object_set_data(G_OBJECT(dialog), "asclepius_ports_list", list);
+  g_object_set_data(G_OBJECT(dialog), "asclepius_ports_status", status);
+  g_object_set_data(G_OBJECT(dialog), "asclepius_ports_target", entry);
+
+  gtk_container_add(GTK_CONTAINER(scroll), list);
+  gtk_box_pack_start(GTK_BOX(content), scroll, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(content), status, FALSE, FALSE, 4);
+
+  g_signal_connect(list, "row-activated", G_CALLBACK(on_ports_row_activated_ccc), NULL);
+
+  GtkWidget *refresh = gtk_dialog_add_button(GTK_DIALOG(dialog), _("Refresh"), GTK_RESPONSE_APPLY);
+  g_signal_connect(refresh, "clicked", G_CALLBACK(on_ports_refresh_clicked_ccc), NULL);
+
+  asclepius_refresh_port_list(list, status);
+
+  while(TRUE)
+  {
+    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    if(response == GTK_RESPONSE_APPLY)
+    {
+      asclepius_refresh_port_list(list, status);
+      continue;
+    }
+
+    if(response == GTK_RESPONSE_OK)
+    {
+      // Accept whatever row is selected, so the button works as well as
+      // double-clicking a row.
+      GtkWidget *row = GTK_WIDGET(gtk_list_box_get_selected_row(GTK_LIST_BOX(list)));
+
+      if(row != NULL && entry != NULL)
+      {
+        GtkWidget *label = gtk_bin_get_child(GTK_BIN(row));
+
+        if(label != NULL)
+        {
+          gtk_entry_set_text(GTK_ENTRY(entry), gtk_label_get_text(GTK_LABEL(label)));
+        }
+      }
+    }
+
+    break;
+  }
+
+  gtk_widget_destroy(dialog);
+}
+
 void open_asclepius_ext_terminal_ccc(void)
 {
   if (ext_terminal_open) return;
@@ -8687,6 +8845,17 @@ void open_asclepius_ext_terminal_ccc(void)
   }
 
   if (tty_text) gtk_entry_set_max_length(GTK_ENTRY(tty_text), 255);
+
+  // Port picker for the passthrough, same as the control port in the relay
+  // settings. Stored under the dialog key the handler looks up.
+  {
+    GtkWidget *ports_btn = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_ports_button"));
+    if (ports_btn)
+    {
+      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer)"ext_terminal_tty_text");
+      g_signal_connect(ports_btn, "clicked", G_CALLBACK(on_asclepius_ports_clicked_ccc), NULL);
+    }
+  }
 
   // Set monospace font via CSS
   {

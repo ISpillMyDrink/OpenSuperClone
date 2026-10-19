@@ -7,6 +7,7 @@
 #include "monitor.h"
 
 #include <ctype.h>
+#include <dirent.h>
 #include <poll.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -1048,6 +1049,72 @@ static int asclepius_ext_setup_tty(void)
 
     tcflush(asclepius_ext_serial_port, TCIOFLUSH);
     return 0;
+}
+
+// Candidate serial devices. The kernel names USB CDC ACM ports ttyUSB* and
+// ttyACM*; ttyascl* covers the project's udev aliases so a board wired up with
+// a stable name is found the same way as one addressed by enumeration order.
+static bool asclepius_port_name_matches(const char *name)
+{
+    static const char *const prefixes[] = { "ttyUSB", "ttyACM", "ttyascl" };
+
+    for(size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); i++)
+    {
+        if(strncmp(name, prefixes[i], strlen(prefixes[i])) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static int asclepius_port_name_cmp(const void *a, const void *b)
+{
+    return strcmp((const char *)a, (const char *)b);
+}
+
+int asclepius_list_serial_ports(char (*names)[ASCLEPIUS_PORT_NAME_MAX], int max_ports)
+{
+    DIR *dir;
+    struct dirent *entry;
+    int found = 0;
+
+    if(names == NULL || max_ports <= 0)
+    {
+        return 0;
+    }
+
+    dir = opendir("/dev");
+    if(dir == NULL)
+    {
+        printf("Error listing serial ports: %s\n", strerror(errno));
+        return 0;
+    }
+
+    while((entry = readdir(dir)) != NULL)
+    {
+        if(!asclepius_port_name_matches(entry->d_name))
+        {
+            continue;
+        }
+
+        if(found < max_ports)
+        {
+            snprintf(names[found], ASCLEPIUS_PORT_NAME_MAX, "/dev/%s", entry->d_name);
+        }
+
+        found++;
+    }
+
+    closedir(dir);
+
+    // Sorting on the counted set: the full list is normally far below the cap,
+    // and when it is not the caller still gets a stable prefix.
+    int usable = found < max_ports ? found : max_ports;
+    qsort(names, (size_t)usable, ASCLEPIUS_PORT_NAME_MAX, asclepius_port_name_cmp);
+
+    return found;
 }
 
 int asclepius_ext_open(void)

@@ -115,6 +115,9 @@ void mon_push(mon_t *m, const struct asclepius_status_t *st, uint32_t t_ms)
     s->ocp12 = st->main12v_ocp ? 1 : 0;
     s->ocp5 = st->main5v_ocp ? 1 : 0;
     s->ocpusb = st->usb5v_ocp ? 1 : 0;
+    s->enabled12 = st->main12v_enabled ? 1 : 0;
+    s->enabled5 = st->main5v_enabled ? 1 : 0;
+    s->enabledusb = st->usb5v_enabled ? 1 : 0;
     s->oos12 = (st->main12v_enabled && (s->v12 < V12_MIN_V || s->v12 > V12_MAX_V)) ? 1 : 0;
     s->oos5 = (st->main5v_enabled && (s->v5 < V5_MIN_V || s->v5 > V5_MAX_V)) ? 1 : 0;
 
@@ -171,6 +174,52 @@ void mon_copy_stats(const mon_t *m, mon_stats_t *st12, mon_stats_t *st5, mon_sta
     if(stusb != NULL)
     {
         *stusb = m->stusb;
+    }
+
+    pthread_mutex_unlock(&mon_mutex);
+}
+
+void mon_copy_stats_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms,
+                          mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb)
+{
+    int i;
+
+    if(st12 != NULL)
+    {
+        memset(st12, 0, sizeof(*st12));
+    }
+    if(st5 != NULL)
+    {
+        memset(st5, 0, sizeof(*st5));
+    }
+    if(stusb != NULL)
+    {
+        memset(stusb, 0, sizeof(*stusb));
+    }
+
+    pthread_mutex_lock(&mon_mutex);
+
+    for(i = 0; i < m->hist.len; i++)
+    {
+        const mon_sample_t *sample = &m->hist.buf[(m->hist.head - m->hist.len + i + 2 * MON_HISTORY_MAX) % MON_HISTORY_MAX];
+
+        if(sample->t_ms < t_min_ms || sample->t_ms > t_max_ms)
+        {
+            continue;
+        }
+
+        if(st12 != NULL)
+        {
+            stats_update(st12, sample->enabled12 != 0, sample->v12, sample->a12);
+        }
+        if(st5 != NULL)
+        {
+            stats_update(st5, sample->enabled5 != 0, sample->v5, sample->a5);
+        }
+        if(stusb != NULL)
+        {
+            stats_update(stusb, sample->enabledusb != 0, sample->v5, sample->ausb);
+        }
     }
 
     pthread_mutex_unlock(&mon_mutex);
