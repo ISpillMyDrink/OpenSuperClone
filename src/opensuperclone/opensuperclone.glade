@@ -4966,6 +4966,7 @@ no data</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="use-stock">True</property>
+                <property name="tooltip-text" translatable="yes">Close the UART terminal window</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -5016,6 +5017,7 @@ no data</property>
                       <property name="invisible-char">•</property>
                       <property name="primary-icon-activatable">False</property>
                       <property name="secondary-icon-activatable">False</property>
+                      <property name="tooltip-text" translatable="yes">Serial device path for the UART passthrough</property>
                     </object>
                       <packing>
                         <property name="expand">True</property>
@@ -5060,6 +5062,7 @@ no data</property>
                   <object class="GtkComboBoxText" id="ext_terminal_baud_rate_combobox">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Select the UART baud rate</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5073,6 +5076,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Connect to or disconnect from the selected UART</property>
                     <signal name="toggled" handler="on_ext_terminal_connect_toggled_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5110,6 +5114,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="has-entry">False</property>
+                    <property name="tooltip-text" translatable="yes">Choose how received bytes are displayed: text, hexadecimal, or automatic</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5134,6 +5139,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="has-entry">False</property>
+                    <property name="tooltip-text" translatable="yes">Interpret the input as escaped text or hexadecimal bytes</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5142,15 +5148,28 @@ no data</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton" id="ext_terminal_ctrl_checkbutton">
+                  <object class="GtkLabel" id="ext_terminal_eol_label">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Ctrl</property>
+                    <property name="label" translatable="yes">End:</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="ext_terminal_eol_combobox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="has-entry">False</property>
+                    <property name="tooltip-text" translatable="yes">Append no line ending, LF, CR, or CRLF to text sent from the input</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>
@@ -5172,6 +5191,7 @@ no data</property>
                     <property name="editable">False</property>
                     <property name="wrap-mode">word-char</property>
                     <property name="cursor-visible">False</property>
+                    <property name="tooltip-text" translatable="yes">Timestamped UART output and script messages</property>
                   </object>
                 </child>
               </object>
@@ -5194,6 +5214,7 @@ no data</property>
                     <property name="invisible-char">•</property>
                     <property name="primary-icon-activatable">False</property>
                     <property name="secondary-icon-activatable">False</property>
+                    <property name="tooltip-text" translatable="yes">Enter text or bytes to send. Up and Down recall command history</property>
                     <signal name="activate" handler="on_ext_terminal_send_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5203,11 +5224,25 @@ no data</property>
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkCheckButton" id="ext_terminal_ctrl_checkbutton">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="label" translatable="yes">Ctrl</property>
+                    <property name="tooltip-text" translatable="yes">Translate input letters to control bytes, such as C to ^C</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="asclepius_ext_send_button">
                     <property name="label" translatable="yes">Send</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Send the input using the selected mode and line ending</property>
                     <signal name="clicked" handler="on_ext_terminal_send_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5223,6 +5258,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Send Ctrl-X (0x18)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5237,6 +5273,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Send Ctrl-L (0x0C)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5251,6 +5288,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Send Ctrl-C (0x03)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5265,6 +5303,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Send Ctrl-Z (0x1A)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -5290,6 +5329,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Clear the terminal output and RX/TX counters</property>
                     <signal name="clicked" handler="on_ext_terminal_clear_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5305,6 +5345,7 @@ no data</property>
                     <property name="sensitive">False</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Choose and run an Asclepius script on the connected UART</property>
                     <signal name="clicked" handler="on_ext_terminal_script_clicked_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5319,6 +5360,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Save the visible terminal log to a text file</property>
                     <signal name="clicked" handler="on_ext_terminal_save_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5334,6 +5376,7 @@ no data</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
                     <property name="active">True</property>
+                    <property name="tooltip-text" translatable="yes">Scroll to new output automatically</property>
                     <signal name="toggled" handler="on_ext_terminal_autoscroll_toggled_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5349,6 +5392,7 @@ no data</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
+                    <property name="tooltip-text" translatable="yes">Pause or resume displaying received bytes without disconnecting</property>
                     <signal name="toggled" handler="on_ext_terminal_pause_toggled_ccc" swapped="no"/>
                   </object>
                   <packing>
@@ -5376,6 +5420,7 @@ no data</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">RX: 0  TX: 0</property>
                     <property name="xalign">0</property>
+                    <property name="tooltip-text" translatable="yes">Current connection, baud rate, and received/transmitted byte counts</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

@@ -7980,6 +7980,14 @@ typedef enum
   EXT_SEND_HEX = 1
 } ext_send_mode_t;
 
+typedef enum
+{
+  EXT_EOL_NONE = 0,
+  EXT_EOL_LF = 1,
+  EXT_EOL_CR = 2,
+  EXT_EOL_CRLF = 3
+} ext_eol_t;
+
 #define EXT_TAG_TS    "ext_tag_ts"
 #define EXT_TAG_INF   "ext_tag_inf"
 #define EXT_TAG_SND   "ext_tag_snd"
@@ -7987,6 +7995,7 @@ typedef enum
 #define EXT_TAG_ERR   "ext_tag_err"
 #define EXT_TAG_SCRIPT "ext_tag_script"
 #define EXT_TERMINAL_MAX_LOG_CHARS (1024 * 1024)
+#define EXT_TERMINAL_HISTORY_MAX 32
 
 static const char *ext_prefix_tag(const char *prefix)
 {
@@ -8077,6 +8086,75 @@ static void update_ext_status(GtkWidget *dialog)
     snprintf(text, sizeof(text), _("Disconnected  |  RX: %u  TX: %u"), rx, tx);
   }
   gtk_label_set_text(GTK_LABEL(label), text);
+}
+
+static gboolean on_ext_terminal_entry_key_press(GtkWidget *entry, GdkEventKey *event, gpointer data)
+{
+  GtkWidget *dialog = GTK_WIDGET(data);
+  GPtrArray *history = g_object_get_data(G_OBJECT(dialog), "ext_command_history");
+  guint history_index;
+
+  if(history == NULL || history->len == 0)
+  {
+    return FALSE;
+  }
+
+  history_index = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_history_index"));
+
+  if(event->keyval == GDK_KEY_Up)
+  {
+    if(history_index > 0)
+    {
+      history_index--;
+    }
+    gtk_entry_set_text(GTK_ENTRY(entry), g_ptr_array_index(history, history_index));
+    gtk_editable_set_position(GTK_EDITABLE(entry), -1);
+    g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(history_index));
+    return TRUE;
+  }
+
+  if(event->keyval == GDK_KEY_Down)
+  {
+    if(history_index + 1 < history->len)
+    {
+      history_index++;
+      gtk_entry_set_text(GTK_ENTRY(entry), g_ptr_array_index(history, history_index));
+    }
+    else
+    {
+      history_index = history->len;
+      gtk_entry_set_text(GTK_ENTRY(entry), "");
+    }
+    gtk_editable_set_position(GTK_EDITABLE(entry), -1);
+    g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(history_index));
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static void ext_terminal_history_add(GtkWidget *dialog, const char *text)
+{
+  GPtrArray *history = g_object_get_data(G_OBJECT(dialog), "ext_command_history");
+
+  if(history == NULL || text == NULL || text[0] == '\0')
+  {
+    return;
+  }
+
+  if(history->len > 0 && strcmp(g_ptr_array_index(history, history->len - 1), text) == 0)
+  {
+    g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(history->len));
+    return;
+  }
+
+  if(history->len >= EXT_TERMINAL_HISTORY_MAX)
+  {
+    g_ptr_array_remove_index(history, 0);
+  }
+
+  g_ptr_array_add(history, g_strdup(text));
+  g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(history->len));
 }
 
 void on_ext_terminal_send_byte_ccc(GtkWidget *button)
@@ -8233,6 +8311,7 @@ void on_ext_terminal_send_ccc(GtkWidget *sender)
   GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
   GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_entry"));
   GtkWidget *mode_combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo"));
+  GtkWidget *eol_combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_eol_combo"));
   GtkWidget *ctrl_check = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_ctrl_check"));
 
   const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
@@ -8273,6 +8352,35 @@ void on_ext_terminal_send_ccc(GtkWidget *sender)
     }
   }
 
+  int eol = eol_combo ? gtk_combo_box_get_active(GTK_COMBO_BOX(eol_combo)) : EXT_EOL_NONE;
+  if(eol < EXT_EOL_NONE || eol > EXT_EOL_CRLF)
+  {
+    eol = EXT_EOL_NONE;
+  }
+
+  if(eol == EXT_EOL_LF || eol == EXT_EOL_CR || eol == EXT_EOL_CRLF)
+  {
+    if(len >= (int)sizeof(parsed) - (eol == EXT_EOL_CRLF ? 2 : 1))
+    {
+      append_ext_terminal_line(textview, "ERR:", _("Command is too long with the selected line ending"));
+      return;
+    }
+
+    if(eol == EXT_EOL_LF)
+    {
+      parsed[len++] = '\n';
+    }
+    else if(eol == EXT_EOL_CR)
+    {
+      parsed[len++] = '\r';
+    }
+    else
+    {
+      parsed[len++] = '\r';
+      parsed[len++] = '\n';
+    }
+  }
+
   if (len == 0)
   {
     append_ext_terminal_line(textview, "ERR:", _("Nothing to send"));
@@ -8285,6 +8393,7 @@ void on_ext_terminal_send_ccc(GtkWidget *sender)
     return;
   }
 
+  ext_terminal_history_add(dialog, text);
   char shown[512];
   ext_terminal_format_payload(parsed, (size_t)len, shown, sizeof(shown));
   append_ext_terminal_line(textview, "SND:", shown);
@@ -8827,6 +8936,7 @@ void open_asclepius_ext_terminal_ccc(void)
   GtkWidget *baud_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_baud_rate_combobox"));
   GtkWidget *view_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_view_combobox"));
   GtkWidget *send_mode_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_send_mode_combobox"));
+  GtkWidget *eol_combo = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_eol_combobox"));
   GtkWidget *ctrl_check = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_ctrl_checkbutton"));
   GtkWidget *script_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_script_button"));
   GtkWidget *connect_button = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_connect_button"));
@@ -8838,9 +8948,18 @@ void open_asclepius_ext_terminal_ccc(void)
   if (baud_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_baud_combo", baud_combo);
   if (view_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_view_combo", view_combo);
   if (send_mode_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo", send_mode_combo);
+  if (eol_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_eol_combo", eol_combo);
   if (ctrl_check) g_object_set_data(G_OBJECT(dialog), "ext_terminal_ctrl_check", ctrl_check);
   if (script_btn) g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
   if (connect_button) g_object_set_data(G_OBJECT(dialog), "ext_terminal_connect_button", connect_button);
+
+  if (entry)
+  {
+    GPtrArray *history = g_ptr_array_new_with_free_func(g_free);
+    g_object_set_data_full(G_OBJECT(dialog), "ext_command_history", history, (GDestroyNotify)g_ptr_array_unref);
+    g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(0));
+    g_signal_connect(entry, "key-press-event", G_CALLBACK(on_ext_terminal_entry_key_press), dialog);
+  }
 
   // Held partial lines are owned by the dialog so they are freed with it.
   {
@@ -8879,6 +8998,14 @@ void open_asclepius_ext_terminal_ccc(void)
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(send_mode_combo), _("Text"));
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(send_mode_combo), _("Hex"));
     gtk_combo_box_set_active(GTK_COMBO_BOX(send_mode_combo), EXT_SEND_TEXT);
+  }
+  if (eol_combo)
+  {
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(eol_combo), _("None"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(eol_combo), _("LF"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(eol_combo), _("CR"));
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(eol_combo), _("CRLF"));
+    gtk_combo_box_set_active(GTK_COMBO_BOX(eol_combo), EXT_EOL_NONE);
   }
 
   // Set current values from globals
