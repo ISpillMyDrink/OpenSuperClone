@@ -6215,6 +6215,7 @@ void choose_primary_usb_ccc(void)
       primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_GENERIC;
       update_primary_relay_button_settings_ccc();
       update_primary_relay_settings_ccc();
+      update_primary_relay_board_type_visibility_ccc();
       gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
       gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
     }
@@ -6234,6 +6235,9 @@ void clear_usbr1_ccc(void)
   primary_relay_settings_ccc.primary_relay_name[0] = '\0';
   primary_relay_name_ccc[0] = '\0';
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), "");
+  // Dropping the selected relay changes whether the controls have a reachable
+  // board, so the dialog's Activate/Deactivate sensitivity has to follow.
+  update_primary_relay_board_type_visibility_ccc();
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
@@ -6481,6 +6485,12 @@ void do_asclepius_connect_ccc(void)
   update_primary_relay_button_settings_ccc();
   update_primary_relay_settings_ccc();
 
+  // Refresh the board-type visibility, which is also what enables the relay
+  // dialog's Activate/Deactivate buttons. Connecting from inside that dialog
+  // never goes through the radio handler or the dialog opener, so without this
+  // the buttons kept the sensitivity they had when the window was opened.
+  update_primary_relay_board_type_visibility_ccc();
+
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
 }
@@ -6488,6 +6498,7 @@ void do_asclepius_connect_ccc(void)
 void do_asclepius_disconnect_ccc(void)
 {
   asclepius_disconnect();
+  update_primary_relay_board_type_visibility_ccc();
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
