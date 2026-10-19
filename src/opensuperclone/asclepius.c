@@ -235,6 +235,11 @@ static int asclepius_setup_tty(void)
 
 static bool asclepius_reconnect(void)
 {
+    // The poller retries once a second, forever. Reporting every attempt buries
+    // whatever else is on the console, so only speak up when the outcome
+    // changes: the first failure, a different error, or recovery.
+    static int last_errno = 0;
+
     if(asclepius_serial_port >= 0)
     {
         close(asclepius_serial_port);
@@ -245,7 +250,14 @@ static bool asclepius_reconnect(void)
 
     if(asclepius_serial_port < 0)
     {
-        printf("Error %i from open: %s\n", errno, strerror(errno));
+        if(errno != last_errno)
+        {
+            // Name the device: a bare errno does not say what to go and fix,
+            // and this is the message a user sees when the board has moved to
+            // a different tty after re-enumerating.
+            printf("Error %i opening Asclepius port %s: %s\n", errno, asclepius_tty_device_ccc, strerror(errno));
+            last_errno = errno;
+        }
         return false;
     }
 
@@ -254,6 +266,12 @@ static bool asclepius_reconnect(void)
         close(asclepius_serial_port);
         asclepius_serial_port = -1;
         return false;
+    }
+
+    if(last_errno != 0)
+    {
+        printf("Asclepius: reconnected to %s\n", asclepius_tty_device_ccc);
+        last_errno = 0;
     }
 
     return true;
@@ -474,6 +492,10 @@ static void asclepius_ocp_check(void)
     uint32_t currents[3] = { 0, 0, 0 };
     bool enabled[3] = { false, false, false };
     uint8_t cut_channels[3] = { 0, 0, 0 };
+    uint32_t trip_ma[3] = { 0, 0, 0 };
+    unsigned int limit_ma[3] = { 0, 0, 0 };
+    bool new_trip[3] = { false, false, false };
+    bool cleared[3] = { false, false, false };
     int cut_count = 0;
     bool have_status;
     size_t i;
@@ -517,8 +539,11 @@ static void asclepius_ocp_check(void)
             // queue a cut. If it was already latched, the user must have
             // re-enabled it while the fault was still present: cut it again and
             // refresh the reason.
+            new_trip[i] = !rail->tripped;
             rail->tripped = true;
             rail->trip_ma = currents[i];
+            trip_ma[i] = currents[i];
+            limit_ma[i] = rail->limit_ma;
 
             if(rail->action == ASCLEPIUS_OCP_CUT)
             {
@@ -532,6 +557,7 @@ static void asclepius_ocp_check(void)
         }
         else
         {
+            cleared[i] = rail->tripped;
             rail->tripped = false;
             rail->trip_ma = 0;
         }
@@ -541,12 +567,155 @@ static void asclepius_ocp_check(void)
 
     asclepius_unlock();
 
+    // Announced here rather than from the general event log: a failed cut marks
+    // the port dead, which would otherwise swallow the notice of a trip this
+    // very poll.
+    for(i = 0; i < sizeof(channels) / sizeof(channels[0]); i++)
+    {
+        if(new_trip[i])
+        {
+            printf("Asclepius: soft OCP %s tripped at %.2f A (limit %u mA)\n", asclepius_ocp_rail_name(channels[i]), trip_ma[i] / 1000.0f, limit_ma[i]);
+        }
+        else if(cleared[i])
+        {
+            printf("Asclepius: soft OCP %s cleared\n", asclepius_ocp_rail_name(channels[i]));
+        }
+    }
+
     // Cuts run outside the lock: asclepius_disable_channel() takes it itself.
     for(i = 0; i < (size_t)cut_count; i++)
     {
         if(asclepius_disable_channel(cut_channels[i]) != 0)
         {
             printf("Software OCP: failed to cut %s\n", asclepius_ocp_rail_name(cut_channels[i]));
+        }
+    }
+}
+
+static void asclepius_event_check(void);
+
+// Poller thread. Owns the control port: nothing else reads or writes it while
+// this runs, which is why the GUI can poll the ring buffer without blocking.
+// Announce rail state changes to stdout, once per transition.
+//
+// The poller runs at the configured interval (25 ms by default), so printing
+// on every sample would bury the terminal in noise. Everything here is
+// edge-triggered against the previous poll. The first poll after connecting
+// only primes that baseline: a board that powers up with 12V and 5V already on
+// has not "switched" anything.
+//
+// Rail on/off is discrete and reported immediately. Out-of-spec is an analogue
+// reading that can sit right on a limit: a 5V rail measuring 5232-5253 mV
+// against a 5250 mV ceiling would otherwise emit two lines per poll, tens of
+// thousands a minute. An excursion therefore has to hold for
+// ASCLEPIUS_EVENT_DEBOUNCE_MS before it is announced, which reports a genuine
+// standing violation once while ignoring jitter. Excursions shorter than that
+// remain visible in the monitor's per-sample markers and statistics; this only
+// thins out the log.
+static void asclepius_event_check(void)
+{
+    static const uint8_t channels[] = { ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V };
+    static bool primed = false;
+    static bool was_enabled[3] = { false, false, false };
+    static bool reported_out_of_spec[3] = { false, false, false };
+    static bool candidate_out_of_spec[3] = { false, false, false };
+    static uint32_t candidate_since_ms[3] = { 0, 0, 0 };
+
+    bool enabled[3];
+    bool out_of_spec[3];
+    uint32_t volts[3];
+    uint32_t now_ms;
+    bool connected;
+    size_t i;
+
+    now_ms = asclepius_monotonic_ms();
+
+    asclepius_lock();
+
+    connected = asclepius_connected;
+    if(connected)
+    {
+        enabled[0] = asclepius_status.main12v_enabled;
+        enabled[1] = asclepius_status.main5v_enabled;
+        enabled[2] = asclepius_status.usb5v_enabled;
+        volts[0] = asclepius_status.main12v_voltage;
+        volts[1] = asclepius_status.main5v_voltage;
+        volts[2] = 0; // the USB rail is derived from the 5V rail and reports no voltage
+
+        for(i = 0; i < 3; i++)
+        {
+            if(channels[i] == ASCLEPIUS_MAIN12V)
+            {
+                out_of_spec[i] = enabled[i] && (volts[i] < ASCLEPIUS_V12_MIN_MV || volts[i] > ASCLEPIUS_V12_MAX_MV);
+            }
+            else if(channels[i] == ASCLEPIUS_MAIN5V)
+            {
+                out_of_spec[i] = enabled[i] && (volts[i] < ASCLEPIUS_V5_MIN_MV || volts[i] > ASCLEPIUS_V5_MAX_MV);
+            }
+            else
+            {
+                out_of_spec[i] = false; // no voltage to judge the USB rail by
+            }
+        }
+    }
+
+    asclepius_unlock();
+
+    if(!connected)
+    {
+        // Re-prime silently on the next successful poll rather than reporting
+        // every rail as having switched while the board was away.
+        primed = false;
+        return;
+    }
+
+    if(!primed)
+    {
+        primed = true;
+        for(i = 0; i < 3; i++)
+        {
+            was_enabled[i] = enabled[i];
+            reported_out_of_spec[i] = out_of_spec[i];
+            candidate_out_of_spec[i] = out_of_spec[i];
+            candidate_since_ms[i] = now_ms;
+        }
+        return;
+    }
+
+    // Track the unsettled candidate separately from what was announced, so a
+    // reading that crosses the limit and comes straight back never reaches the
+    // log at all.
+    for(i = 0; i < 3; i++)
+    {
+        if(out_of_spec[i] != candidate_out_of_spec[i])
+        {
+            candidate_out_of_spec[i] = out_of_spec[i];
+            candidate_since_ms[i] = now_ms;
+        }
+    }
+
+    for(i = 0; i < 3; i++)
+    {
+        const char *rail = asclepius_ocp_rail_name(channels[i]);
+
+        if(enabled[i] != was_enabled[i])
+        {
+            printf("Asclepius: %s %s\n", rail, enabled[i] ? "on" : "off");
+            was_enabled[i] = enabled[i];
+        }
+
+        if(candidate_out_of_spec[i] != reported_out_of_spec[i] &&
+           (uint32_t)(now_ms - candidate_since_ms[i]) >= ASCLEPIUS_EVENT_DEBOUNCE_MS)
+        {
+            if(candidate_out_of_spec[i])
+            {
+                printf("Asclepius: %s out of spec at %u mV\n", rail, volts[i]);
+            }
+            else
+            {
+                printf("Asclepius: %s back in spec at %u mV\n", rail, volts[i]);
+            }
+            reported_out_of_spec[i] = candidate_out_of_spec[i];
         }
     }
 }
@@ -563,6 +732,7 @@ static void *asclepius_poller_main(void *unused)
             {
                 mon_push(&asclepius_monitor, &asclepius_status, asclepius_monotonic_ms());
                 asclepius_ocp_check();
+                asclepius_event_check();
             }
             else
             {
@@ -587,6 +757,32 @@ static void *asclepius_poller_main(void *unused)
     }
 
     return NULL;
+}
+
+// Take one reading before handing control back. The poller only starts below,
+// so a caller that asks for status immediately after connecting (the GUI status
+// line, asclepiusstatus) would otherwise see zeros.
+//
+// The port being open does not mean the board is already answering: USB serial
+// devices commonly need a moment after open() before the first exchange lands.
+// Retry briefly so a slow board is not reported as a failed connect. A failure
+// that survives this is reported rather than hidden, because get_status() has
+// already marked the port dead and pretending to be connected would be a lie.
+static int asclepius_initial_status(void)
+{
+    int attempt;
+
+    for(attempt = 0; attempt < 3; attempt++)
+    {
+        if(asclepius_get_status() == 0)
+        {
+            return 0;
+        }
+
+        asclepius_sleep_ms(100);
+    }
+
+    return -1;
 }
 
 int asclepius_connect(void)
@@ -625,6 +821,13 @@ int asclepius_connect(void)
     // A fresh session starts with an empty history so plotted windows and
     // min/avg/max never mix readings from a previous connection.
     mon_reset(&asclepius_monitor);
+
+    if(asclepius_initial_status() != 0)
+    {
+        return -1;
+    }
+
+    mon_push(&asclepius_monitor, &asclepius_status, asclepius_monotonic_ms());
 
     if(!asclepius_poller_running)
     {

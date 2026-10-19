@@ -81,6 +81,11 @@ int asclepius_disable_channel(uint8_t channel);
 
 int asclepius_get_status(void);
 
+// How long an out-of-spec reading must hold before the event log reports it.
+// A rail sitting on a limit jitters across it every poll; without this the log
+// gets two lines per poll instead of one per excursion.
+#define ASCLEPIUS_EVENT_DEBOUNCE_MS 250
+
 // Status poll interval for the background poller thread, in milliseconds
 #define ASCLEPIUS_POLL_INTERVAL_MIN_MS 25
 #define ASCLEPIUS_POLL_INTERVAL_MAX_MS 5000
