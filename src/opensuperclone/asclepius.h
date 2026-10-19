@@ -147,6 +147,10 @@ void asclepius_ocp_clear_channel(uint8_t channel);
 
 int asclepius_ext_open(void);
 
+// How long a passthrough write may wait for room in the transmit buffer before
+// giving up. Bounded so an unresponsive peer cannot wedge the caller.
+#define ASCLEPIUS_EXT_WRITE_TIMEOUT_MS 5000
+
 void asclepius_ext_close(void);
 
 int asclepius_ext_send(const char *data, size_t len);

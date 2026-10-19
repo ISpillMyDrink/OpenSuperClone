@@ -10,6 +10,7 @@
 #include <poll.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <time.h>
 
 bool asclepius_connected = false;
@@ -824,6 +825,13 @@ int asclepius_connect(void)
 
     if(asclepius_initial_status() != 0)
     {
+        // get_status() has already marked the port dead, so this path returns
+        // with the descriptor still open and nothing able to close it:
+        // asclepius_disconnect() only closes a port it believes is connected.
+        // Without this, every failed Connect leaks one descriptor.
+        close(asclepius_serial_port);
+        asclepius_serial_port = -1;
+        asclepius_connected = false;
         return -1;
     }
 
@@ -954,6 +962,13 @@ int asclepius_get_status(void)
     asclepius_command.command = ASCLEPIUS_STATUS_IOCMD;
     asclepius_command.channel = 0;
 
+    // Discard anything left from an exchange that did not finish. The protocol
+    // has no framing, so a partial reply left queued would shift every later
+    // read out of alignment, and reopening the port would not clear it because
+    // the tty buffer belongs to the device, not the descriptor. The board only
+    // ever speaks in reply to a command, so there is nothing else to lose.
+    tcflush(asclepius_serial_port, TCIFLUSH);
+
     if(!asclepius_write_all(&asclepius_command, sizeof(asclepius_command)))
     {
         asclepius_connected = false;
@@ -1042,6 +1057,28 @@ int asclepius_ext_open(void)
         asclepius_ext_close();
     }
 
+    // The passthrough must never be opened on the control port. Two
+    // descriptors on one device would have the terminal stealing bytes out of
+    // STATUS replies (killing the poller) and serialsend injecting bytes into
+    // the protocol stream. The shipped defaults are udev aliases on the same
+    // board, so this is easy to set up by accident. Compare the resolved
+    // device rather than the path, so /dev/ttyascl and /dev/ttyUSB1 are caught.
+    if(asclepius_connected && asclepius_serial_port >= 0)
+    {
+        struct stat control_st;
+        struct stat ext_st;
+
+        if(fstat(asclepius_serial_port, &control_st) == 0 &&
+           stat(asclepius_ext_tty_device_ccc, &ext_st) == 0 &&
+           control_st.st_rdev == ext_st.st_rdev)
+        {
+            printf("Error: the UART passthrough port %s is the Asclepius control port; choose a different port\n",
+                   asclepius_ext_tty_device_ccc);
+            asclepius_ext_connected = false;
+            return -1;
+        }
+    }
+
     asclepius_ext_serial_port = open(asclepius_ext_tty_device_ccc, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
     if(asclepius_ext_serial_port < 0)
@@ -1092,10 +1129,46 @@ int asclepius_ext_send(const char *data, size_t len)
 
         if(n < 0)
         {
-            if(errno == EINTR || errno == EAGAIN)
+            if(errno == EINTR)
             {
                 continue;
             }
+
+            if(errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                // The port is non-blocking, so a full transmit buffer is normal
+                // rather than exceptional. Wait for room with a deadline: this
+                // used to retry immediately, which pinned a core at 100% and
+                // froze the GUI whenever the peer stopped draining (drive
+                // powered off, cable unplugged, or XOFF asserted).
+                struct pollfd poll_fd;
+                poll_fd.fd = asclepius_ext_serial_port;
+                poll_fd.events = POLLOUT;
+                poll_fd.revents = 0;
+
+                int poll_result = poll(&poll_fd, 1, ASCLEPIUS_EXT_WRITE_TIMEOUT_MS);
+
+                if(poll_result > 0)
+                {
+                    continue;
+                }
+
+                if(poll_result == 0)
+                {
+                    printf("Error writing ext: timed out after %u ms with %zu of %zu bytes sent\n",
+                           ASCLEPIUS_EXT_WRITE_TIMEOUT_MS, offset, len);
+                    return -1;
+                }
+
+                if(errno == EINTR)
+                {
+                    continue;
+                }
+
+                printf("Error writing ext: %s\n", strerror(errno));
+                return -1;
+            }
+
             printf("Error writing ext: %s\n", strerror(errno));
             return -1;
         }
