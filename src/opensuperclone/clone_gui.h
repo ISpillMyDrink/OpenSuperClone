@@ -644,6 +644,12 @@ void open_asclepius_ext_terminal_ccc(void);
 // Serial port picker, shared by the control-port and passthrough entries.
 void on_asclepius_ports_clicked_ccc(GtkWidget *button);
 void open_asclepius_monitor_dialog_ccc(void);
+void open_wd_royl_vendor_dialog_ccc(void);
+void open_wd_royl_read_module_dialog_ccc(void);
+void open_wd_royl_module_inspector_ccc(void);
+void run_wd_royl_prepare_patch_ccc(void);
+void run_wd_royl_write_patch_ccc(void);
+void run_wd_royl_restore_original_ccc(void);
 
 // GtkRadioButton handler that switches which board the relay controls drive.
 void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data);

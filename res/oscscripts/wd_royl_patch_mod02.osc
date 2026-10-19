@@ -43,6 +43,20 @@ seti $module_number = 0x02
 sets $basefilename = "mod02original.bin"
 sets $basepatchname = "mod02patched.bin"
 
+# A GUI caller can preset ui_action to bypass this interactive menu:
+# 1 = read and create patch, 2 = write patch, 3 = restore original.
+seti $ui_action = $ui_action
+if $ui_action = 1
+  gosub read_and_create
+  exit 0
+elseif $ui_action = 2
+  gosub write_patch
+  exit 0
+elseif $ui_action = 3
+  gosub restore_original
+  exit 0
+endif
+
 while 1 = 1
   echo " "
   echo "WD ROYL Patch Mod02"

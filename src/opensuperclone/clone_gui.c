@@ -6195,6 +6195,788 @@ void do_repair_log_ccc(void)
   }
 }
 
+static int run_wd_royl_script_ccc(const char *script_name, const char *setup_command)
+{
+  char script_path[PATH_MAX];
+  char output_directory[PATH_MAX];
+  char original_directory[PATH_MAX];
+  char *logfile_path;
+  char *logfile_directory;
+  char setup_copy[128];
+  int script_status = 1;
+  int result = -1;
+
+  if(!source_chosen_ccc)
+  {
+    return -2;
+  }
+
+  if(log_file_ccc == NULL || log_file_ccc[0] == '\0')
+  {
+    return -3;
+  }
+
+  if(getcwd(original_directory, sizeof(original_directory)) == NULL)
+  {
+    return -1;
+  }
+
+  logfile_path = g_canonicalize_filename(log_file_ccc, original_directory);
+  logfile_directory = g_path_get_dirname(logfile_path);
+  snprintf(output_directory, sizeof(output_directory), "%s/royl/modules", logfile_directory);
+  g_free(logfile_directory);
+  g_free(logfile_path);
+
+  if(g_mkdir_with_parents(output_directory, 0755) != 0 || chdir(output_directory) != 0)
+  {
+    return -1;
+  }
+
+  snprintf(script_path, sizeof(script_path), "%s/%s", OSC_SCRIPT_PATH, script_name);
+  script_file_ccc = script_path;
+
+  return_value_ccc = read_script_file_ccc(script_file_ccc);
+  if(return_value_ccc != 0)
+  {
+    result = return_value_ccc;
+    goto restore_directory;
+  }
+
+  if(setup_command != NULL)
+  {
+    snprintf(setup_copy, sizeof(setup_copy), "%s", setup_command);
+    if(execute_line_ccc(false, 1, "seti", setup_copy) != 0)
+    {
+      result = -1;
+      goto restore_directory;
+    }
+  }
+
+  while(script_status == 1)
+  {
+    script_status = process_lines_ccc();
+    if(script_status < 0 || script_status > 1)
+    {
+      result = script_status;
+      goto restore_directory;
+    }
+
+    if(script_status == 1)
+    {
+      return_value_ccc = read_script_file_ccc(script_file_ccc);
+      if(return_value_ccc != 0)
+      {
+        result = return_value_ccc;
+        goto restore_directory;
+      }
+    }
+  }
+
+  result = script_status;
+
+restore_directory:
+  if(chdir(original_directory) != 0)
+  {
+    return -1;
+  }
+
+  return result;
+}
+
+static bool confirm_wd_royl_operation_ccc(GtkWindow *parent, const char *message)
+{
+  GtkWidget *dialog = gtk_message_dialog_new(parent,
+                                             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                             GTK_MESSAGE_WARNING,
+                                             GTK_BUTTONS_OK_CANCEL,
+                                             "%s",
+                                             message);
+  gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+  return response == GTK_RESPONSE_OK;
+}
+
+static void wd_royl_show_result_ccc(const char *title, int result)
+{
+  const char *message;
+
+  if(result == -2)
+  {
+    message = _("Choose a source drive before using WD ROYL commands.");
+  }
+  else if(result == 0)
+  {
+    message = _("Command completed. See the console and generated files for details.");
+  }
+  else
+  {
+    message = _("Command failed. See the console for details.");
+  }
+
+  GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
+                                             GTK_DIALOG_DESTROY_WITH_PARENT,
+                                             result == 0 ? GTK_MESSAGE_INFO : GTK_MESSAGE_ERROR,
+                                             GTK_BUTTONS_OK,
+                                             "%s",
+                                             message);
+  gtk_window_set_title(GTK_WINDOW(dialog), title);
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
+static int wd_royl_run_fixed_script_ccc(const char *script_name, const char *setup)
+{
+  return run_wd_royl_script_ccc(script_name, setup);
+}
+
+static void wd_royl_run_slow_fix_action_ccc(int action, bool confirm)
+{
+  const char *message;
+
+  if(confirm)
+  {
+    message = action == 2
+      ? _("Writing the WD ROYL slow-fix patch changes service-area data and may damage the drive. Continue?")
+      : _("Restoring the WD ROYL original module changes service-area data and may damage the drive if the backup is wrong. Continue?");
+
+    if(!confirm_wd_royl_operation_ccc(GTK_WINDOW(main_window_ccc), message))
+    {
+      return;
+    }
+  }
+
+  char setup[64];
+  snprintf(setup, sizeof(setup), "$ui_action = %d", action);
+  wd_royl_show_result_ccc(action == 1 ? _("WD ROYL Slow Fix Preparation") : action == 2 ? _("WD ROYL Slow Fix Write") : _("WD ROYL Restore"),
+                          run_wd_royl_script_ccc("wd_royl_patch_mod02.osc", setup));
+}
+
+void open_wd_royl_read_module_dialog_ccc(void)
+{
+  GtkWidget *dialog;
+  GtkWidget *entry;
+  gint response;
+
+  dialog = gtk_dialog_new_with_buttons(_("Read WD ROYL Module"),
+                                       GTK_WINDOW(main_window_ccc),
+                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       _("Cancel"), GTK_RESPONSE_CANCEL,
+                                       _("Read Module"), GTK_RESPONSE_OK,
+                                       NULL);
+  gtk_window_set_default_size(GTK_WINDOW(dialog), 420, 120);
+  GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+  GtkWidget *label = gtk_label_new(_("Enter the service-area module number in decimal or hexadecimal notation:"));
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+  gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+  entry = gtk_entry_new();
+  gtk_entry_set_text(GTK_ENTRY(entry), "0x02");
+  gtk_widget_set_tooltip_text(entry, _("For example: 2 or 0x02"));
+  gtk_box_pack_start(GTK_BOX(content), label, FALSE, FALSE, 4);
+  gtk_box_pack_start(GTK_BOX(content), entry, FALSE, FALSE, 4);
+  gtk_widget_show_all(dialog);
+
+  response = gtk_dialog_run(GTK_DIALOG(dialog));
+  if(response == GTK_RESPONSE_OK)
+  {
+    const char *text = gtk_entry_get_text(GTK_ENTRY(entry));
+    char *end = NULL;
+    unsigned long module = strtoul(text, &end, 0);
+
+    if(end == text || *end != '\0' || module > 0xffff)
+    {
+      wd_royl_show_result_ccc(_("Read WD ROYL Module"), -1);
+    }
+    else
+    {
+      char setup[64];
+      snprintf(setup, sizeof(setup), "$mod = %lu", module);
+      wd_royl_show_result_ccc(_("Read WD ROYL Module"),
+                              wd_royl_run_fixed_script_ccc("myscripts/wd_royl_dump_mod_select.osc", setup));
+    }
+  }
+
+  gtk_widget_destroy(dialog);
+}
+
+void run_wd_royl_prepare_patch_ccc(void)
+{
+  wd_royl_run_slow_fix_action_ccc(1, false);
+}
+
+void run_wd_royl_write_patch_ccc(void)
+{
+  wd_royl_run_slow_fix_action_ccc(2, true);
+}
+
+void run_wd_royl_restore_original_ccc(void)
+{
+  wd_royl_run_slow_fix_action_ccc(3, true);
+}
+
+static void wd_royl_dialog_action_ccc(GtkWidget *button, gpointer data)
+{
+  GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
+  gtk_dialog_response(GTK_DIALOG(dialog), GPOINTER_TO_INT(data));
+}
+
+void open_wd_royl_vendor_dialog_ccc(void)
+{
+  GtkWidget *dialog;
+  GtkWidget *content;
+  GtkWidget *module_entry;
+  GtkWidget *status_label;
+  gint response;
+
+  if(!source_chosen_ccc)
+  {
+    GtkWidget *error = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
+                                              GTK_DIALOG_DESTROY_WITH_PARENT,
+                                              GTK_MESSAGE_ERROR,
+                                              GTK_BUTTONS_OK,
+                                              "%s",
+                                              _("Choose a source drive before using WD ROYL commands."));
+    gtk_dialog_run(GTK_DIALOG(error));
+    gtk_widget_destroy(error);
+    return;
+  }
+
+  dialog = gtk_dialog_new_with_buttons(_("WD ROYL Vendor Commands"),
+                                       GTK_WINDOW(main_window_ccc),
+                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       _("Close"), GTK_RESPONSE_CLOSE,
+                                       NULL);
+  gtk_window_set_default_size(GTK_WINDOW(dialog), 520, 260);
+  content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 12);
+
+  GtkWidget *heading = gtk_label_new(_("Western Digital ROYL / Marvel vendor-specific operations"));
+  gtk_label_set_xalign(GTK_LABEL(heading), 0.0);
+  gtk_box_pack_start(GTK_BOX(content), heading, FALSE, FALSE, 4);
+
+  GtkWidget *warning = gtk_label_new(_("These commands operate directly on service-area data. Back up important data first and verify the drive model."));
+  gtk_label_set_xalign(GTK_LABEL(warning), 0.0);
+  gtk_label_set_line_wrap(GTK_LABEL(warning), TRUE);
+  gtk_box_pack_start(GTK_BOX(content), warning, FALSE, FALSE, 4);
+
+  GtkWidget *module_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+  GtkWidget *module_label = gtk_label_new(_("Module number:"));
+  module_entry = gtk_entry_new();
+  gtk_entry_set_text(GTK_ENTRY(module_entry), "0x02");
+  gtk_widget_set_tooltip_text(module_entry, _("Service-area module number, decimal or hexadecimal such as 0x02"));
+  gtk_box_pack_start(GTK_BOX(module_box), module_label, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(module_box), module_entry, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(content), module_box, FALSE, FALSE, 4);
+
+  GtkWidget *buttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  GtkWidget *read_button = gtk_button_new_with_label(_("Read selected module"));
+  GtkWidget *prepare_button = gtk_button_new_with_label(_("WD ROYL slow fix: read and prepare patch"));
+  GtkWidget *write_button = gtk_button_new_with_label(_("WD ROYL slow fix: write patch"));
+  GtkWidget *restore_button = gtk_button_new_with_label(_("WD ROYL slow fix: restore original"));
+  gtk_widget_set_tooltip_text(read_button, _("Read the selected service-area module using WD vendor-specific commands"));
+  gtk_widget_set_tooltip_text(prepare_button, _("Read module 0x02 and create the slow-fix patch files"));
+  gtk_widget_set_tooltip_text(write_button, _("Write the prepared slow-fix patch to the drive; dangerous"));
+  gtk_widget_set_tooltip_text(restore_button, _("Restore the saved original module 0x02 data; dangerous"));
+  gtk_box_pack_start(GTK_BOX(buttons), read_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(buttons), prepare_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(buttons), write_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(buttons), restore_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(content), buttons, FALSE, FALSE, 4);
+
+  status_label = gtk_label_new("");
+  gtk_label_set_xalign(GTK_LABEL(status_label), 0.0);
+  gtk_label_set_line_wrap(GTK_LABEL(status_label), TRUE);
+  gtk_box_pack_start(GTK_BOX(content), status_label, FALSE, FALSE, 4);
+
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_module_entry", module_entry);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_status_label", status_label);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_read_button", read_button);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_prepare_button", prepare_button);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_write_button", write_button);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_restore_button", restore_button);
+
+  g_signal_connect(read_button, "clicked", G_CALLBACK(wd_royl_dialog_action_ccc), GINT_TO_POINTER(1));
+  g_signal_connect(prepare_button, "clicked", G_CALLBACK(wd_royl_dialog_action_ccc), GINT_TO_POINTER(2));
+  g_signal_connect(write_button, "clicked", G_CALLBACK(wd_royl_dialog_action_ccc), GINT_TO_POINTER(3));
+  g_signal_connect(restore_button, "clicked", G_CALLBACK(wd_royl_dialog_action_ccc), GINT_TO_POINTER(4));
+
+  gtk_widget_show_all(dialog);
+
+  while((response = gtk_dialog_run(GTK_DIALOG(dialog))) != GTK_RESPONSE_CLOSE)
+  {
+    const char *module_text = gtk_entry_get_text(GTK_ENTRY(module_entry));
+    char *end = NULL;
+    unsigned long module = strtoul(module_text, &end, 0);
+    char setup[64];
+    int result;
+
+    if(end == module_text || *end != '\0' || module > 0xffff)
+    {
+      gtk_label_set_text(GTK_LABEL(status_label), _("Invalid module number. Use decimal or hexadecimal notation."));
+      continue;
+    }
+
+    if(response == 1)
+    {
+      snprintf(setup, sizeof(setup), "$mod = %lu", module);
+      result = run_wd_royl_script_ccc("myscripts/wd_royl_dump_mod_select.osc", setup);
+    }
+    else if(response == 2)
+    {
+      result = run_wd_royl_script_ccc("wd_royl_patch_mod02.osc", "$ui_action = 1");
+    }
+    else if(response == 3)
+    {
+      if(!confirm_wd_royl_operation_ccc(GTK_WINDOW(dialog), _("Writing the slow-fix patch changes service-area data and may damage the drive. Continue?")))
+      {
+        continue;
+      }
+      result = run_wd_royl_script_ccc("wd_royl_patch_mod02.osc", "$ui_action = 2");
+    }
+    else if(response == 4)
+    {
+      if(!confirm_wd_royl_operation_ccc(GTK_WINDOW(dialog), _("Restoring service-area data changes the drive and may damage it if the backup is wrong. Continue?")))
+      {
+        continue;
+      }
+      result = run_wd_royl_script_ccc("wd_royl_patch_mod02.osc", "$ui_action = 3");
+    }
+    else
+    {
+      continue;
+    }
+
+    if(result == -2)
+    {
+      gtk_label_set_text(GTK_LABEL(status_label), _("Choose a source drive before running this command."));
+    }
+    else if(result == 0)
+    {
+      gtk_label_set_text(GTK_LABEL(status_label), _("Command completed. See the console and generated files for details."));
+    }
+    else
+    {
+      gtk_label_set_text(GTK_LABEL(status_label), _("Command failed. See the console for details."));
+    }
+  }
+
+  gtk_widget_destroy(dialog);
+}
+
+static char *wd_royl_modules_directory_ccc(void)
+{
+  char cwd[PATH_MAX];
+  char *logfile_path;
+  char *logfile_directory;
+  char *modules_directory;
+
+  if(log_file_ccc == NULL || log_file_ccc[0] == '\0' || getcwd(cwd, sizeof(cwd)) == NULL)
+  {
+    return NULL;
+  }
+
+  logfile_path = g_canonicalize_filename(log_file_ccc, cwd);
+  logfile_directory = g_path_get_dirname(logfile_path);
+  modules_directory = g_build_filename(logfile_directory, "royl", "modules", NULL);
+  g_free(logfile_directory);
+  g_free(logfile_path);
+  return modules_directory;
+}
+
+static void wd_royl_add_module_files_ccc(GtkComboBoxText *combo, const char *directory, const char *relative)
+{
+  GDir *dir = g_dir_open(directory, 0, NULL);
+  const char *name;
+
+  if(dir == NULL)
+  {
+    return;
+  }
+
+  while((name = g_dir_read_name(dir)) != NULL)
+  {
+    char *path = g_build_filename(directory, name, NULL);
+    char *display = relative[0] == '\0' ? g_strdup(name) : g_build_filename(relative, name, NULL);
+
+    if(g_file_test(path, G_FILE_TEST_IS_DIR))
+    {
+      wd_royl_add_module_files_ccc(combo, path, display);
+    }
+    else if(g_file_test(path, G_FILE_TEST_IS_REGULAR))
+    {
+      gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combo), path, display);
+    }
+
+    g_free(display);
+    g_free(path);
+  }
+
+  g_dir_close(dir);
+}
+
+static void wd_royl_preview_module_ccc(GtkComboBox *combo, gpointer data)
+{
+  GtkWidget *textview = GTK_WIDGET(data);
+  const char *path = gtk_combo_box_get_active_id(combo);
+  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+  FILE *file;
+  unsigned char bytes[4096];
+  size_t offset = 0;
+  char output[512];
+
+  gtk_text_buffer_set_text(buffer, "", -1);
+  if(path == NULL)
+  {
+    return;
+  }
+
+  file = fopen(path, "rb");
+  if(file == NULL)
+  {
+    gtk_text_buffer_set_text(buffer, _("Unable to open selected module file."), -1);
+    return;
+  }
+
+  while(offset < sizeof(bytes))
+  {
+    size_t count = fread(bytes + offset, 1, sizeof(bytes) - offset, file);
+    if(count == 0)
+    {
+      break;
+    }
+    offset += count;
+  }
+  fclose(file);
+
+  for(size_t at = 0; at < offset; at += 16)
+  {
+    size_t count = offset - at;
+    char ascii[17];
+    int used = snprintf(output, sizeof(output), "%08zx  ", at);
+    if(count > 16)
+    {
+      count = 16;
+    }
+    for(size_t i = 0; i < 16; i++)
+    {
+      if(i < count)
+      {
+        used += snprintf(output + used, sizeof(output) - (size_t)used, "%02x ", bytes[at + i]);
+        ascii[i] = isprint(bytes[at + i]) ? (char)bytes[at + i] : '.';
+      }
+      else
+      {
+        used += snprintf(output + used, sizeof(output) - (size_t)used, "   ");
+        ascii[i] = ' ';
+      }
+    }
+    ascii[16] = '\0';
+    snprintf(output + used, sizeof(output) - (size_t)used, " |%s|\n", ascii);
+    GtkTextIter end;
+    gtk_text_buffer_get_end_iter(buffer, &end);
+    gtk_text_buffer_insert(buffer, &end, output, -1);
+  }
+}
+
+static void wd_royl_write_selected_module_ccc(GtkWidget *button, gpointer data)
+{
+  GtkWidget *dialog = GTK_WIDGET(data);
+  GtkWidget *module_entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_module"));
+  GtkWidget *file_combo = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_files"));
+  const char *path = gtk_combo_box_get_active_id(GTK_COMBO_BOX(file_combo));
+  const char *module_text = gtk_entry_get_text(GTK_ENTRY(module_entry));
+  char *end = NULL;
+  unsigned long module = strtoul(module_text, &end, 0);
+  char file_setup[PATH_MAX + 32];
+  char confirm_setup[64];
+  char module_setup[64];
+
+  if(path == NULL || end == module_text || *end != '\0' || module > 0xffff)
+  {
+    wd_royl_show_result_ccc(_("Write ROYL Module"), -1);
+    return;
+  }
+
+  if(!confirm_wd_royl_operation_ccc(GTK_WINDOW(dialog), _("Writing this file to the drive changes service-area data and may damage the drive. Continue?")))
+  {
+    return;
+  }
+
+  snprintf(file_setup, sizeof(file_setup), "$ui_file = \"%s\"", path);
+  snprintf(confirm_setup, sizeof(confirm_setup), "$ui_confirm = 1");
+  snprintf(module_setup, sizeof(module_setup), "$ui_mod = %lu", module);
+  execute_line_ccc(false, 1, "sets", file_setup);
+  execute_line_ccc(false, 1, "seti", confirm_setup);
+  wd_royl_show_result_ccc(_("Write ROYL Module"), run_wd_royl_script_ccc("wd_royl_write_mod.osc", module_setup));
+}
+
+static void wd_royl_refresh_module_files_ccc(GtkComboBoxText *combo, const char *directory)
+{
+  gtk_combo_box_text_remove_all(combo);
+  wd_royl_add_module_files_ccc(combo, directory, "");
+}
+
+static uint16_t wd_royl_u16_le_ccc(const unsigned char *data)
+{
+  return (uint16_t)data[0] | ((uint16_t)data[1] << 8);
+}
+
+static uint32_t wd_royl_u32_le_ccc(const unsigned char *data)
+{
+  return (uint32_t)data[0] | ((uint32_t)data[1] << 8) |
+         ((uint32_t)data[2] << 16) | ((uint32_t)data[3] << 24);
+}
+
+static bool wd_royl_find_local_module_ccc(const char *directory, unsigned int module_id, char *path, size_t path_size)
+{
+  char candidate[64];
+  const char *names[] = {
+    "module%04x.bin", "module%x.bin", "mod0x%04x.bin", "mod0x%x.bin"
+  };
+
+  for(size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+  {
+    snprintf(candidate, sizeof(candidate), names[i], module_id);
+    char *found = NULL;
+    GDir *dir = g_dir_open(directory, 0, NULL);
+    if(dir == NULL)
+    {
+      return false;
+    }
+
+    const char *name;
+    while((name = g_dir_read_name(dir)) != NULL)
+    {
+      if(strcmp(name, candidate) == 0)
+      {
+        found = g_build_filename(directory, name, NULL);
+        break;
+      }
+    }
+    g_dir_close(dir);
+
+    if(found != NULL)
+    {
+      snprintf(path, path_size, "%s", found);
+      g_free(found);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+static void wd_royl_load_catalog_ccc(GtkTreeView *view, const char *directory)
+{
+  GtkListStore *store;
+  GtkTreeIter iter;
+  char *catalog_path = g_build_filename(directory, "mod0x1.bin", NULL);
+  FILE *file = fopen(catalog_path, "rb");
+  unsigned char *data = NULL;
+  long length = 0;
+
+  if(file == NULL)
+  {
+    g_free(catalog_path);
+    catalog_path = g_build_filename(directory, "mod0x01.bin", NULL);
+    file = fopen(catalog_path, "rb");
+  }
+
+  store = gtk_list_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  gtk_tree_view_set_model(view, GTK_TREE_MODEL(store));
+  g_object_unref(store);
+
+  if(file != NULL)
+  {
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    if(length > 0 && length <= 16 * 1024 * 1024)
+    {
+      data = g_malloc((size_t)length);
+      if(fread(data, 1, (size_t)length, file) != (size_t)length)
+      {
+        g_free(data);
+        data = NULL;
+      }
+    }
+    fclose(file);
+  }
+
+  if(data != NULL && length >= 0x32 && memcmp(data, "ROYL", 4) == 0)
+  {
+    uint32_t record_count = wd_royl_u32_le_ccc(data + 0x30);
+    size_t offset = 0x32;
+
+    for(uint32_t record = 0; record < record_count && offset + 6 <= (size_t)length; record++)
+    {
+      unsigned int record_length = data[offset];
+      if(record_length < 6 || offset + record_length > (size_t)length)
+      {
+        break;
+      }
+
+      unsigned int module_id = wd_royl_u16_le_ccc(data + offset + 2);
+      unsigned int sectors = wd_royl_u16_le_ccc(data + offset + 4);
+      char id_text[32];
+      char size_text[64];
+      char local_path[PATH_MAX];
+      snprintf(id_text, sizeof(id_text), "0x%04X", module_id);
+      snprintf(size_text, sizeof(size_text), "%u (%u KiB)", sectors, (sectors + 1) / 2);
+      bool backed_up = wd_royl_find_local_module_ccc(directory, module_id, local_path, sizeof(local_path));
+
+      gtk_list_store_append(store, &iter);
+      gtk_list_store_set(store, &iter,
+                         0, id_text,
+                         1, size_text,
+                         2, backed_up ? _("Yes") : _("No"),
+                         3, backed_up ? local_path : "",
+                         -1);
+      offset += record_length;
+    }
+  }
+
+  g_free(data);
+  g_free(catalog_path);
+}
+
+static void wd_royl_inspector_action_ccc(GtkWidget *button, gpointer data)
+{
+  GtkWidget *dialog = GTK_WIDGET(data);
+  GtkWidget *module_entry = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_module"));
+  GtkWidget *files = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_files"));
+  const char *action = g_object_get_data(G_OBJECT(button), "wd_royl_inspector_action");
+  const char *module_text = gtk_entry_get_text(GTK_ENTRY(module_entry));
+  char *end = NULL;
+  unsigned long module = strtoul(module_text, &end, 0);
+  char setup[64];
+  int result;
+
+  if(strcmp(action, "inventory") != 0 && (end == module_text || *end != '\0' || module > 0xffff))
+  {
+    wd_royl_show_result_ccc(_("ROYL Module Inspector"), -1);
+    return;
+  }
+
+  if(strcmp(action, "catalog") == 0)
+  {
+    snprintf(setup, sizeof(setup), "$mod = 1");
+    result = run_wd_royl_script_ccc("myscripts/wd_royl_dump_mod_select.osc", setup);
+  }
+  else if(strcmp(action, "arbitrary") == 0)
+  {
+    snprintf(setup, sizeof(setup), "$mod = %lu", module);
+    result = run_wd_royl_script_ccc("myscripts/wd_royl_dump_mod_select.osc", setup);
+  }
+  else if(strcmp(action, "module02") == 0)
+  {
+    result = run_wd_royl_script_ccc("wd_royl_dump_mod02.osc", NULL);
+  }
+  else if(strcmp(action, "module32") == 0)
+  {
+    result = run_wd_royl_script_ccc("wd_royl_dump_mod32.osc", NULL);
+  }
+  else
+  {
+    result = run_wd_royl_script_ccc("wd_royl_dump_mod_all.osc", NULL);
+  }
+
+  wd_royl_show_result_ccc(_("ROYL Module Inspector"), result);
+  wd_royl_refresh_module_files_ccc(GTK_COMBO_BOX_TEXT(files), g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_directory"));
+  wd_royl_load_catalog_ccc(GTK_TREE_VIEW(g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_catalog")),
+                           g_object_get_data(G_OBJECT(dialog), "wd_royl_inspector_directory"));
+}
+
+void open_wd_royl_module_inspector_ccc(void)
+{
+  char *directory = wd_royl_modules_directory_ccc();
+  GtkWidget *dialog;
+  GtkWidget *content;
+  GtkWidget *files;
+  GtkWidget *module_entry;
+  GtkWidget *preview;
+  GtkWidget *write_button;
+  GtkWidget *catalog_view;
+
+  if(directory == NULL)
+  {
+    wd_royl_show_result_ccc(_("ROYL Module Inspector"), -3);
+    return;
+  }
+
+  dialog = gtk_dialog_new_with_buttons(_("ROYL Module Inspector"), GTK_WINDOW(main_window_ccc),
+                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       _("Close"), GTK_RESPONSE_CLOSE, NULL);
+  gtk_window_set_default_size(GTK_WINDOW(dialog), 720, 520);
+  content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 10);
+
+  GtkWidget *heading = gtk_label_new(_("Browse files saved under project/royl/modules"));
+  gtk_label_set_xalign(GTK_LABEL(heading), 0.0);
+  gtk_box_pack_start(GTK_BOX(content), heading, FALSE, FALSE, 4);
+
+  files = gtk_combo_box_text_new();
+  gtk_widget_set_tooltip_text(files, _("Select a module artifact to preview"));
+  wd_royl_add_module_files_ccc(GTK_COMBO_BOX_TEXT(files), directory, "");
+  gtk_box_pack_start(GTK_BOX(content), files, FALSE, FALSE, 4);
+
+  GtkWidget *module_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+  GtkWidget *module_label = gtk_label_new(_("Module number for write:"));
+  module_entry = gtk_entry_new();
+  gtk_entry_set_text(GTK_ENTRY(module_entry), "0x02");
+  gtk_box_pack_start(GTK_BOX(module_box), module_label, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(module_box), module_entry, FALSE, FALSE, 0);
+
+  GtkWidget *read_arbitrary_button = gtk_button_new_with_label(_("Read module"));
+  GtkWidget *catalog_button = gtk_button_new_with_label(_("Read catalog (module 01)"));
+  GtkWidget *inventory_button = gtk_button_new_with_label(_("Backup all modules"));
+  gtk_widget_set_tooltip_text(read_arbitrary_button, _("Read the module number above"));
+  gtk_widget_set_tooltip_text(catalog_button, _("Read module 0x01, the drive's ROYL module catalog"));
+  gtk_widget_set_tooltip_text(inventory_button, _("Use the module catalog to read and save every discovered module under royl/modules"));
+  gtk_box_pack_start(GTK_BOX(module_box), read_arbitrary_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(module_box), catalog_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(module_box), inventory_button, FALSE, FALSE, 0);
+  write_button = gtk_button_new_with_label(_("Write selected file..."));
+  gtk_widget_set_tooltip_text(write_button, _("Write the selected module artifact to the drive; dangerous"));
+  gtk_box_pack_start(GTK_BOX(module_box), write_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(content), module_box, FALSE, FALSE, 4);
+
+  catalog_view = gtk_tree_view_new();
+  GtkCellRenderer *catalog_renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(catalog_view), -1, _("Module"), catalog_renderer, "text", 0, NULL);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(catalog_view), -1, _("Sectors (KiB)"), catalog_renderer, "text", 1, NULL);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(catalog_view), -1, _("Local backup"), catalog_renderer, "text", 2, NULL);
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(catalog_view), -1, _("File"), catalog_renderer, "text", 3, NULL);
+  gtk_widget_set_size_request(catalog_view, -1, 150);
+  gtk_box_pack_start(GTK_BOX(content), catalog_view, FALSE, TRUE, 4);
+
+  preview = gtk_text_view_new();
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(preview), FALSE);
+  gtk_text_view_set_monospace(GTK_TEXT_VIEW(preview), TRUE);
+  GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_container_add(GTK_CONTAINER(scroll), preview);
+  gtk_box_pack_start(GTK_BOX(content), scroll, TRUE, TRUE, 4);
+
+  g_object_set_data_full(G_OBJECT(dialog), "wd_royl_inspector_directory", directory, g_free);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_inspector_files", files);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_inspector_module", module_entry);
+  g_object_set_data(G_OBJECT(dialog), "wd_royl_inspector_catalog", catalog_view);
+  g_object_set_data(G_OBJECT(read_arbitrary_button), "wd_royl_inspector_action", (gpointer)"arbitrary");
+  g_object_set_data(G_OBJECT(catalog_button), "wd_royl_inspector_action", (gpointer)"catalog");
+  g_object_set_data(G_OBJECT(inventory_button), "wd_royl_inspector_action", (gpointer)"inventory");
+  g_signal_connect(files, "changed", G_CALLBACK(wd_royl_preview_module_ccc), preview);
+  g_signal_connect(read_arbitrary_button, "clicked", G_CALLBACK(wd_royl_inspector_action_ccc), dialog);
+  g_signal_connect(catalog_button, "clicked", G_CALLBACK(wd_royl_inspector_action_ccc), dialog);
+  g_signal_connect(inventory_button, "clicked", G_CALLBACK(wd_royl_inspector_action_ccc), dialog);
+  g_signal_connect(write_button, "clicked", G_CALLBACK(wd_royl_write_selected_module_ccc), dialog);
+
+  wd_royl_load_catalog_ccc(GTK_TREE_VIEW(catalog_view), directory);
+
+  gtk_widget_show_all(dialog);
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
 void about_ccc(void)
 {
   GtkWidget *dialog = gtk_about_dialog_new();

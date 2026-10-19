@@ -40,8 +40,15 @@ sets $null = ""
 # make sure not to set this anyplace else
 # if it was not previously set it will = 0
 seti $using_menu = $using_menu
+seti $ui_mod = $ui_mod
+sets $ui_file = $ui_file
+seti $ui_confirm = $ui_confirm
 
 # set the module number
+if $ui_mod > 0
+  seti $mod = $ui_mod
+  seti $module_number = $mod
+endif
 seti $ask = 0
 while 1 = 1
   variablecheck $mod
@@ -66,6 +73,10 @@ while 1 = 1
 done
 
 # set the filename to be read
+if $ui_file != ""
+  sets $file = $ui_file
+  sets $patchname = $file
+endif
 while 1 = 1
   variablecheck $file
   if $error_level < 16
@@ -96,12 +107,14 @@ decimal
 
 echo "WARNING! You are about to write to the service area of the drive."
 echo "You are on your own if something goes wrong."
-echo 'Type "DANGEROUS" to continue:'
-userinput $choicestring
-sets $safety = "DANGEROUS"
-if $choicestring != $safety
-  echo "You chose not to continue"
-  previousscript
+if $ui_confirm != 1
+  echo 'Type "DANGEROUS" to continue:'
+  userinput $choicestring
+  sets $safety = "DANGEROUS"
+  if $choicestring != $safety
+    echo "You chose not to continue"
+    previousscript
+  endif
 endif
 
 gosub write_patch

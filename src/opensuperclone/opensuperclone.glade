@@ -643,6 +643,91 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="vendor_specific_commandsmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Vendor Specific Commands</property>
+                        <property name="use-underline">True</property>
+                        <child type="submenu">
+                          <object class="GtkMenu" id="vendor_specific_commands_menu">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkMenuItem" id="western_digitalmi">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Western Digital</property>
+                                <child type="submenu">
+                                  <object class="GtkMenu" id="western_digital_menu">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <child>
+                                      <object class="GtkMenuItem" id="wd_roylmi">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">ROYL / Marvel</property>
+                                        <child type="submenu">
+                                          <object class="GtkMenu" id="wd_royl_menu">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wd_royl_module_inspectormi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Module Inspector...</property>
+                                                <signal name="activate" handler="open_wd_royl_module_inspector_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wd_royl_slow_fixmi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Slow Fix</property>
+                                                <child type="submenu">
+                                                  <object class="GtkMenu" id="wd_royl_slow_fix_menu">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">False</property>
+                                                    <child>
+                                                      <object class="GtkMenuItem" id="wd_royl_prepare_patchmi">
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">False</property>
+                                                        <property name="label" translatable="yes">Read and prepare patch</property>
+                                                        <signal name="activate" handler="run_wd_royl_prepare_patch_ccc" swapped="no"/>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkMenuItem" id="wd_royl_write_patchmi">
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">False</property>
+                                                        <property name="label" translatable="yes">Write patch...</property>
+                                                        <signal name="activate" handler="run_wd_royl_write_patch_ccc" swapped="no"/>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkMenuItem" id="wd_royl_restore_patchmi">
+                                                        <property name="visible">True</property>
+                                                        <property name="can-focus">False</property>
+                                                        <property name="label" translatable="yes">Restore original...</property>
+                                                        <signal name="activate" handler="run_wd_royl_restore_original_ccc" swapped="no"/>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem" id="separator9">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
