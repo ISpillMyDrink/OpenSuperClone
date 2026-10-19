@@ -7880,6 +7880,7 @@ no data</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Use the configured USB relay board for power control</property>
                                 <signal name="toggled" handler="on_primary_relay_board_type_changed_ccc" swapped="no"/>
                                 <property name="label" translatable="yes">USB relay</property>
                               </object>
@@ -7894,6 +7895,7 @@ no data</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Use the Asclepius board for power cycling and current monitoring</property>
                                 <property name="group">primary_relay_board_generic_radio</property>
                                 <signal name="toggled" handler="on_primary_relay_board_type_changed_ccc" swapped="no"/>
                                 <property name="label" translatable="yes">Asclepius</property>
@@ -8365,6 +8367,7 @@ no data</property>
                                                     <property name="invisible-char">•</property>
                                                     <property name="primary-icon-activatable">False</property>
                                                     <property name="secondary-icon-activatable">False</property>
+                                                    <property name="tooltip-text" translatable="yes">Seconds to leave the primary relay deactivated during a power cycle</property>
                                                   </object>
                                                 </child>
                                               </object>
@@ -8402,6 +8405,7 @@ no data</property>
                                                     <property name="invisible-char">•</property>
                                                     <property name="primary-icon-activatable">False</property>
                                                     <property name="secondary-icon-activatable">False</property>
+                                                    <property name="tooltip-text" translatable="yes">Seconds to wait after restoring power before continuing</property>
                                                   </object>
                                                 </child>
                                               </object>
@@ -8445,6 +8449,7 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">True</property>
                                                 <property name="receives-default">True</property>
+                                                <property name="tooltip-text" translatable="yes">Run the configured USB relay activation, delay, and deactivation sequence</property>
                                                 <signal name="clicked" handler="do_test_primary_relay_ccc" swapped="no"/>
                                               </object>
                                             </child>
@@ -8479,6 +8484,7 @@ no data</property>
                                               <object class="GtkComboBoxText" id="asclepius_relay_source_combobox">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">True</property>
+                                                <property name="tooltip-text" translatable="yes">Select which Asclepius rail is switched during a primary power cycle. MOLEX switches 12V and 5V; All switches every rail</property>
                                               </object>
                                             </child>
                                           </object>
@@ -8521,6 +8527,7 @@ no data</property>
                                                   <property name="invisible-char">•</property>
                                                   <property name="primary-icon-activatable">False</property>
                                                   <property name="secondary-icon-activatable">False</property>
+                                                  <property name="tooltip-text" translatable="yes">Serial control device used by the Asclepius board</property>
                                                 </object>
                                                   <packing>
                                                     <property name="expand">True</property>
@@ -8576,6 +8583,42 @@ no data</property>
                                             <property name="margin-start">12</property>
                                             <property name="margin-bottom">4</property>
                                             <child>
+                                              <object class="GtkLabel" id="asclepius_ocp_rail_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Rail</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_ocp_action_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Action</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_ocp_limit_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Limit</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
                                               <object class="GtkLabel" id="asclepius_poll_interval_label">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
@@ -8584,7 +8627,7 @@ no data</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">0</property>
-                                                <property name="top-attach">0</property>
+                                                <property name="top-attach">1</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8592,10 +8635,12 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">How often voltage, current, enable state, and hardware OCP are sampled</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">1</property>
-                                                <property name="top-attach">0</property>
+                                                <property name="top-attach">1</property>
+                                                <property name="width">2</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8607,7 +8652,7 @@ no data</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">0</property>
-                                                <property name="top-attach">1</property>
+                                                <property name="top-attach">2</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8615,10 +8660,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software OCP action for 12V: ignore, warn, or cut power</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">1</property>
-                                                <property name="top-attach">1</property>
+                                                <property name="top-attach">2</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8626,10 +8672,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software over-current limit for 12V</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">2</property>
-                                                <property name="top-attach">1</property>
+                                                <property name="top-attach">2</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8641,7 +8688,7 @@ no data</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">0</property>
-                                                <property name="top-attach">2</property>
+                                                <property name="top-attach">3</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8649,10 +8696,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software OCP action for 5V: ignore, warn, or cut power</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">1</property>
-                                                <property name="top-attach">2</property>
+                                                <property name="top-attach">3</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8660,10 +8708,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software over-current limit for 5V</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">2</property>
-                                                <property name="top-attach">2</property>
+                                                <property name="top-attach">3</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8675,7 +8724,7 @@ no data</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">0</property>
-                                                <property name="top-attach">3</property>
+                                                <property name="top-attach">4</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8683,10 +8732,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software OCP action for USB 5V: ignore, warn, or cut power</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">1</property>
-                                                <property name="top-attach">3</property>
+                                                <property name="top-attach">4</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -8694,10 +8744,11 @@ no data</property>
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
                                                 <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Software over-current limit for USB 5V</property>
                                               </object>
                                               <packing>
                                                 <property name="left-attach">2</property>
-                                                <property name="top-attach">3</property>
+                                                <property name="top-attach">4</property>
                                               </packing>
                                             </child>
                                           </object>
@@ -8708,6 +8759,7 @@ no data</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">Asclepius soft OCP</property>
                                             <property name="use-markup">True</property>
+                                            <property name="tooltip-text" translatable="yes">Software OCP is checked on each status poll and is not a replacement for hardware over-current protection</property>
                                           </object>
                                         </child>
                                       </object>
@@ -8739,6 +8791,7 @@ no data</property>
                                                     <property name="visible">True</property>
                                                     <property name="can-focus">True</property>
                                                     <property name="receives-default">True</property>
+                                                    <property name="tooltip-text" translatable="yes">Open the Asclepius control port and start status polling</property>
                                                     <signal name="clicked" handler="do_asclepius_connect_ccc" swapped="no"/>
                                                   </object>
                                                 </child>
@@ -8775,6 +8828,7 @@ no data</property>
                                                     <property name="visible">True</property>
                                                     <property name="can-focus">True</property>
                                                     <property name="receives-default">True</property>
+                                                    <property name="tooltip-text" translatable="yes">Close the Asclepius control port and stop status polling</property>
                                                     <signal name="clicked" handler="do_asclepius_disconnect_ccc" swapped="no"/>
                                                   </object>
                                                 </child>
@@ -8823,6 +8877,7 @@ no data</property>
                                                     <property name="visible">True</property>
                                                     <property name="can-focus">True</property>
                                                     <property name="receives-default">True</property>
+                                                    <property name="tooltip-text" translatable="yes">Switch the selected primary relay source off</property>
                                                     <signal name="clicked" handler="do_activate_primary_relay_ccc" swapped="no"/>
                                                   </object>
                                                 </child>
@@ -8859,6 +8914,7 @@ no data</property>
                                                     <property name="visible">True</property>
                                                     <property name="can-focus">True</property>
                                                     <property name="receives-default">True</property>
+                                                    <property name="tooltip-text" translatable="yes">Switch the selected primary relay source on</property>
                                                     <signal name="clicked" handler="do_deactivate_primary_relay_ccc" swapped="no"/>
                                                   </object>
                                                 </child>

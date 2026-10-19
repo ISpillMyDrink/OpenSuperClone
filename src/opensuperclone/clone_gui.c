@@ -1046,11 +1046,11 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel"));
   gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel"));
   gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel"));
-  
 
   asclepius_12v_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_12v_label"));
   asclepius_5v_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_5v_label"));
   asclepius_usb_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_usb_label"));
+
 
   gtk_label_set_text(GTK_LABEL(asclepius_12v_label), _("0V / 0mA"));
   gtk_label_set_text(GTK_LABEL(asclepius_5v_label), _("0V / 0mA"));
@@ -4525,6 +4525,30 @@ void update_primary_relay_board_type_visibility_ccc(void)
   }
 }
 
+static void update_primary_relay_connection_summary_ccc(void)
+{
+  char summary[512];
+
+  if(data_current_relay_board_a_ccc == NULL)
+  {
+    return;
+  }
+
+  if(primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS)
+  {
+    snprintf(summary, sizeof(summary), _("Asclepius\nConnection: %s\nControl port: %s"),
+             asclepius_get_connection_status() ? _("Connected") : _("Disconnected"),
+             asclepius_tty_device_ccc[0] != '\0' ? asclepius_tty_device_ccc : _("not configured"));
+  }
+  else
+  {
+    snprintf(summary, sizeof(summary), _("USB relay\nConnection: %s"),
+             usbr1_chosen_ccc ? _("Selected") : _("Not selected"));
+  }
+
+  gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), summary);
+}
+
 void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
 {
   (void)data;
@@ -4546,6 +4570,7 @@ void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
   primary_relay_settings_ccc.primary_relay_board_type = board_type;
 
   update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_connection_summary_ccc();
 
   // Capture the rest of the window before applying the buffer. Applying it on
   // its own pushes every other setting the buffer holds over whatever the user
@@ -4558,6 +4583,9 @@ void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
 
 void open_primary_relay_dialog_ccc(void)
 {
+  struct primary_relay_settings_t original_settings;
+  int original_board_type;
+
   GtkBuilder *builder = gtk_builder_new();
   GError *err = NULL; // It is mandatory to initialize to NULL
   if (0 == gtk_builder_add_from_string(builder, (const gchar *)opensuperclone_glade, opensuperclone_glade_len, &err))
@@ -4702,14 +4730,14 @@ void open_primary_relay_dialog_ccc(void)
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay7_checkbutton_ccc), _("Energize relay 7"));
   gtk_button_set_label(GTK_BUTTON(activate_primary_relay8_checkbutton_ccc), _("Energize relay 8"));
   gtk_label_set_text(GTK_LABEL(primary_relay_deactivation_label_ccc), _("Deactivation condition"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay1_checkbutton_ccc), _("Energize relay 1"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay2_checkbutton_ccc), _("Energize relay 2"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay3_checkbutton_ccc), _("Energize relay 3"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay4_checkbutton_ccc), _("Energize relay 4"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay5_checkbutton_ccc), _("Energize relay 5"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay6_checkbutton_ccc), _("Energize relay 6"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay7_checkbutton_ccc), _("Energize relay 7"));
-  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay8_checkbutton_ccc), _("Energize relay 8"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay1_checkbutton_ccc), _("Active after power-on: relay 1"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay2_checkbutton_ccc), _("Active after power-on: relay 2"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay3_checkbutton_ccc), _("Active after power-on: relay 3"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay4_checkbutton_ccc), _("Active after power-on: relay 4"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay5_checkbutton_ccc), _("Active after power-on: relay 5"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay6_checkbutton_ccc), _("Active after power-on: relay 6"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay7_checkbutton_ccc), _("Active after power-on: relay 7"));
+  gtk_button_set_label(GTK_BUTTON(deactivate_primary_relay8_checkbutton_ccc), _("Active after power-on: relay 8"));
   gtk_label_set_text(GTK_LABEL(primary_relay_activate_time_label_ccc), _("Activation time (sec)"));
   gtk_label_set_text(GTK_LABEL(primary_relay_delay_time_label_ccc), _("Post activation delay time (sec)"));
   gtk_button_set_label(GTK_BUTTON(test_primary_relay_button_ccc), _("Test relay operation"));
@@ -4749,7 +4777,8 @@ void open_primary_relay_dialog_ccc(void)
   // g_signal_connect(G_OBJECT(phase_timers_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASETIMERS));
 
   load_primary_relay_settings_ccc();
-  gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), primary_relay_settings_ccc.primary_relay_name);
+  original_settings = primary_relay_settings_ccc;
+  original_board_type = primary_relay_board_type_ccc;
   gtk_entry_set_text(GTK_ENTRY(asclepius_tty_device_text_ccc), primary_relay_settings_ccc.asclepius_tty_device);
   update_primary_relay_button_settings_ccc();
 
@@ -4768,6 +4797,7 @@ void open_primary_relay_dialog_ccc(void)
     }
   }
   update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_connection_summary_ccc();
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Primary Relay Settings"));
 
@@ -4777,6 +4807,12 @@ void open_primary_relay_dialog_ccc(void)
 
     update_primary_relay_settings_ccc();
     logfile_changed_ccc = true;
+  }
+  else
+  {
+    primary_relay_settings_ccc = original_settings;
+    primary_relay_board_type_ccc = original_board_type;
+    update_primary_relay_settings_ccc();
   }
   gtk_widget_destroy(dialog);
   update_display_ccc(0);
@@ -5357,7 +5393,22 @@ static void set_asclepius_soft_ocp_tooltip_ccc(GtkWidget *icon, const char *rail
 
 void update_asclepius_status(void)
 {
-  if (asclepius_get_connection_status())
+  bool connected = asclepius_get_connection_status();
+
+  if (!connected)
+  {
+    gtk_label_set_text(GTK_LABEL(asclepius_12v_label), _("-- / --"));
+    gtk_label_set_text(GTK_LABEL(asclepius_5v_label), _("-- / --"));
+    gtk_label_set_text(GTK_LABEL(asclepius_usb_label), _("-- / --"));
+    gtk_image_set_from_file(GTK_IMAGE(asclepius_12v_icon), status_icon_off_path);
+    gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_off_path);
+    gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_off_path);
+    gtk_widget_set_tooltip_text(asclepius_12v_icon, _("Asclepius disconnected"));
+    gtk_widget_set_tooltip_text(asclepius_5v_icon, _("Asclepius disconnected"));
+    gtk_widget_set_tooltip_text(asclepius_usb_icon, _("Asclepius disconnected"));
+    return;
+  }
+
   {
     struct asclepius_status_t status;
     struct asclepius_ocp_rail_t ocp12v;
@@ -6257,6 +6308,7 @@ void clear_usbr1_ccc(void)
   // Dropping the selected relay changes whether the controls have a reachable
   // board, so the dialog's Activate/Deactivate sensitivity has to follow.
   update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_connection_summary_ccc();
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
@@ -6517,6 +6569,7 @@ void do_asclepius_connect_ccc(void)
   // never goes through the radio handler or the dialog opener, so without this
   // the buttons kept the sensitivity they had when the window was opened.
   update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_connection_summary_ccc();
 
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
@@ -6526,6 +6579,7 @@ void do_asclepius_disconnect_ccc(void)
 {
   asclepius_disconnect();
   update_primary_relay_board_type_visibility_ccc();
+  update_primary_relay_connection_summary_ccc();
   gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), FALSE);
 }
