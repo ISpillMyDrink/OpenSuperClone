@@ -12073,12 +12073,36 @@ static void wd_royl_editor_add_column_ccc(wd_royl_editor_ccc_t *editor,
   gtk_tree_view_append_column(GTK_TREE_VIEW(editor->tree_view), column);
 }
 
+enum
+{
+  WD_ROYL_PICKER_MODULE_COLUMN = 0,
+  WD_ROYL_PICKER_NAME_COLUMN,
+  WD_ROYL_PICKER_SIZE_COLUMN,
+  WD_ROYL_PICKER_COPIES_COLUMN,
+  WD_ROYL_PICKER_LOCATION1_COLUMN,
+  WD_ROYL_PICKER_LOCATION2_COLUMN,
+  WD_ROYL_PICKER_HEALTH_COLUMN,
+  WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN,
+  WD_ROYL_PICKER_MODULE_ID_COLUMN,
+  WD_ROYL_PICKER_SIZE_SECTORS_COLUMN,
+  WD_ROYL_PICKER_COPIES_VALUE_COLUMN,
+  WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN,
+  WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN,
+  WD_ROYL_PICKER_WARNING_COLUMN,
+  WD_ROYL_PICKER_TOOLTIP_COLUMN,
+  WD_ROYL_PICKER_COLUMN_COUNT
+};
+
 typedef struct
 {
   GtkWidget *dialog;
   GtkWidget *tree_view;
   GtkListStore *store;
+  GtkTreeModel *filter;
+  GtkTreeModel *sort;
   GtkWidget *manual_entry;
+  GtkWidget *warnings_only;
+  GtkWidget *details_label;
   uint16_t selected_module;
 } wd_royl_module_picker_ccc_t;
 
@@ -12118,10 +12142,261 @@ static int wd_royl_compare_module_entries_ccc(const void *a, const void *b)
   return 0;
 }
 
-static void wd_royl_picker_add_column_ccc(GtkWidget *tree_view,
-                                          const char *title,
-                                          int model_column, int width,
-                                          bool monospace, float xalign)
+static void wd_royl_module_entry_health_ccc(
+    const wd_royl_module_entry_ccc *entries, size_t entry_count,
+    size_t entry_index, char *health, size_t health_size, bool *warning)
+{
+  const wd_royl_module_entry_ccc *entry = &entries[entry_index];
+  bool duplicate_id = false;
+  bool shared_location = false;
+  size_t i;
+
+  *warning = false;
+  if (entry->module_id == WD_ROYL_MODULE_01)
+  {
+    g_strlcpy(health, _("Directory"), health_size);
+    return;
+  }
+
+  for (i = 0; i < entry_count; i++)
+  {
+    if (i == entry_index)
+    {
+      continue;
+    }
+    if (entries[i].module_id == entry->module_id)
+    {
+      duplicate_id = true;
+    }
+    if (entry->location1 != 0 &&
+        (entries[i].location1 == entry->location1 ||
+         entries[i].location2 == entry->location1))
+    {
+      shared_location = true;
+    }
+    if (entry->location2 != 0 &&
+        (entries[i].location1 == entry->location2 ||
+         entries[i].location2 == entry->location2))
+    {
+      shared_location = true;
+    }
+  }
+
+  if (duplicate_id)
+  {
+    g_strlcpy(health, _("Duplicate module ID"), health_size);
+    *warning = true;
+    return;
+  }
+  if (entry->sectors == 0)
+  {
+    g_strlcpy(health, _("Missing size"), health_size);
+    *warning = true;
+    return;
+  }
+  if (entry->copies == 0)
+  {
+    g_strlcpy(health, _("No copies"), health_size);
+    *warning = true;
+    return;
+  }
+  if (entry->copies > 2)
+  {
+    g_strlcpy(health, _("More than 2 copies"), health_size);
+    *warning = true;
+    return;
+  }
+  if (entry->copies >= 2)
+  {
+    if (entry->location1 == 0 && entry->location2 == 0)
+    {
+      g_strlcpy(health, _("Copy locations not reported"), health_size);
+      *warning = true;
+      return;
+    }
+    if (entry->location1 == 0)
+    {
+      g_strlcpy(health, _("Copy 1 location missing"), health_size);
+      *warning = true;
+      return;
+    }
+    if (entry->location2 == 0)
+    {
+      g_strlcpy(health, _("Copy 2 location missing"), health_size);
+      *warning = true;
+      return;
+    }
+    if (entry->location1 == entry->location2)
+    {
+      g_strlcpy(health, _("Copy 1/2 same address"), health_size);
+      *warning = true;
+      return;
+    }
+  }
+  if (shared_location)
+  {
+    g_strlcpy(health, _("Copy location shared"), health_size);
+    *warning = true;
+    return;
+  }
+  if (entry->copies == 1)
+  {
+    g_strlcpy(health, _("Single copy"), health_size);
+    return;
+  }
+  g_strlcpy(health, _("OK"), health_size);
+}
+
+// Only module IDs with a confirmed public name are listed here. Unknown IDs
+// are deliberately left unlabeled. Sources: HDDSuperTool
+// wd_royl_process_sa (0x0001), the Rossmann WD module glossary
+// (0x0002, 0x000a, 0x0032, 0x0033, 0x0047, 0x0102, 0x0103), and the
+// DFL-WDII manual (0x0031).
+static const char *wd_royl_known_module_name_ccc(uint16_t module_id)
+{
+  static const struct
+  {
+    uint16_t module_id;
+    const char *name;
+  } known_modules[] = {
+      {WD_ROYL_MODULE_01, N_("Directory")},
+      {WD_ROYL_MODULE_02, N_("Configuration")},
+      {0x000a, N_("Head map")},
+      {0x0031, N_("P-list translator")},
+      {0x0032, N_("G-list")},
+      {0x0033, N_("P-list")},
+      {0x0047, N_("Read adaptives")},
+      {0x0102, N_("Head map (SA)")},
+      {0x0103, N_("Read adaptives (SA)")},
+  };
+  size_t i;
+
+  for (i = 0; i < G_N_ELEMENTS(known_modules); i++)
+  {
+    if (known_modules[i].module_id == module_id)
+    {
+      return _(known_modules[i].name);
+    }
+  }
+  return NULL;
+}
+
+static gboolean wd_royl_picker_filter_visible_ccc(GtkTreeModel *model,
+                                                  GtkTreeIter *iter,
+                                                  gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  gboolean warning = FALSE;
+
+  if (picker->warnings_only == NULL ||
+      !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(picker->warnings_only)))
+  {
+    return TRUE;
+  }
+  gtk_tree_model_get(model, iter, WD_ROYL_PICKER_WARNING_COLUMN, &warning, -1);
+  return warning;
+}
+
+static void wd_royl_picker_warnings_only_toggled_ccc(GtkToggleButton *button,
+                                                     gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+
+  (void)button;
+  if (picker->filter != NULL)
+  {
+    gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(picker->filter));
+  }
+}
+
+static void wd_royl_picker_format_location_ccc(uint32_t location, char *buffer,
+                                               size_t buffer_size)
+{
+  if (location == 0)
+  {
+    g_strlcpy(buffer, "-", buffer_size);
+  }
+  else
+  {
+    snprintf(buffer, buffer_size, _("sector 0x%08x (byte 0x%08llx)"),
+             location,
+             (unsigned long long)location * WD_ROYL_SECTOR_SIZE);
+  }
+}
+
+static void wd_royl_picker_update_details_ccc(GtkTreeSelection *selection,
+                                              gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+
+  if (picker->details_label == NULL)
+  {
+    return;
+  }
+  if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+  {
+    gtk_label_set_text(GTK_LABEL(picker->details_label), "");
+    return;
+  }
+
+  {
+    guint module_id = 0;
+    gchar *name = NULL;
+    gchar *size_text = NULL;
+    gchar *copies_text = NULL;
+    gchar *health = NULL;
+    guint64 location1 = 0;
+    guint64 location2 = 0;
+    char location1_text[96];
+    char location2_text[96];
+    char details[640];
+
+    gtk_tree_model_get(
+        model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id,
+        WD_ROYL_PICKER_NAME_COLUMN, &name, WD_ROYL_PICKER_SIZE_COLUMN,
+        &size_text, WD_ROYL_PICKER_COPIES_COLUMN, &copies_text,
+        WD_ROYL_PICKER_HEALTH_COLUMN, &health,
+        WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, &location1,
+        WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN, &location2, -1);
+
+    wd_royl_picker_format_location_ccc((uint32_t)location1, location1_text,
+                                       sizeof(location1_text));
+    wd_royl_picker_format_location_ccc((uint32_t)location2, location2_text,
+                                       sizeof(location2_text));
+    if (name != NULL && name[0] != '\0')
+    {
+      snprintf(details, sizeof(details),
+               _("Module 0x%04x - %s\nSize: %s   Copies: %s   Health: %s\n"
+                 "Copy 1: %s   Copy 2: %s"),
+               module_id, name, size_text != NULL ? size_text : "-",
+               copies_text != NULL ? copies_text : "-",
+               health != NULL ? health : "-", location1_text, location2_text);
+    }
+    else
+    {
+      snprintf(details, sizeof(details),
+               _("Module 0x%04x (name not confirmed)\nSize: %s   Copies: %s   "
+                 "Health: %s\nCopy 1: %s   Copy 2: %s"),
+               module_id, size_text != NULL ? size_text : "-",
+               copies_text != NULL ? copies_text : "-",
+               health != NULL ? health : "-", location1_text, location2_text);
+    }
+    gtk_label_set_text(GTK_LABEL(picker->details_label), details);
+    g_free(name);
+    g_free(size_text);
+    g_free(copies_text);
+    g_free(health);
+  }
+}
+
+static GtkTreeViewColumn *wd_royl_picker_add_column_ccc(
+    GtkWidget *tree_view, const char *title, int model_column, int width,
+    bool monospace, float xalign, int weight_column)
 {
   GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
   GtkTreeViewColumn *column;
@@ -12131,11 +12406,20 @@ static void wd_royl_picker_add_column_ccc(GtkWidget *tree_view,
   {
     g_object_set(renderer, "font", "Monospace 10", NULL);
   }
-  column = gtk_tree_view_column_new_with_attributes(title, renderer, "text",
-                                                    model_column, NULL);
+  if (weight_column >= 0)
+  {
+    column = gtk_tree_view_column_new_with_attributes(
+        title, renderer, "text", model_column, "weight", weight_column, NULL);
+  }
+  else
+  {
+    column = gtk_tree_view_column_new_with_attributes(title, renderer, "text",
+                                                      model_column, NULL);
+  }
   gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
   gtk_tree_view_column_set_fixed_width(column, width);
   gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
+  return column;
 }
 
 static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection,
@@ -12150,10 +12434,12 @@ static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection,
   if (gtk_tree_selection_get_selected(selection, &model, &iter))
   {
     char text[16];
-    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
+                       &module_id, -1);
     snprintf(text, sizeof(text), "0x%04x", module_id);
     gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
   }
+  wd_royl_picker_update_details_ccc(selection, user_data);
 }
 
 static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view,
@@ -12170,7 +12456,8 @@ static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view,
   if (gtk_tree_model_get_iter(model, &iter, path))
   {
     char text[16];
-    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
+                       &module_id, -1);
     snprintf(text, sizeof(text), "0x%04x", module_id);
     gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
   }
@@ -12213,7 +12500,8 @@ static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
   if (gtk_tree_selection_get_selected(selection, &model, &iter))
   {
     guint module_id;
-    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
+                       &module_id, -1);
     if (module_id != 0)
     {
       picker->selected_module = (uint16_t)module_id;
@@ -12239,6 +12527,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   GtkWidget *vbox;
   GtkWidget *info_label;
   GtkWidget *scrolled;
+  GtkWidget *separator;
   GtkWidget *manual_row;
   GtkWidget *manual_label;
   GtkTreeSelection *selection;
@@ -12256,6 +12545,8 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   size_t directory_size = 0;
   size_t entry_count = 0;
   size_t listed_count = 0;
+  size_t warning_count = 0;
+  size_t known_count = 0;
   wd_royl_module_entry_ccc *entries = NULL;
   char directory_error[WD_ROYL_ERROR_SIZE] = "";
   char info_text[1024];
@@ -12341,7 +12632,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
       _("Select WD ROYL SA Module"), parent,
       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
       GTK_RESPONSE_CANCEL, _("Open Module"), GTK_RESPONSE_ACCEPT, NULL);
-  gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 760, 520);
+  gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 970, 600);
   gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog),
                                   GTK_RESPONSE_ACCEPT);
 
@@ -12350,55 +12641,96 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
   gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
 
-  if (directory_ok && listed_count > 0)
-  {
-    snprintf(info_text, sizeof(info_text),
-             _("Directory module 0x0001 lists %zu modules. Select a module "
-               "below or enter a module number."),
-             listed_count);
-  }
-  else if (directory_ok)
-  {
-    g_strlcpy(info_text,
-              _("Directory module 0x0001 did not list any modules. Enter a "
-                "module number manually."),
-              sizeof(info_text));
-  }
-  else
-  {
-    snprintf(info_text, sizeof(info_text),
-             _("The module directory could not be read. Enter a module number "
-               "manually.\n\n%s"),
-             directory_error);
-  }
-  info_label = gtk_label_new(info_text);
+  info_label = gtk_label_new("");
   gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
   gtk_label_set_xalign(GTK_LABEL(info_label), 0.0);
+  gtk_widget_set_tooltip_text(
+      info_label,
+      _("Copy health is based on the copy count and locations reported in "
+        "directory module 0x0001. Copy 1 and Copy 2 are SA sector numbers; "
+        "the byte address is the value multiplied by 512. Known names are "
+        "shown only for confirmed module IDs."));
   gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 0);
 
   {
-    GType columns[7] = {G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                        G_TYPE_UINT};
-    picker.store = gtk_list_store_newv(7, columns);
+    GType columns[WD_ROYL_PICKER_COLUMN_COUNT] = {
+        G_TYPE_STRING,  /* Module */
+        G_TYPE_STRING,  /* Known name */
+        G_TYPE_STRING,  /* Size */
+        G_TYPE_STRING,  /* Copies */
+        G_TYPE_STRING,  /* Copy 1 */
+        G_TYPE_STRING,  /* Copy 2 */
+        G_TYPE_STRING,  /* Copy health */
+        G_TYPE_INT,     /* Health font weight */
+        G_TYPE_UINT,    /* Module ID, hidden sort key */
+        G_TYPE_UINT,    /* Size in sectors, hidden sort key */
+        G_TYPE_UINT,    /* Copies, hidden sort key */
+        G_TYPE_UINT64,  /* Copy 1 location, hidden sort key */
+        G_TYPE_UINT64,  /* Copy 2 location, hidden sort key */
+        G_TYPE_BOOLEAN, /* Warning flag, hidden filter key */
+        G_TYPE_STRING   /* Row tooltip */
+    };
+    picker.store = gtk_list_store_newv(WD_ROYL_PICKER_COLUMN_COUNT, columns);
   }
-  picker.tree_view =
-      gtk_tree_view_new_with_model(GTK_TREE_MODEL(picker.store));
-  gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(picker.tree_view), FALSE);
+  picker.filter = gtk_tree_model_filter_new(GTK_TREE_MODEL(picker.store), NULL);
+  gtk_tree_model_filter_set_visible_func(
+      GTK_TREE_MODEL_FILTER(picker.filter), wd_royl_picker_filter_visible_ccc,
+      &picker, NULL);
+  picker.sort = gtk_tree_model_sort_new_with_model(picker.filter);
+  picker.tree_view = gtk_tree_view_new_with_model(picker.sort);
+  gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(picker.tree_view), TRUE);
   gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(picker.tree_view),
                                GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Module"), 0, 90, true,
-                                0.0);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Type"), 1, 90, false,
-                                0.0);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Size"), 2, 180, false,
-                                0.0);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copies"), 3, 65, false,
-                                0.5);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 1"), 4, 100, true,
-                                0.0);
-  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 2"), 5, 100, true,
-                                0.0);
+  {
+    GtkTreeViewColumn *module_column;
+    GtkTreeViewColumn *name_column;
+    GtkTreeViewColumn *size_column;
+    GtkTreeViewColumn *copies_column;
+    GtkTreeViewColumn *location1_column;
+    GtkTreeViewColumn *location2_column;
+    GtkTreeViewColumn *health_column;
+
+    module_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Module"), WD_ROYL_PICKER_MODULE_COLUMN, 85, true,
+        0.0, -1);
+    name_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Known Name"), WD_ROYL_PICKER_NAME_COLUMN, 170,
+        false, 0.0, -1);
+    size_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Size"), WD_ROYL_PICKER_SIZE_COLUMN, 180, false,
+        0.0, -1);
+    copies_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Copies"), WD_ROYL_PICKER_COPIES_COLUMN, 65, false,
+        0.5, -1);
+    location1_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Copy 1"), WD_ROYL_PICKER_LOCATION1_COLUMN, 105,
+        true, 0.0, -1);
+    location2_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Copy 2"), WD_ROYL_PICKER_LOCATION2_COLUMN, 105,
+        true, 0.0, -1);
+    health_column = wd_royl_picker_add_column_ccc(
+        picker.tree_view, _("Copy Health"), WD_ROYL_PICKER_HEALTH_COLUMN, 190,
+        false, 0.0, WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN);
+
+    gtk_tree_view_column_set_sort_column_id(
+        name_column, WD_ROYL_PICKER_NAME_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(
+        size_column, WD_ROYL_PICKER_SIZE_SECTORS_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(
+        copies_column, WD_ROYL_PICKER_COPIES_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(
+        location1_column, WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(
+        location2_column, WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(
+        health_column, WD_ROYL_PICKER_WARNING_COLUMN);
+    // Use the module ID as the initial sort. Calling this last makes it the
+    // active sort column while leaving the other headers clickable.
+    gtk_tree_view_column_set_sort_column_id(
+        module_column, WD_ROYL_PICKER_MODULE_ID_COLUMN);
+  }
+  gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(picker.tree_view),
+                                   WD_ROYL_PICKER_TOOLTIP_COLUMN);
 
   for (i = 0; i < entry_count; i++)
   {
@@ -12408,8 +12740,12 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     char copies_text[16];
     char location1[16];
     char location2[16];
-    const char *type_text =
-        entries[i].module_id == WD_ROYL_MODULE_01 ? _("Directory") : "";
+    char health[64];
+    char tooltip[256];
+    bool warning = false;
+    const char *known_name =
+        wd_royl_known_module_name_ccc(entries[i].module_id);
+    const char *name_text = known_name != NULL ? known_name : "";
 
     snprintf(module_text, sizeof(module_text), "0x%04x",
              entries[i].module_id);
@@ -12451,13 +12787,72 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     {
       g_strlcpy(location2, "-", sizeof(location2));
     }
+    wd_royl_module_entry_health_ccc(entries, entry_count, i, health,
+                                    sizeof(health), &warning);
+    if (warning)
+    {
+      warning_count++;
+    }
+    if (known_name != NULL)
+    {
+      known_count++;
+    }
+    snprintf(tooltip, sizeof(tooltip), _("%s\nCopy 1: %s\nCopy 2: %s"), health,
+             location1, location2);
 
     gtk_list_store_append(picker.store, &iter);
-    gtk_list_store_set(picker.store, &iter, 0, module_text, 1, type_text, 2,
-                       size_text, 3, copies_text, 4, location1, 5, location2,
-                       6, (guint)entries[i].module_id, -1);
+    gtk_list_store_set(
+        picker.store, &iter, WD_ROYL_PICKER_MODULE_COLUMN, module_text,
+        WD_ROYL_PICKER_NAME_COLUMN, name_text, WD_ROYL_PICKER_SIZE_COLUMN,
+        size_text, WD_ROYL_PICKER_COPIES_COLUMN, copies_text,
+        WD_ROYL_PICKER_LOCATION1_COLUMN, location1,
+        WD_ROYL_PICKER_LOCATION2_COLUMN, location2,
+        WD_ROYL_PICKER_HEALTH_COLUMN, health,
+        WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN,
+        warning ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
+        WD_ROYL_PICKER_MODULE_ID_COLUMN, (guint)entries[i].module_id,
+        WD_ROYL_PICKER_SIZE_SECTORS_COLUMN, (guint)entries[i].sectors,
+        WD_ROYL_PICKER_COPIES_VALUE_COLUMN, (guint)entries[i].copies,
+        WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, (guint64)entries[i].location1,
+        WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN, (guint64)entries[i].location2,
+        WD_ROYL_PICKER_WARNING_COLUMN, warning, WD_ROYL_PICKER_TOOLTIP_COLUMN,
+        tooltip, -1);
   }
-  g_object_unref(picker.store);
+
+  if (directory_ok && listed_count > 0)
+  {
+    if (warning_count > 0)
+    {
+      snprintf(info_text, sizeof(info_text),
+               _("Directory module 0x0001 lists %zu modules; %zu have "
+                 "copy/metadata warnings and %zu have confirmed names. Select "
+                 "a module below or enter a module number."),
+               listed_count, warning_count, known_count);
+    }
+    else
+    {
+      snprintf(info_text, sizeof(info_text),
+               _("Directory module 0x0001 lists %zu modules; copy metadata "
+                 "looks consistent and %zu have confirmed names. Select a "
+                 "module below or enter a module number."),
+               listed_count, known_count);
+    }
+  }
+  else if (directory_ok)
+  {
+    g_strlcpy(info_text,
+              _("Directory module 0x0001 did not list any modules. Enter a "
+                "module number manually."),
+              sizeof(info_text));
+  }
+  else
+  {
+    snprintf(info_text, sizeof(info_text),
+             _("The module directory could not be read. Enter a module number "
+               "manually.\n\n%s"),
+             directory_error);
+  }
+  gtk_label_set_text(GTK_LABEL(info_label), info_text);
 
   scrolled = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
@@ -12465,6 +12860,18 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   gtk_widget_set_size_request(scrolled, -1, 300);
   gtk_container_add(GTK_CONTAINER(scrolled), picker.tree_view);
   gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
+
+  separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+  gtk_box_pack_start(GTK_BOX(vbox), separator, FALSE, FALSE, 0);
+
+  picker.details_label = gtk_label_new("");
+  gtk_label_set_line_wrap(GTK_LABEL(picker.details_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(picker.details_label), 0.0);
+  gtk_label_set_selectable(GTK_LABEL(picker.details_label), TRUE);
+  gtk_widget_set_tooltip_text(
+      picker.details_label,
+      _("The selected module's directory record and raw SA copy locations."));
+  gtk_box_pack_start(GTK_BOX(vbox), picker.details_label, FALSE, FALSE, 0);
 
   manual_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
   gtk_box_pack_start(GTK_BOX(vbox), manual_row, FALSE, FALSE, 0);
@@ -12479,6 +12886,15 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
                    G_CALLBACK(wd_royl_picker_entry_activate_ccc), &picker);
   gtk_box_pack_start(GTK_BOX(manual_row), picker.manual_entry, FALSE, FALSE, 0);
 
+  picker.warnings_only = gtk_check_button_new_with_label(_("Warnings only"));
+  gtk_widget_set_tooltip_text(
+      picker.warnings_only,
+      _("Show only modules with copy or directory metadata warnings."));
+  g_signal_connect(picker.warnings_only, "toggled",
+                   G_CALLBACK(wd_royl_picker_warnings_only_toggled_ccc),
+                   &picker);
+  gtk_box_pack_end(GTK_BOX(manual_row), picker.warnings_only, FALSE, FALSE, 0);
+
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(picker.tree_view));
   g_signal_connect(selection, "changed",
                    G_CALLBACK(wd_royl_picker_selection_changed_ccc), &picker);
@@ -12489,7 +12905,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
 
   gtk_widget_show_all(picker.dialog);
 
-  model = GTK_TREE_MODEL(picker.store);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(picker.tree_view));
   if (gtk_tree_model_get_iter_first(model, &iter))
   {
     first_iter = iter;
@@ -12497,7 +12913,8 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     do
     {
       guint module_id;
-      gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+      gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
+                         &module_id, -1);
       if (module_id == WD_ROYL_MODULE_02)
       {
         default_iter = iter;
@@ -12541,8 +12958,15 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   g_signal_handlers_disconnect_by_data(selection, &picker);
   g_signal_handlers_disconnect_by_data(picker.tree_view, &picker);
   g_signal_handlers_disconnect_by_data(picker.manual_entry, &picker);
+  g_signal_handlers_disconnect_by_data(picker.warnings_only, &picker);
   g_signal_handlers_disconnect_by_data(picker.dialog, &picker);
+  // The filter may be queried while the dialog is being destroyed. Let it
+  // show every row instead of dereferencing the check button being torn down.
+  picker.warnings_only = NULL;
   gtk_widget_destroy(picker.dialog);
+  g_object_unref(picker.sort);
+  g_object_unref(picker.filter);
+  g_object_unref(picker.store);
   free(entries);
   if (response != GTK_RESPONSE_ACCEPT)
   {
