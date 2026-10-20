@@ -676,6 +676,87 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkSeparatorMenuItem" id="separator_wd_royl_top">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="vendorspecificmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Vendor Specific Commands</property>
+                        <property name="use-underline">True</property>
+                        <child type="submenu">
+                          <object class="GtkMenu" id="vendorspecificmenu">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkMenuItem" id="westerndigitalmi">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Western Digital</property>
+                                <property name="use-underline">True</property>
+                                <child type="submenu">
+                                  <object class="GtkMenu" id="westerndigitalmenu">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <child>
+                                      <object class="GtkMenuItem" id="wdroylmi">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">ROYL / Marvel</property>
+                                        <property name="use-underline">True</property>
+                                        <child type="submenu">
+                                          <object class="GtkMenu" id="wdroylmenu">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylslowfixmi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Slow Fix</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="open_wd_royl_slow_fix_dialog_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkSeparatorMenuItem" id="separator_wd_royl_rom">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylreadrommi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Read ROM</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="run_wd_royl_read_rom_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylwriterommi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Write ROM</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="run_wd_royl_write_rom_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="mapheadsmi">
                         <property name="can-focus">False</property>
                         <property name="no-show-all">True</property>

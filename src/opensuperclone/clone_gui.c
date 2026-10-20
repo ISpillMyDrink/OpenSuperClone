@@ -9,6 +9,7 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 #include "asclepius.h"
+#include "wd_royl.h"
 #include <ctype.h>
 
 extern int process_lines_ccc(void);
@@ -9160,4 +9161,787 @@ void open_asclepius_ext_terminal_ccc(void)
   g_signal_connect(dialog, "response", G_CALLBACK(on_ext_terminal_dialog_response_ccc), NULL);
   gtk_widget_show_all(dialog);
   g_object_unref(builder);
+}
+
+// ---------------------------------------------------------------------------
+// Western Digital ROYL vendor specific commands
+// ---------------------------------------------------------------------------
+
+static GtkWidget *wd_royl_progress_dialog_ccc = NULL;
+static GtkWidget *wd_royl_progress_label_ccc = NULL;
+static GtkWidget *wd_royl_progress_bar_ccc = NULL;
+
+static void wd_royl_progress_update_ccc(const char *stage,
+                                        unsigned long long done,
+                                        unsigned long long total)
+{
+  double fraction = 0.0;
+
+  if (wd_royl_progress_dialog_ccc == NULL)
+  {
+    return;
+  }
+  if (stage != NULL && wd_royl_progress_label_ccc != NULL)
+  {
+    gtk_label_set_text(GTK_LABEL(wd_royl_progress_label_ccc), stage);
+  }
+  if (total > 0)
+  {
+    fraction = (double)done / (double)total;
+    if (fraction < 0.0)
+    {
+      fraction = 0.0;
+    }
+    if (fraction > 1.0)
+    {
+      fraction = 1.0;
+    }
+  }
+  if (wd_royl_progress_bar_ccc != NULL)
+  {
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc),
+                                  fraction);
+  }
+  while (gtk_events_pending())
+  {
+    gtk_main_iteration();
+  }
+}
+
+static void wd_royl_progress_begin_ccc(const char *title, const char *stage)
+{
+  GtkWidget *content;
+
+  wd_royl_progress_dialog_ccc = gtk_dialog_new();
+  gtk_window_set_title(GTK_WINDOW(wd_royl_progress_dialog_ccc), title);
+  gtk_window_set_transient_for(GTK_WINDOW(wd_royl_progress_dialog_ccc),
+                               GTK_WINDOW(main_window_ccc));
+  gtk_window_set_modal(GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
+  gtk_window_set_destroy_with_parent(
+      GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(wd_royl_progress_dialog_ccc), FALSE);
+  gtk_window_set_deletable(GTK_WINDOW(wd_royl_progress_dialog_ccc), FALSE);
+
+  content = gtk_dialog_get_content_area(
+      GTK_DIALOG(wd_royl_progress_dialog_ccc));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 12);
+  gtk_box_set_spacing(GTK_BOX(content), 8);
+
+  wd_royl_progress_label_ccc = gtk_label_new(stage != NULL ? stage : "");
+  gtk_label_set_line_wrap(GTK_LABEL(wd_royl_progress_label_ccc), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(wd_royl_progress_label_ccc), 0.0);
+  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_label_ccc, FALSE,
+                     FALSE, 0);
+
+  wd_royl_progress_bar_ccc = gtk_progress_bar_new();
+  gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc),
+                                 TRUE);
+  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_bar_ccc, FALSE, FALSE,
+                     0);
+
+  gtk_widget_show_all(wd_royl_progress_dialog_ccc);
+  while (gtk_events_pending())
+  {
+    gtk_main_iteration();
+  }
+}
+
+static void wd_royl_progress_end_ccc(void)
+{
+  if (wd_royl_progress_dialog_ccc != NULL)
+  {
+    gtk_widget_destroy(wd_royl_progress_dialog_ccc);
+    wd_royl_progress_dialog_ccc = NULL;
+    wd_royl_progress_label_ccc = NULL;
+    wd_royl_progress_bar_ccc = NULL;
+    while (gtk_events_pending())
+    {
+      gtk_main_iteration();
+    }
+  }
+}
+
+static void wd_royl_show_message_ccc(GtkMessageType type, const char *title,
+                                     const char *format, ...)
+{
+  va_list args;
+  char *text;
+  GtkWidget *dialog;
+
+  va_start(args, format);
+  text = g_strdup_vprintf(format, args);
+  va_end(args);
+
+  dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
+                                  GTK_DIALOG_DESTROY_WITH_PARENT, type,
+                                  GTK_BUTTONS_OK, "%s", text);
+  gtk_window_set_title(GTK_WINDOW(dialog), title);
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+  g_free(text);
+}
+
+static bool wd_royl_confirm_ccc(const char *title, const char *accept_label,
+                                const char *format, ...)
+{
+  va_list args;
+  char *text;
+  GtkWidget *dialog;
+  int response;
+
+  va_start(args, format);
+  text = g_strdup_vprintf(format, args);
+  va_end(args);
+
+  dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+                                  "%s", text);
+  gtk_window_set_title(GTK_WINDOW(dialog), title);
+  gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL,
+                         GTK_RESPONSE_CANCEL, accept_label,
+                         GTK_RESPONSE_ACCEPT, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
+  response = gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+  g_free(text);
+  return response == GTK_RESPONSE_ACCEPT;
+}
+
+static char *wd_royl_choose_file_ccc(bool save, const char *title,
+                                     const char *default_name)
+{
+  GtkWidget *dialog;
+  char *filename = NULL;
+
+  dialog = gtk_file_chooser_dialog_new(
+      title, GTK_WINDOW(main_window_ccc),
+      save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+  if (save)
+  {
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+                                                   TRUE);
+    if (default_name != NULL)
+    {
+      gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog),
+                                        default_name);
+    }
+  }
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+  }
+  gtk_widget_destroy(dialog);
+  return filename;
+}
+
+static void wd_royl_sanitize_name_ccc(const char *input, char *output,
+                                      size_t output_size)
+{
+  size_t in;
+  size_t out = 0;
+
+  if (input == NULL || input[0] == '\0')
+  {
+    input = "drive";
+  }
+  for (in = 0; input[in] != '\0' && out + 1 < output_size; in++)
+  {
+    unsigned char c = (unsigned char)input[in];
+    if (isalnum(c) || c == '-' || c == '_')
+    {
+      output[out++] = (char)c;
+    }
+    else if (c == ' ' || c == '/' || c == '\\' || c == ':')
+    {
+      output[out++] = '_';
+    }
+  }
+  output[out] = '\0';
+  if (out == 0)
+  {
+    snprintf(output, output_size, "drive");
+  }
+}
+
+static void wd_royl_make_backup_name_ccc(char *buffer, size_t buffer_size,
+                                         const char *kind)
+{
+  char serial[64];
+  char timestamp[32];
+  time_t now = time(NULL);
+  struct tm *tm = localtime(&now);
+
+  wd_royl_sanitize_name_ccc(current_source_serial_ccc, serial, sizeof(serial));
+  if (tm != NULL)
+  {
+    strftime(timestamp, sizeof(timestamp), "%Y%m%d_%H%M%S", tm);
+  }
+  else
+  {
+    snprintf(timestamp, sizeof(timestamp), "unknown_time");
+  }
+  snprintf(buffer, buffer_size, "wd_royl_%s_%s_%s.bin", serial, kind,
+           timestamp);
+}
+
+static void wd_royl_make_backup_path_ccc(char *buffer, size_t buffer_size,
+                                         const char *kind)
+{
+  char name[512];
+  const char *home = g_get_home_dir();
+
+  wd_royl_make_backup_name_ccc(name, sizeof(name), kind);
+  if (home != NULL && home[0] != '\0')
+  {
+    snprintf(buffer, buffer_size, "%s/%s", home, name);
+  }
+  else
+  {
+    snprintf(buffer, buffer_size, "%s", name);
+  }
+}
+
+static bool wd_royl_operation_ready_ccc(void)
+{
+  if (running_clone_ccc)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL"),
+        _("A copy operation is running. Stop it before using vendor specific "
+          "commands."));
+    return false;
+  }
+  if (running_analyze_ccc)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL"),
+        _("A drive analysis is running. Stop it before using vendor specific "
+          "commands."));
+    return false;
+  }
+  if (!source_chosen_ccc)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL"),
+        _("Choose and connect a source drive before using vendor specific "
+          "commands."));
+    return false;
+  }
+  if (usb_mode_ccc && !usb_allow_ata_ccc)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL"),
+        _("Vendor specific commands require USB ATA mode. Select USB ATA mode "
+          "and choose the source drive again."));
+    return false;
+  }
+  return true;
+}
+
+static void wd_royl_report_error_ccc(const char *title, const char *prefix)
+{
+  wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, title, "%s\n\n%s", prefix,
+                           wd_royl_last_error_ccc());
+}
+
+// Patch one service area module, after saving the unmodified module to a
+// backup file. The patch is verified by reading the module back.
+static int wd_royl_patch_sa_module_ccc(uint16_t module)
+{
+  uint8_t *original = NULL;
+  uint8_t *patched = NULL;
+  size_t size = 0;
+  char backup_name[512];
+  int result = -1;
+
+  if (wd_royl_read_module_ccc(module, &original, &size,
+                              wd_royl_progress_update_ccc) != 0)
+  {
+    goto finish;
+  }
+  if (wd_royl_validate_module_ccc(original, size, module) != 0)
+  {
+    goto finish;
+  }
+
+  patched = (uint8_t *)malloc(size);
+  if (patched == NULL)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Slow Fix"),
+                             _("Unable to allocate %zu bytes for module "
+                               "0x%04x."),
+                             size, module);
+    goto finish;
+  }
+  memcpy(patched, original, size);
+  if (module == WD_ROYL_MODULE_02)
+  {
+    if (wd_royl_patch_module_02_ccc(patched, size) != 0)
+    {
+      goto finish;
+    }
+  }
+  else
+  {
+    if (wd_royl_patch_module_32_ccc(patched, size) != 0)
+    {
+      goto finish;
+    }
+  }
+
+  if (memcmp(original, patched, size) == 0)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+        _("Module 0x%04x is already patched. Nothing was written."), module);
+    result = 0;
+    goto finish;
+  }
+
+  if (module == WD_ROYL_MODULE_02)
+  {
+    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
+                                 "mod02_original");
+  }
+  else
+  {
+    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
+                                 "mod32_original");
+  }
+  if (wd_royl_write_file_ccc(backup_name, original, size) != 0)
+  {
+    goto finish;
+  }
+  {
+    char message[1024];
+    snprintf(message, sizeof(message),
+             _("Backup of module 0x%04x saved to:\n%s\n\nWriting the patched "
+               "module now."),
+             module, backup_name);
+    wd_royl_progress_update_ccc(message, 0, 1);
+  }
+
+  if (wd_royl_write_module_ccc(module, patched, size,
+                               wd_royl_progress_update_ccc) != 0)
+  {
+    goto finish;
+  }
+  if (wd_royl_verify_module_ccc(module, patched, size,
+                                wd_royl_progress_update_ccc) != 0)
+  {
+    goto finish;
+  }
+  result = 0;
+
+finish:
+  free(original);
+  free(patched);
+  return result;
+}
+
+void open_wd_royl_slow_fix_dialog_ccc(void)
+{
+  GtkWidget *dialog;
+  GtkWidget *content;
+  GtkWidget *vbox;
+  GtkWidget *description;
+  GtkWidget *location_frame;
+  GtkWidget *location_box;
+  GtkWidget *ram_radio;
+  GtkWidget *sa_radio;
+  GtkWidget *modules_frame;
+  GtkWidget *modules_box;
+  GtkWidget *mod02_check;
+  GtkWidget *mod32_check;
+  GtkWidget *warning_label;
+  bool use_sa;
+  bool do_mod02;
+  bool do_mod32;
+  unsigned int module_mask = 0;
+  int response;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+
+  dialog = gtk_dialog_new_with_buttons(
+      _("WD ROYL Slow Fix"), GTK_WINDOW(main_window_ccc),
+      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
+      GTK_RESPONSE_CANCEL, _("Apply Patch"), GTK_RESPONSE_ACCEPT, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
+
+  content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 12);
+
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+  gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
+
+  description = gtk_label_new(
+      _("This applies the common Western Digital ROYL slow-responding fix. "
+        "Use it only when reads are good but the drive is very slow.\n\n"
+        "The RAM patch is temporary and is lost when the drive is power "
+        "cycled. The service area patch is permanent and must be used with "
+        "care."));
+  gtk_label_set_line_wrap(GTK_LABEL(description), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(description), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), description, FALSE, FALSE, 0);
+
+  location_frame = gtk_frame_new(_("Patch location"));
+  gtk_box_pack_start(GTK_BOX(vbox), location_frame, FALSE, FALSE, 0);
+  location_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  gtk_container_set_border_width(GTK_CONTAINER(location_box), 8);
+  gtk_container_add(GTK_CONTAINER(location_frame), location_box);
+
+  ram_radio = gtk_radio_button_new_with_label(
+      NULL, _("RAM patch (temporary, until the drive is power cycled)"));
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ram_radio), TRUE);
+  gtk_box_pack_start(GTK_BOX(location_box), ram_radio, FALSE, FALSE, 0);
+  sa_radio = gtk_radio_button_new_with_label_from_widget(
+      GTK_RADIO_BUTTON(ram_radio),
+      _("Service area patch (permanent)"));
+  gtk_box_pack_start(GTK_BOX(location_box), sa_radio, FALSE, FALSE, 0);
+
+  modules_frame = gtk_frame_new(_("Modules to patch"));
+  gtk_box_pack_start(GTK_BOX(vbox), modules_frame, FALSE, FALSE, 0);
+  modules_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  gtk_container_set_border_width(GTK_CONTAINER(modules_box), 8);
+  gtk_container_add(GTK_CONTAINER(modules_frame), modules_box);
+
+  mod02_check = gtk_check_button_new_with_label(
+      _("Module 02 (recommended, disables background scanning)"));
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod02_check), TRUE);
+  gtk_box_pack_start(GTK_BOX(modules_box), mod02_check, FALSE, FALSE, 0);
+  mod32_check = gtk_check_button_new_with_label(
+      _("Module 32 (clears the RE-LO list; normally not needed)"));
+  gtk_box_pack_start(GTK_BOX(modules_box), mod32_check, FALSE, FALSE, 0);
+
+  warning_label = gtk_label_new(
+      _("Service area writes modify the drive firmware. A backup is saved "
+        "before each write, but do not remove power or disconnect the drive "
+        "while the operation is running."));
+  gtk_label_set_line_wrap(GTK_LABEL(warning_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(warning_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), warning_label, FALSE, FALSE, 0);
+
+  gtk_widget_show_all(dialog);
+  response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+  use_sa = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(sa_radio));
+  do_mod02 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mod02_check));
+  do_mod32 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mod32_check));
+  gtk_widget_destroy(dialog);
+
+  if (response != GTK_RESPONSE_ACCEPT)
+  {
+    return;
+  }
+  if (!do_mod02 && !do_mod32)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Slow Fix"),
+                             _("Select at least one module to patch."));
+    return;
+  }
+  if (do_mod02)
+  {
+    module_mask |= WD_ROYL_MODULE_MASK_02;
+  }
+  if (do_mod32)
+  {
+    module_mask |= WD_ROYL_MODULE_MASK_32;
+  }
+
+  if (use_sa)
+  {
+    if (!wd_royl_confirm_ccc(
+            _("Confirm service area patch"),
+            _("Write Service Area"),
+            _("You are about to modify the service area of the selected "
+              "drive.\n\nThe original module(s) will be saved to a backup "
+              "file before writing, and every write is verified.\n\nIf power "
+              "is lost during a write, the drive may be damaged. Continue?")))
+    {
+      return;
+    }
+
+    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
+                               _("Starting service area patch"));
+    if (do_mod02 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_02) != 0)
+    {
+      wd_royl_progress_end_ccc();
+      wd_royl_report_error_ccc(
+          _("WD ROYL Slow Fix"),
+          _("Failed to patch module 02. The drive was not left in a verified "
+            "state."));
+      return;
+    }
+    if (do_mod32 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_32) != 0)
+    {
+      wd_royl_progress_end_ccc();
+      if (do_mod02)
+      {
+        wd_royl_report_error_ccc(
+            _("WD ROYL Slow Fix"),
+            _("Module 02 was patched and verified, but module 32 failed."));
+      }
+      else
+      {
+        wd_royl_report_error_ccc(
+            _("WD ROYL Slow Fix"),
+            _("Failed to patch module 32. The drive was not left in a "
+              "verified state."));
+      }
+      return;
+    }
+    wd_royl_progress_end_ccc();
+
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+        _("The service area patch completed and was verified.\n\nPower cycle "
+          "the drive for the changes to take effect."));
+  }
+  else
+  {
+    unsigned int count_02 = 0;
+    unsigned int count_32 = 0;
+
+    if (!wd_royl_confirm_ccc(
+            _("Confirm RAM patch"), _("Patch RAM"),
+            _("This patches module(s) in the selected drive RAM.\n\nThe "
+              "change is temporary and will be lost when the drive is power "
+              "cycled. Continue?")))
+    {
+      return;
+    }
+
+    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
+                               _("Starting RAM patch"));
+    if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32,
+                                      wd_royl_progress_update_ccc) != 0)
+    {
+      wd_royl_progress_end_ccc();
+      wd_royl_report_error_ccc(_("WD ROYL Slow Fix"),
+                               _("The RAM patch failed."));
+      return;
+    }
+    wd_royl_progress_end_ccc();
+
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+        _("The RAM patch completed and was verified.\n\nModule 02 copies "
+          "patched: %u\nModule 32 copies patched: %u\n\nPower cycle the drive "
+          "to undo the change."),
+        count_02, count_32);
+  }
+}
+
+void run_wd_royl_read_rom_ccc(void)
+{
+  uint8_t *rom = NULL;
+  size_t rom_size = 0;
+  char default_name[256];
+  char *filename;
+  int result;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+
+  wd_royl_make_backup_name_ccc(default_name, sizeof(default_name), "rom");
+  filename = wd_royl_choose_file_ccc(true, _("Save WD ROYL ROM dump"),
+                                     default_name);
+  if (filename == NULL)
+  {
+    return;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Read ROM"),
+                             _("Starting ROM read"));
+  result = wd_royl_read_rom_ccc(&rom, &rom_size,
+                                wd_royl_progress_update_ccc);
+  wd_royl_progress_end_ccc();
+
+  if (result != 0)
+  {
+    wd_royl_report_error_ccc(_("WD ROYL Read ROM"),
+                             _("Failed to read the ROM from the drive."));
+    g_free(filename);
+    return;
+  }
+
+  if (wd_royl_write_file_ccc(filename, rom, rom_size) != 0)
+  {
+    wd_royl_report_error_ccc(_("WD ROYL Read ROM"),
+                             _("The ROM was read from the drive, but the file "
+                               "could not be saved."));
+    g_free(filename);
+    free(rom);
+    return;
+  }
+
+  wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Read ROM"),
+                           _("ROM read successful.\n\n%zu bytes were saved "
+                             "to:\n%s"),
+                           rom_size, filename);
+  g_free(filename);
+  free(rom);
+}
+
+void run_wd_royl_write_rom_ccc(void)
+{
+  uint8_t *new_rom = NULL;
+  uint8_t *current_rom = NULL;
+  size_t new_size = 0;
+  size_t current_size = 0;
+  char backup_name[512];
+  char *filename;
+  int result;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+
+  filename = wd_royl_choose_file_ccc(false, _("Select WD ROYL ROM file"),
+                                     NULL);
+  if (filename == NULL)
+  {
+    return;
+  }
+
+  if (wd_royl_read_file_ccc(filename, &new_rom, &new_size) != 0)
+  {
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"),
+                             _("Unable to read the selected ROM file."));
+    g_free(filename);
+    return;
+  }
+  if (wd_royl_validate_rom_ccc(new_rom, new_size) != 0)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+        _("The selected file is not a valid ROYL ROM image. It has not been "
+          "written to the drive.\n\n%s"),
+        wd_royl_last_error_ccc());
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"),
+                             _("Checking the current ROM"));
+  if (wd_royl_get_rom_size_ccc(&current_size) != 0)
+  {
+    wd_royl_progress_end_ccc();
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"),
+                             _("Unable to read the ROM size from the drive."));
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+  if (current_size != new_size)
+  {
+    wd_royl_progress_end_ccc();
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+        _("The selected ROM is %zu bytes, but the drive reports a %zu byte "
+          "ROM. The file has not been written."),
+        new_size, current_size);
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
+  // Always keep a copy of the ROM that is currently in the drive. If this
+  // fails there is no safe way to continue.
+  if (wd_royl_read_rom_ccc(&current_rom, &current_size,
+                           wd_royl_progress_update_ccc) != 0)
+  {
+    wd_royl_progress_end_ccc();
+    wd_royl_report_error_ccc(
+        _("WD ROYL Write ROM"),
+        _("Unable to back up the current ROM. The file has not been written."));
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+  wd_royl_progress_end_ccc();
+
+  if (current_size != new_size)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+        _("The ROM backup size (%zu bytes) does not match the selected file "
+          "(%zu bytes). The file has not been written."),
+        current_size, new_size);
+    free(current_rom);
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
+  wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
+                               "rom_backup");
+  if (wd_royl_write_file_ccc(backup_name, current_rom, current_size) != 0)
+  {
+    wd_royl_report_error_ccc(
+        _("WD ROYL Write ROM"),
+        _("Unable to save the ROM backup file. The selected file has not been "
+          "written."));
+    free(current_rom);
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
+  if (!wd_royl_confirm_ccc(
+          _("Confirm ROM write"), _("Erase and Write ROM"),
+          _("You are about to erase and rewrite the ROM of the selected "
+            "drive.\n\nFile: %s\nSize: %zu bytes\nBackup: %s\n\nDo not remove "
+            "power or disconnect the drive while this is running. If the "
+            "write fails after the erase, do not power off the drive.\n\n"
+            "Continue?"),
+          filename, new_size, backup_name))
+  {
+    free(current_rom);
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"), _("Erasing ROM"));
+  result = wd_royl_write_rom_ccc(new_rom, new_size, false,
+                                 wd_royl_progress_update_ccc);
+  if (result == 0)
+  {
+    result = wd_royl_verify_rom_ccc(new_rom, new_size,
+                                    wd_royl_progress_update_ccc);
+  }
+  wd_royl_progress_end_ccc();
+
+  if (result != 0)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+        _("The ROM write or verification failed.\n\n%s\n\nDo not power off "
+          "the drive. Try the write again; if it still fails, the backup ROM "
+          "is at:\n%s"),
+        wd_royl_last_error_ccc(), backup_name);
+  }
+  else
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_INFO, _("WD ROYL Write ROM"),
+        _("The ROM was written and verified successfully.\n\nThe previous "
+          "ROM backup is at:\n%s\n\nPower cycle the drive before using it."),
+        backup_name);
+  }
+
+  free(current_rom);
+  free(new_rom);
+  g_free(filename);
 }
