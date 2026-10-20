@@ -132,7 +132,29 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
     // Direct mode, including AHCI, talks to the drive through the driver or
     // port registers and does not use a disk file descriptor. A descriptor is
     // only required for ATA pass-through.
-    if (disk_fd < 0 && !direct_mode_ccc)
+    if (direct_mode_ccc)
+    {
+      // The source drive is opened while it is being selected, but the port is
+      // released again afterwards. Make sure the controller is actually
+      // connected before touching AHCI registers or ISA I/O ports. Without
+      // this check an unconnected source would dereference a stale or NULL
+      // AHCI port pointer and crash the program.
+      if (ahci_mode_ccc && port_virt_addr_ccc == NULL)
+      {
+        wd_royl_set_error_ccc(
+            "The source drive is not connected. Choose and connect the source "
+            "drive before using vendor specific commands.\n");
+        return -1;
+      }
+      if (!ahci_mode_ccc && !io_permissions_ccc)
+      {
+        wd_royl_set_error_ccc(
+            "The source drive is not connected. Choose and connect the source "
+            "drive before using vendor specific commands.\n");
+        return -1;
+      }
+    }
+    else if (disk_fd < 0)
     {
       wd_royl_set_error_ccc("No source drive is open.\n");
       return -1;

@@ -1188,15 +1188,21 @@ void release_devices_ccc(void)
   if (ahci_address_changed_ccc)
   {
     // restore addresses
-    memcpy(port_virt_addr_ccc + 0x00, &command_list_address_backup_ccc, 8);
-    memcpy(port_virt_addr_ccc + 0x08, &fis_address_backup_ccc, 8);
+    if (port_virt_addr_ccc != NULL)
+    {
+      memcpy(port_virt_addr_ccc + 0x00, &command_list_address_backup_ccc, 8);
+      memcpy(port_virt_addr_ccc + 0x08, &fis_address_backup_ccc, 8);
+    }
     ahci_address_changed_ccc = false;
   }
 
   if (ahci_interrupt_changed_ccc)
   {
     // restore the interrupt settings
-    memcpy(port_virt_addr_ccc + 0x14, &interrupt_backup_ccc, 4);
+    if (port_virt_addr_ccc != NULL)
+    {
+      memcpy(port_virt_addr_ccc + 0x14, &interrupt_backup_ccc, 4);
+    }
     ahci_interrupt_changed_ccc = false;
   }
 
@@ -1217,6 +1223,9 @@ void release_devices_ccc(void)
     munmap(port_mem_pointer_ccc, port_alloc_mem_size_ccc);
     close(port_mem_dev_ccc);
     memory_mapped_ccc = false;
+    // Do not leave a stale port pointer behind. Vendor commands and other
+    // code could otherwise dereference the memory that was just unmapped.
+    port_virt_addr_ccc = NULL;
   }
 
   if (io_permissions_ccc)

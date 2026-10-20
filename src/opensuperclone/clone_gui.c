@@ -9447,6 +9447,39 @@ static void wd_royl_report_error_ccc(const char *title, const char *prefix)
                            wd_royl_last_error_ccc());
 }
 
+// Vendor commands need direct access to the selected source drive. Choosing a
+// source only identifies it and then releases the hardware again, so open the
+// source here when the main window is not already connected. The caller must
+// pass the returned flag to wd_royl_end_source_access_ccc() when finished.
+static bool wd_royl_begin_source_access_ccc(bool *temporary)
+{
+  *temporary = false;
+  if (connected_ccc)
+  {
+    return true;
+  }
+  if (connect_source_disk_ccc() != 0)
+  {
+    release_devices_ccc();
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_ERROR, _("WD ROYL"),
+        _("Unable to open the selected source drive.\n\nChoose the source "
+          "drive again and make sure it is still connected, then retry the "
+          "operation."));
+    return false;
+  }
+  *temporary = true;
+  return true;
+}
+
+static void wd_royl_end_source_access_ccc(bool temporary)
+{
+  if (temporary)
+  {
+    release_devices_ccc();
+  }
+}
+
 // Patch one service area module, after saving the unmodified module to a
 // backup file. The patch is verified by reading the module back.
 static int wd_royl_patch_sa_module_ccc(uint16_t module)
@@ -9560,6 +9593,7 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   bool use_sa;
   bool do_mod02;
   bool do_mod32;
+  bool temporary_source_access = false;
   unsigned int module_mask = 0;
   int response;
 
@@ -9667,11 +9701,17 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       return;
     }
 
+    if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+    {
+      return;
+    }
+
     wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
                                _("Starting service area patch"));
     if (do_mod02 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_02) != 0)
     {
       wd_royl_progress_end_ccc();
+      wd_royl_end_source_access_ccc(temporary_source_access);
       wd_royl_report_error_ccc(
           _("WD ROYL Slow Fix"),
           _("Failed to patch module 02. The drive was not left in a verified "
@@ -9681,6 +9721,7 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
     if (do_mod32 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_32) != 0)
     {
       wd_royl_progress_end_ccc();
+      wd_royl_end_source_access_ccc(temporary_source_access);
       if (do_mod02)
       {
         wd_royl_report_error_ccc(
@@ -9697,6 +9738,7 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       return;
     }
     wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
 
     wd_royl_show_message_ccc(
         GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
@@ -9717,17 +9759,24 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       return;
     }
 
+    if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+    {
+      return;
+    }
+
     wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
                                _("Starting RAM patch"));
     if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32,
                                       wd_royl_progress_update_ccc) != 0)
     {
       wd_royl_progress_end_ccc();
+      wd_royl_end_source_access_ccc(temporary_source_access);
       wd_royl_report_error_ccc(_("WD ROYL Slow Fix"),
                                _("The RAM patch failed."));
       return;
     }
     wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
 
     wd_royl_show_message_ccc(
         GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
@@ -9745,6 +9794,7 @@ void run_wd_royl_read_rom_ccc(void)
   char default_name[256];
   char *filename;
   int result;
+  bool temporary_source_access = false;
 
   if (!wd_royl_operation_ready_ccc())
   {
@@ -9759,11 +9809,18 @@ void run_wd_royl_read_rom_ccc(void)
     return;
   }
 
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    g_free(filename);
+    return;
+  }
+
   wd_royl_progress_begin_ccc(_("WD ROYL Read ROM"),
                              _("Starting ROM read"));
   result = wd_royl_read_rom_ccc(&rom, &rom_size,
                                 wd_royl_progress_update_ccc);
   wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
 
   if (result != 0)
   {
@@ -9800,6 +9857,7 @@ void run_wd_royl_write_rom_ccc(void)
   char backup_name[512];
   char *filename;
   int result;
+  bool temporary_source_access = false;
 
   if (!wd_royl_operation_ready_ccc())
   {
@@ -9832,11 +9890,19 @@ void run_wd_royl_write_rom_ccc(void)
     return;
   }
 
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    free(new_rom);
+    g_free(filename);
+    return;
+  }
+
   wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"),
                              _("Checking the current ROM"));
   if (wd_royl_get_rom_size_ccc(&current_size) != 0)
   {
     wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
     wd_royl_report_error_ccc(_("WD ROYL Write ROM"),
                              _("Unable to read the ROM size from the drive."));
     free(new_rom);
@@ -9846,6 +9912,7 @@ void run_wd_royl_write_rom_ccc(void)
   if (current_size != new_size)
   {
     wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
     wd_royl_show_message_ccc(
         GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
         _("The selected ROM is %zu bytes, but the drive reports a %zu byte "
@@ -9862,6 +9929,7 @@ void run_wd_royl_write_rom_ccc(void)
                            wd_royl_progress_update_ccc) != 0)
   {
     wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
     wd_royl_report_error_ccc(
         _("WD ROYL Write ROM"),
         _("Unable to back up the current ROM. The file has not been written."));
@@ -9873,6 +9941,7 @@ void run_wd_royl_write_rom_ccc(void)
 
   if (current_size != new_size)
   {
+    wd_royl_end_source_access_ccc(temporary_source_access);
     wd_royl_show_message_ccc(
         GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
         _("The ROM backup size (%zu bytes) does not match the selected file "
@@ -9888,6 +9957,7 @@ void run_wd_royl_write_rom_ccc(void)
                                "rom_backup");
   if (wd_royl_write_file_ccc(backup_name, current_rom, current_size) != 0)
   {
+    wd_royl_end_source_access_ccc(temporary_source_access);
     wd_royl_report_error_ccc(
         _("WD ROYL Write ROM"),
         _("Unable to save the ROM backup file. The selected file has not been "
@@ -9907,6 +9977,7 @@ void run_wd_royl_write_rom_ccc(void)
             "Continue?"),
           filename, new_size, backup_name))
   {
+    wd_royl_end_source_access_ccc(temporary_source_access);
     free(current_rom);
     free(new_rom);
     g_free(filename);
@@ -9922,6 +9993,7 @@ void run_wd_royl_write_rom_ccc(void)
                                     wd_royl_progress_update_ccc);
   }
   wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
 
   if (result != 0)
   {
