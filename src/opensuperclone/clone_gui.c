@@ -119,6 +119,34 @@ static bool relay_controls_use_asclepius_ccc(void)
 {
   return primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
 }
+
+// Record a successful Asclepius connection as the selected primary relay board.
+// Both the startup auto-connect and the relay dialog's Connect button call
+// asclepius_connect() directly, so this bookkeeping cannot live in just one of
+// them: without it an auto-connected board leaves the saved board type in place
+// and the relay controls keep driving the other board.
+static void select_connected_asclepius_ccc(void)
+{
+  // Name the board like a generic USB relay so the settings window shows
+  // which board the relay controls are actually driving.
+  snprintf(primary_relay_settings_ccc.primary_relay_name, MAX_RELAY_NAME_LENGTH, "%s", _("Asclepius"));
+  strcpy(primary_relay_name_ccc, primary_relay_settings_ccc.primary_relay_name);
+
+  // The port that just answered is authoritative, so keep the settings buffer
+  // in step before applying it; an empty saved device must not blank the one
+  // the auto-connect actually opened.
+  snprintf(primary_relay_settings_ccc.asclepius_tty_device, sizeof(primary_relay_settings_ccc.asclepius_tty_device), "%s", asclepius_tty_device_ccc);
+
+  // Attaching a board selects it, so a freshly connected Asclepius takes over
+  // the relay controls exactly as it did before the choice became explicit.
+  primary_relay_board_type_ccc = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  update_primary_relay_settings_ccc();
+
+  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
+}
+
 // asclepius_tty_device_ccc, asclepius_ext_tty_device_ccc, asclepius_ext_baud_rate_ccc
 // are defined in asclepius.c
 bool rebuild_assist_enabled_ccc = false;
@@ -1115,9 +1143,6 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   {
     print_gui_error_message_ccc(_("Asclepius companion board was detected.\nEnabling default settings for Asclepius support."), _("Asclepius Connection"), 0);
 
-    gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
-
     // load asclepius settings from config file
     char filename[1024];
     snprintf(filename, 1024, "%s%s", template_directory, default_asclepius_config_filename);
@@ -1129,6 +1154,10 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
       read_config_file_with_name_ccc(filename);
     }
+
+    // The auto-connect has to leave the same state as connecting from the relay
+    // dialog, so the board type and name reflect the board that just answered.
+    select_connected_asclepius_ccc();
   }
 
   gtk_window_set_default_size(GTK_WINDOW(main_window_ccc), default_window_width, default_window_height);
@@ -6554,17 +6583,11 @@ void do_asclepius_connect_ccc(void)
     return;
   }
 
-  // Name the board like a generic USB relay so the settings window shows
-  // which board the relay controls are actually driving.
-  snprintf(primary_relay_settings_ccc.primary_relay_name, MAX_RELAY_NAME_LENGTH, "%s", _("Asclepius"));
-  strcpy(primary_relay_name_ccc, primary_relay_settings_ccc.primary_relay_name);
+  select_connected_asclepius_ccc();
 
-  // Attaching a board selects it, so a freshly connected Asclepius takes over
-  // the relay controls exactly as it did before the choice became explicit.
-  primary_relay_board_type_ccc = PRIMARY_RELAY_BOARD_ASCLEPIUS;
-  primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_ASCLEPIUS;
+  // The dialog widgets exist only while Primary Relay Settings is open, so they
+  // are refreshed here rather than in the shared bookkeeping above.
   update_primary_relay_button_settings_ccc();
-  update_primary_relay_settings_ccc();
 
   // Refresh the board-type visibility, which is also what enables the relay
   // dialog's Activate/Deactivate buttons. Connecting from inside that dialog
@@ -6572,9 +6595,6 @@ void do_asclepius_connect_ccc(void)
   // the buttons kept the sensitivity they had when the window was opened.
   update_primary_relay_board_type_visibility_ccc();
   update_primary_relay_connection_summary_ccc();
-
-  gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
-  gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
 }
 
 void do_asclepius_disconnect_ccc(void)
