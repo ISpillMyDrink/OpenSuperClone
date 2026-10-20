@@ -759,6 +759,30 @@
                                                 <signal name="activate" handler="open_wd_royl_module_editor_ccc" swapped="no"/>
                                               </object>
                                             </child>
+                                            <child>
+                                              <object class="GtkSeparatorMenuItem" id="separator_wd_royl_sa_backup">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylbackupsami">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Backup SA Modules...</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="run_wd_royl_backup_sa_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylrestoresami">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Restore SA Modules...</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="run_wd_royl_restore_sa_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>

@@ -11,6 +11,7 @@
 #include "asclepius.h"
 #include "wd_royl.h"
 #include <ctype.h>
+#include <glib/gstdio.h>
 
 extern int process_lines_ccc(void);
 #include <libconfig.h>
@@ -9301,10 +9302,12 @@ static bool wd_royl_confirm_ccc(const char *title, const char *accept_label,
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
-                                  GTK_DIALOG_DESTROY_WITH_PARENT,
-                                  GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-                                  "%s", text);
+  dialog = gtk_message_dialog_new(
+      wd_royl_dialog_parent_override_ccc != NULL
+          ? wd_royl_dialog_parent_override_ccc
+          : GTK_WINDOW(main_window_ccc),
+      GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+      "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
   gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL,
                          GTK_RESPONSE_CANCEL, accept_label,
@@ -9486,6 +9489,2063 @@ static void wd_royl_end_source_access_ccc(bool temporary)
   {
     release_devices_ccc();
   }
+}
+
+// ---------------------------------------------------------------------------
+// Service area backup and restore
+//
+// A backup is a directory containing one module_XXXX.bin file per module,
+// manifest.ini (the machine-readable restore source), and summary.txt. The
+// directory module 0x0001 is included and is restored last because it points
+// at the other modules. Before every restore write, the current module is
+// saved under pre_restore_<timestamp>/ and read back to verify that recovery
+// copy. The service area write itself is verified by reading the module again.
+// ---------------------------------------------------------------------------
+
+#define WD_ROYL_SA_MANIFEST_FORMAT "opensuperclone-wd-royl-sa-backup"
+#define WD_ROYL_SA_MANIFEST_VERSION 1
+#define WD_ROYL_SA_MANIFEST_NAME "manifest.ini"
+#define WD_ROYL_SA_SUMMARY_NAME "summary.txt"
+#define WD_ROYL_SA_RESTORE_LOG_NAME "restore.txt"
+
+typedef struct
+{
+  unsigned int index;
+  unsigned int count;
+  uint16_t module;
+  unsigned long long completed;
+  unsigned long long total;
+} wd_royl_sa_backup_progress_ccc_t;
+
+static wd_royl_sa_backup_progress_ccc_t *wd_royl_sa_backup_progress_state_ccc =
+    NULL;
+
+typedef struct
+{
+  unsigned int index;
+  size_t count;
+  uint16_t module;
+} wd_royl_sa_restore_progress_ccc_t;
+
+static wd_royl_sa_restore_progress_ccc_t *wd_royl_sa_restore_progress_state_ccc =
+    NULL;
+
+typedef struct
+{
+  uint16_t module;
+  uint16_t directory_sectors;
+  uint8_t directory_copies;
+  uint32_t directory_location1;
+  uint32_t directory_location2;
+  unsigned long long file_size;
+  bool manifest_checksum_ok;
+  bool available;
+  bool selected;
+  char path[PATH_MAX];
+  char sha256[65];
+  char status[64];
+  char error[WD_ROYL_ERROR_SIZE];
+} wd_royl_sa_restore_entry_ccc;
+
+typedef struct
+{
+  char path[PATH_MAX];
+  char directory[PATH_MAX];
+  char model[64];
+  char serial[64];
+  char transport[64];
+  char created[64];
+  char directory_sha256[65];
+  unsigned long long directory_size;
+  bool directory_checksum_ok;
+  wd_royl_sa_restore_entry_ccc *entries;
+  size_t entry_count;
+} wd_royl_sa_manifest_ccc;
+
+typedef struct
+{
+  GtkWidget *dialog;
+  GtkListStore *store;
+  wd_royl_sa_manifest_ccc *manifest;
+} wd_royl_sa_restore_picker_ccc_t;
+
+static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer,
+                                    size_t buffer_size);
+static int wd_royl_compare_module_entries_ccc(const void *a, const void *b);
+
+static void wd_royl_join_path_ccc(char *destination, size_t destination_size,
+                                  const char *directory, const char *name)
+{
+  char *path = g_build_filename(directory, name, NULL);
+
+  g_strlcpy(destination, path, destination_size);
+  g_free(path);
+}
+
+static char *wd_royl_key_string_ccc(GKeyFile *key, const char *group,
+                                    const char *name)
+{
+  GError *error = NULL;
+  char *value = g_key_file_get_string(key, group, name, &error);
+
+  if (error != NULL)
+  {
+    g_error_free(error);
+  }
+  return value;
+}
+
+static gint wd_royl_key_integer_ccc(GKeyFile *key, const char *group,
+                                    const char *name, gint default_value)
+{
+  GError *error = NULL;
+  gint value = g_key_file_get_integer(key, group, name, &error);
+
+  if (error != NULL)
+  {
+    g_error_free(error);
+    return default_value;
+  }
+  return value;
+}
+
+static gboolean wd_royl_key_boolean_ccc(GKeyFile *key, const char *group,
+                                        const char *name,
+                                        gboolean default_value)
+{
+  GError *error = NULL;
+  gboolean value = g_key_file_get_boolean(key, group, name, &error);
+
+  if (error != NULL)
+  {
+    g_error_free(error);
+    return default_value;
+  }
+  return value;
+}
+
+static void wd_royl_set_hex_ccc(GKeyFile *key, const char *group,
+                                const char *name, uint32_t value)
+{
+  char text[16];
+
+  snprintf(text, sizeof(text), "0x%08x", value);
+  g_key_file_set_string(key, group, name, text);
+}
+
+static void wd_royl_sha256_ccc(const uint8_t *data, size_t size, char *output,
+                               size_t output_size)
+{
+  char *checksum =
+      g_compute_checksum_for_data(G_CHECKSUM_SHA256, data, size);
+
+  g_strlcpy(output, checksum != NULL ? checksum : "", output_size);
+  g_free(checksum);
+}
+
+static bool wd_royl_module_checksum_ok_ccc(const uint8_t *data, size_t size)
+{
+  return wd_royl_get_module_checksum_ccc(data) ==
+         wd_royl_calculate_checksum_ccc(data, size);
+}
+
+static const char *wd_royl_transport_name_ccc(void)
+{
+  if (usb_mode_ccc)
+  {
+    return usb_allow_ata_ccc ? "Direct USB ATA" : "Direct USB";
+  }
+  if (ahci_mode_ccc)
+  {
+    return "Direct AHCI";
+  }
+  if (ata_passthrough_ccc)
+  {
+    return "ATA Passthrough";
+  }
+  if (scsi_passthrough_ccc)
+  {
+    return "SCSI Passthrough";
+  }
+  if (direct_mode_ccc)
+  {
+    return "Direct";
+  }
+  return "Unknown";
+}
+
+static char *wd_royl_choose_folder_ccc(const char *title,
+                                       const char *initial_folder)
+{
+  GtkWidget *dialog;
+  char *folder = NULL;
+
+  dialog = gtk_file_chooser_dialog_new(
+      title, GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Select Folder"),
+      GTK_RESPONSE_ACCEPT, NULL);
+  if (initial_folder != NULL && initial_folder[0] != '\0')
+  {
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
+                                        initial_folder);
+  }
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+  }
+  gtk_widget_destroy(dialog);
+  return folder;
+}
+
+static void wd_royl_make_backup_folder_path_ccc(const char *parent,
+                                                char *path, size_t path_size,
+                                                unsigned int attempt)
+{
+  char serial[64];
+  char timestamp[32];
+  char name[512];
+  time_t now = time(NULL);
+  struct tm *tm = localtime(&now);
+
+  wd_royl_sanitize_name_ccc(current_source_serial_ccc, serial, sizeof(serial));
+  if (tm != NULL)
+  {
+    strftime(timestamp, sizeof(timestamp), "%Y%m%d_%H%M%S", tm);
+  }
+  else
+  {
+    g_strlcpy(timestamp, "unknown_time", sizeof(timestamp));
+  }
+  if (attempt == 0)
+  {
+    snprintf(name, sizeof(name), "wd_royl_%s_sa_%s", serial, timestamp);
+  }
+  else
+  {
+    snprintf(name, sizeof(name), "wd_royl_%s_sa_%s_%u", serial, timestamp,
+             attempt + 1);
+  }
+  wd_royl_join_path_ccc(path, path_size, parent, name);
+}
+
+static int wd_royl_create_backup_folder_ccc(const char *parent, char *path,
+                                            size_t path_size, char *error,
+                                            size_t error_size)
+{
+  unsigned int attempt;
+
+  for (attempt = 0; attempt < 1000; attempt++)
+  {
+    wd_royl_make_backup_folder_path_ccc(parent, path, path_size, attempt);
+    if (g_mkdir(path, 0755) == 0)
+    {
+      return 0;
+    }
+    if (errno != EEXIST)
+    {
+      snprintf(error, error_size,
+               _("Unable to create the backup folder:\n%s\n\n%s"), path,
+               g_strerror(errno));
+      return -1;
+    }
+  }
+  snprintf(error, error_size,
+           _("Unable to find an unused name for the backup folder."));
+  return -1;
+}
+
+static void wd_royl_make_pre_restore_path_ccc(const char *backup_directory,
+                                              char *path, size_t path_size)
+{
+  char timestamp[32];
+  char name[128];
+  time_t now = time(NULL);
+  struct tm *tm = localtime(&now);
+  unsigned int attempt;
+
+  if (tm != NULL)
+  {
+    strftime(timestamp, sizeof(timestamp), "%Y%m%d_%H%M%S", tm);
+  }
+  else
+  {
+    g_strlcpy(timestamp, "unknown_time", sizeof(timestamp));
+  }
+  for (attempt = 0; attempt < 1000; attempt++)
+  {
+    if (attempt == 0)
+    {
+      snprintf(name, sizeof(name), "pre_restore_%s", timestamp);
+    }
+    else
+    {
+      snprintf(name, sizeof(name), "pre_restore_%s_%u", timestamp,
+               attempt + 1);
+    }
+    wd_royl_join_path_ccc(path, path_size, backup_directory, name);
+    if (!g_file_test(path, G_FILE_TEST_EXISTS))
+    {
+      return;
+    }
+  }
+}
+
+static void wd_royl_trim_identity_ccc(const char *input, char *output,
+                                      size_t output_size)
+{
+  size_t start = 0;
+  size_t end;
+
+  if (input == NULL)
+  {
+    input = "";
+  }
+  while (input[start] != '\0' && g_ascii_isspace(input[start]))
+  {
+    start++;
+  }
+  end = strlen(input);
+  while (end > start && g_ascii_isspace(input[end - 1]))
+  {
+    end--;
+  }
+  if ((end - start) >= output_size)
+  {
+    end = start + output_size - 1;
+  }
+  memcpy(output, input + start, end - start);
+  output[end - start] = '\0';
+}
+
+static bool wd_royl_identity_value_matches_ccc(const char *backup_value,
+                                               const char *current_value)
+{
+  char backup[128];
+  char current[128];
+
+  wd_royl_trim_identity_ccc(backup_value, backup, sizeof(backup));
+  wd_royl_trim_identity_ccc(current_value, current, sizeof(current));
+  if (backup[0] == '\0')
+  {
+    return true;
+  }
+  return g_ascii_strcasecmp(backup, current) == 0;
+}
+
+static bool wd_royl_restore_identity_ok_ccc(const char *backup_model,
+                                            const char *backup_serial)
+{
+  if (wd_royl_identity_value_matches_ccc(backup_model,
+                                         current_source_model_ccc) &&
+      wd_royl_identity_value_matches_ccc(backup_serial,
+                                         current_source_serial_ccc))
+  {
+    return true;
+  }
+
+  return wd_royl_confirm_ccc(
+      _("WD ROYL drive identity mismatch"), _("Restore Anyway"),
+      _("The backup was created from a different drive.\n\n"
+        "Backup: %s / %s\nCurrent source: %s / %s\n\n"
+        "Writing these service area modules to a different drive can damage "
+        "it. Continue only if you are sure this is the correct drive."),
+      backup_model != NULL && backup_model[0] != '\0' ? backup_model
+                                                       : _("Unknown"),
+      backup_serial != NULL && backup_serial[0] != '\0' ? backup_serial
+                                                         : _("Unknown"),
+      current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                          : _("Unknown"),
+      current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                           : _("Unknown"));
+}
+
+static const char *wd_royl_restore_status_text_ccc(const char *status)
+{
+  if (status == NULL || status[0] == '\0')
+  {
+    return _("Unknown");
+  }
+  if (strcmp(status, "ok") == 0)
+  {
+    return _("Ready");
+  }
+  if (strcmp(status, "read_failed") == 0)
+  {
+    return _("Backup read failed");
+  }
+  if (strcmp(status, "header_invalid") == 0)
+  {
+    return _("Invalid module header");
+  }
+  if (strcmp(status, "file_write_failed") == 0)
+  {
+    return _("Backup file write failed");
+  }
+  if (strcmp(status, "file_missing") == 0)
+  {
+    return _("File missing");
+  }
+  if (strcmp(status, "file_invalid") == 0)
+  {
+    return _("Invalid file");
+  }
+  if (strcmp(status, "size_mismatch") == 0)
+  {
+    return _("Size mismatch");
+  }
+  if (strcmp(status, "checksum_mismatch") == 0)
+  {
+    return _("Checksum mismatch");
+  }
+  return status;
+}
+
+static int wd_royl_compare_restore_entries_ccc(const void *a, const void *b)
+{
+  const wd_royl_sa_restore_entry_ccc *entry_a =
+      (const wd_royl_sa_restore_entry_ccc *)a;
+  const wd_royl_sa_restore_entry_ccc *entry_b =
+      (const wd_royl_sa_restore_entry_ccc *)b;
+
+  // The directory module points at the other modules, so restore it last.
+  if (entry_a->module == WD_ROYL_MODULE_01 &&
+      entry_b->module != WD_ROYL_MODULE_01)
+  {
+    return 1;
+  }
+  if (entry_b->module == WD_ROYL_MODULE_01 &&
+      entry_a->module != WD_ROYL_MODULE_01)
+  {
+    return -1;
+  }
+  if (entry_a->module < entry_b->module)
+  {
+    return -1;
+  }
+  if (entry_a->module > entry_b->module)
+  {
+    return 1;
+  }
+  return 0;
+}
+
+static void wd_royl_sa_backup_progress_callback_ccc(
+    const char *stage, unsigned long long done, unsigned long long total)
+{
+  wd_royl_sa_backup_progress_ccc_t *state =
+      wd_royl_sa_backup_progress_state_ccc;
+  char text[256];
+  unsigned long long current;
+  unsigned long long overall;
+
+  if (state == NULL)
+  {
+    wd_royl_progress_update_ccc(stage, done, total);
+    return;
+  }
+  current = done;
+  if (total > 0 && current > total)
+  {
+    current = total;
+  }
+  overall = state->completed + current;
+  if (state->total > 0 && overall > state->total)
+  {
+    overall = state->total;
+  }
+  snprintf(text, sizeof(text), _("Module 0x%04x (%u of %u): %s"),
+           state->module, state->index, state->count,
+           stage != NULL ? stage : "");
+  wd_royl_progress_update_ccc(text, overall, state->total);
+}
+
+static void wd_royl_sa_restore_progress_callback_ccc(
+    const char *stage, unsigned long long done, unsigned long long total)
+{
+  wd_royl_sa_restore_progress_ccc_t *state =
+      wd_royl_sa_restore_progress_state_ccc;
+  char text[256];
+
+  if (state == NULL)
+  {
+    wd_royl_progress_update_ccc(stage, done, total);
+    return;
+  }
+  snprintf(text, sizeof(text), _("Module 0x%04x (%zu of %zu): %s"),
+           state->module, (size_t)state->index, state->count,
+           stage != NULL ? stage : "");
+  wd_royl_progress_update_ccc(text, done, total);
+}
+
+static void wd_royl_sa_manifest_clear_ccc(wd_royl_sa_manifest_ccc *manifest)
+{
+  if (manifest == NULL)
+  {
+    return;
+  }
+  free(manifest->entries);
+  memset(manifest, 0, sizeof(*manifest));
+}
+
+static int wd_royl_load_sa_manifest_ccc(const char *path,
+                                        wd_royl_sa_manifest_ccc *manifest,
+                                        char *error, size_t error_size)
+{
+  GKeyFile *key = NULL;
+  GError *gerror = NULL;
+  char **groups = NULL;
+  gsize group_count = 0;
+  gsize group_index;
+  char *format = NULL;
+  char *value = NULL;
+  gint version;
+  int result = -1;
+
+  memset(manifest, 0, sizeof(*manifest));
+  g_strlcpy(manifest->path, path, sizeof(manifest->path));
+  {
+    char *directory = g_path_get_dirname(path);
+    g_strlcpy(manifest->directory, directory, sizeof(manifest->directory));
+    g_free(directory);
+  }
+
+  key = g_key_file_new();
+  if (!g_key_file_load_from_file(key, path, G_KEY_FILE_NONE, &gerror))
+  {
+    snprintf(error, error_size,
+             _("Unable to read the backup manifest:\n%s\n\n%s"), path,
+             gerror != NULL ? gerror->message : _("Unknown error"));
+    if (gerror != NULL)
+    {
+      g_error_free(gerror);
+    }
+    goto finish;
+  }
+
+  format = wd_royl_key_string_ccc(key, "backup", "format");
+  if (format == NULL || strcmp(format, WD_ROYL_SA_MANIFEST_FORMAT) != 0)
+  {
+    snprintf(error, error_size,
+             _("The selected file is not a WD ROYL SA backup manifest."));
+    goto finish;
+  }
+  version = wd_royl_key_integer_ccc(key, "backup", "version", 0);
+  if (version != WD_ROYL_SA_MANIFEST_VERSION)
+  {
+    snprintf(error, error_size,
+             _("The backup manifest uses unsupported version %d."), version);
+    goto finish;
+  }
+
+  value = wd_royl_key_string_ccc(key, "backup", "model");
+  if (value != NULL)
+  {
+    g_strlcpy(manifest->model, value, sizeof(manifest->model));
+    g_free(value);
+  }
+  value = wd_royl_key_string_ccc(key, "backup", "serial");
+  if (value != NULL)
+  {
+    g_strlcpy(manifest->serial, value, sizeof(manifest->serial));
+    g_free(value);
+  }
+  value = wd_royl_key_string_ccc(key, "backup", "transport");
+  if (value != NULL)
+  {
+    g_strlcpy(manifest->transport, value, sizeof(manifest->transport));
+    g_free(value);
+  }
+  value = wd_royl_key_string_ccc(key, "backup", "created");
+  if (value != NULL)
+  {
+    g_strlcpy(manifest->created, value, sizeof(manifest->created));
+    g_free(value);
+  }
+  value = wd_royl_key_string_ccc(key, "backup", "directory_sha256");
+  if (value != NULL)
+  {
+    g_strlcpy(manifest->directory_sha256, value,
+              sizeof(manifest->directory_sha256));
+    g_free(value);
+  }
+  manifest->directory_size = (unsigned long long)wd_royl_key_integer_ccc(
+      key, "backup", "directory_size", 0);
+  manifest->directory_checksum_ok = wd_royl_key_boolean_ccc(
+      key, "backup", "directory_checksum_ok", FALSE);
+
+  groups = g_key_file_get_groups(key, &group_count);
+  for (group_index = 0; group_index < group_count; group_index++)
+  {
+    wd_royl_sa_restore_entry_ccc *new_entries;
+    wd_royl_sa_restore_entry_ccc *entry;
+    gint module_id;
+    char *file;
+    char *status;
+    char *sha256;
+    char *module_error;
+    bool valid_file_name;
+
+    if (!g_str_has_prefix(groups[group_index], "module."))
+    {
+      continue;
+    }
+    module_id =
+        wd_royl_key_integer_ccc(key, groups[group_index], "id", 0);
+    if (module_id <= 0 || module_id > 0xffff)
+    {
+      continue;
+    }
+    if (manifest->entry_count >= 4096)
+    {
+      snprintf(error, error_size,
+               _("The backup manifest lists too many modules."));
+      goto finish;
+    }
+
+    new_entries = (wd_royl_sa_restore_entry_ccc *)realloc(
+        manifest->entries,
+        (manifest->entry_count + 1) * sizeof(*manifest->entries));
+    if (new_entries == NULL)
+    {
+      snprintf(error, error_size,
+               _("Unable to allocate memory for the backup manifest."));
+      goto finish;
+    }
+    manifest->entries = new_entries;
+    entry = &manifest->entries[manifest->entry_count];
+    memset(entry, 0, sizeof(*entry));
+    entry->module = (uint16_t)module_id;
+    entry->directory_sectors = (uint16_t)wd_royl_key_integer_ccc(
+        key, groups[group_index], "directory_sectors", 0);
+    entry->directory_copies = (uint8_t)wd_royl_key_integer_ccc(
+        key, groups[group_index], "directory_copies", 0);
+    value = wd_royl_key_string_ccc(key, groups[group_index],
+                                   "directory_location1");
+    if (value != NULL)
+    {
+      entry->directory_location1 =
+          (uint32_t)g_ascii_strtoull(value, NULL, 0);
+      g_free(value);
+    }
+    value = wd_royl_key_string_ccc(key, groups[group_index],
+                                   "directory_location2");
+    if (value != NULL)
+    {
+      entry->directory_location2 =
+          (uint32_t)g_ascii_strtoull(value, NULL, 0);
+      g_free(value);
+    }
+    entry->file_size = (unsigned long long)wd_royl_key_integer_ccc(
+        key, groups[group_index], "read_size", 0);
+    entry->manifest_checksum_ok = wd_royl_key_boolean_ccc(
+        key, groups[group_index], "checksum_ok", FALSE);
+
+    file = wd_royl_key_string_ccc(key, groups[group_index], "file");
+    status = wd_royl_key_string_ccc(key, groups[group_index], "status");
+    sha256 = wd_royl_key_string_ccc(key, groups[group_index], "sha256");
+    module_error =
+        wd_royl_key_string_ccc(key, groups[group_index], "error");
+    if (status != NULL && status[0] != '\0')
+    {
+      g_strlcpy(entry->status, status, sizeof(entry->status));
+    }
+    else
+    {
+      g_strlcpy(entry->status, "unknown", sizeof(entry->status));
+    }
+    if (sha256 != NULL)
+    {
+      g_strlcpy(entry->sha256, sha256, sizeof(entry->sha256));
+    }
+    if (module_error != NULL)
+    {
+      g_strlcpy(entry->error, module_error, sizeof(entry->error));
+    }
+
+    valid_file_name =
+        file != NULL && file[0] != '\0' && strchr(file, '/') == NULL &&
+        strchr(file, '\\') == NULL && strcmp(file, ".") != 0 &&
+        strcmp(file, "..") != 0;
+    if (valid_file_name)
+    {
+      GStatBuf stat_buffer;
+
+      wd_royl_join_path_ccc(entry->path, sizeof(entry->path),
+                            manifest->directory, file);
+      entry->available = strcmp(entry->status, "ok") == 0;
+      if (entry->available)
+      {
+        if (!g_file_test(entry->path, G_FILE_TEST_IS_REGULAR))
+        {
+          entry->available = false;
+          g_strlcpy(entry->status, "file_missing", sizeof(entry->status));
+        }
+        else if (g_stat(entry->path, &stat_buffer) != 0 ||
+                 stat_buffer.st_size <= 0 ||
+                 (unsigned long long)stat_buffer.st_size >
+                     WD_ROYL_MAX_FILE_SIZE)
+        {
+          entry->available = false;
+          g_strlcpy(entry->status, "file_invalid", sizeof(entry->status));
+        }
+        else if (entry->file_size != 0 &&
+                 (unsigned long long)stat_buffer.st_size != entry->file_size)
+        {
+          entry->available = false;
+          g_strlcpy(entry->status, "size_mismatch", sizeof(entry->status));
+        }
+        else if (!entry->manifest_checksum_ok)
+        {
+          entry->available = false;
+          g_strlcpy(entry->status, "checksum_mismatch",
+                    sizeof(entry->status));
+        }
+      }
+    }
+    else if (entry->status[0] == '\0' || strcmp(entry->status, "ok") == 0)
+    {
+      entry->available = false;
+      g_strlcpy(entry->status, "file_missing", sizeof(entry->status));
+    }
+    entry->selected = entry->available;
+
+    g_free(file);
+    g_free(status);
+    g_free(sha256);
+    g_free(module_error);
+    manifest->entry_count++;
+  }
+
+  if (manifest->entry_count == 0)
+  {
+    snprintf(error, error_size,
+             _("The backup manifest does not list any modules."));
+    goto finish;
+  }
+
+  qsort(manifest->entries, manifest->entry_count,
+        sizeof(*manifest->entries), wd_royl_compare_restore_entries_ccc);
+  if (manifest->entry_count > 1)
+  {
+    size_t input_index;
+    size_t output_index = 1;
+
+    for (input_index = 1; input_index < manifest->entry_count; input_index++)
+    {
+      if (manifest->entries[input_index].module !=
+          manifest->entries[output_index - 1].module)
+      {
+        if (output_index != input_index)
+        {
+          manifest->entries[output_index] = manifest->entries[input_index];
+        }
+        output_index++;
+      }
+    }
+    manifest->entry_count = output_index;
+  }
+
+  result = 0;
+
+finish:
+  if (groups != NULL)
+  {
+    g_strfreev(groups);
+  }
+  g_free(format);
+  if (key != NULL)
+  {
+    g_key_file_free(key);
+  }
+  if (result != 0)
+  {
+    wd_royl_sa_manifest_clear_ccc(manifest);
+  }
+  return result;
+}
+
+static void wd_royl_restore_add_text_column_ccc(GtkWidget *tree_view,
+                                                const char *title,
+                                                int model_column, int width,
+                                                float xalign)
+{
+  GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+  GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
+      title, renderer, "text", model_column, NULL);
+
+  gtk_tree_view_column_set_resizable(column, TRUE);
+  gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+  gtk_tree_view_column_set_fixed_width(column, width);
+  g_object_set(renderer, "xalign", xalign, NULL);
+  gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
+}
+
+static void wd_royl_restore_toggle_ccc(GtkCellRendererToggle *renderer,
+                                       gchar *path_string, gpointer user_data)
+{
+  wd_royl_sa_restore_picker_ccc_t *picker =
+      (wd_royl_sa_restore_picker_ccc_t *)user_data;
+  GtkTreeIter iter;
+  gboolean selected;
+  gboolean available;
+  guint index;
+
+  if (!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(picker->store), &iter,
+                                           path_string))
+  {
+    return;
+  }
+  gtk_tree_model_get(GTK_TREE_MODEL(picker->store), &iter, 0, &selected, 1,
+                     &available, 6, &index, -1);
+  if (!available || index >= picker->manifest->entry_count)
+  {
+    return;
+  }
+  selected = !selected;
+  gtk_list_store_set(picker->store, &iter, 0, selected, -1);
+  picker->manifest->entries[index].selected = selected;
+}
+
+static void wd_royl_restore_set_all_ccc(
+    wd_royl_sa_restore_picker_ccc_t *picker, bool selected)
+{
+  GtkTreeIter iter;
+  GtkTreeModel *model = GTK_TREE_MODEL(picker->store);
+
+  if (!gtk_tree_model_get_iter_first(model, &iter))
+  {
+    return;
+  }
+  do
+  {
+    gboolean available;
+    guint index;
+
+    gtk_tree_model_get(model, &iter, 1, &available, 6, &index, -1);
+    if (available && index < picker->manifest->entry_count)
+    {
+      gtk_list_store_set(picker->store, &iter, 0, selected, -1);
+      picker->manifest->entries[index].selected = selected;
+    }
+  } while (gtk_tree_model_iter_next(model, &iter));
+}
+
+static void wd_royl_restore_select_all_clicked_ccc(GtkWidget *widget,
+                                                   gpointer user_data)
+{
+  wd_royl_restore_set_all_ccc(
+      (wd_royl_sa_restore_picker_ccc_t *)user_data, true);
+}
+
+static void wd_royl_restore_select_none_clicked_ccc(GtkWidget *widget,
+                                                    gpointer user_data)
+{
+  wd_royl_restore_set_all_ccc(
+      (wd_royl_sa_restore_picker_ccc_t *)user_data, false);
+}
+
+static size_t wd_royl_restore_selected_count_ccc(
+    wd_royl_sa_restore_picker_ccc_t *picker)
+{
+  size_t count = 0;
+  size_t i;
+
+  for (i = 0; i < picker->manifest->entry_count; i++)
+  {
+    if (picker->manifest->entries[i].selected)
+    {
+      count++;
+    }
+  }
+  return count;
+}
+
+static void wd_royl_restore_selection_response_ccc(GtkDialog *dialog,
+                                                   gint response,
+                                                   gpointer user_data)
+{
+  wd_royl_sa_restore_picker_ccc_t *picker =
+      (wd_royl_sa_restore_picker_ccc_t *)user_data;
+  GtkWidget *message;
+
+  if (response != GTK_RESPONSE_ACCEPT ||
+      wd_royl_restore_selected_count_ccc(picker) > 0)
+  {
+    return;
+  }
+  message = gtk_message_dialog_new(
+      GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING,
+      GTK_BUTTONS_OK, "%s",
+      _("Select at least one available module to restore."));
+  gtk_window_set_title(GTK_WINDOW(message), _("WD ROYL SA Restore"));
+  gtk_dialog_run(GTK_DIALOG(message));
+  gtk_widget_destroy(message);
+  g_signal_stop_emission_by_name(G_OBJECT(dialog), "response");
+}
+
+static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
+{
+  wd_royl_sa_restore_picker_ccc_t picker;
+  GtkWidget *content;
+  GtkWidget *vbox;
+  GtkWidget *info_label;
+  GtkWidget *scrolled;
+  GtkWidget *button_row;
+  GtkWidget *select_all_button;
+  GtkWidget *select_none_button;
+  GtkWidget *tree_view;
+  GtkCellRenderer *toggle_renderer;
+  GtkTreeViewColumn *toggle_column;
+  GtkTreeIter iter;
+  char info_text[2048];
+  size_t ready_count = 0;
+  size_t i;
+  int response;
+
+  memset(&picker, 0, sizeof(picker));
+  picker.manifest = manifest;
+  for (i = 0; i < manifest->entry_count; i++)
+  {
+    if (manifest->entries[i].available)
+    {
+      ready_count++;
+    }
+  }
+
+  picker.dialog = gtk_dialog_new_with_buttons(
+      _("Restore WD ROYL SA Modules"), GTK_WINDOW(main_window_ccc),
+      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
+      GTK_RESPONSE_CANCEL, _("Restore Selected"), GTK_RESPONSE_ACCEPT, NULL);
+  gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 900, 560);
+  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog),
+                                  GTK_RESPONSE_ACCEPT);
+
+  content = gtk_dialog_get_content_area(GTK_DIALOG(picker.dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 10);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
+  gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
+
+  snprintf(info_text, sizeof(info_text),
+           _("Backup created: %s\nBackup drive: %s / %s\nTransport: %s\n"
+             "Modules in manifest: %zu    Ready to restore: %zu\n\n"
+             "The directory module 0x0001 is restored last. Each current "
+             "module is backed up before it is written."),
+           manifest->created[0] != '\0' ? manifest->created : _("Unknown"),
+           manifest->model[0] != '\0' ? manifest->model : _("Unknown"),
+           manifest->serial[0] != '\0' ? manifest->serial : _("Unknown"),
+           manifest->transport[0] != '\0' ? manifest->transport
+                                          : _("Unknown"),
+           manifest->entry_count, ready_count);
+  info_label = gtk_label_new(info_text);
+  gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(info_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 0);
+
+  {
+    GType columns[8] = {G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_STRING,
+                        G_TYPE_STRING,  G_TYPE_STRING,  G_TYPE_STRING,
+                        G_TYPE_UINT,    G_TYPE_STRING};
+    picker.store = gtk_list_store_newv(8, columns);
+  }
+  tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(picker.store));
+  gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tree_view), FALSE);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(tree_view),
+                               GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
+  gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(tree_view), 7);
+
+  toggle_renderer = gtk_cell_renderer_toggle_new();
+  toggle_column = gtk_tree_view_column_new_with_attributes(
+      _("Restore"), toggle_renderer, "active", 0, "activatable", 1, NULL);
+  gtk_tree_view_column_set_resizable(toggle_column, FALSE);
+  gtk_tree_view_column_set_sizing(toggle_column, GTK_TREE_VIEW_COLUMN_FIXED);
+  gtk_tree_view_column_set_fixed_width(toggle_column, 72);
+  gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), toggle_column);
+  g_signal_connect(toggle_renderer, "toggled",
+                   G_CALLBACK(wd_royl_restore_toggle_ccc), &picker);
+
+  wd_royl_restore_add_text_column_ccc(tree_view, _("Module"), 2, 90, 0.0);
+  wd_royl_restore_add_text_column_ccc(tree_view, _("Size"), 3, 110, 0.0);
+  wd_royl_restore_add_text_column_ccc(tree_view, _("Status"), 4, 190, 0.0);
+  wd_royl_restore_add_text_column_ccc(tree_view, _("SHA-256"), 5, 230, 0.0);
+
+  for (i = 0; i < manifest->entry_count; i++)
+  {
+    wd_royl_sa_restore_entry_ccc *entry = &manifest->entries[i];
+    char module_text[16];
+    char size_text[64];
+    char sha_text[24];
+    const char *status_text = wd_royl_restore_status_text_ccc(entry->status);
+
+    snprintf(module_text, sizeof(module_text), "0x%04x", entry->module);
+    if (entry->file_size != 0)
+    {
+      wd_royl_format_size_ccc(entry->file_size, size_text, sizeof(size_text));
+    }
+    else
+    {
+      g_strlcpy(size_text, "-", sizeof(size_text));
+    }
+    if (entry->sha256[0] != '\0')
+    {
+      snprintf(sha_text, sizeof(sha_text), "%.16s...", entry->sha256);
+    }
+    else
+    {
+      g_strlcpy(sha_text, "-", sizeof(sha_text));
+    }
+
+    gtk_list_store_append(picker.store, &iter);
+    gtk_list_store_set(picker.store, &iter, 0, entry->selected, 1,
+                       entry->available, 2, module_text, 3, size_text, 4,
+                       status_text, 5, sha_text, 6, (guint)i, 7,
+                       entry->error, -1);
+  }
+
+  scrolled = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
+                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scrolled, -1, 330);
+  gtk_container_add(GTK_CONTAINER(scrolled), tree_view);
+  gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
+
+  button_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+  select_all_button = gtk_button_new_with_label(_("Select All"));
+  select_none_button = gtk_button_new_with_label(_("Select None"));
+  gtk_box_pack_start(GTK_BOX(button_row), select_all_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(button_row), select_none_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), button_row, FALSE, FALSE, 0);
+  g_signal_connect(select_all_button, "clicked",
+                   G_CALLBACK(wd_royl_restore_select_all_clicked_ccc),
+                   &picker);
+  g_signal_connect(select_none_button, "clicked",
+                   G_CALLBACK(wd_royl_restore_select_none_clicked_ccc),
+                   &picker);
+  g_signal_connect(picker.dialog, "response",
+                   G_CALLBACK(wd_royl_restore_selection_response_ccc), &picker);
+
+  gtk_widget_show_all(picker.dialog);
+  response = gtk_dialog_run(GTK_DIALOG(picker.dialog));
+  g_signal_handlers_disconnect_by_data(picker.dialog, &picker);
+  gtk_widget_destroy(picker.dialog);
+  g_object_unref(picker.store);
+
+  if (response != GTK_RESPONSE_ACCEPT)
+  {
+    return 0;
+  }
+  return wd_royl_restore_selected_count_ccc(&picker);
+}
+
+static int wd_royl_restore_one_module_ccc(
+    const wd_royl_sa_restore_entry_ccc *entry, const char *pre_restore_directory,
+    char *pre_restore_file, size_t pre_restore_file_size, bool *fatal,
+    char *error, size_t error_size, wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *backup_data = NULL;
+  uint8_t *current_data = NULL;
+  uint8_t *saved_data = NULL;
+  size_t backup_size = 0;
+  size_t current_size = 0;
+  size_t saved_size = 0;
+  char calculated_sha256[65];
+  char module_file[32];
+  int result = -1;
+
+  *fatal = false;
+  if (error != NULL && error_size > 0)
+  {
+    error[0] = '\0';
+  }
+  if (pre_restore_file != NULL && pre_restore_file_size > 0)
+  {
+    pre_restore_file[0] = '\0';
+  }
+
+  if (wd_royl_read_file_ccc(entry->path, &backup_data, &backup_size) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (entry->file_size != 0 &&
+      (unsigned long long)backup_size != entry->file_size)
+  {
+    snprintf(error, error_size,
+             _("The backup file is %zu bytes, but the manifest reports %llu "
+               "bytes."),
+             backup_size, entry->file_size);
+    goto finish;
+  }
+  if (entry->sha256[0] != '\0')
+  {
+    wd_royl_sha256_ccc(backup_data, backup_size, calculated_sha256,
+                       sizeof(calculated_sha256));
+    if (g_ascii_strcasecmp(calculated_sha256, entry->sha256) != 0)
+    {
+      snprintf(error, error_size,
+               _("The backup file SHA-256 does not match the manifest."));
+      goto finish;
+    }
+  }
+  if (wd_royl_validate_module_ccc(backup_data, backup_size, entry->module) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+
+  if (wd_royl_read_module_ccc(entry->module, &current_data, &current_size,
+                              progress) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (wd_royl_validate_module_header_ccc(current_data, current_size,
+                                         entry->module) != 0)
+  {
+    snprintf(error, error_size, _("The current module could not be validated. "
+                                  "%s"),
+             wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (current_size != backup_size)
+  {
+    snprintf(error, error_size,
+             _("The module on the drive is %zu bytes, but the backup is %zu "
+               "bytes. Modules cannot be resized by restore."),
+             current_size, backup_size);
+    goto finish;
+  }
+
+  snprintf(module_file, sizeof(module_file), "module_%04x.bin",
+           entry->module);
+  wd_royl_join_path_ccc(pre_restore_file, pre_restore_file_size,
+                        pre_restore_directory, module_file);
+  if (wd_royl_write_file_ccc(pre_restore_file, current_data, current_size) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (wd_royl_read_file_ccc(pre_restore_file, &saved_data, &saved_size) != 0)
+  {
+    snprintf(error, error_size,
+             _("The previous module backup could not be read back. The write "
+               "was not attempted. %s"),
+             wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (saved_size != current_size ||
+      memcmp(saved_data, current_data, current_size) != 0)
+  {
+    snprintf(error, error_size,
+             _("The previous module backup could not be verified. The write "
+               "was not attempted."));
+    goto finish;
+  }
+  free(saved_data);
+  saved_data = NULL;
+
+  if (wd_royl_write_module_ccc(entry->module, backup_data, backup_size,
+                               progress) != 0)
+  {
+    *fatal = true;
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+  if (wd_royl_verify_module_ccc(entry->module, backup_data, backup_size,
+                                progress) != 0)
+  {
+    *fatal = true;
+    snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
+    goto finish;
+  }
+
+  result = 0;
+
+finish:
+  free(backup_data);
+  free(current_data);
+  free(saved_data);
+  return result;
+}
+
+void run_wd_royl_backup_sa_ccc(void)
+{
+  char *parent_directory = NULL;
+  char backup_directory[PATH_MAX] = "";
+  char manifest_path[PATH_MAX] = "";
+  char summary_path[PATH_MAX] = "";
+  char folder_error[PATH_MAX + 256] = "";
+  char failure_message[4096] = "";
+  uint8_t *directory_data = NULL;
+  size_t directory_size = 0;
+  wd_royl_module_entry_ccc *entries = NULL;
+  size_t entry_count = 0;
+  size_t i;
+  bool temporary_source_access = false;
+  bool source_open = false;
+  bool progress_active = false;
+  GKeyFile *manifest = NULL;
+  GString *summary = NULL;
+  unsigned int ok_count = 0;
+  unsigned int failed_count = 0;
+  unsigned int read_failed_count = 0;
+  unsigned int file_write_failed_count = 0;
+  unsigned int checksum_mismatch_count = 0;
+  unsigned long long total_bytes = 0;
+  char directory_sha256[65] = "";
+  bool directory_checksum_ok = false;
+  char created[64] = "";
+  bool summary_written = false;
+  wd_royl_sa_backup_progress_ccc_t progress_state;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+  parent_directory = wd_royl_choose_folder_ccc(
+      _("Choose a folder for the WD ROYL SA backup"), g_get_home_dir());
+  if (parent_directory == NULL)
+  {
+    goto cleanup;
+  }
+  wd_royl_make_backup_folder_path_ccc(parent_directory, backup_directory,
+                                      sizeof(backup_directory), 0);
+  if (!wd_royl_confirm_ccc(
+          _("Back up WD ROYL SA"), _("Back Up"),
+          _("Back up every module listed in SA directory 0x0001?\n\n"
+            "Drive: %s\nSerial: %s\nDestination:\n%s\n\n"
+            "The backup continues if an individual module cannot be read.\n\n"
+            "Continue?"),
+          current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                              : _("Unknown"),
+          current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                                : _("Unknown"),
+          backup_directory))
+  {
+    goto cleanup;
+  }
+  wd_royl_dialog_parent_override_ccc = NULL;
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    goto cleanup;
+  }
+  source_open = true;
+  if (wd_royl_create_backup_folder_ccc(
+          parent_directory, backup_directory, sizeof(backup_directory),
+          folder_error, sizeof(folder_error)) != 0)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s",
+                             folder_error);
+    goto cleanup;
+  }
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Backup"),
+                             _("Reading module directory 0x0001"));
+  progress_active = true;
+  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data,
+                              &directory_size,
+                              wd_royl_progress_update_ccc) != 0)
+  {
+    snprintf(failure_message, sizeof(failure_message),
+             _("Unable to read the SA module directory. The backup was not "
+               "created.\n\n%s"),
+             wd_royl_last_error_ccc());
+    goto cleanup;
+  }
+  if (wd_royl_parse_module_directory_ccc(directory_data, directory_size,
+                                         &entries, &entry_count) != 0)
+  {
+    snprintf(failure_message, sizeof(failure_message),
+             _("Unable to parse the SA module directory. The backup was not "
+               "created.\n\n%s"),
+             wd_royl_last_error_ccc());
+    goto cleanup;
+  }
+
+  {
+    bool have_directory_entry = false;
+
+    for (i = 0; i < entry_count; i++)
+    {
+      if (entries[i].module_id == WD_ROYL_MODULE_01)
+      {
+        have_directory_entry = true;
+        break;
+      }
+    }
+    if (!have_directory_entry &&
+        directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
+    {
+      wd_royl_module_entry_ccc *new_entries =
+          (wd_royl_module_entry_ccc *)realloc(
+              entries, (entry_count + 1) * sizeof(*entries));
+
+      if (new_entries == NULL)
+      {
+        snprintf(failure_message, sizeof(failure_message),
+                 _("Unable to allocate memory for the module directory."));
+        goto cleanup;
+      }
+      entries = new_entries;
+      memset(&entries[entry_count], 0, sizeof(entries[entry_count]));
+      entries[entry_count].module_id = WD_ROYL_MODULE_01;
+      entries[entry_count].sectors =
+          (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
+      entries[entry_count].copies = 1;
+      entry_count++;
+    }
+  }
+
+  if (entry_count > 1)
+  {
+    size_t output_index = 1;
+
+    qsort(entries, entry_count, sizeof(*entries),
+          wd_royl_compare_module_entries_ccc);
+    for (i = 1; i < entry_count; i++)
+    {
+      if (entries[i].module_id != entries[output_index - 1].module_id)
+      {
+        if (output_index != i)
+        {
+          entries[output_index] = entries[i];
+        }
+        output_index++;
+      }
+    }
+    entry_count = output_index;
+  }
+
+  directory_checksum_ok =
+      wd_royl_module_checksum_ok_ccc(directory_data, directory_size);
+  wd_royl_sha256_ccc(directory_data, directory_size, directory_sha256,
+                     sizeof(directory_sha256));
+  for (i = 0; i < entry_count; i++)
+  {
+    if (entries[i].module_id == WD_ROYL_MODULE_01)
+    {
+      total_bytes += directory_size;
+    }
+    else if (entries[i].sectors > 0)
+    {
+      total_bytes += (unsigned long long)entries[i].sectors *
+                     WD_ROYL_SECTOR_SIZE;
+    }
+    else
+    {
+      total_bytes += WD_ROYL_SECTOR_SIZE;
+    }
+  }
+  if (total_bytes == 0)
+  {
+    total_bytes = 1;
+  }
+
+  {
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+
+    if (tm != NULL)
+    {
+      strftime(created, sizeof(created), "%Y-%m-%d %H:%M:%S", tm);
+    }
+    else
+    {
+      g_strlcpy(created, "unknown", sizeof(created));
+    }
+  }
+
+  manifest = g_key_file_new();
+  g_key_file_set_string(manifest, "backup", "format",
+                        WD_ROYL_SA_MANIFEST_FORMAT);
+  g_key_file_set_integer(manifest, "backup", "version",
+                         WD_ROYL_SA_MANIFEST_VERSION);
+  g_key_file_set_string(manifest, "backup", "created", created);
+  g_key_file_set_string(manifest, "backup", "model",
+                        current_source_model_ccc);
+  g_key_file_set_string(manifest, "backup", "serial",
+                        current_source_serial_ccc);
+  g_key_file_set_string(manifest, "backup", "firmware", "");
+  g_key_file_set_string(manifest, "backup", "transport",
+                        wd_royl_transport_name_ccc());
+  g_key_file_set_integer(manifest, "backup", "directory_module",
+                         WD_ROYL_MODULE_01);
+  g_key_file_set_integer(manifest, "backup", "directory_size",
+                         (gint)directory_size);
+  g_key_file_set_string(manifest, "backup", "directory_sha256",
+                        directory_sha256);
+  g_key_file_set_boolean(manifest, "backup", "directory_checksum_ok",
+                         directory_checksum_ok);
+  g_key_file_set_integer(manifest, "backup", "module_count",
+                         (gint)entry_count);
+
+  summary = g_string_new(NULL);
+  g_string_append(summary, "WD ROYL SA Backup\n");
+  g_string_append_printf(summary, "Created: %s\n", created);
+  g_string_append_printf(summary, "Model: %s\n", current_source_model_ccc);
+  g_string_append_printf(summary, "Serial: %s\n", current_source_serial_ccc);
+  g_string_append_printf(summary, "Transport: %s\n",
+                         wd_royl_transport_name_ccc());
+  g_string_append_printf(summary,
+                         "Directory module 0x0001: %zu bytes, checksum %s\n",
+                         directory_size,
+                         directory_checksum_ok ? "ok" : "MISMATCH");
+  g_string_append_printf(summary, "Modules listed: %zu\n\n", entry_count);
+
+  memset(&progress_state, 0, sizeof(progress_state));
+  progress_state.count = (unsigned int)entry_count;
+  progress_state.total = total_bytes;
+  wd_royl_sa_backup_progress_state_ccc = &progress_state;
+  wd_royl_progress_update_ccc(_("Backing up service area modules"), 0,
+                              total_bytes);
+
+  for (i = 0; i < entry_count; i++)
+  {
+    uint8_t *module_data = NULL;
+    size_t module_size = 0;
+    bool module_from_directory = false;
+    bool module_read_ok = false;
+    char group_name[32];
+    char file_name[32] = "";
+    char module_sha256[65] = "";
+    char error_text[WD_ROYL_ERROR_SIZE] = "";
+    char human_size[64];
+    char size_text[64];
+    const char *status = "ok";
+    uint32_t stored_checksum = 0;
+    uint32_t calculated_checksum = 0;
+    bool checksum_ok = false;
+    unsigned long long span;
+    uint16_t module_id = entries[i].module_id;
+
+    progress_state.index = (unsigned int)i + 1;
+    progress_state.module = module_id;
+
+    if (module_id == WD_ROYL_MODULE_01)
+    {
+      module_data = directory_data;
+      module_size = directory_size;
+      module_from_directory = true;
+      module_read_ok = true;
+      wd_royl_sa_backup_progress_callback_ccc(
+          _("Saving module directory"), 0, directory_size);
+    }
+    else if (wd_royl_read_module_ccc(
+                 module_id, &module_data, &module_size,
+                 wd_royl_sa_backup_progress_callback_ccc) == 0)
+    {
+      module_read_ok = true;
+    }
+    else
+    {
+      snprintf(error_text, sizeof(error_text), "%s",
+               wd_royl_last_error_ccc());
+      status = "read_failed";
+      read_failed_count++;
+    }
+
+    if (module_read_ok)
+    {
+      if (wd_royl_validate_module_header_ccc(module_data, module_size,
+                                             module_id) != 0)
+      {
+        snprintf(error_text, sizeof(error_text), "%s",
+                 wd_royl_last_error_ccc());
+        status = "header_invalid";
+        read_failed_count++;
+      }
+      else
+      {
+        stored_checksum = wd_royl_get_module_checksum_ccc(module_data);
+        calculated_checksum =
+            wd_royl_calculate_checksum_ccc(module_data, module_size);
+        checksum_ok = stored_checksum == calculated_checksum;
+        if (!checksum_ok)
+        {
+          checksum_mismatch_count++;
+        }
+        wd_royl_sha256_ccc(module_data, module_size, module_sha256,
+                           sizeof(module_sha256));
+        snprintf(file_name, sizeof(file_name), "module_%04x.bin", module_id);
+        {
+          char file_path[PATH_MAX];
+
+          wd_royl_join_path_ccc(file_path, sizeof(file_path),
+                                backup_directory, file_name);
+          if (wd_royl_write_file_ccc(file_path, module_data, module_size) != 0)
+          {
+            snprintf(error_text, sizeof(error_text), "%s",
+                     wd_royl_last_error_ccc());
+            status = "file_write_failed";
+            file_write_failed_count++;
+            file_name[0] = '\0';
+          }
+        }
+      }
+    }
+
+    snprintf(group_name, sizeof(group_name), "module.%04x", module_id);
+    g_key_file_set_integer(manifest, group_name, "id", module_id);
+    g_key_file_set_string(manifest, group_name, "file", file_name);
+    g_key_file_set_string(manifest, group_name, "status", status);
+    g_key_file_set_integer(manifest, group_name, "directory_sectors",
+                           entries[i].sectors);
+    g_key_file_set_integer(manifest, group_name, "directory_copies",
+                           entries[i].copies);
+    wd_royl_set_hex_ccc(manifest, group_name, "directory_location1",
+                        entries[i].location1);
+    wd_royl_set_hex_ccc(manifest, group_name, "directory_location2",
+                        entries[i].location2);
+    g_key_file_set_integer(manifest, group_name, "read_size",
+                           (gint)module_size);
+    g_key_file_set_string(manifest, group_name, "sha256", module_sha256);
+    wd_royl_set_hex_ccc(manifest, group_name, "stored_checksum",
+                        stored_checksum);
+    wd_royl_set_hex_ccc(manifest, group_name, "calculated_checksum",
+                        calculated_checksum);
+    g_key_file_set_boolean(manifest, group_name, "checksum_ok", checksum_ok);
+    {
+      char *clean_error = g_strdup(error_text);
+
+      g_strdelimit(clean_error, "\r\n", ' ');
+      g_key_file_set_string(manifest, group_name, "error", clean_error);
+      g_free(clean_error);
+    }
+
+    if (strcmp(status, "ok") == 0)
+    {
+      ok_count++;
+    }
+    else
+    {
+      failed_count++;
+    }
+
+    if (module_size > 0)
+    {
+      wd_royl_format_size_ccc(module_size, human_size, sizeof(human_size));
+      g_strlcpy(size_text, human_size, sizeof(size_text));
+    }
+    else
+    {
+      g_strlcpy(size_text, "-", sizeof(size_text));
+    }
+    g_string_append_printf(
+        summary, "0x%04x  %-10s  %-16s  checksum=%s  sha256=%s\n", module_id,
+        size_text, status,
+        module_size == 0 ? "-" : (checksum_ok ? "ok" : "mismatch"),
+        module_sha256[0] != '\0' ? module_sha256 : "-");
+    if (error_text[0] != '\0')
+    {
+      char *clean_error = g_strdup(error_text);
+
+      g_strdelimit(clean_error, "\r\n", ' ');
+      g_string_append_printf(summary, "         %s\n", clean_error);
+      g_free(clean_error);
+    }
+
+    if (module_id == WD_ROYL_MODULE_01)
+    {
+      span = directory_size;
+    }
+    else if (entries[i].sectors > 0)
+    {
+      span = (unsigned long long)entries[i].sectors * WD_ROYL_SECTOR_SIZE;
+    }
+    else
+    {
+      span = WD_ROYL_SECTOR_SIZE;
+    }
+    if (module_size > 0 && strcmp(status, "ok") == 0)
+    {
+      span = module_size;
+    }
+    progress_state.completed += span;
+    if (progress_state.completed > progress_state.total)
+    {
+      progress_state.completed = progress_state.total;
+    }
+    wd_royl_progress_update_ccc(NULL, progress_state.completed,
+                                progress_state.total);
+
+    if (!module_from_directory)
+    {
+      free(module_data);
+    }
+  }
+
+  wd_royl_sa_backup_progress_state_ccc = NULL;
+  g_string_append_printf(
+      summary,
+      "\nBacked up: %u\nFailed: %u\nRead failures: %u\nFile write failures: "
+      "%u\nChecksum mismatches: %u\n",
+      ok_count, failed_count, read_failed_count, file_write_failed_count,
+      checksum_mismatch_count);
+  g_key_file_set_integer(manifest, "backup", "backup_ok_count",
+                         (gint)ok_count);
+  g_key_file_set_integer(manifest, "backup", "backup_failed_count",
+                         (gint)failed_count);
+  g_key_file_set_integer(manifest, "backup", "read_failed_count",
+                         (gint)read_failed_count);
+  g_key_file_set_integer(manifest, "backup", "file_write_failed_count",
+                         (gint)file_write_failed_count);
+  g_key_file_set_integer(manifest, "backup", "checksum_mismatch_count",
+                         (gint)checksum_mismatch_count);
+
+  wd_royl_join_path_ccc(manifest_path, sizeof(manifest_path),
+                        backup_directory, WD_ROYL_SA_MANIFEST_NAME);
+  {
+    GError *gerror = NULL;
+    gsize manifest_length = 0;
+    char *manifest_data = g_key_file_to_data(manifest, &manifest_length, NULL);
+
+    if (manifest_data == NULL ||
+        !g_file_set_contents(manifest_path, manifest_data,
+                             (gssize)manifest_length, &gerror))
+    {
+      snprintf(failure_message, sizeof(failure_message),
+               _("The module files were written to:\n%s\n\nbut the backup "
+                 "manifest could not be saved:\n%s\n\n%s"),
+               backup_directory, manifest_path,
+               gerror != NULL ? gerror->message : _("Unknown error"));
+      if (gerror != NULL)
+      {
+        g_error_free(gerror);
+      }
+      g_free(manifest_data);
+      goto cleanup;
+    }
+    g_free(manifest_data);
+  }
+
+  wd_royl_join_path_ccc(summary_path, sizeof(summary_path), backup_directory,
+                        WD_ROYL_SA_SUMMARY_NAME);
+  {
+    GError *gerror = NULL;
+
+    summary_written =
+        g_file_set_contents(summary_path, summary->str, -1, &gerror);
+    if (gerror != NULL)
+    {
+      g_error_free(gerror);
+    }
+  }
+
+  progress_active = false;
+  wd_royl_progress_end_ccc();
+  source_open = false;
+  wd_royl_end_source_access_ccc(temporary_source_access);
+
+  if (failed_count == 0 && checksum_mismatch_count == 0)
+  {
+    wd_royl_show_message_ccc(
+        summary_written ? GTK_MESSAGE_INFO : GTK_MESSAGE_WARNING,
+        _("WD ROYL SA Backup"),
+        _("SA backup completed.\n\nDrive: %s\nSerial: %s\nModules backed up: "
+          "%u of %zu\nFolder:\n%s\n\nManifest:\n%s%s"),
+        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                            : _("Unknown"),
+        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                             : _("Unknown"),
+        ok_count, entry_count, backup_directory, manifest_path,
+        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+  }
+  else if (failed_count == 0)
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
+        _("SA backup completed, but some modules have checksum mismatches.\n\n"
+          "Drive: %s\nSerial: %s\nModules backed up: %u of %zu\nChecksum "
+          "mismatches: %u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt "
+          "for the affected modules.%s"),
+        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                            : _("Unknown"),
+        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                             : _("Unknown"),
+        ok_count, entry_count, checksum_mismatch_count, backup_directory,
+        manifest_path,
+        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+  }
+  else
+  {
+    wd_royl_show_message_ccc(
+        GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
+        _("SA backup completed with failures.\n\nDrive: %s\nSerial: %s\n"
+          "Modules backed up: %u of %zu\nFailed: %u\nChecksum mismatches: "
+          "%u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt for the "
+          "failed module details.%s"),
+        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                            : _("Unknown"),
+        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                             : _("Unknown"),
+        ok_count, entry_count, failed_count, checksum_mismatch_count,
+        backup_directory, manifest_path,
+        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+  }
+
+cleanup:
+  wd_royl_sa_backup_progress_state_ccc = NULL;
+  if (progress_active)
+  {
+    wd_royl_progress_end_ccc();
+  }
+  if (source_open)
+  {
+    wd_royl_end_source_access_ccc(temporary_source_access);
+  }
+  if (failure_message[0] != '\0')
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s",
+                             failure_message);
+  }
+  if (manifest != NULL)
+  {
+    g_key_file_free(manifest);
+  }
+  if (summary != NULL)
+  {
+    g_string_free(summary, TRUE);
+  }
+  free(entries);
+  free(directory_data);
+  g_free(parent_directory);
+}
+
+void run_wd_royl_restore_sa_ccc(void)
+{
+  char *manifest_path = NULL;
+  wd_royl_sa_manifest_ccc manifest;
+  char load_error[1024] = "";
+  char pre_restore_directory[PATH_MAX] = "";
+  char restore_log_path[PATH_MAX] = "";
+  char restore_log_error[512] = "";
+  char failure_message[2048] = "";
+  char started[64] = "";
+  size_t selected_count;
+  size_t module_index = 0;
+  unsigned int restored_count = 0;
+  unsigned int failed_count = 0;
+  bool temporary_source_access = false;
+  bool source_open = false;
+  bool progress_active = false;
+  bool stopped = false;
+  GString *restore_log = NULL;
+  GString *failure_summary = NULL;
+  wd_royl_sa_restore_progress_ccc_t progress_state;
+  size_t i;
+
+  memset(&manifest, 0, sizeof(manifest));
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+  manifest_path = wd_royl_choose_file_ccc(
+      _("Select a WD ROYL SA backup manifest"), false, NULL);
+  if (manifest_path == NULL)
+  {
+    goto cleanup;
+  }
+  if (wd_royl_load_sa_manifest_ccc(manifest_path, &manifest, load_error,
+                                   sizeof(load_error)) != 0)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s",
+                             load_error);
+    goto cleanup;
+  }
+
+  selected_count = wd_royl_restore_selection_ccc(&manifest);
+  if (selected_count == 0)
+  {
+    goto cleanup;
+  }
+  if (!wd_royl_restore_identity_ok_ccc(manifest.model, manifest.serial))
+  {
+    goto cleanup;
+  }
+
+  wd_royl_make_pre_restore_path_ccc(manifest.directory, pre_restore_directory,
+                                    sizeof(pre_restore_directory));
+  if (!wd_royl_confirm_ccc(
+          _("Restore WD ROYL SA"), _("Restore"),
+          _("Restore %zu selected module(s) to the current source drive?\n\n"
+            "Backup drive: %s / %s\nCurrent source: %s / %s\n\n"
+            "Each current module will be backed up to:\n%s\n\n"
+            "Module 0x0001 is restored last. Every write will be verified.\n\n"
+            "Continue?"),
+          selected_count,
+          manifest.model[0] != '\0' ? manifest.model : _("Unknown"),
+          manifest.serial[0] != '\0' ? manifest.serial : _("Unknown"),
+          current_source_model_ccc[0] != '\0' ? current_source_model_ccc
+                                              : _("Unknown"),
+          current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
+                                               : _("Unknown"),
+          pre_restore_directory))
+  {
+    goto cleanup;
+  }
+
+  wd_royl_dialog_parent_override_ccc = NULL;
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    goto cleanup;
+  }
+  source_open = true;
+  if (g_mkdir_with_parents(pre_restore_directory, 0755) != 0)
+  {
+    snprintf(failure_message, sizeof(failure_message),
+             _("Unable to create the pre-restore backup folder:\n%s\n\n%s"),
+             pre_restore_directory, g_strerror(errno));
+    goto cleanup;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Restore"), _("Preparing restore"));
+  progress_active = true;
+  {
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+
+    if (tm != NULL)
+    {
+      strftime(started, sizeof(started), "%Y-%m-%d %H:%M:%S", tm);
+    }
+    else
+    {
+      g_strlcpy(started, "unknown", sizeof(started));
+    }
+  }
+  restore_log = g_string_new(NULL);
+  failure_summary = g_string_new(NULL);
+  g_string_append(restore_log, "WD ROYL SA Restore\n");
+  g_string_append_printf(restore_log, "Started: %s\n", started);
+  g_string_append_printf(restore_log, "Manifest: %s\n", manifest.path);
+  g_string_append_printf(restore_log, "Backup drive: %s / %s\n",
+                         manifest.model, manifest.serial);
+  g_string_append_printf(restore_log, "Selected modules: %zu\n",
+                         selected_count);
+  g_string_append_printf(restore_log,
+                         "Pre-restore module backups: %s\n\n",
+                         pre_restore_directory);
+
+  memset(&progress_state, 0, sizeof(progress_state));
+  progress_state.count = selected_count;
+  wd_royl_sa_restore_progress_state_ccc = &progress_state;
+
+  for (i = 0; i < manifest.entry_count; i++)
+  {
+    wd_royl_sa_restore_entry_ccc *entry = &manifest.entries[i];
+    char stage[256];
+    char error_text[WD_ROYL_ERROR_SIZE] = "";
+    char pre_restore_file[PATH_MAX] = "";
+    bool fatal = false;
+    int result;
+
+    if (!entry->selected)
+    {
+      continue;
+    }
+    module_index++;
+    // The directory module points at the other modules. If any other selected
+    // module failed, leave the current directory in place instead of writing a
+    // directory that may point at modules that were not restored.
+    if (entry->module == WD_ROYL_MODULE_01 && failed_count > 0)
+    {
+      char *clean_error = g_strdup(
+          _("Directory module not restored because another selected module "
+            "failed."));
+
+      g_strdelimit(clean_error, "\r\n", ' ');
+      failed_count++;
+      g_string_append_printf(restore_log, "0x0001 SKIPPED: %s\n",
+                             clean_error);
+      g_string_append_printf(failure_summary, "0x0001: %s\n", clean_error);
+      g_free(clean_error);
+      continue;
+    }
+    if (!entry->available)
+    {
+      char *clean_error = g_strdup(
+          entry->error[0] != '\0' ? entry->error
+                                  : wd_royl_restore_status_text_ccc(
+                                        entry->status));
+
+      g_strdelimit(clean_error, "\r\n", ' ');
+      failed_count++;
+      g_string_append_printf(restore_log, "0x%04x SKIPPED: %s\n",
+                             entry->module, clean_error);
+      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module,
+                             clean_error);
+      g_free(clean_error);
+      continue;
+    }
+
+    progress_state.index = (unsigned int)module_index;
+    progress_state.module = entry->module;
+    snprintf(stage, sizeof(stage),
+             _("Module 0x%04x (%zu of %zu): checking backup file"),
+             entry->module, module_index, selected_count);
+    wd_royl_progress_update_ccc(stage, 0, 1);
+
+    result = wd_royl_restore_one_module_ccc(
+        entry, pre_restore_directory, pre_restore_file,
+        sizeof(pre_restore_file), &fatal, error_text, sizeof(error_text),
+        wd_royl_sa_restore_progress_callback_ccc);
+    if (result == 0)
+    {
+      restored_count++;
+      g_string_append_printf(
+          restore_log, "0x%04x OK: previous module saved to %s\n",
+          entry->module, pre_restore_file);
+      continue;
+    }
+
+    {
+      char *clean_error =
+          g_strdup(error_text[0] != '\0' ? error_text : _("Unknown error"));
+
+      g_strdelimit(clean_error, "\r\n", ' ');
+      failed_count++;
+      g_string_append_printf(restore_log, "0x%04x FAILED: %s\n",
+                             entry->module, clean_error);
+      if (pre_restore_file[0] != '\0')
+      {
+        g_string_append_printf(restore_log, "  previous module: %s\n",
+                               pre_restore_file);
+      }
+      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module,
+                             clean_error);
+      g_free(clean_error);
+    }
+    if (fatal)
+    {
+      stopped = true;
+      g_string_append(
+          restore_log,
+          "Restore stopped after a write or verification failure.\n");
+      break;
+    }
+  }
+
+  wd_royl_sa_restore_progress_state_ccc = NULL;
+  progress_active = false;
+  wd_royl_progress_end_ccc();
+
+  wd_royl_join_path_ccc(restore_log_path, sizeof(restore_log_path),
+                        pre_restore_directory, WD_ROYL_SA_RESTORE_LOG_NAME);
+  {
+    GError *gerror = NULL;
+
+    if (!g_file_set_contents(restore_log_path, restore_log->str, -1,
+                             &gerror))
+    {
+      g_strlcpy(restore_log_error,
+                gerror != NULL ? gerror->message : _("Unknown error"),
+                sizeof(restore_log_error));
+      if (gerror != NULL)
+      {
+        g_error_free(gerror);
+      }
+    }
+  }
+
+  source_open = false;
+  wd_royl_end_source_access_ccc(temporary_source_access);
+  {
+    char *failures = NULL;
+    char *message;
+    size_t completed_selected =
+        (size_t)restored_count + (size_t)failed_count;
+    size_t remaining = selected_count > completed_selected
+                           ? selected_count - completed_selected
+                           : 0;
+
+    if (failure_summary->len > 0)
+    {
+      failures = g_strndup(failure_summary->str, 3000);
+      if (failure_summary->len > 3000)
+      {
+        char *truncated = g_strconcat(
+            failures, _("\n... see restore.txt for the full list."), NULL);
+
+        g_free(failures);
+        failures = truncated;
+      }
+    }
+    if (stopped && remaining > 0)
+    {
+      char *with_remaining = g_strdup_printf(
+          _("%s\n\nThe restore stopped before %zu selected module(s) were "
+            "attempted."),
+          failures != NULL ? failures : "", remaining);
+
+      g_free(failures);
+      failures = with_remaining;
+    }
+    if (restore_log_error[0] != '\0')
+    {
+      char *with_log_error = g_strdup_printf(
+          _("%s\n\nWarning: restore.txt could not be written: %s"),
+          failures != NULL ? failures : "", restore_log_error);
+
+      g_free(failures);
+      failures = with_log_error;
+    }
+
+    message = g_strdup_printf(
+        _("Restore finished.\n\nRestored and verified: %u\nFailed or "
+          "skipped: %u\nPrevious module backups:\n%s%s"),
+        restored_count, failed_count, pre_restore_directory,
+        failures != NULL && failures[0] != '\0' ? "\n\n" : "");
+    if (failures != NULL && failures[0] != '\0')
+    {
+      char *with_failures = g_strconcat(message, failures, NULL);
+
+      g_free(message);
+      message = with_failures;
+    }
+    if (failed_count > 0 || stopped)
+    {
+      char *with_recovery = g_strconcat(
+          message,
+          _("\n\nIf a module was not written correctly, use the SA Module "
+            "Editor to write the matching module_XXXX.bin file from the "
+            "previous module backups folder."),
+          NULL);
+
+      g_free(message);
+      message = with_recovery;
+    }
+    wd_royl_show_message_ccc(
+        failed_count == 0 && !stopped && restore_log_error[0] == '\0'
+            ? GTK_MESSAGE_INFO
+            : GTK_MESSAGE_WARNING,
+        _("WD ROYL SA Restore"), "%s", message);
+    g_free(message);
+    g_free(failures);
+  }
+
+cleanup:
+  wd_royl_sa_restore_progress_state_ccc = NULL;
+  if (progress_active)
+  {
+    wd_royl_progress_end_ccc();
+  }
+  if (source_open)
+  {
+    wd_royl_end_source_access_ccc(temporary_source_access);
+  }
+  if (restore_log != NULL)
+  {
+    g_string_free(restore_log, TRUE);
+  }
+  if (failure_summary != NULL)
+  {
+    g_string_free(failure_summary, TRUE);
+  }
+  if (failure_message[0] != '\0')
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s",
+                             failure_message);
+  }
+  wd_royl_sa_manifest_clear_ccc(&manifest);
+  g_free(manifest_path);
 }
 
 // ---------------------------------------------------------------------------
