@@ -9170,7 +9170,9 @@ void open_asclepius_ext_terminal_ccc(void)
 static GtkWidget *wd_royl_progress_dialog_ccc = NULL;
 static GtkWidget *wd_royl_progress_label_ccc = NULL;
 static GtkWidget *wd_royl_progress_bar_ccc = NULL;
-static GtkWindow *wd_royl_progress_parent_override_ccc = NULL;
+// Operations started from the SA module editor must parent their progress and
+// message dialogs to the editor instead of the main window.
+static GtkWindow *wd_royl_dialog_parent_override_ccc = NULL;
 
 static void wd_royl_progress_update_ccc(const char *stage,
                                         unsigned long long done,
@@ -9217,8 +9219,8 @@ static void wd_royl_progress_begin_ccc(const char *title, const char *stage)
   gtk_window_set_title(GTK_WINDOW(wd_royl_progress_dialog_ccc), title);
   gtk_window_set_transient_for(
       GTK_WINDOW(wd_royl_progress_dialog_ccc),
-      wd_royl_progress_parent_override_ccc != NULL
-          ? wd_royl_progress_parent_override_ccc
+      wd_royl_dialog_parent_override_ccc != NULL
+          ? wd_royl_dialog_parent_override_ccc
           : GTK_WINDOW(main_window_ccc));
   gtk_window_set_modal(GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
   gtk_window_set_destroy_with_parent(
@@ -9271,14 +9273,16 @@ static void wd_royl_show_message_ccc(GtkMessageType type, const char *title,
   va_list args;
   char *text;
   GtkWidget *dialog;
+  GtkWindow *parent = wd_royl_dialog_parent_override_ccc != NULL
+                          ? wd_royl_dialog_parent_override_ccc
+                          : GTK_WINDOW(main_window_ccc);
 
   va_start(args, format);
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
-                                  GTK_DIALOG_DESTROY_WITH_PARENT, type,
-                                  GTK_BUTTONS_OK, "%s", text);
+  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  type, GTK_BUTTONS_OK, "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -9989,6 +9993,484 @@ static void wd_royl_editor_add_column_ccc(wd_royl_editor_ccc_t *editor,
   gtk_tree_view_append_column(GTK_TREE_VIEW(editor->tree_view), column);
 }
 
+typedef struct
+{
+  GtkWidget *dialog;
+  GtkWidget *tree_view;
+  GtkListStore *store;
+  GtkWidget *manual_entry;
+  uint16_t selected_module;
+} wd_royl_module_picker_ccc_t;
+
+static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer,
+                                    size_t buffer_size)
+{
+  if (bytes >= 1024ULL * 1024ULL)
+  {
+    snprintf(buffer, buffer_size, "%.1f MiB",
+             (double)bytes / (1024.0 * 1024.0));
+  }
+  else if (bytes >= 1024ULL)
+  {
+    snprintf(buffer, buffer_size, "%.1f KiB", (double)bytes / 1024.0);
+  }
+  else
+  {
+    snprintf(buffer, buffer_size, "%llu B", bytes);
+  }
+}
+
+static int wd_royl_compare_module_entries_ccc(const void *a, const void *b)
+{
+  const wd_royl_module_entry_ccc *entry_a =
+      (const wd_royl_module_entry_ccc *)a;
+  const wd_royl_module_entry_ccc *entry_b =
+      (const wd_royl_module_entry_ccc *)b;
+
+  if (entry_a->module_id < entry_b->module_id)
+  {
+    return -1;
+  }
+  if (entry_a->module_id > entry_b->module_id)
+  {
+    return 1;
+  }
+  return 0;
+}
+
+static void wd_royl_picker_add_column_ccc(GtkWidget *tree_view,
+                                          const char *title,
+                                          int model_column, int width,
+                                          bool monospace, float xalign)
+{
+  GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+  GtkTreeViewColumn *column;
+
+  g_object_set(renderer, "xalign", xalign, NULL);
+  if (monospace)
+  {
+    g_object_set(renderer, "font", "Monospace 10", NULL);
+  }
+  column = gtk_tree_view_column_new_with_attributes(title, renderer, "text",
+                                                    model_column, NULL);
+  gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+  gtk_tree_view_column_set_fixed_width(column, width);
+  gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
+}
+
+static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection,
+                                                 gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  guint module_id;
+
+  if (gtk_tree_selection_get_selected(selection, &model, &iter))
+  {
+    char text[16];
+    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    snprintf(text, sizeof(text), "0x%04x", module_id);
+    gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
+  }
+}
+
+static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view,
+                                             GtkTreePath *path,
+                                             GtkTreeViewColumn *column,
+                                             gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
+  GtkTreeIter iter;
+  guint module_id;
+
+  if (gtk_tree_model_get_iter(model, &iter, path))
+  {
+    char text[16];
+    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    snprintf(text, sizeof(text), "0x%04x", module_id);
+    gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
+  }
+  gtk_dialog_response(GTK_DIALOG(picker->dialog), GTK_RESPONSE_ACCEPT);
+}
+
+static void wd_royl_picker_entry_activate_ccc(GtkEntry *entry,
+                                              gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  gtk_dialog_response(GTK_DIALOG(picker->dialog), GTK_RESPONSE_ACCEPT);
+}
+
+static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
+                                        gpointer user_data)
+{
+  wd_royl_module_picker_ccc_t *picker =
+      (wd_royl_module_picker_ccc_t *)user_data;
+  unsigned long long value = 0;
+  GtkTreeSelection *selection;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkWidget *message;
+
+  if (response != GTK_RESPONSE_ACCEPT)
+  {
+    return;
+  }
+  if (wd_royl_parse_number_ccc(
+          gtk_entry_get_text(GTK_ENTRY(picker->manual_entry)), 0xffff,
+          &value) &&
+      value != 0)
+  {
+    picker->selected_module = (uint16_t)value;
+    return;
+  }
+
+  selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(picker->tree_view));
+  if (gtk_tree_selection_get_selected(selection, &model, &iter))
+  {
+    guint module_id;
+    gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+    if (module_id != 0)
+    {
+      picker->selected_module = (uint16_t)module_id;
+      return;
+    }
+  }
+
+  message = gtk_message_dialog_new(
+      GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING,
+      GTK_BUTTONS_OK, "%s",
+      _("Select a module from the list or enter a module number from 1 to "
+        "0xffff."));
+  gtk_window_set_title(GTK_WINDOW(message), _("WD ROYL SA Module Editor"));
+  gtk_dialog_run(GTK_DIALOG(message));
+  gtk_widget_destroy(message);
+  g_signal_stop_emission_by_name(G_OBJECT(dialog), "response");
+}
+
+static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
+{
+  wd_royl_module_picker_ccc_t picker;
+  GtkWidget *content;
+  GtkWidget *vbox;
+  GtkWidget *info_label;
+  GtkWidget *scrolled;
+  GtkWidget *manual_row;
+  GtkWidget *manual_label;
+  GtkTreeSelection *selection;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreeIter first_iter;
+  GtkTreeIter first_module_iter;
+  GtkTreeIter default_iter;
+  bool have_first = false;
+  bool have_first_module = false;
+  bool have_default = false;
+  bool temporary_source_access = false;
+  bool directory_ok = false;
+  uint8_t *directory_data = NULL;
+  size_t directory_size = 0;
+  size_t entry_count = 0;
+  size_t listed_count = 0;
+  wd_royl_module_entry_ccc *entries = NULL;
+  char directory_error[WD_ROYL_ERROR_SIZE] = "";
+  char info_text[1024];
+  GtkWindow *parent;
+  size_t i;
+  int response;
+
+  memset(&picker, 0, sizeof(picker));
+  parent = editor != NULL && editor->dialog != NULL
+               ? GTK_WINDOW(editor->dialog)
+               : GTK_WINDOW(main_window_ccc);
+
+  wd_royl_dialog_parent_override_ccc = parent;
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    wd_royl_dialog_parent_override_ccc = NULL;
+    return 0;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
+                             _("Reading module directory"));
+  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data,
+                              &directory_size,
+                              wd_royl_progress_update_ccc) == 0)
+  {
+    if (wd_royl_parse_module_directory_ccc(
+            directory_data, directory_size, &entries, &entry_count) == 0)
+    {
+      directory_ok = true;
+    }
+    else
+    {
+      g_strlcpy(directory_error, wd_royl_last_error_ccc(),
+                sizeof(directory_error));
+    }
+  }
+  else
+  {
+    g_strlcpy(directory_error, wd_royl_last_error_ccc(),
+              sizeof(directory_error));
+  }
+  wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
+  wd_royl_dialog_parent_override_ccc = NULL;
+  free(directory_data);
+
+  listed_count = entry_count;
+  if (directory_ok)
+  {
+    bool have_directory_entry = false;
+    for (i = 0; i < entry_count; i++)
+    {
+      if (entries[i].module_id == WD_ROYL_MODULE_01)
+      {
+        have_directory_entry = true;
+        break;
+      }
+    }
+    if (!have_directory_entry &&
+        directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
+    {
+      wd_royl_module_entry_ccc *new_entries = (wd_royl_module_entry_ccc *)
+          realloc(entries, (entry_count + 1) * sizeof(*entries));
+      if (new_entries != NULL)
+      {
+        entries = new_entries;
+        memset(&entries[entry_count], 0, sizeof(entries[entry_count]));
+        entries[entry_count].module_id = WD_ROYL_MODULE_01;
+        entries[entry_count].sectors =
+            (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
+        entries[entry_count].copies = 1;
+        entry_count++;
+      }
+    }
+    if (entry_count > 1)
+    {
+      qsort(entries, entry_count, sizeof(*entries),
+            wd_royl_compare_module_entries_ccc);
+    }
+  }
+
+  picker.dialog = gtk_dialog_new_with_buttons(
+      _("Select WD ROYL SA Module"), parent,
+      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
+      GTK_RESPONSE_CANCEL, _("Open Module"), GTK_RESPONSE_ACCEPT, NULL);
+  gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 760, 520);
+  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog),
+                                  GTK_RESPONSE_ACCEPT);
+
+  content = gtk_dialog_get_content_area(GTK_DIALOG(picker.dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 10);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
+  gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
+
+  if (directory_ok && listed_count > 0)
+  {
+    snprintf(info_text, sizeof(info_text),
+             _("Directory module 0x0001 lists %zu modules. Select a module "
+               "below or enter a module number."),
+             listed_count);
+  }
+  else if (directory_ok)
+  {
+    g_strlcpy(info_text,
+              _("Directory module 0x0001 did not list any modules. Enter a "
+                "module number manually."),
+              sizeof(info_text));
+  }
+  else
+  {
+    snprintf(info_text, sizeof(info_text),
+             _("The module directory could not be read. Enter a module number "
+               "manually.\n\n%s"),
+             directory_error);
+  }
+  info_label = gtk_label_new(info_text);
+  gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(info_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 0);
+
+  {
+    GType columns[7] = {G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                        G_TYPE_UINT};
+    picker.store = gtk_list_store_newv(7, columns);
+  }
+  picker.tree_view =
+      gtk_tree_view_new_with_model(GTK_TREE_MODEL(picker.store));
+  gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(picker.tree_view), FALSE);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(picker.tree_view),
+                               GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Module"), 0, 90, true,
+                                0.0);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Type"), 1, 90, false,
+                                0.0);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Size"), 2, 180, false,
+                                0.0);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copies"), 3, 65, false,
+                                0.5);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 1"), 4, 100, true,
+                                0.0);
+  wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 2"), 5, 100, true,
+                                0.0);
+
+  for (i = 0; i < entry_count; i++)
+  {
+    char module_text[16];
+    char size_text[96];
+    char human_size[32];
+    char copies_text[16];
+    char location1[16];
+    char location2[16];
+    const char *type_text =
+        entries[i].module_id == WD_ROYL_MODULE_01 ? _("Directory") : "";
+
+    snprintf(module_text, sizeof(module_text), "0x%04x",
+             entries[i].module_id);
+    if (entries[i].sectors != 0)
+    {
+      wd_royl_format_size_ccc((unsigned long long)entries[i].sectors *
+                                  WD_ROYL_SECTOR_SIZE,
+                              human_size, sizeof(human_size));
+      snprintf(size_text, sizeof(size_text), "%u sec (%s)",
+               entries[i].sectors, human_size);
+    }
+    else
+    {
+      g_strlcpy(size_text, "-", sizeof(size_text));
+    }
+    if (entries[i].copies != 0)
+    {
+      snprintf(copies_text, sizeof(copies_text), "%u", entries[i].copies);
+    }
+    else
+    {
+      g_strlcpy(copies_text, "-", sizeof(copies_text));
+    }
+    if (entries[i].location1 != 0)
+    {
+      snprintf(location1, sizeof(location1), "0x%08x",
+               entries[i].location1);
+    }
+    else
+    {
+      g_strlcpy(location1, "-", sizeof(location1));
+    }
+    if (entries[i].location2 != 0)
+    {
+      snprintf(location2, sizeof(location2), "0x%08x",
+               entries[i].location2);
+    }
+    else
+    {
+      g_strlcpy(location2, "-", sizeof(location2));
+    }
+
+    gtk_list_store_append(picker.store, &iter);
+    gtk_list_store_set(picker.store, &iter, 0, module_text, 1, type_text, 2,
+                       size_text, 3, copies_text, 4, location1, 5, location2,
+                       6, (guint)entries[i].module_id, -1);
+  }
+  g_object_unref(picker.store);
+
+  scrolled = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
+                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_set_size_request(scrolled, -1, 300);
+  gtk_container_add(GTK_CONTAINER(scrolled), picker.tree_view);
+  gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
+
+  manual_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+  gtk_box_pack_start(GTK_BOX(vbox), manual_row, FALSE, FALSE, 0);
+  manual_label = gtk_label_new(_("Module number:"));
+  gtk_box_pack_start(GTK_BOX(manual_row), manual_label, FALSE, FALSE, 0);
+  picker.manual_entry = gtk_entry_new();
+  gtk_entry_set_width_chars(GTK_ENTRY(picker.manual_entry), 14);
+  gtk_widget_set_tooltip_text(
+      picker.manual_entry,
+      _("Decimal or 0x-prefixed hexadecimal module number"));
+  g_signal_connect(picker.manual_entry, "activate",
+                   G_CALLBACK(wd_royl_picker_entry_activate_ccc), &picker);
+  gtk_box_pack_start(GTK_BOX(manual_row), picker.manual_entry, FALSE, FALSE, 0);
+
+  selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(picker.tree_view));
+  g_signal_connect(selection, "changed",
+                   G_CALLBACK(wd_royl_picker_selection_changed_ccc), &picker);
+  g_signal_connect(picker.tree_view, "row-activated",
+                   G_CALLBACK(wd_royl_picker_row_activated_ccc), &picker);
+  g_signal_connect(picker.dialog, "response",
+                   G_CALLBACK(wd_royl_picker_response_ccc), &picker);
+
+  gtk_widget_show_all(picker.dialog);
+
+  model = GTK_TREE_MODEL(picker.store);
+  if (gtk_tree_model_get_iter_first(model, &iter))
+  {
+    first_iter = iter;
+    have_first = true;
+    do
+    {
+      guint module_id;
+      gtk_tree_model_get(model, &iter, 6, &module_id, -1);
+      if (module_id == WD_ROYL_MODULE_02)
+      {
+        default_iter = iter;
+        have_default = true;
+        break;
+      }
+      if (module_id != WD_ROYL_MODULE_01 && !have_first_module)
+      {
+        first_module_iter = iter;
+        have_first_module = true;
+      }
+    } while (gtk_tree_model_iter_next(model, &iter));
+    if (!have_default)
+    {
+      if (have_first_module)
+      {
+        default_iter = first_module_iter;
+        have_default = true;
+      }
+      else
+      {
+        default_iter = first_iter;
+        have_default = have_first;
+      }
+    }
+    if (have_default)
+    {
+      GtkTreePath *path = gtk_tree_model_get_path(model, &default_iter);
+      gtk_tree_selection_select_path(selection, path);
+      gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(picker.tree_view), path, NULL,
+                                   TRUE, 0.5, 0.0);
+      gtk_tree_path_free(path);
+    }
+  }
+  else
+  {
+    gtk_widget_grab_focus(picker.manual_entry);
+  }
+
+  response = gtk_dialog_run(GTK_DIALOG(picker.dialog));
+  g_signal_handlers_disconnect_by_data(selection, &picker);
+  g_signal_handlers_disconnect_by_data(picker.tree_view, &picker);
+  g_signal_handlers_disconnect_by_data(picker.manual_entry, &picker);
+  g_signal_handlers_disconnect_by_data(picker.dialog, &picker);
+  gtk_widget_destroy(picker.dialog);
+  free(entries);
+  if (response != GTK_RESPONSE_ACCEPT)
+  {
+    return 0;
+  }
+  return picker.selected_module;
+}
+
 static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
                                             gpointer user_data)
 {
@@ -10012,21 +10494,28 @@ static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
   }
   if (!wd_royl_editor_confirm_discard_ccc(editor))
   {
+    if (editor->loaded)
+    {
+      char module_text[16];
+      snprintf(module_text, sizeof(module_text), "0x%04x", editor->module);
+      gtk_entry_set_text(GTK_ENTRY(editor->module_entry), module_text);
+    }
     return;
   }
+  wd_royl_dialog_parent_override_ccc = GTK_WINDOW(editor->dialog);
   if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
   {
+    wd_royl_dialog_parent_override_ccc = NULL;
     return;
   }
 
-  wd_royl_progress_parent_override_ccc = GTK_WINDOW(editor->dialog);
   wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
                              _("Reading module"));
   result = wd_royl_read_module_ccc((uint16_t)module_value, &data, &size,
                                    wd_royl_progress_update_ccc);
   wd_royl_progress_end_ccc();
-  wd_royl_progress_parent_override_ccc = NULL;
   wd_royl_end_source_access_ccc(temporary_source_access);
+  wd_royl_dialog_parent_override_ccc = NULL;
 
   if (result != 0)
   {
@@ -10045,6 +10534,22 @@ static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
              (unsigned int)module_value, size);
     gtk_label_set_text(GTK_LABEL(editor->status_label), status);
   }
+}
+
+static void wd_royl_editor_choose_clicked_ccc(GtkWidget *widget,
+                                              gpointer user_data)
+{
+  wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
+  uint16_t module = wd_royl_choose_module_ccc(editor);
+  char module_text[16];
+
+  if (module == 0)
+  {
+    return;
+  }
+  snprintf(module_text, sizeof(module_text), "0x%04x", module);
+  gtk_entry_set_text(GTK_ENTRY(editor->module_entry), module_text);
+  wd_royl_editor_read_clicked_ccc(NULL, editor);
 }
 
 static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget,
@@ -10192,19 +10697,19 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
     return;
   }
 
+  wd_royl_dialog_parent_override_ccc = GTK_WINDOW(editor->dialog);
   if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
   {
+    wd_royl_dialog_parent_override_ccc = NULL;
     return;
   }
 
-  wd_royl_progress_parent_override_ccc = GTK_WINDOW(editor->dialog);
   wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
                              _("Checking the current module"));
   if (wd_royl_read_module_ccc(editor->module, &current, &current_size,
                               wd_royl_progress_update_ccc) != 0)
   {
     wd_royl_progress_end_ccc();
-    wd_royl_progress_parent_override_ccc = NULL;
     wd_royl_editor_report_error_ccc(
         editor, _("WD ROYL SA Module Editor"),
         _("Unable to back up the current module. The module was not written."));
@@ -10215,7 +10720,6 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
   if (wd_royl_validate_module_header_ccc(current, current_size,
                                          editor->module) != 0)
   {
-    wd_royl_progress_parent_override_ccc = NULL;
     wd_royl_editor_report_error_ccc(
         editor, _("WD ROYL SA Module Editor"),
         _("The current module could not be validated. The module was not "
@@ -10224,7 +10728,6 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
   }
   if (current_size != editor->size)
   {
-    wd_royl_progress_parent_override_ccc = NULL;
     wd_royl_editor_message_ccc(
         editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
         _("The module on the drive is %zu bytes, but the editor contains %zu "
@@ -10237,13 +10740,11 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
   wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name), kind);
   if (wd_royl_write_file_ccc(backup_name, current, current_size) != 0)
   {
-    wd_royl_progress_parent_override_ccc = NULL;
     wd_royl_editor_report_error_ccc(
         editor, _("WD ROYL SA Module Editor"),
         _("Unable to save the module backup. The module was not written."));
     goto finish;
   }
-  wd_royl_progress_parent_override_ccc = GTK_WINDOW(editor->dialog);
 
   wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
                              _("Writing module"));
@@ -10256,7 +10757,6 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
                                        wd_royl_progress_update_ccc);
   }
   wd_royl_progress_end_ccc();
-  wd_royl_progress_parent_override_ccc = NULL;
 
   if (result != 0)
   {
@@ -10280,7 +10780,7 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
       editor->module, backup_name);
 
 finish:
-  wd_royl_progress_parent_override_ccc = NULL;
+  wd_royl_dialog_parent_override_ccc = NULL;
   free(current);
   wd_royl_end_source_access_ccc(temporary_source_access);
 }
@@ -10355,6 +10855,7 @@ void open_wd_royl_module_editor_ccc(void)
   GtkWidget *top_row;
   GtkWidget *module_label;
   GtkWidget *read_button;
+  GtkWidget *choose_button;
   GtkWidget *load_button;
   GtkWidget *nav_row;
   GtkWidget *offset_label;
@@ -10362,11 +10863,18 @@ void open_wd_royl_module_editor_ccc(void)
   GtkWidget *scrolled;
   GtkWidget *hint_label;
   GType columns[WD_ROYL_EDITOR_MODEL_COLUMNS];
+  uint16_t startup_module;
+  char module_text[16];
   int i;
   int response;
   bool done = false;
 
   if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+  startup_module = wd_royl_choose_module_ccc(NULL);
+  if (startup_module == 0)
   {
     return;
   }
@@ -10404,6 +10912,14 @@ void open_wd_royl_module_editor_ccc(void)
   g_signal_connect(read_button, "clicked",
                    G_CALLBACK(wd_royl_editor_read_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), read_button, FALSE, FALSE, 0);
+
+  choose_button = gtk_button_new_with_label(_("Choose Module..."));
+  gtk_widget_set_tooltip_text(
+      choose_button,
+      _("Choose a module from the service area directory in module 0x0001"));
+  g_signal_connect(choose_button, "clicked",
+                   G_CALLBACK(wd_royl_editor_choose_clicked_ccc), editor);
+  gtk_box_pack_start(GTK_BOX(top_row), choose_button, FALSE, FALSE, 0);
 
   load_button = gtk_button_new_with_label(_("Load File..."));
   g_signal_connect(load_button, "clicked",
@@ -10504,7 +11020,12 @@ void open_wd_royl_module_editor_ccc(void)
   g_object_unref(editor->store);
   wd_royl_editor_update_info_ccc(editor);
   wd_royl_editor_update_navigation_ccc(editor);
+  snprintf(module_text, sizeof(module_text), "0x%04x", startup_module);
+  gtk_entry_set_text(GTK_ENTRY(editor->module_entry), module_text);
   gtk_widget_show_all(editor->dialog);
+
+  // The startup picker already selected a module, so open it immediately.
+  wd_royl_editor_read_clicked_ccc(NULL, editor);
 
   while (!done)
   {

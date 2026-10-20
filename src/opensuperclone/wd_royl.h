@@ -20,6 +20,7 @@
 #define WD_ROYL_RAM_MAX_SIZE 0x02000000ULL
 #define WD_ROYL_RAM_BLOCK_SIZE 0x00010000ULL
 
+#define WD_ROYL_MODULE_01 0x0001
 #define WD_ROYL_MODULE_02 0x0002
 #define WD_ROYL_MODULE_32 0x0032
 
@@ -31,6 +32,18 @@
 #define WD_ROYL_DIR_IN 2
 
 #define WD_ROYL_ERROR_SIZE 512
+
+// One module entry from the service area directory in module 0x0001. The
+// directory lists the module ID, its size, the number of copies, and where
+// those copies are stored in the service area.
+typedef struct
+{
+  uint16_t module_id;
+  uint16_t sectors;
+  uint8_t copies;
+  uint32_t location1;
+  uint32_t location2;
+} wd_royl_module_entry_ccc;
 
 // Called from the vendor operations so the GUI can update its progress
 // display. done and total are in bytes (or another operation specific unit).
@@ -89,6 +102,9 @@ int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
 int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
                            unsigned int record_number, uint16_t *record_offset,
                            uint16_t *record_size);
+int wd_royl_parse_module_directory_ccc(
+    const uint8_t *data, size_t size, wd_royl_module_entry_ccc **entries,
+    size_t *entry_count);
 
 // Slow fix patch algorithms. The checksum is updated in place.
 int wd_royl_patch_module_02_ccc(uint8_t *data, size_t size);

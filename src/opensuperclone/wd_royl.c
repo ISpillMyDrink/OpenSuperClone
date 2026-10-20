@@ -1123,6 +1123,109 @@ int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
   return 0;
 }
 
+int wd_royl_parse_module_directory_ccc(
+    const uint8_t *data, size_t size, wd_royl_module_entry_ccc **entries,
+    size_t *entry_count)
+{
+  wd_royl_module_entry_ccc *list = NULL;
+  size_t capacity = 0;
+  size_t count = 0;
+  size_t offset;
+  unsigned int record_count;
+  unsigned int record_number;
+  int result = -1;
+
+  if (entries == NULL || entry_count == NULL)
+  {
+    wd_royl_set_error_ccc(
+        "Internal error: no destination for the module directory.\n");
+    return -1;
+  }
+  *entries = NULL;
+  *entry_count = 0;
+
+  if (wd_royl_validate_module_header_ccc(data, size, WD_ROYL_MODULE_01) != 0)
+  {
+    return -1;
+  }
+
+  record_count = wd_royl_get_module_record_count_ccc(data);
+  offset = 0x32;
+  for (record_number = 1; record_number <= record_count; record_number++)
+  {
+    uint8_t record_length;
+    uint16_t module_id;
+    uint16_t sectors;
+    wd_royl_module_entry_ccc *entry;
+
+    if (offset >= size)
+    {
+      wd_royl_set_error_ccc(
+          "Directory record %u is past the end of module 0x0001.\n",
+          record_number);
+      goto finish;
+    }
+    record_length = data[offset];
+    if (record_length < 6 || (size_t)record_length > size - offset)
+    {
+      wd_royl_set_error_ccc(
+          "Directory record %u has an invalid length (%u bytes).\n",
+          record_number, record_length);
+      goto finish;
+    }
+
+    module_id = wd_royl_le16_ccc(data + offset + 2);
+    sectors = wd_royl_le16_ccc(data + offset + 4);
+    if (module_id != 0)
+    {
+      if (count == capacity)
+      {
+        size_t new_capacity = capacity == 0 ? 16 : capacity * 2;
+        wd_royl_module_entry_ccc *new_list;
+
+        if (new_capacity < capacity ||
+            new_capacity > SIZE_MAX / sizeof(*new_list))
+        {
+          wd_royl_set_error_ccc(
+              "The module directory is too large to process.\n");
+          goto finish;
+        }
+        new_list = realloc(list, new_capacity * sizeof(*new_list));
+        if (new_list == NULL)
+        {
+          wd_royl_set_error_ccc(
+              "Unable to allocate memory for the module directory.\n");
+          goto finish;
+        }
+        list = new_list;
+        capacity = new_capacity;
+      }
+
+      entry = &list[count++];
+      memset(entry, 0, sizeof(*entry));
+      entry->module_id = module_id;
+      entry->sectors = sectors;
+      entry->copies = data[offset + 1];
+      if (record_length >= 0x12)
+      {
+        entry->location1 = wd_royl_le32_ccc(data + offset + 0x0a);
+        entry->location2 = wd_royl_le32_ccc(data + offset + 0x0e);
+      }
+    }
+
+    offset += record_length;
+  }
+
+  *entries = list;
+  *entry_count = count;
+  list = NULL;
+  result = 0;
+
+finish:
+  free(list);
+  return result;
+}
+
 int wd_royl_patch_module_02_ccc(uint8_t *data, size_t size)
 {
   uint16_t record_offset = 0;
