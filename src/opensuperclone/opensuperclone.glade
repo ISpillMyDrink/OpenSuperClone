@@ -744,6 +744,21 @@
                                                 <signal name="activate" handler="run_wd_royl_write_rom_ccc" swapped="no"/>
                                               </object>
                                             </child>
+                                            <child>
+                                              <object class="GtkSeparatorMenuItem" id="separator_wd_royl_editor">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkMenuItem" id="wdroylmoduleeditormi">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">SA Module Editor...</property>
+                                                <property name="use-underline">True</property>
+                                                <signal name="activate" handler="open_wd_royl_module_editor_ccc" swapped="no"/>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>

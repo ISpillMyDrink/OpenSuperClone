@@ -1022,12 +1022,10 @@ static bool wd_royl_module_valid_ccc(const uint8_t *data, size_t size,
   return true;
 }
 
-int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
-                                uint16_t expected_module)
+int wd_royl_validate_module_header_ccc(const uint8_t *data, size_t size,
+                                       uint16_t expected_module)
 {
   uint16_t sectors;
-  uint32_t stored_checksum;
-  uint32_t calculated_checksum;
 
   if (data == NULL || size < 0x32)
   {
@@ -1057,8 +1055,21 @@ int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
       wd_royl_get_module_id_ccc(data) != expected_module)
   {
     wd_royl_set_error_ccc(
-        "Expected module 0x%04x but the drive returned module 0x%04x.\n",
+        "Expected module 0x%04x but the module data is module 0x%04x.\n",
         expected_module, wd_royl_get_module_id_ccc(data));
+    return -1;
+  }
+  return 0;
+}
+
+int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
+                                uint16_t expected_module)
+{
+  uint32_t stored_checksum;
+  uint32_t calculated_checksum;
+
+  if (wd_royl_validate_module_header_ccc(data, size, expected_module) != 0)
+  {
     return -1;
   }
   stored_checksum = wd_royl_get_module_checksum_ccc(data);

@@ -650,6 +650,7 @@ void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data);
 
 // Western Digital ROYL vendor specific commands.
 void open_wd_royl_slow_fix_dialog_ccc(void);
+void open_wd_royl_module_editor_ccc(void);
 void run_wd_royl_read_rom_ccc(void);
 void run_wd_royl_write_rom_ccc(void);
 

@@ -82,6 +82,8 @@ uint16_t wd_royl_get_module_table_offset_ccc(const uint8_t *module);
 uint32_t wd_royl_get_module_checksum_ccc(const uint8_t *module);
 uint32_t wd_royl_calculate_checksum_ccc(const uint8_t *data, size_t size);
 void wd_royl_update_checksum_ccc(uint8_t *data, size_t size);
+int wd_royl_validate_module_header_ccc(const uint8_t *data, size_t size,
+                                       uint16_t expected_module);
 int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
                                 uint16_t expected_module);
 int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
