@@ -11055,19 +11055,72 @@ no data</property>
                 <property name="label-xalign">0</property>
                 <property name="shadow-type">in</property>
                 <child>
-                  <object class="GtkBox" id="hbox_mon_power">
+                  <object class="GtkBox" id="vbox_mon_power_controls">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="spacing">6</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">4</property>
                     <property name="margin-start">12</property>
                     <property name="margin-end">12</property>
                     <property name="margin-top">4</property>
                     <property name="margin-bottom">4</property>
                     <child>
-                      <object class="GtkLabel" id="asclepius_mon_window_label">
+                      <object class="GtkBox" id="hbox_mon_window_controls">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Window</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="asclepius_mon_window_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Window</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="asclepius_mon_window_combobox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_pause_button">
+                            <property name="label" translatable="yes">Pause</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_reset_ocp_button">
+                            <property name="label" translatable="yes">Reset OCP</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="sensitive">False</property>
+                            <property name="tooltip-text" translatable="yes">Clear latched software over-current protection</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -11076,113 +11129,85 @@ no data</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBoxText" id="asclepius_mon_window_combobox">
+                      <object class="GtkBox" id="hbox_mon_power_buttons">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">start</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_power_molex">
+                            <property name="label" translatable="yes">MOLEX</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_power_12v">
+                            <property name="label" translatable="yes">12V</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_power_5v">
+                            <property name="label" translatable="yes">5V</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">6</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_power_usb">
+                            <property name="label" translatable="yes">USB</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">7</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="asclepius_mon_power_all">
+                            <property name="label" translatable="yes">All</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">8</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_pause_button">
-                        <property name="label" translatable="yes">Pause</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_reset_ocp_button">
-                        <property name="label" translatable="yes">Reset OCP</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="sensitive">False</property>
-                        <property name="tooltip-text" translatable="yes">Clear latched software over-current protection</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_power_molex">
-                        <property name="label" translatable="yes">MOLEX</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_power_12v">
-                        <property name="label" translatable="yes">12V</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_power_5v">
-                        <property name="label" translatable="yes">5V</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_power_usb">
-                        <property name="label" translatable="yes">USB</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="asclepius_mon_power_all">
-                        <property name="label" translatable="yes">All</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <signal name="clicked" handler="asclepius_mon_power_clicked_ccc" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">8</property>
                       </packing>
                     </child>
                   </object>
@@ -11218,7 +11243,7 @@ no data</property>
                       <object class="GtkDrawingArea" id="asclepius_mon_v12_drawing">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="height-request">150</property>
+                        <property name="height-request">90</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -11230,7 +11255,7 @@ no data</property>
                       <object class="GtkDrawingArea" id="asclepius_mon_v5_drawing">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="height-request">150</property>
+                        <property name="height-request">90</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -11288,7 +11313,7 @@ no data</property>
                       <object class="GtkDrawingArea" id="asclepius_mon_current_drawing">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="height-request">150</property>
+                        <property name="height-request">90</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -11336,6 +11361,10 @@ no data</property>
                 <property name="can-focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Disconnected</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="lines">2</property>
+                <property name="ellipsize">end</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -11459,7 +11488,7 @@ no data</property>
                   <object class="GtkDrawingArea" id="speed_mon_drawing">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="height-request">360</property>
+                    <property name="height-request">200</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -11474,6 +11503,10 @@ no data</property>
                     <property name="xalign">0</property>
                     <property name="selectable">True</property>
                     <property name="label" translatable="yes">No samples</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="lines">2</property>
+                    <property name="ellipsize">end</property>
                     <attributes>
                       <attribute name="family" value="monospace"/>
                     </attributes>

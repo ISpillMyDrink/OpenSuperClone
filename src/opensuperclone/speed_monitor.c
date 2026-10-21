@@ -1061,6 +1061,7 @@ static void speed_update_monitor(void)
     if (stats.count == 0)
     {
       gtk_label_set_text(GTK_LABEL(speed_monitor_stats_label_ccc), _("No samples"));
+      gtk_widget_set_tooltip_text(speed_monitor_stats_label_ccc, NULL);
     }
     else
     {
@@ -1068,7 +1069,12 @@ static void speed_update_monitor(void)
       char minimum[64];
       char average[64];
       char maximum[64];
+      char current_plain[64];
+      char minimum_plain[64];
+      char average_plain[64];
+      char maximum_plain[64];
       char text[320];
+      char plain[320];
 
       speed_format_markup_value(current, sizeof(current), stats.current, &unit);
       speed_format_markup_value(minimum, sizeof(minimum), stats.min, &unit);
@@ -1077,6 +1083,16 @@ static void speed_update_monitor(void)
 
       snprintf(text, sizeof(text), "%s  %s   min %s   avg %s   max %s", _("Speed"), current, minimum, average, maximum);
       gtk_label_set_markup(GTK_LABEL(speed_monitor_stats_label_ccc), text);
+
+      // The label wraps to two lines and then ellipsizes, so keep the complete
+      // row reachable as a tooltip when the window is narrow.
+      speed_format_value(current_plain, sizeof(current_plain), stats.current, &unit);
+      speed_format_value(minimum_plain, sizeof(minimum_plain), stats.min, &unit);
+      speed_format_value(average_plain, sizeof(average_plain), stats.avg, &unit);
+      speed_format_value(maximum_plain, sizeof(maximum_plain), stats.max, &unit);
+
+      snprintf(plain, sizeof(plain), "%s  %s   min %s   avg %s   max %s", _("Speed"), current_plain, minimum_plain, average_plain, maximum_plain);
+      gtk_widget_set_tooltip_text(speed_monitor_stats_label_ccc, plain);
     }
   }
 

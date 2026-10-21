@@ -1157,6 +1157,9 @@ void update_asclepius_monitor_ccc(void)
     }
 
     gtk_label_set_text(GTK_LABEL(asclepius_mon_status_label_ccc), text);
+    // The label wraps to two lines and then ellipsizes, so keep the complete
+    // status reachable as a tooltip when the window is narrow.
+    gtk_widget_set_tooltip_text(asclepius_mon_status_label_ccc, text);
 
     GtkStyleContext *status_context = gtk_widget_get_style_context(asclepius_mon_status_label_ccc);
     gtk_style_context_remove_class(status_context, "asclepius-status-ok");
