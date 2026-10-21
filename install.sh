@@ -1,4 +1,7 @@
 #!/bin/sh
+# Build and install the OpenSuperClone project to /usr.
+# Usage:
+#   ./install.sh [clean] [debug] [asclepius]
 
 for arg in "$@"; do
     if [ "$arg" = "clean" ]; then

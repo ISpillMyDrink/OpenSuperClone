@@ -1,4 +1,7 @@
 #!/bin/sh
+# Build the OpenSuperClone project using CMake and Make.
+# Usage:
+#   ./build.sh [clean] [debug]
 
 for arg in "$@"; do
     if [ "$arg" = "clean" ]; then

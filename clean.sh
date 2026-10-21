@@ -1,4 +1,7 @@
 #!/bin/sh
+# Clean the OpenSuperClone project build artifacts.
+# Usage:
+#   ./clean.sh
 
 echo "Cleaning up..."
 

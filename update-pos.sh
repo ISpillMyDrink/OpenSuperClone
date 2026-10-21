@@ -1,4 +1,7 @@
 #!/bin/sh
+# Update the PO template and PO files for the OpenSuperClone project.
+# Usage:
+#   ./update-pos.sh
 
 echo "Updating PO template files..."
 

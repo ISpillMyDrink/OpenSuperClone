@@ -1,4 +1,7 @@
 #!/bin/sh
+# Build and package the OpenSuperClone project for distribution.
+# Usage:
+#   ./package.sh [clean]
 
 for arg in "$@"; do
     if [ "$arg" = "clean" ]; then

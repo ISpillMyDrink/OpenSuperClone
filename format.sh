@@ -3,6 +3,7 @@
 # Usage:
 #   ./format.sh          rewrite files in place
 #   ./format.sh --check  verify formatting without changing files
+
 set -eu
 
 cd "$(dirname "$0")"

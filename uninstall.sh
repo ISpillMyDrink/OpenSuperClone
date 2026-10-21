@@ -1,4 +1,7 @@
 #!/bin/sh
+# Uninstall the OpenSuperClone project from /usr.
+# Usage:
+#   ./uninstall.sh
 
 echo "Uninstalling OpenSuperClone from /usr/..."
 
