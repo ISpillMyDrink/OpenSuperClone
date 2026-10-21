@@ -95,3 +95,10 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/img
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/res/templates
         DESTINATION share/opensuperclone
 )
+
+# If Asclepius is enabled, install udev rules
+if(ASCLEPIUS)
+        install(FILES ${CMAKE_SOURCE_DIR}/res/99-asclepius.rules
+                DESTINATION /etc/udev/rules.d
+        )
+endif()

@@ -1,0 +1,5 @@
+# Asclepius control interface
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", ATTRS{manufacturer}=="D3X", ATTRS{product}=="Asclepius Monitor", SYMLINK+="ttyascl"
+
+# Asclepius passthrough UART interface
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", ATTRS{manufacturer}=="D3X", ATTRS{product}=="Asclepius Terminal", SYMLINK+="ttyasclext"
