@@ -194,7 +194,9 @@ int post_ioctl_ccc(void)
     set_number_variable_value_ccc("$ata_return_error", ata_return_descriptor[3]);
     int count = (ata_return_descriptor[4] << 8) + ata_return_descriptor[5];
     set_number_variable_value_ccc("$ata_return_count", count);
-    long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) + ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) + ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
+    long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) +
+                    ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) +
+                    ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
     set_number_variable_value_ccc("$ata_return_lba", lba);
     set_number_variable_value_ccc("$ata_return_device", ata_return_descriptor[12]);
     set_number_variable_value_ccc("$ata_return_status", ata_return_descriptor[13]);
@@ -223,7 +225,8 @@ int post_ioctl_ccc(void)
     set_number_variable_value_ccc("$ata_return_status", information[1]);
     set_number_variable_value_ccc("$ata_return_device", information[2]);
     set_number_variable_value_ccc("$ata_return_count", information[3]);
-    long long lba = ((unsigned long long)command_specific_information[1] << 16) + ((unsigned long long)command_specific_information[2] << 8) + command_specific_information[3];
+    long long lba = ((unsigned long long)command_specific_information[1] << 16) + ((unsigned long long)command_specific_information[2] << 8) +
+                    command_specific_information[3];
     set_number_variable_value_ccc("$ata_return_lba", lba);
     memcpy(&ata_error_ccc, &information[0], 1);
     memcpy(&ata_status_ccc, &information[1], 1);
@@ -982,7 +985,9 @@ int usb_get_sense_ccc(void)
     }
 
     int count = (ata_return_descriptor[4] << 8) + ata_return_descriptor[5];
-    long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) + ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) + ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
+    long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) +
+                    ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) +
+                    ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
     memcpy(&ata_error_ccc, &ata_return_descriptor[3], 1);
     memcpy(&ata_status_ccc, &ata_return_descriptor[13], 1);
     memcpy(&ata_device_ccc, &ata_return_descriptor[12], 1);
@@ -1004,7 +1009,8 @@ int usb_get_sense_ccc(void)
       memcpy(&command_specific_information[i], &raw_sense[i + 8], 1);
     }
 
-    long long lba = ((unsigned long long)command_specific_information[1] << 16) + ((unsigned long long)command_specific_information[2] << 8) + command_specific_information[3];
+    long long lba = ((unsigned long long)command_specific_information[1] << 16) + ((unsigned long long)command_specific_information[2] << 8) +
+                    command_specific_information[3];
     memcpy(&ata_error_ccc, &information[0], 1);
     memcpy(&ata_status_ccc, &information[1], 1);
     memcpy(&ata_device_ccc, &information[2], 1);
@@ -1027,7 +1033,8 @@ int usb_get_sense_ccc(void)
     fprintf(stdout, "sense=%02x asc=%02x ascq=%02x\n", sense_key_ccc, asc_ccc, ascq_ccc);
     if (ata_return_valid_ccc)
     {
-      fprintf(stdout, "error=%02x status=%02x device=%02x count=%02x lba=%02llx\n", ata_error_ccc, ata_status_ccc, ata_device_ccc, ata_count_ccc, ata_lba_ccc);
+      fprintf(stdout, "error=%02x status=%02x device=%02x count=%02x lba=%02llx\n", ata_error_ccc, ata_status_ccc, ata_device_ccc, ata_count_ccc,
+              ata_lba_ccc);
     }
   }
 
@@ -1260,7 +1267,8 @@ int usb_identify_ccc(int timeout)
 
   passthrough_ccc.scsi_cmd[0] = 0xA1; // ata passthrough 12 command
   passthrough_ccc.scsi_cmd[1] = (passthrough_ccc.multiple_count << 5) + (passthrough_ccc.protocol << 1);
-  passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
+  passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) +
+                                (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
   passthrough_ccc.scsi_cmd[3] = 0;
   passthrough_ccc.scsi_cmd[4] = 1;
   passthrough_ccc.scsi_cmd[5] = 0;
@@ -1385,7 +1393,8 @@ int usb_read_smart_ccc(int timeout, unsigned char reg[7])
 
   passthrough_ccc.scsi_cmd[0] = 0xA1; // ata passthrough 12 command
   passthrough_ccc.scsi_cmd[1] = (passthrough_ccc.multiple_count << 5) + (passthrough_ccc.protocol << 1);
-  passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
+  passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) +
+                                (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
   passthrough_ccc.scsi_cmd[3] = reg[0];
   passthrough_ccc.scsi_cmd[4] = reg[1];
   passthrough_ccc.scsi_cmd[5] = reg[2];
@@ -1695,7 +1704,8 @@ int do_ata28_cmd_ccc(int disk_fd)
 
     passthrough_ccc.scsi_cmd[0] = 0xA1; // ata passthrough 12 command
     passthrough_ccc.scsi_cmd[1] = (passthrough_ccc.multiple_count << 5) + (passthrough_ccc.protocol << 1);
-    passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
+    passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) +
+                                  (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
     passthrough_ccc.scsi_cmd[3] = passthrough_ccc.ata_cmd[0];
     passthrough_ccc.scsi_cmd[4] = passthrough_ccc.ata_cmd[1];
     passthrough_ccc.scsi_cmd[5] = passthrough_ccc.ata_cmd[2];
@@ -1825,7 +1835,8 @@ int do_ata48_cmd_ccc(int disk_fd)
 
     passthrough_ccc.scsi_cmd[0] = 0x85; // ata passthrough 16 command
     passthrough_ccc.scsi_cmd[1] = (passthrough_ccc.multiple_count << 5) + (passthrough_ccc.protocol << 1) + passthrough_ccc.extended;
-    passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
+    passthrough_ccc.scsi_cmd[2] = (passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) +
+                                  (passthrough_ccc.transfer_direction << 3) + (passthrough_ccc.byte_block << 2) + (passthrough_ccc.transfer_length);
     passthrough_ccc.scsi_cmd[3] = passthrough_ccc.ata_cmd[0];
     passthrough_ccc.scsi_cmd[4] = passthrough_ccc.ata_cmd[1];
     passthrough_ccc.scsi_cmd[5] = passthrough_ccc.ata_cmd[2];
@@ -3561,12 +3572,7 @@ int hba_reset_ccc(void)
       hba_alloc_mem_size_ccc = (((hba_mem_size / page_size) + 1) * page_size);
       page_mask = (page_size - 1);
 
-      hba_mem_pointer_ccc = mmap(NULL,
-                                 hba_alloc_mem_size_ccc,
-                                 PROT_READ | PROT_WRITE,
-                                 MAP_SHARED,
-                                 hba_mem_dev_ccc,
-                                 (hba_mem_address & ~page_mask));
+      hba_mem_pointer_ccc = mmap(NULL, hba_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, hba_mem_dev_ccc, (hba_mem_address & ~page_mask));
 
       if (hba_mem_pointer_ccc == MAP_FAILED)
       {
@@ -3600,12 +3606,8 @@ int hba_reset_ccc(void)
           port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
           page_mask = (page_size - 1);
 
-          port_mem_pointer_ccc = mmap(NULL,
-                                      port_alloc_mem_size_ccc,
-                                      PROT_READ | PROT_WRITE,
-                                      MAP_SHARED,
-                                      port_mem_dev_ccc,
-                                      (port_mem_address & ~page_mask));
+          port_mem_pointer_ccc =
+            mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
 
           if (port_mem_pointer_ccc == MAP_FAILED)
           {
@@ -3709,12 +3711,8 @@ int hba_reset_ccc(void)
             page_size = pagesize_ccc;
             port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
             page_mask = (page_size - 1);
-            port_mem_pointer_ccc = mmap(NULL,
-                                        port_alloc_mem_size_ccc,
-                                        PROT_READ | PROT_WRITE,
-                                        MAP_SHARED,
-                                        port_mem_dev_ccc,
-                                        (port_mem_address & ~page_mask));
+            port_mem_pointer_ccc =
+              mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
             if (port_mem_pointer_ccc == MAP_FAILED)
             {
               fprintf(stderr, "Port mem map failed\n");
@@ -3915,12 +3913,8 @@ int hba_reset_ccc(void)
           page_size = pagesize_ccc;
           port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
           page_mask = (page_size - 1);
-          port_mem_pointer_ccc = mmap(NULL,
-                                      port_alloc_mem_size_ccc,
-                                      PROT_READ | PROT_WRITE,
-                                      MAP_SHARED,
-                                      port_mem_dev_ccc,
-                                      (port_mem_address & ~page_mask));
+          port_mem_pointer_ccc =
+            mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
           if (port_mem_pointer_ccc == MAP_FAILED)
           {
             fprintf(stderr, "Port mem map failed\n");
@@ -3973,12 +3967,8 @@ int hba_reset_ccc(void)
           port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
           page_mask = (page_size - 1);
 
-          port_mem_pointer_ccc = mmap(NULL,
-                                      port_alloc_mem_size_ccc,
-                                      PROT_READ | PROT_WRITE,
-                                      MAP_SHARED,
-                                      port_mem_dev_ccc,
-                                      (port_mem_address & ~page_mask));
+          port_mem_pointer_ccc =
+            mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
 
           if (port_mem_pointer_ccc == MAP_FAILED)
           {
@@ -4097,7 +4087,8 @@ void dump_data_to_file_ccc(FILE *file, unsigned char *data, int size)
   fsync(ptf);
 }
 
-int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned long long port_address, int hba, int port, int fis, int cdata, int ctable)
+int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned long long port_address, int hba, int port, int fis, int cdata,
+                                       int ctable)
 {
   if (!driver_installed_ccc)
   {
@@ -4136,12 +4127,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
   hba_alloc_mem_size = (((hba_mem_size / page_size) + 1) * page_size);
   page_mask = (page_size - 1);
 
-  hba_mem_pointer = mmap(NULL,
-                         hba_alloc_mem_size,
-                         PROT_READ | PROT_WRITE,
-                         MAP_SHARED,
-                         hba_mem_dev,
-                         (hba_mem_address & ~page_mask));
+  hba_mem_pointer = mmap(NULL, hba_alloc_mem_size, PROT_READ | PROT_WRITE, MAP_SHARED, hba_mem_dev, (hba_mem_address & ~page_mask));
   if (hba_mem_pointer == MAP_FAILED)
   {
     fprintf(stderr, "HBA mem map failed\n");
@@ -4160,12 +4146,7 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
   page_size = pagesize_ccc;
   port_alloc_mem_size = (((port_mem_size / page_size) + 1) * page_size);
   page_mask = (page_size - 1);
-  port_mem_pointer = mmap(NULL,
-                          port_alloc_mem_size,
-                          PROT_READ | PROT_WRITE,
-                          MAP_SHARED,
-                          port_mem_dev,
-                          (port_mem_address & ~page_mask));
+  port_mem_pointer = mmap(NULL, port_alloc_mem_size, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev, (port_mem_address & ~page_mask));
   if (port_mem_pointer == MAP_FAILED)
   {
     fprintf(stderr, "Port mem map failed\n");
@@ -4419,12 +4400,7 @@ int hba_test_ccc(void)
   hba_alloc_mem_size_ccc = (((hba_mem_size / page_size) + 1) * page_size);
   page_mask = (page_size - 1);
 
-  hba_mem_pointer_ccc = mmap(NULL,
-                             hba_alloc_mem_size_ccc,
-                             PROT_READ | PROT_WRITE,
-                             MAP_SHARED,
-                             hba_mem_dev_ccc,
-                             (hba_mem_address & ~page_mask));
+  hba_mem_pointer_ccc = mmap(NULL, hba_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, hba_mem_dev_ccc, (hba_mem_address & ~page_mask));
 
   if (hba_mem_pointer_ccc == MAP_FAILED)
   {
@@ -4447,12 +4423,7 @@ int hba_test_ccc(void)
   port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
   page_mask = (page_size - 1);
 
-  port_mem_pointer_ccc = mmap(NULL,
-                              port_alloc_mem_size_ccc,
-                              PROT_READ | PROT_WRITE,
-                              MAP_SHARED,
-                              port_mem_dev_ccc,
-                              (port_mem_address & ~page_mask));
+  port_mem_pointer_ccc = mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
 
   if (port_mem_pointer_ccc == MAP_FAILED)
   {
@@ -5442,12 +5413,7 @@ int hba_test_ccc(void)
     hba_alloc_mem_size_ccc = (((hba_mem_size / page_size) + 1) * page_size);
     page_mask = (page_size - 1);
 
-    hba_mem_pointer_ccc = mmap(NULL,
-                               hba_alloc_mem_size_ccc,
-                               PROT_READ | PROT_WRITE,
-                               MAP_SHARED,
-                               hba_mem_dev_ccc,
-                               (hba_mem_address & ~page_mask));
+    hba_mem_pointer_ccc = mmap(NULL, hba_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, hba_mem_dev_ccc, (hba_mem_address & ~page_mask));
     if (hba_mem_pointer_ccc == MAP_FAILED)
     {
       fprintf(stderr, "HBA mem map failed\n");
@@ -5465,12 +5431,7 @@ int hba_test_ccc(void)
     page_size = pagesize_ccc;
     port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
     page_mask = (page_size - 1);
-    port_mem_pointer_ccc = mmap(NULL,
-                                port_alloc_mem_size_ccc,
-                                PROT_READ | PROT_WRITE,
-                                MAP_SHARED,
-                                port_mem_dev_ccc,
-                                (port_mem_address & ~page_mask));
+    port_mem_pointer_ccc = mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
     if (port_mem_pointer_ccc == MAP_FAILED)
     {
       fprintf(stderr, "Port mem map failed\n");
@@ -5808,7 +5769,8 @@ int post_direct_ccc(int command_type)
         memcpy(&io_byte_ccc[10], fis_buffer_ccc + 0x4c, 1); // count low
         memcpy(&io_byte_ccc[11], fis_buffer_ccc + 0x4d, 1); // count high
 
-        unsigned long long lba = io_byte_ccc[3] + (io_byte_ccc[4] << 8) + (io_byte_ccc[5] << 16) + (io_byte_ccc[7] << 24) + ((unsigned long long)io_byte_ccc[8] << 32) + ((unsigned long long)io_byte_ccc[9] << 40);
+        unsigned long long lba = io_byte_ccc[3] + (io_byte_ccc[4] << 8) + (io_byte_ccc[5] << 16) + (io_byte_ccc[7] << 24) +
+                                 ((unsigned long long)io_byte_ccc[8] << 32) + ((unsigned long long)io_byte_ccc[9] << 40);
         unsigned int count = io_byte_ccc[10] + (io_byte_ccc[11] << 8);
         // set_number_variable_value_ccc("$ata_return_error", io_byte_ccc[2]);
         set_number_variable_value_ccc("$ata_return_count", count);
@@ -5955,7 +5917,8 @@ int post_direct_ccc(int command_type)
 
       // fprintf (stdout, "return48= %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", io_byte_ccc[1], io_byte_ccc[2], io_byte_ccc[3], io_byte_ccc[4], io_byte_ccc[5], io_byte_ccc[6], io_byte_ccc[7], io_byte_ccc[8], io_byte_ccc[9], io_byte_ccc[10], io_byte_ccc[11], io_byte_ccc[12], io_byte_ccc[13]);    //debug
 
-      unsigned long long lba = io_byte_ccc[8] + (io_byte_ccc[9] << 8) + (io_byte_ccc[10] << 16) + (io_byte_ccc[3] << 24) + ((unsigned long long)io_byte_ccc[4] << 32) + ((unsigned long long)io_byte_ccc[5] << 40);
+      unsigned long long lba = io_byte_ccc[8] + (io_byte_ccc[9] << 8) + (io_byte_ccc[10] << 16) + (io_byte_ccc[3] << 24) +
+                               ((unsigned long long)io_byte_ccc[4] << 32) + ((unsigned long long)io_byte_ccc[5] << 40);
       unsigned int count = io_byte_ccc[7] + (io_byte_ccc[2] << 8);
       set_number_variable_value_ccc("$ata_return_error", io_byte_ccc[6]);
       set_number_variable_value_ccc("$ata_return_count", count);
@@ -6482,12 +6445,7 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
     port_alloc_mem_size_ccc = (((mem_size / page_size) + 1) * page_size);
     page_mask = (page_size - 1);
 
-    port_mem_pointer_ccc = mmap(NULL,
-                                port_alloc_mem_size_ccc,
-                                PROT_READ | PROT_WRITE,
-                                MAP_SHARED,
-                                port_mem_dev_ccc,
-                                (mem_address & ~page_mask));
+    port_mem_pointer_ccc = mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (mem_address & ~page_mask));
 
     if (port_mem_pointer_ccc == MAP_FAILED)
     {
@@ -7299,12 +7257,7 @@ int identify_device_ahci_ccc(int count)
     port_alloc_mem_size_ccc = (((mem_size / page_size) + 1) * page_size);
     page_mask = (page_size - 1);
 
-    port_mem_pointer_ccc = mmap(NULL,
-                                port_alloc_mem_size_ccc,
-                                PROT_READ | PROT_WRITE,
-                                MAP_SHARED,
-                                port_mem_dev_ccc,
-                                (mem_address & ~page_mask));
+    port_mem_pointer_ccc = mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (mem_address & ~page_mask));
 
     if (port_mem_pointer_ccc == MAP_FAILED)
     {
@@ -8401,15 +8354,18 @@ int choose_device_ccc(void)
         {
           if (verbose_ccc & DEBUG6)
           {
-            fprintf(stdout, "%d) %s %s %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i],
+                    device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
           }
           else if (verbose_ccc & DEBUG5)
           {
-            fprintf(stdout, "%d) %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i],
+                    port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
           }
           else
           {
-            fprintf(stdout, "%d) %s %s (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i],
+                    serial_ccc[i]);
           }
         }
 
@@ -8463,7 +8419,8 @@ int choose_device_ccc(void)
     int i = choice - 1;
     if (verbose_ccc & DEBUG6)
     {
-      fprintf(stdout, "%d) %s %s %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+      fprintf(stdout, "%d) %s %s %s %s %llx %d %llx (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i],
+              device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
     }
 
     check_choice = i;
@@ -8528,15 +8485,19 @@ int choose_device_ccc(void)
         {
           if (verbose_ccc & DEBUG6)
           {
-            fprintf(stdout, "%d) %s %s %s %s %d %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], device_visable_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s %s %s %d %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i],
+                    device_reference_ccc[i], device_name_ccc[i], device_visable_ccc[i], reg_address_ccc[i], control_address_ccc[i],
+                    bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
           }
           else if (verbose_ccc & DEBUG5)
           {
-            fprintf(stdout, "%d) %s %s %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i],
+                    control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
           }
           else
           {
-            fprintf(stdout, "%d) %s %s (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+            fprintf(stdout, "%d) %s %s (%lld) %s %s\n", i + 1, device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i],
+                    serial_ccc[i]);
           }
         }
 
@@ -8590,7 +8551,8 @@ int choose_device_ccc(void)
     int i = choice - 1;
     if (verbose_ccc & DEBUG6)
     {
-      fprintf(stdout, "choice=%d %s %s %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+      fprintf(stdout, "choice=%d %s %s %llx %llx %llx %d (%lld) %s %s\n", i + 1, device_driver_ccc[i], device_bus_ccc[i], reg_address_ccc[i],
+              control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
     }
 
     check_choice = i;
@@ -8745,7 +8707,9 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: There is possibly another drive on the same controller!\nYou should NEVER work with a drive when another drive is on the same controller!\nThat could be very dangerous, and could result in data loss (or worse)!\n"));
+          snprintf(
+            tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s",
+            _("WARNING: There is possibly another drive on the same controller!\nYou should NEVER work with a drive when another drive is on the same controller!\nThat could be very dangerous, and could result in data loss (or worse)!\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
@@ -8783,7 +8747,9 @@ int choose_device_ccc(void)
         char raw_value[32];
         if (superclone_ccc)
         {
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: The selected device is a slave on the controller!\nThis does not always work as expected!\nThat could be very dangerous, and could result in data loss (or worse)!\nIt is recommended for the device to be master on the controller!\n"));
+          snprintf(
+            tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s",
+            _("WARNING: The selected device is a slave on the controller!\nThis does not always work as expected!\nThat could be very dangerous, and could result in data loss (or worse)!\nIt is recommended for the device to be master on the controller!\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
           clear_error_message_ccc();
@@ -8821,7 +8787,9 @@ int choose_device_ccc(void)
     {
       if (superclone_ccc)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s",
+          _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
         clear_error_message_ccc();
@@ -8858,7 +8826,9 @@ int choose_device_ccc(void)
         {
           if (superclone_ccc)
           {
-            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
+            snprintf(
+              tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s",
+              _("WARNING: This drive is also available to the OS!\nThat is too dangerous, and would likely result in a computer crash!\nPlease make sure to follow the instructions on how to hide the drive!\n"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
             clear_error_message_ccc();
@@ -8928,12 +8898,7 @@ int connect_source_disk_ccc(void)
         hba_alloc_mem_size_ccc = (((hba_mem_size / page_size) + 1) * page_size);
         page_mask = (page_size - 1);
 
-        hba_mem_pointer_ccc = mmap(NULL,
-                                   hba_alloc_mem_size_ccc,
-                                   PROT_READ | PROT_WRITE,
-                                   MAP_SHARED,
-                                   hba_mem_dev_ccc,
-                                   (hba_mem_address & ~page_mask));
+        hba_mem_pointer_ccc = mmap(NULL, hba_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, hba_mem_dev_ccc, (hba_mem_address & ~page_mask));
 
         if (hba_mem_pointer_ccc == MAP_FAILED)
         {
@@ -8956,12 +8921,8 @@ int connect_source_disk_ccc(void)
         port_alloc_mem_size_ccc = (((port_mem_size / page_size) + 1) * page_size);
         page_mask = (page_size - 1);
 
-        port_mem_pointer_ccc = mmap(NULL,
-                                    port_alloc_mem_size_ccc,
-                                    PROT_READ | PROT_WRITE,
-                                    MAP_SHARED,
-                                    port_mem_dev_ccc,
-                                    (port_mem_address & ~page_mask));
+        port_mem_pointer_ccc =
+          mmap(NULL, port_alloc_mem_size_ccc, PROT_READ | PROT_WRITE, MAP_SHARED, port_mem_dev_ccc, (port_mem_address & ~page_mask));
 
         if (port_mem_pointer_ccc == MAP_FAILED)
         {
@@ -9983,7 +9944,8 @@ int set_and_send_regs_ccc(int command_type)
       // fprintf (stdout, "send28= %02x %02x %02x %02x %02x %02x %02x\n", io_byte_ccc[1], io_byte_ccc[2], io_byte_ccc[3], io_byte_ccc[4], io_byte_ccc[5], io_byte_ccc[6], io_byte_ccc[7]);
 
       // send command
-      outb(io_byte_ccc[6], reg_base_address_ccc + 6); // device, supposed to do this first even though we already set the device
+      outb(io_byte_ccc[6],
+           reg_base_address_ccc + 6);                 // device, supposed to do this first even though we already set the device
       outb(io_byte_ccc[1], reg_base_address_ccc + 1); // feature
       outb(io_byte_ccc[2], reg_base_address_ccc + 2); // count
       outb(io_byte_ccc[3], reg_base_address_ccc + 3); // lba low
@@ -10012,7 +9974,8 @@ int set_and_send_regs_ccc(int command_type)
       // fprintf (stdout, "send48= %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", io_byte_ccc[1], io_byte_ccc[2], io_byte_ccc[3], io_byte_ccc[4], io_byte_ccc[5], io_byte_ccc[6], io_byte_ccc[7], io_byte_ccc[8], io_byte_ccc[9], io_byte_ccc[10], io_byte_ccc[11], io_byte_ccc[12]);
 
       // send command
-      outb(io_byte_ccc[11], reg_base_address_ccc + 6); // device, supposed to do this first even though we already set the device
+      outb(io_byte_ccc[11],
+           reg_base_address_ccc + 6);                  // device, supposed to do this first even though we already set the device
       outb(io_byte_ccc[1], reg_base_address_ccc + 1);  // feature high
       outb(io_byte_ccc[3], reg_base_address_ccc + 2);  // count high
       outb(io_byte_ccc[5], reg_base_address_ccc + 3);  // lba4 31:24
@@ -10383,13 +10346,19 @@ int read_ncq_error_log_ccc(void)
   ncq_error_log_data_ccc.sense_asc = ncq_buffer[15];
   ncq_error_log_data_ccc.sense_ascq = ncq_buffer[16];
   ncq_error_log_data_ccc.count = ncq_buffer[12] + ((int)ncq_buffer[13] << 8);
-  ncq_error_log_data_ccc.lba = ncq_buffer[4] + ((long long)ncq_buffer[5] << 8) + ((long long)ncq_buffer[6] << 16) + ((long long)ncq_buffer[8] << 24) + ((long long)ncq_buffer[9] << 32) + ((long long)ncq_buffer[10] << 40);
-  ncq_error_log_data_ccc.final_lba = ncq_buffer[17] + ((long long)ncq_buffer[18] << 8) + ((long long)ncq_buffer[19] << 16) + ((long long)ncq_buffer[20] << 24) + ((long long)ncq_buffer[21] << 32) + ((long long)ncq_buffer[22] << 40);
+  ncq_error_log_data_ccc.lba = ncq_buffer[4] + ((long long)ncq_buffer[5] << 8) + ((long long)ncq_buffer[6] << 16) + ((long long)ncq_buffer[8] << 24) +
+                               ((long long)ncq_buffer[9] << 32) + ((long long)ncq_buffer[10] << 40);
+  ncq_error_log_data_ccc.final_lba = ncq_buffer[17] + ((long long)ncq_buffer[18] << 8) + ((long long)ncq_buffer[19] << 16) +
+                                     ((long long)ncq_buffer[20] << 24) + ((long long)ncq_buffer[21] << 32) + ((long long)ncq_buffer[22] << 40);
 
   if (0)
   {
-    fprintf(stdout, "flags=%02x, status=%02x, error=%02x, device=%02x, key=%02x, asc=%02x, ascq=%02x\n", ncq_error_log_data_ccc.flags, ncq_error_log_data_ccc.status, ncq_error_log_data_ccc.error, ncq_error_log_data_ccc.device, ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq); // debug
-    fprintf(stdout, "count=%04x, lba=%08llx, final=%08llx\n", ncq_error_log_data_ccc.count, ncq_error_log_data_ccc.lba, ncq_error_log_data_ccc.final_lba);                                                                                                                                                                                 // debug
+    fprintf(stdout, "flags=%02x, status=%02x, error=%02x, device=%02x, key=%02x, asc=%02x, ascq=%02x\n", ncq_error_log_data_ccc.flags,
+            ncq_error_log_data_ccc.status, ncq_error_log_data_ccc.error, ncq_error_log_data_ccc.device, ncq_error_log_data_ccc.sense_key,
+            ncq_error_log_data_ccc.sense_asc,
+            ncq_error_log_data_ccc.sense_ascq); // debug
+    fprintf(stdout, "count=%04x, lba=%08llx, final=%08llx\n", ncq_error_log_data_ccc.count, ncq_error_log_data_ccc.lba,
+            ncq_error_log_data_ccc.final_lba); // debug
   }
 
   ccc_main_buffer_size_ccc = ccc_main_buffer_size_bak;

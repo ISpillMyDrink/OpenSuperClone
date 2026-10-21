@@ -487,40 +487,37 @@ int main(int argc, char **argv)
 
   while (1)
   {
-    static struct option long_options[] =
-        {
-            {"help", no_argument, 0, 'h'},
-            {"version", no_argument, 0, 'v'},
-            {"debug", required_argument, 0, DEBUGOUT},
-            {"verbose", required_argument, 0, VERBOSEOUT},
-            {"tool", no_argument, 0, SUPERTOOL},
-            {"quiet", no_argument, 0, 'Q'},
-            {"crash-computer-destroy-data", no_argument, 0, CRASH},
-            {"enable-rebuild-assist", no_argument, 0, ENABLE_REBUILD_ASSIST},
-            {"rebuild-assist-test", required_argument, 0, REBUILD_ASSIST_TEST},
-            {"enable-hba-reset", no_argument, 0, ENABLE_HBA_RESET},
-            {"enable-hba-test", no_argument, 0, ENABLE_HBA_TEST},
-            {"disable-ahci-identify", no_argument, 0, DISABLE_AHCI_IDENTIFY},
-            // supertool command line options
-            {"check", no_argument, 0, 'c'},
-            {"command", no_argument, 0, 'C'},
-            {"direct", no_argument, 0, 'd'},
-            {"ahci", no_argument, 0, 'a'},
-            {"ata", no_argument, 0, ATAMODE},
-            {"scsi", no_argument, 0, SCSIMODE},
-            {"file", required_argument, 0, 'f'},
-            {"indent", required_argument, 0, 'i'},
-            {"target", required_argument, 0, 't'},
-            {"testskipmb", required_argument, 0, TESTSKIPMB},
-            {"testskip", required_argument, 0, TESTSKIP},
-            {"testskipfast", required_argument, 0, TESTSKIPFAST},
-            {"port", required_argument, 0, PORT},
-            {0, 0, 0, 0}};
+    static struct option long_options[] = {{"help", no_argument, 0, 'h'},
+                                           {"version", no_argument, 0, 'v'},
+                                           {"debug", required_argument, 0, DEBUGOUT},
+                                           {"verbose", required_argument, 0, VERBOSEOUT},
+                                           {"tool", no_argument, 0, SUPERTOOL},
+                                           {"quiet", no_argument, 0, 'Q'},
+                                           {"crash-computer-destroy-data", no_argument, 0, CRASH},
+                                           {"enable-rebuild-assist", no_argument, 0, ENABLE_REBUILD_ASSIST},
+                                           {"rebuild-assist-test", required_argument, 0, REBUILD_ASSIST_TEST},
+                                           {"enable-hba-reset", no_argument, 0, ENABLE_HBA_RESET},
+                                           {"enable-hba-test", no_argument, 0, ENABLE_HBA_TEST},
+                                           {"disable-ahci-identify", no_argument, 0, DISABLE_AHCI_IDENTIFY},
+                                           // supertool command line options
+                                           {"check", no_argument, 0, 'c'},
+                                           {"command", no_argument, 0, 'C'},
+                                           {"direct", no_argument, 0, 'd'},
+                                           {"ahci", no_argument, 0, 'a'},
+                                           {"ata", no_argument, 0, ATAMODE},
+                                           {"scsi", no_argument, 0, SCSIMODE},
+                                           {"file", required_argument, 0, 'f'},
+                                           {"indent", required_argument, 0, 'i'},
+                                           {"target", required_argument, 0, 't'},
+                                           {"testskipmb", required_argument, 0, TESTSKIPMB},
+                                           {"testskip", required_argument, 0, TESTSKIP},
+                                           {"testskipfast", required_argument, 0, TESTSKIPFAST},
+                                           {"port", required_argument, 0, PORT},
+                                           {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
 
-    command_line_argument = getopt_long(argc, argv, "hvQcCdaf:i:t:",
-                                        long_options, &option_index);
+    command_line_argument = getopt_long(argc, argv, "hvQcCdaf:i:t:", long_options, &option_index);
 
     // Detect the end of the options.
     if (command_line_argument == -1)
@@ -983,7 +980,8 @@ int begin_driver_ccc(void)
   if ((sector_size_ccc * original_cluster_size_ccc) > MAX_BUFFER_SIZE)
   {
     int cluster_limit = MAX_BUFFER_SIZE / sector_size_ccc;
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit for the driver is %d and you chose %d.\n", cluster_limit, original_cluster_size_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit for the driver is %d and you chose %d.\n", cluster_limit,
+             original_cluster_size_ccc);
     message_now_ccc(tempmessage_ccc);
     original_cluster_size_ccc = cluster_limit;
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", original_cluster_size_ccc);
@@ -1392,7 +1390,9 @@ void help_ccc(void)
   fprintf(stdout, "%s\n", _("Advanced data recovery and disk cloning tool."));
   fprintf(stdout, "\n");
   fprintf(stdout, "%s\n", _("DESCRIPTION"));
-  fprintf(stdout, "  %s\n", _("OpenSuperClone is a GUI and CLI tool for cloning and imaging of\n  degraded and damaged storage devices. It contains a script engine\n  that allows for advanced interaction with devices under recovery."));
+  fprintf(
+    stdout, "  %s\n",
+    _("OpenSuperClone is a GUI and CLI tool for cloning and imaging of\n  degraded and damaged storage devices. It contains a script engine\n  that allows for advanced interaction with devices under recovery."));
   fprintf(stdout, "\n");
   fprintf(stdout, "%s\n", _("USAGE"));
   fprintf(stdout, "  $ opensuperclone [OPTIONS]\n");
@@ -1566,7 +1566,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE,
+          _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1584,7 +1586,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE,
+          _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1599,7 +1603,9 @@ int initialize_memory_ccc(void)
         {
           continue;
         }
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE,
+          _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -1950,7 +1956,8 @@ int read_log_file_ccc(char *log_file)
             }
           }
           found_current = 1;
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx\n", real_line_number, i, current_position_ccc, current_status_ccc); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx\n", real_line_number, i, current_position_ccc,
+                   current_status_ccc); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
         }
         else if (!found_current)
@@ -2017,7 +2024,8 @@ int read_log_file_ccc(char *log_file)
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                   lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -2594,7 +2602,7 @@ int read_log_file_ccc(char *log_file)
           char *temp_good = strstr(line, "# Good = ");
           char *temp_bad = strstr(line, "# Bad = ");
           char *temp_slow = strstr(line, "# Slow = ");
-          
+
           if (temp_good != NULL)
           {
             float raw_good = 0;
@@ -2676,7 +2684,9 @@ int read_log_file_ccc(char *log_file)
               int raw_low_8 = 0;
               int raw_high_8 = 0;
 
-              sscanf(line, "# %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d", &raw_low_1, &raw_high_1, &raw_low_2, &raw_high_2, &raw_low_3, &raw_high_3, &raw_low_4, &raw_high_4, &raw_low_5, &raw_high_5, &raw_low_6, &raw_high_6, &raw_low_7, &raw_high_7, &raw_low_8, &raw_high_8);
+              sscanf(line, "# %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d %d/%d", &raw_low_1, &raw_high_1, &raw_low_2, &raw_high_2, &raw_low_3,
+                     &raw_high_3, &raw_low_4, &raw_high_4, &raw_low_5, &raw_high_5, &raw_low_6, &raw_high_6, &raw_low_7, &raw_high_7, &raw_low_8,
+                     &raw_high_8);
 
               analyze_slow_low_ccc[analyze_data_ccc.slowsections] = raw_low_1 * 1000;
               analyze_slow_high_ccc[analyze_data_ccc.slowsections] = raw_high_1 * 1000;
@@ -2712,7 +2722,8 @@ int read_log_file_ccc(char *log_file)
             int raw_low = 0;
             int raw_high = 0;
             int raw_average = 0;
-            sscanf(temp_zone, "# Zones Total %d Good %d Bad %d (%d) Slow %d Low %d High %d Average %d", &raw_total, &raw_good, &raw_bad, &raw_timeout, &raw_slow, &raw_low, &raw_high, &raw_average);
+            sscanf(temp_zone, "# Zones Total %d Good %d Bad %d (%d) Slow %d Low %d High %d Average %d", &raw_total, &raw_good, &raw_bad, &raw_timeout,
+                   &raw_slow, &raw_low, &raw_high, &raw_average);
             analyze_data_ccc.total_read_attempts = raw_total;
             analyze_data_ccc.total_good_reads = raw_good;
             analyze_data_ccc.total_bad_reads = raw_bad;
@@ -2742,7 +2753,8 @@ int read_log_file_ccc(char *log_file)
               int raw_low = 0;
               int raw_high = 0;
               int raw_average = 0;
-              sscanf(line, "# Zone %d Total %d Good %d Bad %d (%d) Slow %d Low %d High %d Average %d", &raw_zone, &raw_total, &raw_good, &raw_bad, &raw_timeout, &raw_slow, &raw_low, &raw_high, &raw_average);
+              sscanf(line, "# Zone %d Total %d Good %d Bad %d (%d) Slow %d Low %d High %d Average %d", &raw_zone, &raw_total, &raw_good, &raw_bad,
+                     &raw_timeout, &raw_slow, &raw_low, &raw_high, &raw_average);
               analyze_read_attempts_ccc[analyze_data_ccc.sections] = raw_total;
               analyze_good_reads_ccc[analyze_data_ccc.sections] = raw_good;
               analyze_bad_reads_ccc[analyze_data_ccc.sections] = raw_bad;
@@ -2790,7 +2802,7 @@ int read_log_file_ccc(char *log_file)
             char raw_threshold[MAX_LINE_LENGTH] = "";
             char raw_raw[MAX_LINE_LENGTH] = "";
             char raw_name[MAX_LINE_LENGTH] = "";
-            
+
             sscanf(line, "# %s %s %s %s %s %s %[^\n]", raw_id, raw_flags, raw_current, raw_worst, raw_threshold, raw_raw, raw_name);
 
             smart_data_ccc.id[smart_data_ccc.value_count] = strtoll(raw_id, NULL, 10);
@@ -2958,7 +2970,8 @@ int read_domain_file_ccc(char *domain_file)
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                   lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3008,7 +3021,8 @@ int read_domain_file_ccc(char *domain_file)
             dposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n",
+                       real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -3017,7 +3031,8 @@ int read_domain_file_ccc(char *domain_file)
             dsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number,
+                       temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -3064,7 +3079,8 @@ int read_domain_file_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                   lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3310,14 +3326,16 @@ int read_ddrescue_log_ccc(char *log_file)
             found_error = -1;
           }
           found_current = 1;
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llX  %c\n", real_line_number, i, temp_position, temp_status); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llX  %c\n", real_line_number, i, temp_position,
+                   temp_status); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           if (!found_error)
           {
             current_position_ccc = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number,
+                       temp_position);
               message_now_ccc(tempmessage_ccc);
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "line%d= %s", real_line_number, line);
               message_debug_ccc(tempmessage_ccc, DEBUG14);
@@ -3403,7 +3421,8 @@ int read_ddrescue_log_ccc(char *log_file)
             lposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, position 0x%llx is not dividable by sector size\n", real_line_number,
+                       temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -3412,7 +3431,8 @@ int read_ddrescue_log_ccc(char *log_file)
             lsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number,
+                       temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -3459,7 +3479,8 @@ int read_ddrescue_log_ccc(char *log_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                   lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3599,7 +3620,8 @@ int read_ddrescue_domain_ccc(char *domain_file)
             dposition_ccc[i] = temp_position / sector_size_ccc;
             if (temp_position % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n", real_line_number, temp_position);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, domain position 0x%llx is not dividable by sector size\n",
+                       real_line_number, temp_position);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 1;
@@ -3608,7 +3630,8 @@ int read_ddrescue_domain_ccc(char *domain_file)
             dsize_ccc[i] = temp_size / sector_size_ccc;
             if (temp_size % sector_size_ccc)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number, temp_size);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "warning line %d, size 0x%llx is not dividable by sector size\n", real_line_number,
+                       temp_size);
               message_now_ccc(tempmessage_ccc);
               // fprintf (stdout, "line%d= %s", real_line_number, line);
               found_error += 2;
@@ -3655,7 +3678,8 @@ int read_ddrescue_domain_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i], lstatus_ccc[i]); // debug
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                   lstatus_ccc[i]); // debug
           message_debug_ccc(tempmessage_ccc, DEBUG14);
           i++;
         }
@@ -3996,7 +4020,8 @@ int write_logfile_ccc(char *log_file, int time_sec)
     int line_number;
     for (line_number = 0; line_number < total_lines_ccc; line_number++)
     {
-      fprintf(writefile, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition_ccc[line_number], lsize_ccc[line_number], (lstatus_ccc[line_number] & STATUS_MASK), ((lstatus_ccc[line_number] & INFO_MASK) >> 8), (lstatus_ccc[line_number] >> 32));
+      fprintf(writefile, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition_ccc[line_number], lsize_ccc[line_number],
+              (lstatus_ccc[line_number] & STATUS_MASK), ((lstatus_ccc[line_number] & INFO_MASK) >> 8), (lstatus_ccc[line_number] >> 32));
     }
 
     int error_ret = 0;
@@ -4116,7 +4141,8 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     int line_number;
     for (line_number = 0; line_number < domain_lines_ccc; line_number++)
     {
-      fprintf(writefile, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition_ccc[line_number], dsize_ccc[line_number], (dstatus_ccc[line_number] & STATUS_MASK), ((dstatus_ccc[line_number] & INFO_MASK) >> 8), (dstatus_ccc[line_number] >> 32));
+      fprintf(writefile, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition_ccc[line_number], dsize_ccc[line_number],
+              (dstatus_ccc[line_number] & STATUS_MASK), ((dstatus_ccc[line_number] & INFO_MASK) >> 8), (dstatus_ccc[line_number] >> 32));
     }
 
     int error_ret = 0;
@@ -4249,7 +4275,8 @@ int write_ddrescue_logfile_ccc(char *log_file)
     {
       new_status = '?';
     }
-    fprintf(writefile, "0x%08llX  0x%08llX  %c\n", lposition_ccc[line_number] * sector_size_ccc, lsize_ccc[line_number] * sector_size_ccc, new_status);
+    fprintf(writefile, "0x%08llX  0x%08llX  %c\n", lposition_ccc[line_number] * sector_size_ccc, lsize_ccc[line_number] * sector_size_ccc,
+            new_status);
   }
 
   int error_ret = 0;
@@ -4309,7 +4336,8 @@ void initialize_domain_log_ccc(void)
   int line_number;
   for (line_number = 0; line_number < domain_lines_ccc; line_number++)
   {
-    fprintf(stdout, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition_ccc[line_number], dsize_ccc[line_number], (dstatus_ccc[line_number] & STATUS_MASK), ((dstatus_ccc[line_number] & INFO_MASK) >> 8), (dstatus_ccc[line_number] >> 32));
+    fprintf(stdout, "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", dposition_ccc[line_number], dsize_ccc[line_number],
+            (dstatus_ccc[line_number] & STATUS_MASK), ((dstatus_ccc[line_number] & INFO_MASK) >> 8), (dstatus_ccc[line_number] >> 32));
   }
 }
 
@@ -4686,7 +4714,6 @@ int set_initial_data_from_log_ccc(int newproject)
 
 int check_and_adjust_variables_after_connection_ccc(void)
 {
-
   return 0;
 }
 
@@ -4904,7 +4931,8 @@ int get_domain_status_ccc(long long mask)
   {
     // fprintf (stdout, "domain line %d\n", i);    //debug
     //  if the domain is in the recovery area then process it
-    if ((dposition_ccc[i] >= startpos && dposition_ccc[i] <= endpos) || ((dposition_ccc[i] + dsize_ccc[i]) <= endpos && (dposition_ccc[i] + dsize_ccc[i]) >= startpos))
+    if ((dposition_ccc[i] >= startpos && dposition_ccc[i] <= endpos) ||
+        ((dposition_ccc[i] + dsize_ccc[i]) <= endpos && (dposition_ccc[i] + dsize_ccc[i]) >= startpos))
     {
       // fprintf (stdout, "dposition %lld dsize %lld start %lld end %lld\n", dposition_ccc[i], dsize_ccc[i], startpos, endpos);    //debug
       // fprintf (stdout, "domain line %d status %llx\n", i, dstatus_ccc[i]);    //debug
@@ -5356,7 +5384,8 @@ int update_display_ccc(int time_ms)
       for (i = 0; i < difference_count; i++)
       {
         rate_history_ccc[rate_history_count_ccc] = rate;
-        modified_rate_history_ccc[rate_history_count_ccc] = rate + ((rate_modifier_ccc * 1000) / ((difference > 0) ? (difference / difference_count) : 1000));
+        modified_rate_history_ccc[rate_history_count_ccc] =
+          rate + ((rate_modifier_ccc * 1000) / ((difference > 0) ? (difference / difference_count) : 1000));
         rate_history_count_ccc++;
         rate_history_count_ccc = rate_history_count_ccc & 0xff;
       }
@@ -5516,7 +5545,9 @@ int update_display_ccc(int time_ms)
     }
     else
     {
-      bytes_left_to_read = ((nontried_size_ccc - adjustment) + (nontrimmed_size_ccc * 4) + (nondivided_size_ccc * 4) + nonscraped_size_ccc + retries_adjustment) * sector_size_ccc;
+      bytes_left_to_read =
+        ((nontried_size_ccc - adjustment) + (nontrimmed_size_ccc * 4) + (nondivided_size_ccc * 4) + nonscraped_size_ccc + retries_adjustment) *
+        sector_size_ccc;
     }
     if (!read_bad_head_ccc && bytes_left_to_read > (bad_head_size_ccc * sector_size_ccc))
     {
@@ -5559,9 +5590,11 @@ int update_display_ccc(int time_ms)
         recent_longest_read_time_ccc = read_time_history_ccc[i];
       }
     }
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000,
+             max_longest_read_time_ccc / 1000);
     snprintf(display_output_ccc.longestreadtime, sizeof(display_output_ccc.longestreadtime), "%s", tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Current/Recent/Longest %lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000, recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Current/Recent/Longest %lld ms / %lld ms / %lld ms", longest_read_time_ccc / 1000,
+             recent_longest_read_time_ccc / 1000, max_longest_read_time_ccc / 1000);
     message_display_ccc(tempmessage_ccc);
     longest_read_time_ccc = 0;
 
@@ -5612,12 +5645,14 @@ int update_display_ccc(int time_ms)
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_1_ccc, current_source_model_ccc, current_source_serial_ccc);
     snprintf(display_output_ccc.source, sizeof(display_output_ccc.source), "%s", tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#Destination: %10s (%s, %s)\n", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#Destination: %10s (%s, %s)\n", disk_2_ccc, current_destination_model_ccc,
+             current_destination_serial_ccc);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s (%s, %s)", disk_2_ccc, current_destination_model_ccc, current_destination_serial_ccc);
     snprintf(display_output_ccc.destination, sizeof(display_output_ccc.destination), "%s", tempmessage_ccc);
 
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", source_total_size_ccc, (double)(source_total_size_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", source_total_size_ccc,
+             (double)(source_total_size_ccc * sector_size_ccc) / 1000000000);
     snprintf(display_output_ccc.totallba, sizeof(display_output_ccc.totallba), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", read_size_ccc, (double)(read_size_ccc * sector_size_ccc) / 1000000000);
     snprintf(display_output_ccc.lbatoread, sizeof(display_output_ccc.lbatoread), "%s", tempmessage_ccc);
@@ -5625,9 +5660,11 @@ int update_display_ccc(int time_ms)
     snprintf(display_output_ccc.domainsize, sizeof(display_output_ccc.domainsize), "%s", tempmessage_ccc);
     if (do_domain_ccc || driver_mode_ccc)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to read: %10lld (%lld)\n", source_total_size_ccc, read_size_ccc, total_domain_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Total LBA: %10lld        LBA to read: %10lld (%lld)\n", source_total_size_ccc, read_size_ccc,
+               total_domain_size_ccc);
       message_display_ccc(tempmessage_ccc);
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", total_domain_size_ccc, (double)(total_domain_size_ccc * sector_size_ccc) / 1000000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", total_domain_size_ccc,
+               (double)(total_domain_size_ccc * sector_size_ccc) / 1000000000);
       snprintf(display_output_ccc.domainsize, sizeof(display_output_ccc.domainsize), "%s", tempmessage_ccc);
     }
     else if (fill_mode_ccc)
@@ -5643,14 +5680,16 @@ int update_display_ccc(int time_ms)
       message_display_ccc(tempmessage_ccc);
     }
 
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Run time: %1d:%02d:%02d:%02d        Remaining:%4d:%02d:%02d:%02d\n", days, hours, minutes, seconds, remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Run time: %1d:%02d:%02d:%02d        Remaining:%4d:%02d:%02d:%02d\n", days, hours, minutes,
+             seconds, remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", days, hours, minutes, seconds);
     snprintf(display_output_ccc.runtime, sizeof(display_output_ccc.runtime), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%1d:%02d:%02d:%02d", remaining_days, remaining_hours, remaining_minutes, remaining_seconds);
     snprintf(display_output_ccc.remainingtime, sizeof(display_output_ccc.remainingtime), "%s", tempmessage_ccc);
 
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "       Rate: %10lld %s   Recent: %lld %s  Total: %lld %s\n", rate, modifier, avergage_rate, avg_modifier, total_rate, total_modifier);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "       Rate: %10lld %s   Recent: %lld %s  Total: %lld %s\n", rate, modifier, avergage_rate,
+             avg_modifier, total_rate, total_modifier);
     message_display_ccc(tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld %s", rate, modifier);
     snprintf(display_output_ccc.currentrate, sizeof(display_output_ccc.currentrate), "%s", tempmessage_ccc);
@@ -5664,7 +5703,8 @@ int update_display_ccc(int time_ms)
     display_output_ccc.retrypasses[0] = '\0';
     if (driver_mode_ccc)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "     Last read size: %lld, %lld, %lld\n", last_small_read_size_ccc, last_big_read_size_ccc,
+               last_actual_read_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld, %lld, %lld", last_small_read_size_ccc, last_big_read_size_ccc, last_actual_read_size_ccc);
       snprintf(display_output_ccc.totalfilled, sizeof(display_output_ccc.totalfilled), "%s", tempmessage_ccc);
@@ -5696,7 +5736,8 @@ int update_display_ccc(int time_ms)
       {
         total_slow_reads = total_slow_reads + analyze_slow_reads_ccc[i];
       }
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d, %d, %d (%d), %d", total_read_attempts, total_good_reads, total_bad_reads, total_timeouts, total_slow_reads);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d, %d, %d (%d), %d", total_read_attempts, total_good_reads, total_bad_reads, total_timeouts,
+               total_slow_reads);
       snprintf(display_output_ccc.totalfilled, sizeof(display_output_ccc.totalfilled), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", analyze_slow_total_reads_ccc);
       snprintf(display_output_ccc.retried, sizeof(display_output_ccc.retried), "%s", tempmessage_ccc);
@@ -5719,7 +5760,8 @@ int update_display_ccc(int time_ms)
     }
     else
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Skip size: %10lld  Skips: %d  Slow: %d  Runs: %d  Resets: %d  Run size: %lld\n", min_skip_size_ccc, total_skip_count_ccc, total_slow_skips_ccc, total_skip_runs_ccc, total_skip_resets_ccc, last_total_skip_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Skip size: %10lld  Skips: %d  Slow: %d  Runs: %d  Resets: %d  Run size: %lld\n",
+               min_skip_size_ccc, total_skip_count_ccc, total_slow_skips_ccc, total_skip_runs_ccc, total_skip_resets_ccc, last_total_skip_size_ccc);
       message_display_ccc(tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", min_skip_size_ccc, (double)(min_skip_size_ccc * sector_size_ccc) / 1000000);
       snprintf(display_output_ccc.skipsize, sizeof(display_output_ccc.skipsize), "%s", tempmessage_ccc);
@@ -5731,40 +5773,51 @@ int update_display_ccc(int time_ms)
       snprintf(display_output_ccc.skipruns, sizeof(display_output_ccc.skipruns), "%s", tempmessage_ccc);
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d", total_skip_resets_ccc);
       snprintf(display_output_ccc.skipresets, sizeof(display_output_ccc.skipresets), "%s", tempmessage_ccc);
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", last_total_skip_size_ccc, (double)(last_total_skip_size_ccc * sector_size_ccc) / 1000000);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fMB)", last_total_skip_size_ccc,
+               (double)(last_total_skip_size_ccc * sector_size_ccc) / 1000000);
       snprintf(display_output_ccc.runsize, sizeof(display_output_ccc.runsize), "%s", tempmessage_ccc);
     }
     // fprintf (stdout, "  Skip hist: %10lld   %lld   %lld   %lld   %lld    \n", skip_history_ccc[0], skip_history_ccc[1], skip_history_ccc[2], skip_history_ccc[3], skip_history_ccc[4]);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Position: %10lld        Status: %10s\n", current_position_ccc, current_status_string_ccc);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", current_position_ccc, (double)(current_position_ccc * sector_size_ccc) / 1000000000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB)", current_position_ccc,
+             (double)(current_position_ccc * sector_size_ccc) / 1000000000);
     snprintf(display_output_ccc.currentposition, sizeof(display_output_ccc.currentposition), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s", current_status_string_ccc);
     snprintf(display_output_ccc.currentstatus, sizeof(display_output_ccc.currentstatus), "%s", tempmessage_ccc);
 
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   Finished: %10lld (%d areas %f%%)\n", finished_size_ccc, finished_count_ccc, finished_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", finished_size_ccc, (double)(finished_size_ccc * sector_size_ccc) / 1000000000, finished_count_ccc, finished_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", finished_size_ccc,
+             (double)(finished_size_ccc * sector_size_ccc) / 1000000000, finished_count_ccc, finished_percent);
     snprintf(display_output_ccc.finished, sizeof(display_output_ccc.finished), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "  Non-tried: %10lld (%d areas %f%%)\n", nontried_size_ccc, nontried_count_ccc, nontried_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontried_size_ccc, (double)(nontried_size_ccc * sector_size_ccc) / 1000000000, nontried_count_ccc, nontried_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontried_size_ccc,
+             (double)(nontried_size_ccc * sector_size_ccc) / 1000000000, nontried_count_ccc, nontried_percent);
     snprintf(display_output_ccc.nontried, sizeof(display_output_ccc.nontried), "%s", tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-trimmed: %10lld (%d areas %f%%)\n", nontrimmed_size_ccc, nontrimmed_count_ccc, nontrimmed_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-trimmed: %10lld (%d areas %f%%)\n", nontrimmed_size_ccc, nontrimmed_count_ccc,
+             nontrimmed_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontrimmed_size_ccc, (double)(nontrimmed_size_ccc * sector_size_ccc) / 1000000000, nontrimmed_count_ccc, nontrimmed_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nontrimmed_size_ccc,
+             (double)(nontrimmed_size_ccc * sector_size_ccc) / 1000000000, nontrimmed_count_ccc, nontrimmed_percent);
     snprintf(display_output_ccc.nontrimmed, sizeof(display_output_ccc.nontrimmed), "%s", tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-divided: %10lld (%d areas %f%%)\n", nondivided_size_ccc, nondivided_count_ccc, nondivided_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-divided: %10lld (%d areas %f%%)\n", nondivided_size_ccc, nondivided_count_ccc,
+             nondivided_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nondivided_size_ccc, (double)(nondivided_size_ccc * sector_size_ccc) / 1000000000, nondivided_count_ccc, nondivided_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nondivided_size_ccc,
+             (double)(nondivided_size_ccc * sector_size_ccc) / 1000000000, nondivided_count_ccc, nondivided_percent);
     snprintf(display_output_ccc.nondivided, sizeof(display_output_ccc.nondivided), "%s", tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-scraped: %10lld (%d areas %f%%)\n", nonscraped_size_ccc, nonscraped_count_ccc, nonscraped_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Non-scraped: %10lld (%d areas %f%%)\n", nonscraped_size_ccc, nonscraped_count_ccc,
+             nonscraped_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nonscraped_size_ccc, (double)(nonscraped_size_ccc * sector_size_ccc) / 1000000000, nonscraped_count_ccc, nonscraped_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", nonscraped_size_ccc,
+             (double)(nonscraped_size_ccc * sector_size_ccc) / 1000000000, nonscraped_count_ccc, nonscraped_percent);
     snprintf(display_output_ccc.nonscraped, sizeof(display_output_ccc.nonscraped), "%s", tempmessage_ccc);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "        Bad: %10lld (%d areas %f%%)\n", error_size_ccc, error_count_ccc, bad_percent);
     message_display_ccc(tempmessage_ccc);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", error_size_ccc, (double)(error_size_ccc * sector_size_ccc) / 1000000000, error_count_ccc, bad_percent);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%lld (%.2fGB) (%d / %f%%)", error_size_ccc, (double)(error_size_ccc * sector_size_ccc) / 1000000000,
+             error_count_ccc, bad_percent);
     snprintf(display_output_ccc.bad, sizeof(display_output_ccc.bad), "%s", tempmessage_ccc);
 
     rate_modifier_ccc = 0;
@@ -7623,7 +7676,8 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                     current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             message_debug_ccc(tempmessage_ccc, DEBUG10);
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
@@ -7744,12 +7798,18 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
             }
             else
             {
-              if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND && ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.final_lba > current_position_ccc)
+              if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND &&
+                  ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+                  ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+                  ncq_error_log_data_ccc.final_lba > current_position_ccc)
               {
                 rebuild_assist_skip_position = ncq_error_log_data_ccc.final_lba + 1;
                 fprintf(stdout, "rebuild assist skip 0x%08llx-0x%08llx\n", ncq_error_log_data_ccc.lba, ncq_error_log_data_ccc.final_lba);
               }
-              else if (ncq_error_log_data_ccc.sense_key == SKEY_MEDIUM_ERROR && ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_UNRECOVERED_READ_ERROR) && ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_UNRECOVERED_READ_ERROR) && ncq_error_log_data_ccc.final_lba > current_position_ccc)
+              else if (ncq_error_log_data_ccc.sense_key == SKEY_MEDIUM_ERROR &&
+                       ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_UNRECOVERED_READ_ERROR) &&
+                       ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_UNRECOVERED_READ_ERROR) &&
+                       ncq_error_log_data_ccc.final_lba > current_position_ccc)
               {
                 rebuild_assist_jump_position = ncq_error_log_data_ccc.final_lba + 1;
                 // fprintf (stdout, "rebuild assist jump 0x%08llx-0x%08llx\n", ncq_error_log_data_ccc.lba, ncq_error_log_data_ccc.final_lba);
@@ -7757,8 +7817,11 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
               if (0)
               {
                 fprintf(stdout, "current_position=%08llx, lba=%08llx, lbabak%08llx\n", current_position_ccc, ata_lba_ccc, ata_lba_bak);
-                fprintf(stdout, "flags=%02x, status=%02x, error=%02x, device=%02x, key=%02x, asc=%02x, ascq=%02x\n", ncq_error_log_data_ccc.flags, ncq_error_log_data_ccc.status, ncq_error_log_data_ccc.error, ncq_error_log_data_ccc.device, ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq); // debug
-                fprintf(stdout, "count=%04x, lba=%08llx, final=%08llx\n", ncq_error_log_data_ccc.count, ncq_error_log_data_ccc.lba, ncq_error_log_data_ccc.final_lba);                                                                                                                                                                                 // debug
+                fprintf(stdout, "flags=%02x, status=%02x, error=%02x, device=%02x, key=%02x, asc=%02x, ascq=%02x\n", ncq_error_log_data_ccc.flags,
+                        ncq_error_log_data_ccc.status, ncq_error_log_data_ccc.error, ncq_error_log_data_ccc.device, ncq_error_log_data_ccc.sense_key,
+                        ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq); // debug
+                fprintf(stdout, "count=%04x, lba=%08llx, final=%08llx\n", ncq_error_log_data_ccc.count, ncq_error_log_data_ccc.lba,
+                        ncq_error_log_data_ccc.final_lba); // debug
               }
               ata_lba_ccc = ncq_error_log_data_ccc.lba;
             }
@@ -7767,7 +7830,8 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           }
 
           // fprintf (stdout, "valid=%d retstat=%d current=%llx ncqlba=%llx current+size=%llx\n", ata_return_valid_ccc, retstat, current_position_ccc, ncq_error_log_data_ccc.lba, current_position_ccc + rsize);    //debug
-          if (!driver_mode_ccc && use_fpdma_ccc && rebuild_assist_enabled_ccc && !ncq_error && ata_return_valid_ccc && !retstat && ncq_error_log_data_ccc.lba >= current_position_ccc && current_status_ccc == REBUILDASSIST)
+          if (!driver_mode_ccc && use_fpdma_ccc && rebuild_assist_enabled_ccc && !ncq_error && ata_return_valid_ccc && !retstat &&
+              ncq_error_log_data_ccc.lba >= current_position_ccc && current_status_ccc == REBUILDASSIST)
           {
             int ret = process_rebuild_assist_chunk_ccc(status_type, new_status_type, retstat, rsize, skip_info);
             if (ret)
@@ -7775,7 +7839,9 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
               return ret;
             }
           }
-          else if (!driver_mode_ccc && enable_process_chunk_ccc && ata_aligned && ata_return_valid_ccc && !retstat && (direct_mode_ccc || ata_identify_success_ccc) && rsize > block_size_ccc && ata_lba_ccc > 0 && ata_lba_ccc >= current_position_ccc && ata_lba_ccc < current_position_ccc + rsize)
+          else if (!driver_mode_ccc && enable_process_chunk_ccc && ata_aligned && ata_return_valid_ccc && !retstat &&
+                   (direct_mode_ccc || ata_identify_success_ccc) && rsize > block_size_ccc && ata_lba_ccc > 0 &&
+                   ata_lba_ccc >= current_position_ccc && ata_lba_ccc < current_position_ccc + rsize)
           {
             int ret = process_chunk_ccc(new_status_type, retstat, rsize, skip_info);
             if (ret)
@@ -7787,7 +7853,9 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
           {
             // normal read error
             long long additional_status = set_additional_status_ccc(retstat, skip_info);
-            int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+            int ret = change_chunk_status_ccc(
+              current_position_ccc, rsize,
+              ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
             if (ret < 0)
             {
               // error changing chunk
@@ -8055,7 +8123,8 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                     current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8172,7 +8241,9 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
             ata_status_ccc = ata_status_bak;
           }
 
-          if (!driver_mode_ccc && enable_process_chunk_ccc && ata_aligned && ata_return_valid_ccc && !retstat && (direct_mode_ccc || ata_identify_success_ccc) && rsize > block_size_ccc && ata_lba_ccc > 0 && ata_lba_ccc >= current_position_ccc && ata_lba_ccc < current_position_ccc + rsize)
+          if (!driver_mode_ccc && enable_process_chunk_ccc && ata_aligned && ata_return_valid_ccc && !retstat &&
+              (direct_mode_ccc || ata_identify_success_ccc) && rsize > block_size_ccc && ata_lba_ccc > 0 && ata_lba_ccc >= current_position_ccc &&
+              ata_lba_ccc < current_position_ccc + rsize)
           {
             int ret = process_chunk_ccc(new_status_type, retstat, rsize, skip_info);
             if (ret)
@@ -8184,7 +8255,9 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
           {
             // normal read error
             long long additional_status = set_additional_status_ccc(retstat, skip_info);
-            int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+            int ret = change_chunk_status_ccc(
+              current_position_ccc, rsize,
+              ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
             if (ret < 0)
             {
               // error changing chunk
@@ -8385,7 +8458,8 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                     current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8464,7 +8538,9 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           }
 
           long long additional_status = set_additional_status_ccc(retstat, skip_info);
-          int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+          int ret = change_chunk_status_ccc(
+            current_position_ccc, rsize,
+            ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
           if (ret < 0)
           {
             // error changing chunk
@@ -8507,7 +8583,8 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
           {
             if ((current_position_ccc + rsize) < block_end)
             {
-              int ret = change_chunk_status_ccc(current_position_ccc + rsize, block_end - (current_position_ccc + rsize), new_status_type | orginal_status, FULL_MASK);
+              int ret = change_chunk_status_ccc(current_position_ccc + rsize, block_end - (current_position_ccc + rsize),
+                                                new_status_type | orginal_status, FULL_MASK);
               if (ret < 0)
               {
                 // error changing chunk
@@ -8605,7 +8682,8 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             // sanity check
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                       current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8684,7 +8762,9 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
             }
 
             long long additional_status = set_additional_status_ccc(retstat, skip_info);
-            int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+            int ret = change_chunk_status_ccc(
+              current_position_ccc, rsize,
+              ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
             if (ret < 0)
             {
               // error changing chunk
@@ -8916,7 +8996,8 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           // sanity check
           if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
           {
-            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                     current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
             snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
             message_error_ccc(tempmessage_ccc);
             print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -8995,7 +9076,9 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
           }
 
           long long additional_status = set_additional_status_ccc(retstat, skip_info);
-          int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+          int ret = change_chunk_status_ccc(
+            current_position_ccc, rsize,
+            ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
           if (ret < 0)
           {
             // error changing chunk
@@ -9132,7 +9215,8 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             // sanity check
             if (current_position_ccc < current_start_pos || current_position_ccc + rsize > current_end_pos || rsize > current_size)
             {
-              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n", current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
+              snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "csposition=0x%llx ceposition=0x%llx nsposition=0x%llx neposition=0x%llx\n",
+                       current_start_pos, current_end_pos, current_position_ccc, current_position_ccc + rsize);
               snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Internal program error, domain check returned position out of range"));
               message_error_ccc(tempmessage_ccc);
               print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
@@ -9211,7 +9295,9 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
             }
 
             long long additional_status = set_additional_status_ccc(retstat, skip_info);
-            int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+            int ret = change_chunk_status_ccc(
+              current_position_ccc, rsize,
+              ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
             if (ret < 0)
             {
               // error changing chunk
@@ -9498,7 +9584,9 @@ int analyze_drive_ccc(int sections, int extended)
 
           // normal read error
           long long additional_status = set_additional_status_ccc(retstat, skip_info);
-          int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+          int ret = change_chunk_status_ccc(
+            current_position_ccc, rsize,
+            ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
           if (ret < 0)
           {
             // error changing chunk
@@ -9677,7 +9765,8 @@ void test_skip_ccc(int size)
     while (current_position_ccc < limit)
     {
       long long diff = skip_size_ccc - lastsize;
-      fprintf(stdout, "skipsize=%lld diff=%lld min=%lld runcount=%d pos=%lld\n", skip_size_ccc, diff, min_skip_size_ccc, skip_run_count_ccc, current_position_ccc);
+      fprintf(stdout, "skipsize=%lld diff=%lld min=%lld runcount=%d pos=%lld\n", skip_size_ccc, diff, min_skip_size_ccc, skip_run_count_ccc,
+              current_position_ccc);
       skip_position_ccc[skip_run_count_ccc] = current_position_ccc;
       current_position_ccc += skip_size_ccc;
       current_position_ccc = block_align_ccc(current_position_ccc, block_offset_ccc);
@@ -9812,7 +9901,9 @@ int process_skip_ccc(void)
     min_skip_size_ccc = original_min_skip_size_ccc;
     total_skip_resets_ccc++;
     reset_skip_ccc();
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information."));
+    snprintf(
+      tempmessage_ccc, TEMP_MESSAGE_SIZE,
+      _("Error: Skip Reset detected. The settings may need to be changed.\nSkip size may be too low or too high.\nThe drive may have a slow issue causing too many slow skips.\nIf you got this message very quickly, it may not be reading any data.\n Please reference the instruction manual for more information."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -10248,21 +10339,25 @@ long long set_additional_status_ccc(int retstat, int skip_info)
   long long additional_status = 0;
   if (direct_mode_ccc || ((scsi_passthrough_ccc || ata_passthrough_ccc || usb_mode_ccc) && ata_return_valid_ccc && ata_identify_success_ccc))
   {
-    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)ata_error_ccc << 48) | ((long long)ata_status_ccc << 40);
+    additional_status =
+      ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)ata_error_ccc << 48) | ((long long)ata_status_ccc << 40);
   }
   else
   {
-    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)sense_key_ccc << 56) | ((long long)asc_ccc << 48) | ((long long)ascq_ccc << 40);
+    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)sense_key_ccc << 56) | ((long long)asc_ccc << 48) |
+                        ((long long)ascq_ccc << 40);
   }
   return additional_status;
 
   if (scsi_passthrough_ccc || usb_mode_ccc || (ata_passthrough_ccc && !ata_return_valid_ccc))
   {
-    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)sense_key_ccc << 56) | ((long long)asc_ccc << 48) | ((long long)ascq_ccc << 40);
+    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)sense_key_ccc << 56) | ((long long)asc_ccc << 48) |
+                        ((long long)ascq_ccc << 40);
   }
   else
   {
-    additional_status = ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)ata_error_ccc << 48) | ((long long)ata_status_ccc << 40);
+    additional_status =
+      ((long long)retstat << 16) | ((long long)skip_info << 8) | ((long long)ata_error_ccc << 48) | ((long long)ata_status_ccc << 40);
   }
   return additional_status;
 }
@@ -10354,7 +10449,8 @@ int read_chunk_ccc(long long position, int size)
     else if (read_ret != size * sector_size_ccc)
     {
       // fprintf (stdout, "return read size was %d\n", ret);    //debug
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error %d reading sector %lld size %d (%s)\n", ret, position * sector_size_ccc, size * sector_size_ccc, strerror(errno)); // debug
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error %d reading sector %lld size %d (%s)\n", ret, position * sector_size_ccc,
+               size * sector_size_ccc, strerror(errno)); // debug
       message_debug_ccc(tempmessage_ccc, DEBUG16);
       ret = 1;
     }
@@ -10477,7 +10573,8 @@ int read_chunk_ccc(long long position, int size)
       if (1)
       {
         // some usb devices can give a host io error during normal good reading, so this will cause them to fail
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Host IO error %d during read (%s)\n", io_host_status_bak, host_error_code_ccc(io_host_status_bak));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Host IO error %d during read (%s)\n", io_host_status_bak,
+                 host_error_code_ccc(io_host_status_bak));
         message_console_log_ccc(tempmessage_ccc, 0);
         return io_host_status_bak;
       }
@@ -10487,7 +10584,8 @@ int read_chunk_ccc(long long position, int size)
   // fprintf (stdout, "return was %d\n", ret);    //debug
   if (debug_ccc & DEBUG11)
   {
-    fprintf(debug_file_ccc, "return=%d status=0x%02x error=0x%02x sense=%02x %02x %02x\n", ret, ata_status_ccc, ata_error_ccc, sense_key_ccc, asc_ccc, ascq_ccc);
+    fprintf(debug_file_ccc, "return=%d status=0x%02x error=0x%02x sense=%02x %02x %02x\n", ret, ata_status_ccc, ata_error_ccc, sense_key_ccc, asc_ccc,
+            ascq_ccc);
   }
   return ret;
 }
@@ -10635,7 +10733,8 @@ int write_chunk_ccc(long long position, int size)
   {
     sector_size_ccc = sector_size_bak;
     ccc_main_buffer_size_ccc = main_buffer_size_bak;
-    memcpy(ccc_buffer_ccc, temp_buffer, main_buffer_size_bak); // this is needed if there are possible operations after the write
+    memcpy(ccc_buffer_ccc, temp_buffer,
+           main_buffer_size_bak); // this is needed if there are possible operations after the write
     free(temp_buffer);
   }
 
@@ -10668,11 +10767,15 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
   // fprintf (stdout, "process_rebuild_assist_chunk current_position_ccc=%llx ncq_error_log_data_ccc.lba=%llx\n", current_position_ccc, ncq_error_log_data_ccc.lba);    //debug
   if (debug_ccc & DEBUG13)
   {
-    fprintf(debug_file_ccc, "process_rebuild_assist_chunk newstatus=0x%x  retstat=0x%x  rsize=0x%x  skipinfo=0x%x\n", new_status_type, retstat, rsize, skip_info);
+    fprintf(debug_file_ccc, "process_rebuild_assist_chunk newstatus=0x%x  retstat=0x%x  rsize=0x%x  skipinfo=0x%x\n", new_status_type, retstat, rsize,
+            skip_info);
   }
 
   int predicted_error = 0;
-  if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND && ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.final_lba > current_position_ccc)
+  if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND &&
+      ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+      ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+      ncq_error_log_data_ccc.final_lba > current_position_ccc)
   {
     predicted_error = 1;
   }
@@ -10741,7 +10844,8 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       // fprintf (stdout, "rsize=%x rsize2=%x rsize3=%x\n", rsize, rsize2, rsize3);    //debug
       if (rsize3 > 0)
       {
-        ret = change_chunk_status_ccc(current_position_ccc + rsize2, rsize3, status_type | BAD_HEAD | additional_status | original_timing_byte, FULL_MASK);
+        ret = change_chunk_status_ccc(current_position_ccc + rsize2, rsize3, status_type | BAD_HEAD | additional_status | original_timing_byte,
+                                      FULL_MASK);
         if (ret < 0)
         {
           // error changing chunk
@@ -10817,7 +10921,8 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       {
         return ret;
       }
-      ret = change_chunk_status_ccc(current_position_ccc + block_size_ccc, rsize - block_size_ccc, new_status_type | additional_status | get_timing_byte_ccc(), FULL_MASK);
+      ret = change_chunk_status_ccc(current_position_ccc + block_size_ccc, rsize - block_size_ccc,
+                                    new_status_type | additional_status | get_timing_byte_ccc(), FULL_MASK);
       if (ret < 0)
       {
         return ret;
@@ -10882,7 +10987,8 @@ int process_rebuild_assist_chunk_ccc(int status_type, int new_status_type, int r
       int rsize3 = rsize - rsize2 - block_size_ccc;
       if (rsize3 > 0)
       {
-        ret = change_chunk_status_ccc(current_position_ccc + rsize2 + block_size_ccc, rsize3, new_status_type | additional_status | original_timing_byte, FULL_MASK);
+        ret = change_chunk_status_ccc(current_position_ccc + rsize2 + block_size_ccc, rsize3,
+                                      new_status_type | additional_status | original_timing_byte, FULL_MASK);
         if (ret < 0)
         {
           // error changing chunk
@@ -10919,7 +11025,9 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
   if (!lba_supported_ccc || pio_mode_ccc)
   {
     // process the whole chunk as normal read error if chs or pio
-    int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
+    int ret = change_chunk_status_ccc(
+      current_position_ccc, rsize,
+      ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | get_timing_byte_ccc(), FULL_MASK);
     if (ret < 0)
     {
       // error changing chunk
@@ -10951,7 +11059,8 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
     {
       return ret;
     }
-    ret = change_chunk_status_ccc(current_position_ccc + block_size_ccc, rsize - block_size_ccc, new_status_type | additional_status | get_timing_byte_ccc(), FULL_MASK);
+    ret = change_chunk_status_ccc(current_position_ccc + block_size_ccc, rsize - block_size_ccc,
+                                  new_status_type | additional_status | get_timing_byte_ccc(), FULL_MASK);
     if (ret < 0)
     {
       return ret;
@@ -11002,7 +11111,8 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
       int rsize3 = rsize - rsize2 - block_size_ccc;
       if (rsize3 > 0)
       {
-        ret = change_chunk_status_ccc(current_position_ccc + rsize2 + block_size_ccc, rsize3, new_status_type | additional_status | original_timing_byte, FULL_MASK);
+        ret = change_chunk_status_ccc(current_position_ccc + rsize2 + block_size_ccc, rsize3,
+                                      new_status_type | additional_status | original_timing_byte, FULL_MASK);
         if (ret < 0)
         {
           // error changing chunk
@@ -11024,7 +11134,9 @@ int process_chunk_ccc(int new_status_type, int retstat, int rsize, int skip_info
     else
     {
       // if it failed the second read attempt then process the whole chunk as normal read error
-      int ret = change_chunk_status_ccc(current_position_ccc, rsize, ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | original_timing_byte, FULL_MASK);
+      int ret = change_chunk_status_ccc(
+        current_position_ccc, rsize,
+        ((rsize > block_size_ccc || (retstat && dont_mark)) ? new_status_type : BAD) | additional_status | original_timing_byte, FULL_MASK);
       if (ret < 0)
       {
         // error changing chunk
@@ -11060,11 +11172,13 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
     {
       if (0 && verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size,
+                 dposition_ccc[middle], dsize_ccc[middle]);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
       // check if any part of the chunk is in the domain
-      if ((position >= dposition_ccc[middle] && position < dposition_ccc[middle] + dsize_ccc[middle]) || (dposition_ccc[middle] >= position && dposition_ccc[middle] < position + size))
+      if ((position >= dposition_ccc[middle] && position < dposition_ccc[middle] + dsize_ccc[middle]) ||
+          (dposition_ccc[middle] >= position && dposition_ccc[middle] < position + size))
       {
         // found a block
         found_block = 1;
@@ -11084,7 +11198,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
     {
       if (verbosedebug_ccc)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition_ccc[middle], dsize_ccc[middle]);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size,
+                 dposition_ccc[middle], dsize_ccc[middle]);
         message_debug_ccc(tempmessage_ccc, DEBUG10);
       }
       // check if chunk fits in domain
@@ -11122,7 +11237,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           if (middle - i >= 0)
           {
             // check if any part of the chunk is in the domain
-            if ((position >= dposition_ccc[middle - i] && position < dposition_ccc[middle - i] + dsize_ccc[middle - i]) || (dposition_ccc[middle - i] >= position && dposition_ccc[middle - i] < position + size))
+            if ((position >= dposition_ccc[middle - i] && position < dposition_ccc[middle - i] + dsize_ccc[middle - i]) ||
+                (dposition_ccc[middle - i] >= position && dposition_ccc[middle - i] < position + size))
             {
               // check if domain matches status type
               if ((dstatus_ccc[middle - i] & status_mask) == status)
@@ -11132,7 +11248,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                 found_domain = 1;
                 if (verbosedebug_ccc)
                 {
-                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best1=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best1=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain],
+                           dsize_ccc[best_domain]);
                   message_debug_ccc(tempmessage_ccc, DEBUG10);
                 }
               }
@@ -11161,7 +11278,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
             if (middle + i <= domain_lines_ccc - 1)
             {
               // check if any part of the chunk is in the domain
-              if ((position >= dposition_ccc[middle + i] && position < dposition_ccc[middle + i] + dsize_ccc[middle + i]) || (dposition_ccc[middle + i] >= position && dposition_ccc[middle + i] < position + size))
+              if ((position >= dposition_ccc[middle + i] && position < dposition_ccc[middle + i] + dsize_ccc[middle + i]) ||
+                  (dposition_ccc[middle + i] >= position && dposition_ccc[middle + i] < position + size))
               {
                 // check if domain matches status type
                 if ((dstatus_ccc[middle + i] & status_mask) == status)
@@ -11171,7 +11289,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                   found_domain = 1;
                   if (verbosedebug_ccc)
                   {
-                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best2=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best2=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain],
+                             dsize_ccc[best_domain]);
                     message_debug_ccc(tempmessage_ccc, DEBUG10);
                   }
                   // we found the next best so break;
@@ -11205,7 +11324,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
           if (middle + i <= domain_lines_ccc - 1)
           {
             // check if any part of the chunk is in the domain
-            if ((position >= dposition_ccc[middle + i] && position < dposition_ccc[middle + i] + dsize_ccc[middle + i]) || (dposition_ccc[middle + i] >= position && dposition_ccc[middle + i] < position + size))
+            if ((position >= dposition_ccc[middle + i] && position < dposition_ccc[middle + i] + dsize_ccc[middle + i]) ||
+                (dposition_ccc[middle + i] >= position && dposition_ccc[middle + i] < position + size))
             {
               // check if domain matches status type
               if ((dstatus_ccc[middle + i] & status_mask) == status)
@@ -11215,7 +11335,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                 found_domain = 1;
                 if (verbosedebug_ccc)
                 {
-                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best3=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best3=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain],
+                           dsize_ccc[best_domain]);
                   message_debug_ccc(tempmessage_ccc, DEBUG10);
                 }
               }
@@ -11244,7 +11365,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
             if (middle - i >= 0)
             {
               // check if any part of the chunk is in the domain
-              if ((position >= dposition_ccc[middle - i] && position < dposition_ccc[middle - i] + dsize_ccc[middle - i]) || (dposition_ccc[middle - i] >= position && dposition_ccc[middle - i] < position + size))
+              if ((position >= dposition_ccc[middle - i] && position < dposition_ccc[middle - i] + dsize_ccc[middle - i]) ||
+                  (dposition_ccc[middle - i] >= position && dposition_ccc[middle - i] < position + size))
               {
                 // check if domain matches status type
                 if ((dstatus_ccc[middle - i] & status_mask) == status)
@@ -11254,7 +11376,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
                   found_domain = 1;
                   if (verbosedebug_ccc)
                   {
-                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best4=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain], dsize_ccc[best_domain]);
+                    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "best4=%d dposition=0x%llx dsize=0x%llx\n", best_domain, dposition_ccc[best_domain],
+                             dsize_ccc[best_domain]);
                     message_debug_ccc(tempmessage_ccc, DEBUG10);
                   }
                   // we found a previous domain so break
@@ -11350,7 +11473,8 @@ int process_domain_ccc(long long position, int size, int status, int status_mask
         // domain is not of proper status type
         if (verbosedebug_ccc)
         {
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "domain wrong status dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle], dsize_ccc[middle]);
+          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "domain wrong status dposition=0x%llx dsize=0x%llx\n", dposition_ccc[middle],
+                   dsize_ccc[middle]);
           message_debug_ccc(tempmessage_ccc, DEBUG10);
         }
         return not_in_domain;
@@ -12137,7 +12261,8 @@ int process_chs_ccc(long long position)
   chs_ccc.head = adjusted_position / chs_ccc.sectors_per_track;
   chs_ccc.sector = (adjusted_position - (chs_ccc.head * chs_ccc.sectors_per_track)) + 1;
 
-  if (chs_ccc.cylinder >= chs_ccc.total_cylinders || chs_ccc.head >= chs_ccc.total_heads || chs_ccc.sector > chs_ccc.sectors_per_track || chs_ccc.cylinder > 65535 || chs_ccc.head > 15 || chs_ccc.sector > 256)
+  if (chs_ccc.cylinder >= chs_ccc.total_cylinders || chs_ccc.head >= chs_ccc.total_heads || chs_ccc.sector > chs_ccc.sectors_per_track ||
+      chs_ccc.cylinder > 65535 || chs_ccc.head > 15 || chs_ccc.sector > 256)
   {
     check_message_ccc = true;
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error calculating CHS, value out of bounds"));
@@ -12172,7 +12297,8 @@ int check_buffer_limit_ccc(void)
     max_size = max_dma_size_ccc / sector_size_ccc;
     if ((long long)cluster_size_ccc * sector_size_ccc > (long long)max_dma_size_ccc)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc, cluster_size_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %llu and you chose %d.\n", max_dma_size_ccc / sector_size_ccc,
+               cluster_size_ccc);
       message_now_ccc(tempmessage_ccc);
       cluster_size_ccc = max_dma_size_ccc / sector_size_ccc;
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", cluster_size_ccc);
@@ -12212,7 +12338,8 @@ int check_buffer_limit_ccc(void)
       max_size = (max_sectors_kb * 1024) / sector_size_ccc;
       if ((long long)cluster_size_ccc * sector_size_ccc > max_sectors_kb * 1024)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %lld and you chose %d.\n", (max_sectors_kb * 1024) / sector_size_ccc, cluster_size_ccc);
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Warning: The cluster limit is %lld and you chose %d.\n",
+                 (max_sectors_kb * 1024) / sector_size_ccc, cluster_size_ccc);
         message_now_ccc(tempmessage_ccc);
         cluster_size_ccc = (max_sectors_kb * 1024) / sector_size_ccc;
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Using a new cluster size of %d\n", cluster_size_ccc);
@@ -12521,7 +12648,8 @@ int get_the_time_ccc(void)
 long long get_elapsed_usec_ccc(void)
 {
   gettimeofday(&tvCurrent_ccc, NULL);
-  long long elapsed_usec = ((long long)tvCurrent_ccc.tv_usec + 1000000 * (long long)tvCurrent_ccc.tv_sec) - ((long long)tvBegin_ccc.tv_usec + 1000000 * (long long)tvBegin_ccc.tv_sec);
+  long long elapsed_usec = ((long long)tvCurrent_ccc.tv_usec + 1000000 * (long long)tvCurrent_ccc.tv_sec) -
+                           ((long long)tvBegin_ccc.tv_usec + 1000000 * (long long)tvBegin_ccc.tv_sec);
 
   return (elapsed_usec);
 }
@@ -13071,7 +13199,9 @@ int open_source_disk_ccc(void)
         message_error_ccc(tempmessage_ccc);
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " (%s).\n", disk_1_ccc);
         message_error_ccc(tempmessage_ccc);
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE,
+          _("It is recommended to unmount all partitions on the source.\nYou can use the --force option to use the source anyway (not recommended)."));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -13932,7 +14062,8 @@ int process_source_ccc(void)
     }
     if ((scsi_passthrough_ccc || usb_mode_ccc) && !ata_identify_success_ccc)
     {
-      strncat(identify_device_raw_text_ccc, "# scsi read capacity\n", sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
+      strncat(identify_device_raw_text_ccc, "# scsi read capacity\n",
+              sizeof(identify_device_raw_text_ccc) - strlen(identify_device_raw_text_ccc) - 1);
       size = 32;
       memcpy(&idbuffer, &read_capacity_buffer_ccc, size);
       int i;
@@ -13990,7 +14121,7 @@ int process_source_ccc(void)
       identify_flags_ccc.ultra_dma_mode4_selected = get_flag_data_from_identify_ccc(88, 12, 12);
       identify_flags_ccc.ultra_dma_mode5_selected = get_flag_data_from_identify_ccc(88, 13, 13);
       identify_flags_ccc.ultra_dma_mode6_selected = get_flag_data_from_identify_ccc(88, 14, 14);
-      identify_flags_ccc.solid_state_drive = get_flag_data_from_identify_ccc(217,0,0) == 1;
+      identify_flags_ccc.solid_state_drive = get_flag_data_from_identify_ccc(217, 0, 0) == 1;
       identify_device_data_ccc.lba_supported = identify_flags_ccc.lba_supported;
       identify_device_data_ccc.extended_supported = identify_flags_ccc.extended_support;
       identify_device_data_ccc.drive_locked = identify_flags_ccc.drive_locked;
@@ -14384,7 +14515,8 @@ int extract_smart_data_ccc(void)
 
   smart_data_ccc.smart_version = version;
 
-  snprintf(temp, sizeof(temp), "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", "ID", "Flags", "Current", "Worst", "Threshold", "Raw data", "Attribute name");
+  snprintf(temp, sizeof(temp), "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", "ID", "Flags", "Current", "Worst", "Threshold", "Raw data",
+           "Attribute name");
   strcat(smart_data_text_ccc, temp);
   uint8_t threshold = 0;
   int offset = 2;
@@ -14424,7 +14556,8 @@ int extract_smart_data_ccc(void)
 
     if (id > 0)
     {
-      snprintf(temp, sizeof(temp), "\n# %03d  \t0x%04x   \t%03d  \t%03d  \t%03d  \t0x%014llx    \t%s", id, flags, current, worst, threshold, (unsigned long long)raw, name);
+      snprintf(temp, sizeof(temp), "\n# %03d  \t0x%04x   \t%03d  \t%03d  \t%03d  \t0x%014llx    \t%s", id, flags, current, worst, threshold,
+               (unsigned long long)raw, name);
       strcat(smart_data_text_ccc, temp);
 
       // add the smart data to the smart data array
@@ -15651,7 +15784,8 @@ void disable_ports_ccc(void)
 
   if (confirm)
   {
-    if (open_confirmation_dialog_ccc(_("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
+    if (open_confirmation_dialog_ccc(
+          _("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
     {
       if (system("cp -f /etc/default/grub_tmp /etc/default/grub"))
       {
@@ -15688,7 +15822,8 @@ void restore_ports_ccc(void)
 {
   if (access("/boot/grub/grub_hddsc_original_bakup.cfg", F_OK) == -1)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"), "\n/boot/grub/grub.cfg (/boot/grub/grub_hddsc_original_bakup.cfg)");
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: No backup file"),
+             "\n/boot/grub/grub.cfg (/boot/grub/grub_hddsc_original_bakup.cfg)");
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -15704,12 +15839,14 @@ void restore_ports_ccc(void)
     return;
   }
 
-  if (open_confirmation_dialog_ccc(_("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
+  if (open_confirmation_dialog_ccc(
+        _("You are about to make a change to the startup configuration.\nA reboot will be required for the changes to take effect.")))
   {
     if (system("cp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub"))
     {
       // error copying
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"), "\ncp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub");
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File copying failed"),
+               "\ncp -f /etc/default/grub_hddsc_original_bakup /etc/default/grub");
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -15738,17 +15875,22 @@ void restore_ports_ccc(void)
 
 void disable_usb_mass_storage_ccc(void)
 {
-  if (open_confirmation_dialog_ccc(_("You are about to disable the USB mass storage driver and the USB attached SCSI driver,\nafter which no USB storage devices will be detected by the operating system.")))
+  if (
+    open_confirmation_dialog_ccc(_(
+      "You are about to disable the USB mass storage driver and the USB attached SCSI driver,\nafter which no USB storage devices will be detected by the operating system.")))
   {
     system("modprobe -r uas");
     system("modprobe -r usb-storage");
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist"))
+      if (system(
+            "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15757,10 +15899,14 @@ void disable_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15769,10 +15915,14 @@ void disable_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15782,10 +15932,14 @@ void disable_usb_mass_storage_ccc(void)
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15794,10 +15948,14 @@ void disable_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15806,10 +15964,14 @@ void disable_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15830,10 +15992,14 @@ void restore_usb_mass_storage_ccc(void)
   {
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15842,10 +16008,14 @@ void restore_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.xz");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15854,10 +16024,14 @@ void restore_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/usb-storage.ko.zst");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15867,10 +16041,13 @@ void restore_usb_mass_storage_ccc(void)
 
     if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
+      if (system(
+            "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15879,10 +16056,14 @@ void restore_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.xz");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -15891,10 +16072,14 @@ void restore_usb_mass_storage_ccc(void)
     }
     else if (access("/lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist", F_OK))
     {
-      if (system("mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst"))
+      if (
+        system(
+          "mv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst"))
       {
         // error copying
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"), "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst");
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE, "%s%s", _("Error: File moving failed"),
+          "\nmv -fv /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst.blacklist /lib/modules/$(uname -r)/kernel/drivers/usb/storage/uas.ko.zst");
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
         clear_error_message_ccc();
@@ -16602,11 +16787,15 @@ int rebuild_assist_map_heads_ccc(void)
         disable_rebuild_assist_ccc();
         return -1;
       }
-      if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND && ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS))
+      if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND &&
+          ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+          ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS))
       {
         long long size = (ncq_error_log_data_ccc.final_lba - current_position) + 1;
-        fprintf(stdout, "head=%02x position=%08llx size=%06llx final=%08llx\n", current_head, current_position, size, ncq_error_log_data_ccc.final_lba);
-        fprintf(headmap_debug_file, "head=%02x position=%08llx size=%06llx final=%08llx\n", current_head, current_position, size, ncq_error_log_data_ccc.final_lba);
+        fprintf(stdout, "head=%02x position=%08llx size=%06llx final=%08llx\n", current_head, current_position, size,
+                ncq_error_log_data_ccc.final_lba);
+        fprintf(headmap_debug_file, "head=%02x position=%08llx size=%06llx final=%08llx\n", current_head, current_position, size,
+                ncq_error_log_data_ccc.final_lba);
         if (!heads_checked)
         {
           pattern_head[pattern_count] = current_head;
@@ -16633,8 +16822,10 @@ int rebuild_assist_map_heads_ccc(void)
       }
       else
       {
-        fprintf(stdout, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
-        fprintf(headmap_debug_file, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
+        fprintf(stdout, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc,
+                ncq_error_log_data_ccc.sense_ascq);
+        fprintf(headmap_debug_file, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key,
+                ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
         failed = 1;
       }
     }
@@ -16693,8 +16884,10 @@ int rebuild_assist_map_heads_ccc(void)
       int i;
       for (i = 0; i < pattern_count; i++)
       {
-        fprintf(stdout, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i], pattern_final[i]);
-        fprintf(headmap_debug_file, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i], pattern_final[i]);
+        fprintf(stdout, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i],
+                pattern_final[i]);
+        fprintf(headmap_debug_file, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i],
+                pattern_size[i], pattern_final[i]);
         working_heads[pattern_head[i]] = 1;
         // get number of heads in pattern
         if (i > 0)
@@ -16764,8 +16957,10 @@ int rebuild_assist_map_heads_ccc(void)
     int i;
     for (i = 0; i < pattern_count; i++)
     {
-      fprintf(stdout, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i], pattern_final[i]);
-      fprintf(headmap_debug_file, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i], pattern_final[i]);
+      fprintf(stdout, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i], pattern_size[i],
+              pattern_final[i]);
+      fprintf(headmap_debug_file, "pattern head=%02x position=%08llx size=%06llx final=%08llx\n", pattern_head[i], pattern_position[i],
+              pattern_size[i], pattern_final[i]);
       working_heads[pattern_head[i]] = 1;
       // get number of heads in pattern
       if (i > 0)
@@ -16926,11 +17121,15 @@ int rebuild_assist_map_heads_ccc(void)
             disable_rebuild_assist_ccc();
             return -1;
           }
-          if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND && ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) && ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS))
+          if (ncq_error_log_data_ccc.sense_key == SKEY_ABORTED_COMMAND &&
+              ncq_error_log_data_ccc.sense_asc == get_asc_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS) &&
+              ncq_error_log_data_ccc.sense_ascq == get_ascq_from_additional_sense_ccc(ASC_MULTIPLE_READ_ERRORS))
           {
             long long size = (ncq_error_log_data_ccc.final_lba - current_position) + 1;
-            fprintf(stdout, "head=%02x position=%08llx final=%08llx size=%06llx run=%06llx adj=%06llx\n", current_head, current_position, ncq_error_log_data_ccc.final_lba, size, running_average_size, adjusted_average_size);
-            fprintf(headmap_debug_file, "head=%02x position=%08llx final=%08llx size=%06llx run=%06llx adj=%06llx\n", current_head, current_position, ncq_error_log_data_ccc.final_lba, size, running_average_size, adjusted_average_size);
+            fprintf(stdout, "head=%02x position=%08llx final=%08llx size=%06llx run=%06llx adj=%06llx\n", current_head, current_position,
+                    ncq_error_log_data_ccc.final_lba, size, running_average_size, adjusted_average_size);
+            fprintf(headmap_debug_file, "head=%02x position=%08llx final=%08llx size=%06llx run=%06llx adj=%06llx\n", current_head, current_position,
+                    ncq_error_log_data_ccc.final_lba, size, running_average_size, adjusted_average_size);
             pattern_size[pattern_count] = (ncq_error_log_data_ccc.final_lba - current_position) + 1;
             head_map_head_ccc[head_map_line_ccc] = current_head;
             // head_map_position_ccc[head_map_line_ccc] = current_position;
@@ -16954,8 +17153,10 @@ int rebuild_assist_map_heads_ccc(void)
           }
           else
           {
-            fprintf(stdout, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
-            fprintf(headmap_debug_file, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
+            fprintf(stdout, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key, ncq_error_log_data_ccc.sense_asc,
+                    ncq_error_log_data_ccc.sense_ascq);
+            fprintf(headmap_debug_file, "read not aborted key=%02x asc=%02x ascq=%02x\n", ncq_error_log_data_ccc.sense_key,
+                    ncq_error_log_data_ccc.sense_asc, ncq_error_log_data_ccc.sense_ascq);
             failed = 1;
           }
         }
@@ -17110,7 +17311,8 @@ int rebuild_assist_map_heads_ccc(void)
   int line_number;
   for (line_number = 0; line_number < head_map_line_ccc; line_number++)
   {
-    fprintf(writefile, "0x%02x \t0x%06llx \t0x%06llx \t0x%06llx \t0x%02x\n", head_map_head_ccc[line_number], head_map_position_ccc[line_number], head_map_final_ccc[line_number], head_map_size_ccc[line_number], head_map_status_ccc[line_number]);
+    fprintf(writefile, "0x%02x \t0x%06llx \t0x%06llx \t0x%06llx \t0x%02x\n", head_map_head_ccc[line_number], head_map_position_ccc[line_number],
+            head_map_final_ccc[line_number], head_map_size_ccc[line_number], head_map_status_ccc[line_number]);
   }
   fclose(writefile);
 

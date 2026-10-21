@@ -71,7 +71,8 @@ int find_all_usb_devices_ccc(void)
       struct usb_dev_handle *dev_handle;
       if ((dev_handle = usb_open(dev)) == NULL)
       {
-        fprintf(stdout, "Failed to open device bus %d device %d (%s)\n", usb_bus_number_ccc[usb_device_count_ccc], usb_device_number_ccc[usb_device_count_ccc], strerror(errno));
+        fprintf(stdout, "Failed to open device bus %d device %d (%s)\n", usb_bus_number_ccc[usb_device_count_ccc],
+                usb_device_number_ccc[usb_device_count_ccc], strerror(errno));
         continue;
       }
 
@@ -86,7 +87,8 @@ int find_all_usb_devices_ccc(void)
       }
       else
       {
-        fprintf(stdout, "Error: Unnable to get vendor string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc], usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
+        fprintf(stdout, "Error: Unnable to get vendor string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc],
+                usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
       }
 
       rval = usb_get_string_simple(dev_handle, dev->descriptor.iProduct, buffer, sizeof(buffer));
@@ -96,7 +98,8 @@ int find_all_usb_devices_ccc(void)
       }
       else
       {
-        fprintf(stdout, "Error: Unable to get product string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc], usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
+        fprintf(stdout, "Error: Unable to get product string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc],
+                usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
       }
 
       rval = usb_get_string_simple(dev_handle, dev->descriptor.iSerialNumber, buffer, sizeof(buffer));
@@ -106,7 +109,8 @@ int find_all_usb_devices_ccc(void)
       }
       else
       {
-        fprintf(stdout, "Error: Unable to get serial string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc], usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
+        fprintf(stdout, "Error: Unable to get serial string %04x:%04x (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc],
+                usb_product_id_ccc[usb_device_count_ccc], strerror(errno));
       }
 
       // if the device is known to have an extra id or serial then get it
@@ -124,17 +128,21 @@ int find_all_usb_devices_ccc(void)
         int bytesreceived = usb_control_msg(dev_handle, requesttype, request, value, index, buffer, length, timer);
         if (bytesreceived == length)
         {
-          snprintf(usb_extra_id_string_ccc[usb_device_count_ccc], sizeof(usb_extra_id_string_ccc[usb_device_count_ccc]), "%.*s", relay_id_length, buffer);
+          snprintf(usb_extra_id_string_ccc[usb_device_count_ccc], sizeof(usb_extra_id_string_ccc[usb_device_count_ccc]), "%.*s", relay_id_length,
+                   buffer);
         }
         else
         {
-          fprintf(stdout, "Failed to get special id %04x:%04x, %d (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc], usb_product_id_ccc[usb_device_count_ccc], bytesreceived, strerror(errno));
+          fprintf(stdout, "Failed to get special id %04x:%04x, %d (%s)\n", usb_vendor_id_ccc[usb_device_count_ccc],
+                  usb_product_id_ccc[usb_device_count_ccc], bytesreceived, strerror(errno));
         }
         // if it is a known usb relay then mark it
         usb_known_relay_ccc[usb_device_count_ccc] = 1;
       }
       // YEPKIT YKUSH
-      if (dev->descriptor.idVendor == YEPKIT_RELAY_VENDOR_ID && (dev->descriptor.idProduct == YEPKIT_YKUSH3_PRODUCT_ID || dev->descriptor.idProduct == YEPKIT_YKUSH_PRODUCT_ID || dev->descriptor.idProduct == YEPKIT_YKUSHLEGACY_PRODUCT_ID || dev->descriptor.idProduct == YEPKIT_YKUSHXS_PRODUCT_ID))
+      if (dev->descriptor.idVendor == YEPKIT_RELAY_VENDOR_ID &&
+          (dev->descriptor.idProduct == YEPKIT_YKUSH3_PRODUCT_ID || dev->descriptor.idProduct == YEPKIT_YKUSH_PRODUCT_ID ||
+           dev->descriptor.idProduct == YEPKIT_YKUSHLEGACY_PRODUCT_ID || dev->descriptor.idProduct == YEPKIT_YKUSHXS_PRODUCT_ID))
       {
         strcpy(usb_extra_id_string_ccc[usb_device_count_ccc], usb_serial_string_ccc[usb_device_count_ccc]);
         // if it is a known usb relay then mark it
@@ -159,7 +167,8 @@ int find_all_usb_devices_ccc(void)
           {
             struct usb_interface_descriptor *interface = &ainterface->altsetting[aicount];
             // mass storage is class 8 and scsi is subclass 6
-            if ((interface->bInterfaceClass == 8 && interface->bInterfaceSubClass == 6) || (dev->descriptor.bDeviceClass == 8 && dev->descriptor.bDeviceSubClass == 6))
+            if ((interface->bInterfaceClass == 8 && interface->bInterfaceSubClass == 6) ||
+                (dev->descriptor.bDeviceClass == 8 && dev->descriptor.bDeviceSubClass == 6))
             {
               usb_mass_storage_ccc[usb_device_count_ccc] = 1;
               int ecount;
@@ -188,7 +197,8 @@ int find_all_usb_devices_ccc(void)
 
       if (usb_close(dev_handle))
       {
-        fprintf(stdout, "Failed to close device bus %d device %d (%s)\n", usb_bus_number_ccc[usb_device_count_ccc], usb_device_number_ccc[usb_device_count_ccc], strerror(errno));
+        fprintf(stdout, "Failed to close device bus %d device %d (%s)\n", usb_bus_number_ccc[usb_device_count_ccc],
+                usb_device_number_ccc[usb_device_count_ccc], strerror(errno));
       }
 
       usb_device_count_ccc++;
@@ -227,7 +237,8 @@ int choose_usb_relay_ccc(void)
       fprintf(stdout, "R) Refresh device list\n");
       for (i = 0; i < usb_device_count_ccc; i++)
       {
-        fprintf(stdout, "%d) %d:%d %04x:%04x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+        fprintf(stdout, "%d) %d:%d %04x:%04x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i],
+                usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
       }
 
       fprintf(stdout, "Choose which device > ");
@@ -273,7 +284,8 @@ int choose_usb_relay_ccc(void)
   int i = choice - 1;
   if (verbose_ccc & DEBUG6)
   {
-    fprintf(stdout, "choice=%d %d:%d %04x:%04x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+    fprintf(stdout, "choice=%d %d:%d %04x:%04x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i],
+            usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
   }
 
   usbr1_bus_number_ccc = usb_bus_number_ccc[i];
@@ -313,7 +325,8 @@ int choose_usb_relay_ccc(void)
 
         if (usbr1_vendor_id_ccc != dev->descriptor.idVendor || usbr1_product_id_ccc != dev->descriptor.idProduct)
         {
-          fprintf(stdout, "ID does not match what was chosen (wanted %04x:%04x, found %04x:%04x\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc, dev->descriptor.idVendor, dev->descriptor.idProduct);
+          fprintf(stdout, "ID does not match what was chosen (wanted %04x:%04x, found %04x:%04x\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc,
+                  dev->descriptor.idVendor, dev->descriptor.idProduct);
           usb_close(usbr1_dev_handle_ccc);
           usbr1_dev_handle_ccc = NULL;
           return -1;
@@ -370,7 +383,9 @@ int choose_usb_device_ccc(void)
       fprintf(stdout, "R) Refresh device list\n");
       for (i = 0; i < usb_device_count_ccc; i++)
       {
-        fprintf(stdout, "%d) %d:%d %04x:%04x %x %x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+        fprintf(stdout, "%d) %d:%d %04x:%04x %x %x %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i],
+                usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i],
+                usb_extra_id_string_ccc[i]);
       }
 
       fprintf(stdout, "Choose which device > ");
@@ -416,7 +431,8 @@ int choose_usb_device_ccc(void)
   int i = choice - 1;
   if (verbose_ccc & DEBUG6)
   {
-    fprintf(stdout, "choice=%d %d:%d %04x:%04x %d %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+    fprintf(stdout, "choice=%d %d:%d %04x:%04x %d %s %s %s\n", i + 1, usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i],
+            usb_product_id_ccc[i], usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
   }
 
   if (superclone_ccc && !usb_mass_storage_ccc[i])
@@ -509,9 +525,12 @@ int connect_usbd1_ccc(void)
             fprintf(stdout, "Error: Unable to get product string (%s)\n", strerror(errno));
           }
 
-          if (usbd1_vendor_id_ccc != dev->descriptor.idVendor || usbd1_product_id_ccc != dev->descriptor.idProduct || strcmp(usbd1_vendor_string_ccc, vendorstring) || strcmp(usbd1_product_string_ccc, productstring))
+          if (usbd1_vendor_id_ccc != dev->descriptor.idVendor || usbd1_product_id_ccc != dev->descriptor.idProduct ||
+              strcmp(usbd1_vendor_string_ccc, vendorstring) || strcmp(usbd1_product_string_ccc, productstring))
           {
-            fprintf(stdout, "ID does not match what was chosen:\nwanted %04x:%04x %s %s\nfound %04x:%04x %s %s\n", usbd1_vendor_id_ccc, usbd1_product_id_ccc, usbd1_vendor_string_ccc, usbd1_product_string_ccc, dev->descriptor.idVendor, dev->descriptor.idProduct, vendorstring, productstring);
+            fprintf(stdout, "ID does not match what was chosen:\nwanted %04x:%04x %s %s\nfound %04x:%04x %s %s\n", usbd1_vendor_id_ccc,
+                    usbd1_product_id_ccc, usbd1_vendor_string_ccc, usbd1_product_string_ccc, dev->descriptor.idVendor, dev->descriptor.idProduct,
+                    vendorstring, productstring);
             usb_close(usbd1_dev_handle_ccc);
             usbd1_dev_handle_ccc = NULL;
             return -1;
@@ -1536,7 +1555,9 @@ int activate_primary_relay_ccc(void)
       return -1;
     }
   }
-  else if (usbr1_vendor_id_ccc == YEPKIT_RELAY_VENDOR_ID && (usbr1_product_id_ccc == YEPKIT_YKUSH3_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSH_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHXS_PRODUCT_ID))
+  else if (usbr1_vendor_id_ccc == YEPKIT_RELAY_VENDOR_ID &&
+           (usbr1_product_id_ccc == YEPKIT_YKUSH3_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSH_PRODUCT_ID ||
+            usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHXS_PRODUCT_ID))
   {
     ccc_main_usbbuffer_size_ccc = 64;
     if (usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID)
@@ -1787,7 +1808,9 @@ int deactivate_primary_relay_ccc(void)
       return -1;
     }
   }
-  else if (usbr1_vendor_id_ccc == YEPKIT_RELAY_VENDOR_ID && (usbr1_product_id_ccc == YEPKIT_YKUSH3_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSH_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHXS_PRODUCT_ID))
+  else if (usbr1_vendor_id_ccc == YEPKIT_RELAY_VENDOR_ID &&
+           (usbr1_product_id_ccc == YEPKIT_YKUSH3_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSH_PRODUCT_ID ||
+            usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID || usbr1_product_id_ccc == YEPKIT_YKUSHXS_PRODUCT_ID))
   {
     ccc_main_usbbuffer_size_ccc = 64;
     if (usbr1_product_id_ccc == YEPKIT_YKUSHLEGACY_PRODUCT_ID)

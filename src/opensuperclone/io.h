@@ -123,7 +123,8 @@ int set_and_send_regs_ccc(int command_type);
 
 int get_device_information_ccc(char *driver, char *bus, int bus_count, int device, int current_device_count);
 
-int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned long long port_address, int hba, int port, int fis, int cdata, int ctable);
+int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned long long port_address, int hba, int port, int fis, int cdata,
+                                       int ctable);
 
 int do_usb_cmd_ccc(void);
 

@@ -48,24 +48,24 @@ extern int asclepius_ext_serial_port;
 
 struct asclepius_command_t
 {
-    uint8_t command;
-    uint8_t channel;
+  uint8_t command;
+  uint8_t channel;
 };
 extern struct asclepius_command_t asclepius_command;
 
 struct asclepius_status_t
 {
-    bool main12v_ocp;
-    bool main5v_ocp;
-    bool usb5v_ocp;
-    uint32_t main12v_voltage;
-    uint32_t main5v_voltage;
-    uint32_t main12v_current;
-    uint32_t main5v_current;
-    uint32_t usb5v_current;
-    bool main12v_enabled;
-    bool main5v_enabled;
-    bool usb5v_enabled;
+  bool main12v_ocp;
+  bool main5v_ocp;
+  bool usb5v_ocp;
+  uint32_t main12v_voltage;
+  uint32_t main5v_voltage;
+  uint32_t main12v_current;
+  uint32_t main5v_current;
+  uint32_t usb5v_current;
+  bool main12v_enabled;
+  bool main5v_enabled;
+  bool usb5v_enabled;
 };
 extern struct asclepius_status_t asclepius_status;
 
@@ -111,17 +111,17 @@ void asclepius_unlock(void);
 // Action taken when a rail trips its software OCP limit
 typedef enum
 {
-    ASCLEPIUS_OCP_OFF = 0,  // no software monitoring on this rail
-    ASCLEPIUS_OCP_WARN = 1, // latch and report, leave the rail powered
-    ASCLEPIUS_OCP_CUT = 2   // latch and command the rail off
+  ASCLEPIUS_OCP_OFF = 0,  // no software monitoring on this rail
+  ASCLEPIUS_OCP_WARN = 1, // latch and report, leave the rail powered
+  ASCLEPIUS_OCP_CUT = 2   // latch and command the rail off
 } asclepius_ocp_action_t;
 
 struct asclepius_ocp_rail_t
 {
-    bool tripped;                 // latched until the user intervenes
-    uint32_t trip_ma;             // current at the moment of the trip
-    unsigned int limit_ma;
-    asclepius_ocp_action_t action;
+  bool tripped;     // latched until the user intervenes
+  uint32_t trip_ma; // current at the moment of the trip
+  unsigned int limit_ma;
+  asclepius_ocp_action_t action;
 };
 extern struct asclepius_ocp_rail_t asclepius_ocp_12v_ccc;
 extern struct asclepius_ocp_rail_t asclepius_ocp_5v_ccc;
@@ -182,8 +182,8 @@ int asclepius_parse_hex(const char *input, char *output, size_t max);
 
 struct asclepius_linebuf_t
 {
-    char buf[ASCLEPIUS_RX_LINE_MAX];
-    size_t len;
+  char buf[ASCLEPIUS_RX_LINE_MAX];
+  size_t len;
 };
 typedef struct asclepius_linebuf_t asclepius_linebuf_t;
 

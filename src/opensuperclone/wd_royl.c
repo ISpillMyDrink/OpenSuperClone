@@ -35,8 +35,7 @@ static uint16_t wd_royl_le16_ccc(const uint8_t *data)
 
 static uint32_t wd_royl_le32_ccc(const uint8_t *data)
 {
-  return (uint32_t)data[0] | ((uint32_t)data[1] << 8) |
-         ((uint32_t)data[2] << 16) | ((uint32_t)data[3] << 24);
+  return (uint32_t)data[0] | ((uint32_t)data[1] << 8) | ((uint32_t)data[2] << 16) | ((uint32_t)data[3] << 24);
 }
 
 static void wd_royl_put_le32_ccc(uint8_t *data, uint32_t value)
@@ -47,9 +46,7 @@ static void wd_royl_put_le32_ccc(uint8_t *data, uint32_t value)
   data[3] = (uint8_t)(value >> 24);
 }
 
-static void wd_royl_progress_ccc(wd_royl_progress_callback_ccc progress,
-                                 const char *stage, unsigned long long done,
-                                 unsigned long long total)
+static void wd_royl_progress_ccc(wd_royl_progress_callback_ccc progress, const char *stage, unsigned long long done, unsigned long long total)
 {
   if (progress != NULL)
   {
@@ -70,8 +67,7 @@ static int wd_royl_get_disk_fd_ccc(void)
   return -1;
 }
 
-int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
-                           size_t data_size, int direction)
+int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data, size_t data_size, int direction)
 {
   int i;
   int result = -1;
@@ -86,17 +82,14 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
     wd_royl_set_error_ccc("Internal error: no ATA registers supplied.\n");
     return -1;
   }
-  if (direction != WD_ROYL_DIR_NONE && direction != WD_ROYL_DIR_IN &&
-      direction != WD_ROYL_DIR_OUT)
+  if (direction != WD_ROYL_DIR_NONE && direction != WD_ROYL_DIR_IN && direction != WD_ROYL_DIR_OUT)
   {
-    wd_royl_set_error_ccc("Internal error: invalid data direction %d.\n",
-                          direction);
+    wd_royl_set_error_ccc("Internal error: invalid data direction %d.\n", direction);
     return -1;
   }
   if (direction == WD_ROYL_DIR_NONE && data_size != 0)
   {
-    wd_royl_set_error_ccc("Internal error: no-data command with %zu bytes.\n",
-                          data_size);
+    wd_royl_set_error_ccc("Internal error: no-data command with %zu bytes.\n", data_size);
     return -1;
   }
   if (direction != WD_ROYL_DIR_NONE && data == NULL)
@@ -106,8 +99,7 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
   }
   if (data_size > MAX_USB_BUFFER_SIZE)
   {
-    wd_royl_set_error_ccc("Transfer size %zu is larger than the maximum.\n",
-                          data_size);
+    wd_royl_set_error_ccc("Transfer size %zu is larger than the maximum.\n", data_size);
     return -1;
   }
 
@@ -115,9 +107,8 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
   {
     if (!usb_allow_ata_ccc)
     {
-      wd_royl_set_error_ccc(
-          "This operation requires ATA pass-through, not USB mass storage "
-          "mode.\nSelect USB ATA mode and choose the source drive again.\n");
+      wd_royl_set_error_ccc("This operation requires ATA pass-through, not USB mass storage "
+                            "mode.\nSelect USB ATA mode and choose the source drive again.\n");
       return -1;
     }
     if (usbd1_dev_handle_ccc == NULL)
@@ -141,16 +132,14 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
       // AHCI port pointer and crash the program.
       if (ahci_mode_ccc && port_virt_addr_ccc == NULL)
       {
-        wd_royl_set_error_ccc(
-            "The source drive is not connected. Choose and connect the source "
-            "drive before using vendor specific commands.\n");
+        wd_royl_set_error_ccc("The source drive is not connected. Choose and connect the source "
+                              "drive before using vendor specific commands.\n");
         return -1;
       }
       if (!ahci_mode_ccc && !io_permissions_ccc)
       {
-        wd_royl_set_error_ccc(
-            "The source drive is not connected. Choose and connect the source "
-            "drive before using vendor specific commands.\n");
+        wd_royl_set_error_ccc("The source drive is not connected. Choose and connect the source "
+                              "drive before using vendor specific commands.\n");
         return -1;
       }
     }
@@ -164,8 +153,7 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
   ccc_main_buffer_size_ccc = data_size;
   if (set_main_buffer_ccc() != 0)
   {
-    wd_royl_set_error_ccc("Unable to set the data buffer size to %zu.\n",
-                          data_size);
+    wd_royl_set_error_ccc("Unable to set the data buffer size to %zu.\n", data_size);
     goto restore_buffer;
   }
 
@@ -216,15 +204,10 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
   }
 
   passthrough_ccc.scsi_cmd[0] = 0xa1;
-  passthrough_ccc.scsi_cmd[1] =
-      (unsigned char)((passthrough_ccc.multiple_count << 5) +
-                      (passthrough_ccc.protocol << 1));
-  passthrough_ccc.scsi_cmd[2] = (unsigned char)(
-      (passthrough_ccc.off_line << 6) +
-      (passthrough_ccc.check_condition << 5) +
-      (passthrough_ccc.transfer_direction << 3) +
-      (passthrough_ccc.byte_block << 2) +
-      passthrough_ccc.transfer_length);
+  passthrough_ccc.scsi_cmd[1] = (unsigned char)((passthrough_ccc.multiple_count << 5) + (passthrough_ccc.protocol << 1));
+  passthrough_ccc.scsi_cmd[2] =
+    (unsigned char)((passthrough_ccc.off_line << 6) + (passthrough_ccc.check_condition << 5) + (passthrough_ccc.transfer_direction << 3) +
+                    (passthrough_ccc.byte_block << 2) + passthrough_ccc.transfer_length);
   for (i = 0; i < 7; i++)
   {
     passthrough_ccc.scsi_cmd[3 + i] = regs[i];
@@ -250,39 +233,31 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
     // Only ask for sense data when something went wrong. Some bridges do not
     // answer Request Sense after an otherwise successful ATA command, and the
     // extra round trip makes large module operations much slower.
-    if (raw_ret < 0 ||
-        (direction == WD_ROYL_DIR_IN && raw_ret != (int)data_size) ||
-        (direction == WD_ROYL_DIR_OUT && raw_ret != 0 &&
-         raw_ret != (int)data_size) ||
-        !usb_csw_valid_ccc || csw_status != 0)
+    if (raw_ret < 0 || (direction == WD_ROYL_DIR_IN && raw_ret != (int)data_size) ||
+        (direction == WD_ROYL_DIR_OUT && raw_ret != 0 && raw_ret != (int)data_size) || !usb_csw_valid_ccc || csw_status != 0)
     {
       (void)usb_get_sense_ccc();
     }
 
     if (raw_ret < 0)
     {
-      wd_royl_set_error_ccc(
-          "USB ATA command %02x failed with return %d (%s), sense "
-          "%02x/%02x/%02x.\n",
-          regs[6], raw_ret, strerror(abs(raw_ret)), sense_key_ccc, asc_ccc,
-          ascq_ccc);
+      wd_royl_set_error_ccc("USB ATA command %02x failed with return %d (%s), sense "
+                            "%02x/%02x/%02x.\n",
+                            regs[6], raw_ret, strerror(abs(raw_ret)), sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
     if (direction == WD_ROYL_DIR_IN && raw_ret != (int)data_size)
     {
-      wd_royl_set_error_ccc(
-          "USB ATA command %02x returned %d bytes instead of %zu, sense "
-          "%02x/%02x/%02x.\n",
-          regs[6], raw_ret, data_size, sense_key_ccc, asc_ccc, ascq_ccc);
+      wd_royl_set_error_ccc("USB ATA command %02x returned %d bytes instead of %zu, sense "
+                            "%02x/%02x/%02x.\n",
+                            regs[6], raw_ret, data_size, sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
-    if (direction == WD_ROYL_DIR_OUT && raw_ret != 0 &&
-        raw_ret != (int)data_size)
+    if (direction == WD_ROYL_DIR_OUT && raw_ret != 0 && raw_ret != (int)data_size)
     {
-      wd_royl_set_error_ccc(
-          "USB ATA command %02x transferred %d bytes instead of %zu, sense "
-          "%02x/%02x/%02x.\n",
-          regs[6], raw_ret, data_size, sense_key_ccc, asc_ccc, ascq_ccc);
+      wd_royl_set_error_ccc("USB ATA command %02x transferred %d bytes instead of %zu, sense "
+                            "%02x/%02x/%02x.\n",
+                            regs[6], raw_ret, data_size, sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
   }
@@ -291,20 +266,18 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
     ret = do_ata28_cmd_ccc(disk_fd);
     if (ret != 0)
     {
-      wd_royl_set_error_ccc(
-          "ATA command %02x failed with return %d, status %02x, sense "
-          "%02x/%02x/%02x.\n",
-          regs[6], ret, ata_status_ccc, sense_key_ccc, asc_ccc, ascq_ccc);
+      wd_royl_set_error_ccc("ATA command %02x failed with return %d, status %02x, sense "
+                            "%02x/%02x/%02x.\n",
+                            regs[6], ret, ata_status_ccc, sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
   }
 
   if (ata_status_ccc & 0x01)
   {
-    wd_royl_set_error_ccc(
-        "ATA command %02x reported an error, status %02x, sense "
-        "%02x/%02x/%02x.\n",
-        regs[6], ata_status_ccc, sense_key_ccc, asc_ccc, ascq_ccc);
+    wd_royl_set_error_ccc("ATA command %02x reported an error, status %02x, sense "
+                          "%02x/%02x/%02x.\n",
+                          regs[6], ata_status_ccc, sense_key_ccc, asc_ccc, ascq_ccc);
     goto restore_buffer;
   }
 
@@ -314,19 +287,16 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
     // actually completed. The WD scripts treat it as success.
     if (!(sense_key_ccc == 4 && asc_ccc == 0 && ascq_ccc == 0))
     {
-      wd_royl_set_error_ccc(
-          "ATA command %02x failed with sense %02x/%02x/%02x.\n", regs[6],
-          sense_key_ccc, asc_ccc, ascq_ccc);
+      wd_royl_set_error_ccc("ATA command %02x failed with sense %02x/%02x/%02x.\n", regs[6], sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
   }
 
   if (usb_mode_ccc && !usb_csw_valid_ccc)
   {
-    wd_royl_set_error_ccc(
-        "USB ATA command %02x did not return a valid command status "
-        "wrapper.\n",
-        regs[6]);
+    wd_royl_set_error_ccc("USB ATA command %02x did not return a valid command status "
+                          "wrapper.\n",
+                          regs[6]);
     goto restore_buffer;
   }
 
@@ -334,10 +304,9 @@ int wd_royl_send_ata28_ccc(const uint8_t regs[7], void *data,
   {
     if (!(sense_key_ccc == 4 && asc_ccc == 0 && ascq_ccc == 0))
     {
-      wd_royl_set_error_ccc(
-          "USB ATA command %02x failed with CSW status %u and sense "
-          "%02x/%02x/%02x.\n",
-          regs[6], csw_status, sense_key_ccc, asc_ccc, ascq_ccc);
+      wd_royl_set_error_ccc("USB ATA command %02x failed with CSW status %u and sense "
+                            "%02x/%02x/%02x.\n",
+                            regs[6], csw_status, sense_key_ccc, asc_ccc, ascq_ccc);
       goto restore_buffer;
     }
   }
@@ -370,15 +339,13 @@ static int wd_royl_prepare_ccc(const uint8_t request[16], bool send_twice)
   memset(buffer, 0, sizeof(buffer));
   memcpy(buffer, request, 16);
 
-  if (wd_royl_send_ata28_ccc(regs, buffer, sizeof(buffer),
-                             WD_ROYL_DIR_OUT) != 0)
+  if (wd_royl_send_ata28_ccc(regs, buffer, sizeof(buffer), WD_ROYL_DIR_OUT) != 0)
   {
     return -1;
   }
   if (send_twice)
   {
-    if (wd_royl_send_ata28_ccc(regs, buffer, sizeof(buffer),
-                               WD_ROYL_DIR_OUT) != 0)
+    if (wd_royl_send_ata28_ccc(regs, buffer, sizeof(buffer), WD_ROYL_DIR_OUT) != 0)
     {
       return -1;
     }
@@ -393,9 +360,7 @@ static int wd_royl_read_sectors_ccc(uint8_t sectors, void *data)
 
   memcpy(local_regs, regs, sizeof(local_regs));
   local_regs[1] = sectors;
-  return wd_royl_send_ata28_ccc(local_regs, data,
-                                (size_t)sectors * WD_ROYL_SECTOR_SIZE,
-                                WD_ROYL_DIR_IN);
+  return wd_royl_send_ata28_ccc(local_regs, data, (size_t)sectors * WD_ROYL_SECTOR_SIZE, WD_ROYL_DIR_IN);
 }
 
 static int wd_royl_write_sectors_ccc(uint8_t sectors, const void *data)
@@ -405,9 +370,7 @@ static int wd_royl_write_sectors_ccc(uint8_t sectors, const void *data)
 
   memcpy(local_regs, regs, sizeof(local_regs));
   local_regs[1] = sectors;
-  return wd_royl_send_ata28_ccc(local_regs, (void *)data,
-                                (size_t)sectors * WD_ROYL_SECTOR_SIZE,
-                                WD_ROYL_DIR_OUT);
+  return wd_royl_send_ata28_ccc(local_regs, (void *)data, (size_t)sectors * WD_ROYL_SECTOR_SIZE, WD_ROYL_DIR_OUT);
 }
 
 int wd_royl_enable_vsc_ccc(void)
@@ -460,9 +423,8 @@ int wd_royl_read_data_table_ccc(uint8_t table[WD_ROYL_SECTOR_SIZE])
   }
   if (wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The data table was read, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("The data table was read, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
@@ -490,28 +452,24 @@ int wd_royl_get_rom_size_ccc(size_t *rom_size)
   }
   if (table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] == 0)
   {
-    wd_royl_set_error_ccc(
-        "The drive reported zero ROM blocks. Vendor specific commands may not "
-        "be supported by this drive.\n");
+    wd_royl_set_error_ccc("The drive reported zero ROM blocks. Vendor specific commands may not "
+                          "be supported by this drive.\n");
     goto finish;
   }
-  *rom_size = (size_t)table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] *
-              WD_ROYL_ROM_BLOCK_SIZE;
+  *rom_size = (size_t)table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] * WD_ROYL_ROM_BLOCK_SIZE;
   result = 0;
 
 finish:
   if (wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The ROM size was read, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("The ROM size was read, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_read_rom_ccc(uint8_t **rom, size_t *rom_size,
-                         wd_royl_progress_callback_ccc progress)
+int wd_royl_read_rom_ccc(uint8_t **rom, size_t *rom_size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t table[WD_ROYL_SECTOR_SIZE];
   uint8_t request[16];
@@ -543,14 +501,12 @@ int wd_royl_read_rom_ccc(uint8_t **rom, size_t *rom_size,
   }
   if (table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] == 0)
   {
-    wd_royl_set_error_ccc(
-        "The drive reported zero ROM blocks. Vendor specific commands may not "
-        "be supported by this drive.\n");
+    wd_royl_set_error_ccc("The drive reported zero ROM blocks. Vendor specific commands may not "
+                          "be supported by this drive.\n");
     goto finish;
   }
 
-  size = (size_t)table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] *
-         WD_ROYL_ROM_BLOCK_SIZE;
+  size = (size_t)table[WD_ROYL_ROM_TABLE_BLOCK_COUNT_OFFSET] * WD_ROYL_ROM_BLOCK_SIZE;
   buffer = (uint8_t *)malloc(size);
   if (buffer == NULL)
   {
@@ -585,15 +541,12 @@ int wd_royl_read_rom_ccc(uint8_t **rom, size_t *rom_size,
     {
       current = size - offset;
     }
-    if ((current % WD_ROYL_SECTOR_SIZE) != 0 ||
-        (current / WD_ROYL_SECTOR_SIZE) > 255)
+    if ((current % WD_ROYL_SECTOR_SIZE) != 0 || (current / WD_ROYL_SECTOR_SIZE) > 255)
     {
-      wd_royl_set_error_ccc("Internal error: bad ROM chunk size %zu.\n",
-                            current);
+      wd_royl_set_error_ccc("Internal error: bad ROM chunk size %zu.\n", current);
       goto finish;
     }
-    if (wd_royl_read_sectors_ccc(
-            (uint8_t)(current / WD_ROYL_SECTOR_SIZE), buffer + offset) != 0)
+    if (wd_royl_read_sectors_ccc((uint8_t)(current / WD_ROYL_SECTOR_SIZE), buffer + offset) != 0)
     {
       goto finish;
     }
@@ -610,17 +563,14 @@ finish:
   free(buffer);
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The ROM was read, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("The ROM was read, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_write_rom_ccc(const uint8_t *rom, size_t rom_size,
-                          bool slow_and_stupid,
-                          wd_royl_progress_callback_ccc progress)
+int wd_royl_write_rom_ccc(const uint8_t *rom, size_t rom_size, bool slow_and_stupid, wd_royl_progress_callback_ccc progress)
 {
   uint8_t request[16];
   size_t offset = 0;
@@ -635,10 +585,9 @@ int wd_royl_write_rom_ccc(const uint8_t *rom, size_t rom_size,
   }
   if ((rom_size % WD_ROYL_ROM_BLOCK_SIZE) != 0)
   {
-    wd_royl_set_error_ccc(
-        "The ROM size %zu is not a multiple of the 16384 byte ROM block "
-        "size.\n",
-        rom_size);
+    wd_royl_set_error_ccc("The ROM size %zu is not a multiple of the 16384 byte ROM block "
+                          "size.\n",
+                          rom_size);
     return -1;
   }
   if (rom_size > WD_ROYL_MAX_FILE_SIZE)
@@ -695,15 +644,12 @@ int wd_royl_write_rom_ccc(const uint8_t *rom, size_t rom_size,
     {
       current = rom_size - offset;
     }
-    if ((current % WD_ROYL_SECTOR_SIZE) != 0 ||
-        (current / WD_ROYL_SECTOR_SIZE) > 255)
+    if ((current % WD_ROYL_SECTOR_SIZE) != 0 || (current / WD_ROYL_SECTOR_SIZE) > 255)
     {
-      wd_royl_set_error_ccc("Internal error: bad ROM chunk size %zu.\n",
-                            current);
+      wd_royl_set_error_ccc("Internal error: bad ROM chunk size %zu.\n", current);
       goto finish;
     }
-    if (wd_royl_write_sectors_ccc(
-            (uint8_t)(current / WD_ROYL_SECTOR_SIZE), rom + offset) != 0)
+    if (wd_royl_write_sectors_ccc((uint8_t)(current / WD_ROYL_SECTOR_SIZE), rom + offset) != 0)
     {
       goto finish;
     }
@@ -716,16 +662,14 @@ int wd_royl_write_rom_ccc(const uint8_t *rom, size_t rom_size,
 finish:
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The ROM was written, but vendor specific commands could not be "
-        "disabled. Power cycle the drive before using it.\n");
+    wd_royl_set_error_ccc("The ROM was written, but vendor specific commands could not be "
+                          "disabled. Power cycle the drive before using it.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_verify_rom_ccc(const uint8_t *rom, size_t rom_size,
-                           wd_royl_progress_callback_ccc progress)
+int wd_royl_verify_rom_ccc(const uint8_t *rom, size_t rom_size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t *read_rom = NULL;
   size_t read_size = 0;
@@ -745,9 +689,7 @@ int wd_royl_verify_rom_ccc(const uint8_t *rom, size_t rom_size,
 
   if (read_size != rom_size)
   {
-    wd_royl_set_error_ccc(
-        "ROM verification failed: expected %zu bytes but read %zu bytes.\n",
-        rom_size, read_size);
+    wd_royl_set_error_ccc("ROM verification failed: expected %zu bytes but read %zu bytes.\n", rom_size, read_size);
     goto finish;
   }
 
@@ -755,10 +697,9 @@ int wd_royl_verify_rom_ccc(const uint8_t *rom, size_t rom_size,
   {
     if (read_rom[offset] != rom[offset])
     {
-      wd_royl_set_error_ccc(
-          "ROM verification failed at offset 0x%zx: expected 0x%02x but "
-          "read 0x%02x.\n",
-          offset, rom[offset], read_rom[offset]);
+      wd_royl_set_error_ccc("ROM verification failed at offset 0x%zx: expected 0x%02x but "
+                            "read 0x%02x.\n",
+                            offset, rom[offset], read_rom[offset]);
       goto finish;
     }
     offset++;
@@ -794,16 +735,14 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
   }
   if ((rom_size % WD_ROYL_ROM_BLOCK_SIZE) != 0)
   {
-    wd_royl_set_error_ccc(
-        "The ROM size %zu is not a multiple of the 16384 byte ROM block "
-        "size.\n",
-        rom_size);
+    wd_royl_set_error_ccc("The ROM size %zu is not a multiple of the 16384 byte ROM block "
+                          "size.\n",
+                          rom_size);
     return -1;
   }
   if (rom[0] != 0x5a)
   {
-    wd_royl_set_error_ccc(
-        "The ROM does not start with the expected 0x5a block signature.\n");
+    wd_royl_set_error_ccc("The ROM does not start with the expected 0x5a block signature.\n");
     return -1;
   }
 
@@ -812,9 +751,7 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
     table_offset = (size_t)block_number * 32;
     if (table_offset + 32 > rom_size)
     {
-      wd_royl_set_error_ccc(
-          "The ROM block table runs past the end of the ROM at block %u.\n",
-          block_number);
+      wd_royl_set_error_ccc("The ROM block table runs past the end of the ROM at block %u.\n", block_number);
       return -1;
     }
     if (block_number != 0 && rom[table_offset] != (uint8_t)block_number)
@@ -827,20 +764,17 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
     block_start = wd_royl_le32_ccc(rom + table_offset + 0x0c);
     if (checksum_location < block_size)
     {
-      wd_royl_set_error_ccc(
-          "The ROM block %u has an invalid size (0x%x) and checksum "
-          "location (0x%x).\n",
-          block_number, block_size, checksum_location);
+      wd_royl_set_error_ccc("The ROM block %u has an invalid size (0x%x) and checksum "
+                            "location (0x%x).\n",
+                            block_number, block_size, checksum_location);
       return -1;
     }
     checksum_length = checksum_location - block_size;
     if ((uint64_t)block_start + checksum_location > rom_size)
     {
-      wd_royl_set_error_ccc(
-          "The ROM block %u data is outside the ROM (start 0x%x, end "
-          "0x%llx).\n",
-          block_number, block_start,
-          (unsigned long long)block_start + checksum_location);
+      wd_royl_set_error_ccc("The ROM block %u data is outside the ROM (start 0x%x, end "
+                            "0x%llx).\n",
+                            block_number, block_start, (unsigned long long)block_start + checksum_location);
       return -1;
     }
 
@@ -851,18 +785,16 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
     }
     if ((calculated & 0xff) != rom[table_offset + 0x1f])
     {
-      wd_royl_set_error_ccc(
-          "The ROM block %u table checksum is invalid (stored 0x%02x, "
-          "calculated 0x%02x).\n",
-          block_number, rom[table_offset + 0x1f], calculated & 0xff);
+      wd_royl_set_error_ccc("The ROM block %u table checksum is invalid (stored 0x%02x, "
+                            "calculated 0x%02x).\n",
+                            block_number, rom[table_offset + 0x1f], calculated & 0xff);
       return -1;
     }
 
     calculated = 0;
     if (checksum_length == 1)
     {
-      for (position = block_start; position < block_start + block_size;
-           position++)
+      for (position = block_start; position < block_start + block_size; position++)
       {
         calculated += rom[position];
       }
@@ -873,14 +805,12 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
     {
       if ((block_size % 2) != 0)
       {
-        wd_royl_set_error_ccc(
-            "The ROM block %u has an odd size (0x%x) for a 16 bit "
-            "checksum.\n",
-            block_number, block_size);
+        wd_royl_set_error_ccc("The ROM block %u has an odd size (0x%x) for a 16 bit "
+                              "checksum.\n",
+                              block_number, block_size);
         return -1;
       }
-      for (position = block_start; position < block_start + block_size;
-           position += 2)
+      for (position = block_start; position < block_start + block_size; position += 2)
       {
         calculated += wd_royl_le16_ccc(rom + position);
       }
@@ -889,17 +819,14 @@ int wd_royl_validate_rom_ccc(const uint8_t *rom, size_t rom_size)
     }
     else
     {
-      wd_royl_set_error_ccc(
-          "The ROM block %u has an unsupported checksum length of %u.\n",
-          block_number, checksum_length);
+      wd_royl_set_error_ccc("The ROM block %u has an unsupported checksum length of %u.\n", block_number, checksum_length);
       return -1;
     }
     if (stored != calculated)
     {
-      wd_royl_set_error_ccc(
-          "The ROM block %u checksum is invalid (stored 0x%x, calculated "
-          "0x%x).\n",
-          block_number, stored, calculated);
+      wd_royl_set_error_ccc("The ROM block %u checksum is invalid (stored 0x%x, calculated "
+                            "0x%x).\n",
+                            block_number, stored, calculated);
       return -1;
     }
 
@@ -986,8 +913,7 @@ void wd_royl_update_checksum_ccc(uint8_t *data, size_t size)
   wd_royl_put_le32_ccc(data + 0x0c, checksum);
 }
 
-static bool wd_royl_module_valid_ccc(const uint8_t *data, size_t size,
-                                     uint16_t expected_module)
+static bool wd_royl_module_valid_ccc(const uint8_t *data, size_t size, uint16_t expected_module)
 {
   uint16_t sectors;
 
@@ -1004,26 +930,22 @@ static bool wd_royl_module_valid_ccc(const uint8_t *data, size_t size,
     return false;
   }
   sectors = wd_royl_get_module_sector_count_ccc(data);
-  if (sectors == 0 ||
-      (size_t)sectors * WD_ROYL_SECTOR_SIZE != size)
+  if (sectors == 0 || (size_t)sectors * WD_ROYL_SECTOR_SIZE != size)
   {
     return false;
   }
-  if (expected_module != 0 &&
-      wd_royl_get_module_id_ccc(data) != expected_module)
+  if (expected_module != 0 && wd_royl_get_module_id_ccc(data) != expected_module)
   {
     return false;
   }
-  if (wd_royl_get_module_checksum_ccc(data) !=
-      wd_royl_calculate_checksum_ccc(data, size))
+  if (wd_royl_get_module_checksum_ccc(data) != wd_royl_calculate_checksum_ccc(data, size))
   {
     return false;
   }
   return true;
 }
 
-int wd_royl_validate_module_header_ccc(const uint8_t *data, size_t size,
-                                       uint16_t expected_module)
+int wd_royl_validate_module_header_ccc(const uint8_t *data, size_t size, uint16_t expected_module)
 {
   uint16_t sectors;
 
@@ -1039,31 +961,24 @@ int wd_royl_validate_module_header_ccc(const uint8_t *data, size_t size,
   }
   if ((size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc(
-        "The module size %zu is not a multiple of the sector size.\n", size);
+    wd_royl_set_error_ccc("The module size %zu is not a multiple of the sector size.\n", size);
     return -1;
   }
   sectors = wd_royl_get_module_sector_count_ccc(data);
   if (sectors == 0 || (size_t)sectors * WD_ROYL_SECTOR_SIZE != size)
   {
-    wd_royl_set_error_ccc(
-        "The module header reports %u sectors, but the data is %zu bytes.\n",
-        sectors, size);
+    wd_royl_set_error_ccc("The module header reports %u sectors, but the data is %zu bytes.\n", sectors, size);
     return -1;
   }
-  if (expected_module != 0 &&
-      wd_royl_get_module_id_ccc(data) != expected_module)
+  if (expected_module != 0 && wd_royl_get_module_id_ccc(data) != expected_module)
   {
-    wd_royl_set_error_ccc(
-        "Expected module 0x%04x but the module data is module 0x%04x.\n",
-        expected_module, wd_royl_get_module_id_ccc(data));
+    wd_royl_set_error_ccc("Expected module 0x%04x but the module data is module 0x%04x.\n", expected_module, wd_royl_get_module_id_ccc(data));
     return -1;
   }
   return 0;
 }
 
-int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
-                                uint16_t expected_module)
+int wd_royl_validate_module_ccc(const uint8_t *data, size_t size, uint16_t expected_module)
 {
   uint32_t stored_checksum;
   uint32_t calculated_checksum;
@@ -1076,26 +991,21 @@ int wd_royl_validate_module_ccc(const uint8_t *data, size_t size,
   calculated_checksum = wd_royl_calculate_checksum_ccc(data, size);
   if (stored_checksum != calculated_checksum)
   {
-    wd_royl_set_error_ccc(
-        "Module 0x%04x checksum mismatch: header 0x%08x, calculated "
-        "0x%08x.\n",
-        wd_royl_get_module_id_ccc(data), stored_checksum,
-        calculated_checksum);
+    wd_royl_set_error_ccc("Module 0x%04x checksum mismatch: header 0x%08x, calculated "
+                          "0x%08x.\n",
+                          wd_royl_get_module_id_ccc(data), stored_checksum, calculated_checksum);
     return -1;
   }
   return 0;
 }
 
-int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
-                           unsigned int record_number, uint16_t *record_offset,
-                           uint16_t *record_size)
+int wd_royl_get_record_ccc(const uint8_t *data, size_t size, unsigned int record_number, uint16_t *record_offset, uint16_t *record_size)
 {
   size_t offset;
   uint16_t record_start;
   uint16_t record_length;
 
-  if (data == NULL || record_number == 0 || record_offset == NULL ||
-      record_size == NULL)
+  if (data == NULL || record_number == 0 || record_offset == NULL || record_size == NULL)
   {
     wd_royl_set_error_ccc("Internal error: invalid module record request.\n");
     return -1;
@@ -1103,19 +1013,16 @@ int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
   offset = 0x32 + ((size_t)record_number - 1) * 4;
   if ((offset + 4) > size)
   {
-    wd_royl_set_error_ccc(
-        "Module record %u is past the end of the module.\n", record_number);
+    wd_royl_set_error_ccc("Module record %u is past the end of the module.\n", record_number);
     return -1;
   }
   record_start = wd_royl_le16_ccc(data + offset);
   record_length = wd_royl_le16_ccc(data + offset + 2);
-  if (record_length == 0 ||
-      (size_t)record_start + (size_t)record_length > size)
+  if (record_length == 0 || (size_t)record_start + (size_t)record_length > size)
   {
-    wd_royl_set_error_ccc(
-        "Module record %u is outside the module data (offset 0x%04x, size "
-        "0x%04x).\n",
-        record_number, record_start, record_length);
+    wd_royl_set_error_ccc("Module record %u is outside the module data (offset 0x%04x, size "
+                          "0x%04x).\n",
+                          record_number, record_start, record_length);
     return -1;
   }
   *record_offset = record_start;
@@ -1123,9 +1030,7 @@ int wd_royl_get_record_ccc(const uint8_t *data, size_t size,
   return 0;
 }
 
-int wd_royl_parse_module_directory_ccc(
-    const uint8_t *data, size_t size, wd_royl_module_entry_ccc **entries,
-    size_t *entry_count)
+int wd_royl_parse_module_directory_ccc(const uint8_t *data, size_t size, wd_royl_module_entry_ccc **entries, size_t *entry_count)
 {
   wd_royl_module_entry_ccc *list = NULL;
   size_t capacity = 0;
@@ -1137,8 +1042,7 @@ int wd_royl_parse_module_directory_ccc(
 
   if (entries == NULL || entry_count == NULL)
   {
-    wd_royl_set_error_ccc(
-        "Internal error: no destination for the module directory.\n");
+    wd_royl_set_error_ccc("Internal error: no destination for the module directory.\n");
     return -1;
   }
   *entries = NULL;
@@ -1160,17 +1064,13 @@ int wd_royl_parse_module_directory_ccc(
 
     if (offset >= size)
     {
-      wd_royl_set_error_ccc(
-          "Directory record %u is past the end of module 0x0001.\n",
-          record_number);
+      wd_royl_set_error_ccc("Directory record %u is past the end of module 0x0001.\n", record_number);
       goto finish;
     }
     record_length = data[offset];
     if (record_length < 6 || (size_t)record_length > size - offset)
     {
-      wd_royl_set_error_ccc(
-          "Directory record %u has an invalid length (%u bytes).\n",
-          record_number, record_length);
+      wd_royl_set_error_ccc("Directory record %u has an invalid length (%u bytes).\n", record_number, record_length);
       goto finish;
     }
 
@@ -1183,18 +1083,15 @@ int wd_royl_parse_module_directory_ccc(
         size_t new_capacity = capacity == 0 ? 16 : capacity * 2;
         wd_royl_module_entry_ccc *new_list;
 
-        if (new_capacity < capacity ||
-            new_capacity > SIZE_MAX / sizeof(*new_list))
+        if (new_capacity < capacity || new_capacity > SIZE_MAX / sizeof(*new_list))
         {
-          wd_royl_set_error_ccc(
-              "The module directory is too large to process.\n");
+          wd_royl_set_error_ccc("The module directory is too large to process.\n");
           goto finish;
         }
         new_list = realloc(list, new_capacity * sizeof(*new_list));
         if (new_list == NULL)
         {
-          wd_royl_set_error_ccc(
-              "Unable to allocate memory for the module directory.\n");
+          wd_royl_set_error_ccc("Unable to allocate memory for the module directory.\n");
           goto finish;
         }
         list = new_list;
@@ -1238,21 +1135,16 @@ int wd_royl_patch_module_02_ccc(uint8_t *data, size_t size)
   }
   if (wd_royl_get_module_id_ccc(data) != WD_ROYL_MODULE_02)
   {
-    wd_royl_set_error_ccc(
-        "Expected module 02 but found module 0x%04x.\n",
-        wd_royl_get_module_id_ccc(data));
+    wd_royl_set_error_ccc("Expected module 02 but found module 0x%04x.\n", wd_royl_get_module_id_ccc(data));
     return -1;
   }
-  if (wd_royl_get_record_ccc(data, size, 27, &record_offset, &record_size) !=
-      0)
+  if (wd_royl_get_record_ccc(data, size, 27, &record_offset, &record_size) != 0)
   {
     return -1;
   }
   if (record_size < 3)
   {
-    wd_royl_set_error_ccc(
-        "Module 02 record 27 is too small (%u bytes) for the slow fix.\n",
-        record_size);
+    wd_royl_set_error_ccc("Module 02 record 27 is too small (%u bytes) for the slow fix.\n", record_size);
     return -1;
   }
   data[record_offset + 2] = 0x00;
@@ -1271,16 +1163,13 @@ int wd_royl_patch_module_32_ccc(uint8_t *data, size_t size)
   }
   if (wd_royl_get_module_id_ccc(data) != WD_ROYL_MODULE_32)
   {
-    wd_royl_set_error_ccc(
-        "Expected module 32 but found module 0x%04x.\n",
-        wd_royl_get_module_id_ccc(data));
+    wd_royl_set_error_ccc("Expected module 32 but found module 0x%04x.\n", wd_royl_get_module_id_ccc(data));
     return -1;
   }
   table_offset = wd_royl_get_module_table_offset_ccc(data);
   if (table_offset == 0 || (size_t)table_offset >= size)
   {
-    wd_royl_set_error_ccc(
-        "Module 32 has an invalid table offset 0x%04x.\n", table_offset);
+    wd_royl_set_error_ccc("Module 32 has an invalid table offset 0x%04x.\n", table_offset);
     return -1;
   }
   memset(data + table_offset, 0, size - table_offset);
@@ -1288,8 +1177,7 @@ int wd_royl_patch_module_32_ccc(uint8_t *data, size_t size)
   return 0;
 }
 
-int wd_royl_read_module_ccc(uint16_t module, uint8_t **data, size_t *size,
-                            wd_royl_progress_callback_ccc progress)
+int wd_royl_read_module_ccc(uint16_t module, uint8_t **data, size_t *size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t request[16];
   uint8_t first_sector[WD_ROYL_SECTOR_SIZE];
@@ -1332,9 +1220,7 @@ int wd_royl_read_module_ccc(uint16_t module, uint8_t **data, size_t *size,
   }
   if (memcmp(first_sector, "ROYL", 4) != 0)
   {
-    wd_royl_set_error_ccc(
-        "The drive did not return a ROYL module header for module 0x%04x.\n",
-        module);
+    wd_royl_set_error_ccc("The drive did not return a ROYL module header for module 0x%04x.\n", module);
     goto finish;
   }
 
@@ -1346,41 +1232,32 @@ int wd_royl_read_module_ccc(uint16_t module, uint8_t **data, size_t *size,
   }
   if (wd_royl_get_module_id_ccc(first_sector) != module)
   {
-    wd_royl_set_error_ccc(
-        "Expected module 0x%04x but the drive returned module 0x%04x.\n",
-        module, wd_royl_get_module_id_ccc(first_sector));
+    wd_royl_set_error_ccc("Expected module 0x%04x but the drive returned module 0x%04x.\n", module, wd_royl_get_module_id_ccc(first_sector));
     goto finish;
   }
   module_size = (size_t)sectors * WD_ROYL_SECTOR_SIZE;
   if (module_size > WD_ROYL_MAX_FILE_SIZE)
   {
-    wd_royl_set_error_ccc(
-        "Module 0x%04x reports an unreasonable size of %zu bytes.\n", module,
-        module_size);
+    wd_royl_set_error_ccc("Module 0x%04x reports an unreasonable size of %zu bytes.\n", module, module_size);
     goto finish;
   }
 
   buffer = (uint8_t *)malloc(module_size);
   if (buffer == NULL)
   {
-    wd_royl_set_error_ccc("Unable to allocate %zu bytes for module 0x%04x.\n",
-                          module_size, module);
+    wd_royl_set_error_ccc("Unable to allocate %zu bytes for module 0x%04x.\n", module_size, module);
     goto finish;
   }
   memcpy(buffer, first_sector, sizeof(first_sector));
-  wd_royl_progress_ccc(progress, "Reading module", WD_ROYL_SECTOR_SIZE,
-                       module_size);
+  wd_royl_progress_ccc(progress, "Reading module", WD_ROYL_SECTOR_SIZE, module_size);
 
   for (sector = 1; sector < sectors; sector++)
   {
-    if (wd_royl_read_sectors_ccc(1, buffer + (size_t)sector *
-                                         WD_ROYL_SECTOR_SIZE) != 0)
+    if (wd_royl_read_sectors_ccc(1, buffer + (size_t)sector * WD_ROYL_SECTOR_SIZE) != 0)
     {
       goto finish;
     }
-    wd_royl_progress_ccc(
-        progress, "Reading module",
-        (unsigned long long)(sector + 1) * WD_ROYL_SECTOR_SIZE, module_size);
+    wd_royl_progress_ccc(progress, "Reading module", (unsigned long long)(sector + 1) * WD_ROYL_SECTOR_SIZE, module_size);
   }
 
   *data = buffer;
@@ -1392,17 +1269,15 @@ finish:
   free(buffer);
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "Module 0x%04x was read, but vendor specific commands could not be "
-        "disabled.\n",
-        module);
+    wd_royl_set_error_ccc("Module 0x%04x was read, but vendor specific commands could not be "
+                          "disabled.\n",
+                          module);
     result = -1;
   }
   return result;
 }
 
-int wd_royl_write_module_ccc(uint16_t module, const uint8_t *data, size_t size,
-                             wd_royl_progress_callback_ccc progress)
+int wd_royl_write_module_ccc(uint16_t module, const uint8_t *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t request[16];
   size_t sectors;
@@ -1417,8 +1292,7 @@ int wd_royl_write_module_ccc(uint16_t module, const uint8_t *data, size_t size,
   }
   if ((size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc(
-        "The module size %zu is not a multiple of the sector size.\n", size);
+    wd_royl_set_error_ccc("The module size %zu is not a multiple of the sector size.\n", size);
     return -1;
   }
   if (size > WD_ROYL_MAX_FILE_SIZE)
@@ -1453,14 +1327,11 @@ int wd_royl_write_module_ccc(uint16_t module, const uint8_t *data, size_t size,
 
   for (sector = 0; sector < sectors; sector++)
   {
-    if (wd_royl_write_sectors_ccc(
-            1, data + sector * WD_ROYL_SECTOR_SIZE) != 0)
+    if (wd_royl_write_sectors_ccc(1, data + sector * WD_ROYL_SECTOR_SIZE) != 0)
     {
       goto finish;
     }
-    wd_royl_progress_ccc(
-        progress, "Writing module",
-        (unsigned long long)(sector + 1) * WD_ROYL_SECTOR_SIZE, size);
+    wd_royl_progress_ccc(progress, "Writing module", (unsigned long long)(sector + 1) * WD_ROYL_SECTOR_SIZE, size);
   }
 
   result = 0;
@@ -1468,17 +1339,15 @@ int wd_royl_write_module_ccc(uint16_t module, const uint8_t *data, size_t size,
 finish:
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "Module 0x%04x was written, but vendor specific commands could not be "
-        "disabled.\n",
-        module);
+    wd_royl_set_error_ccc("Module 0x%04x was written, but vendor specific commands could not be "
+                          "disabled.\n",
+                          module);
     result = -1;
   }
   return result;
 }
 
-int wd_royl_verify_module_ccc(uint16_t module, const uint8_t *data, size_t size,
-                              wd_royl_progress_callback_ccc progress)
+int wd_royl_verify_module_ccc(uint16_t module, const uint8_t *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t *read_data = NULL;
   size_t read_size = 0;
@@ -1497,10 +1366,9 @@ int wd_royl_verify_module_ccc(uint16_t module, const uint8_t *data, size_t size,
 
   if (read_size != size)
   {
-    wd_royl_set_error_ccc(
-        "Module 0x%04x verification failed: expected %zu bytes but read %zu "
-        "bytes.\n",
-        module, size, read_size);
+    wd_royl_set_error_ccc("Module 0x%04x verification failed: expected %zu bytes but read %zu "
+                          "bytes.\n",
+                          module, size, read_size);
     goto finish;
   }
   if (memcmp(read_data, data, size) != 0)
@@ -1510,10 +1378,9 @@ int wd_royl_verify_module_ccc(uint16_t module, const uint8_t *data, size_t size,
     {
       if (read_data[offset] != data[offset])
       {
-        wd_royl_set_error_ccc(
-            "Module 0x%04x verification failed at offset 0x%zx: expected "
-            "0x%02x but read 0x%02x.\n",
-            module, offset, data[offset], read_data[offset]);
+        wd_royl_set_error_ccc("Module 0x%04x verification failed at offset 0x%zx: expected "
+                              "0x%02x but read 0x%02x.\n",
+                              module, offset, data[offset], read_data[offset]);
         break;
       }
     }
@@ -1526,19 +1393,15 @@ finish:
   return result;
 }
 
-static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data,
-                                         size_t size,
-                                         wd_royl_progress_callback_ccc progress)
+static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t request[16];
   uint8_t regs[7] = {WD_ROYL_ATA_CMD_D5, 0, 0xbf, 0x4f, 0xc2, 0xa0, 0xb0};
   size_t sectors;
 
-  if (data == NULL || size == 0 ||
-      (size % WD_ROYL_SECTOR_SIZE) != 0)
+  if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc("Internal error: invalid RAM read size %zu.\n",
-                          size);
+    wd_royl_set_error_ccc("Internal error: invalid RAM read size %zu.\n", size);
     return -1;
   }
   if (address > 0xffffffffULL || size > 0xffffffffULL)
@@ -1575,19 +1438,15 @@ static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data,
   return 0;
 }
 
-static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data,
-                                          size_t size,
-                                          wd_royl_progress_callback_ccc progress)
+static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t request[16];
   uint8_t regs[7] = {WD_ROYL_ATA_CMD_D6, 0, 0xbf, 0x4f, 0xc2, 0xa0, 0xb0};
   size_t sectors;
 
-  if (data == NULL || size == 0 ||
-      (size % WD_ROYL_SECTOR_SIZE) != 0)
+  if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc("Internal error: invalid RAM write size %zu.\n",
-                          size);
+    wd_royl_set_error_ccc("Internal error: invalid RAM write size %zu.\n", size);
     return -1;
   }
   if (address > 0xffffffffULL || size > 0xffffffffULL)
@@ -1615,8 +1474,7 @@ static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data,
     return -1;
   }
   regs[1] = (uint8_t)sectors;
-  if (wd_royl_send_ata28_ccc(regs, (void *)data, size,
-                             WD_ROYL_DIR_OUT) != 0)
+  if (wd_royl_send_ata28_ccc(regs, (void *)data, size, WD_ROYL_DIR_OUT) != 0)
   {
     return -1;
   }
@@ -1630,17 +1488,13 @@ static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data,
 // progress reporting.
 #define WD_ROYL_RAM_CHUNK_SIZE ((size_t)WD_ROYL_RAM_BLOCK_SIZE)
 
-static int wd_royl_read_ram_chunked_ccc(uint64_t address, void *data,
-                                        size_t size,
-                                        wd_royl_progress_callback_ccc progress)
+static int wd_royl_read_ram_chunked_ccc(uint64_t address, void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   size_t offset;
 
-  if (data == NULL || size == 0 ||
-      (size % WD_ROYL_SECTOR_SIZE) != 0)
+  if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc("Internal error: invalid RAM read size %zu.\n",
-                          size);
+    wd_royl_set_error_ccc("Internal error: invalid RAM read size %zu.\n", size);
     return -1;
   }
 
@@ -1652,9 +1506,7 @@ static int wd_royl_read_ram_chunked_ccc(uint64_t address, void *data,
     {
       current = size - offset;
     }
-    if (wd_royl_read_ram_internal_ccc(address + offset,
-                                      (uint8_t *)data + offset, current,
-                                      NULL) != 0)
+    if (wd_royl_read_ram_internal_ccc(address + offset, (uint8_t *)data + offset, current, NULL) != 0)
     {
       return -1;
     }
@@ -1663,17 +1515,13 @@ static int wd_royl_read_ram_chunked_ccc(uint64_t address, void *data,
   return 0;
 }
 
-static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data,
-                                         size_t size,
-                                         wd_royl_progress_callback_ccc progress)
+static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   size_t offset;
 
-  if (data == NULL || size == 0 ||
-      (size % WD_ROYL_SECTOR_SIZE) != 0)
+  if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
   {
-    wd_royl_set_error_ccc("Internal error: invalid RAM write size %zu.\n",
-                          size);
+    wd_royl_set_error_ccc("Internal error: invalid RAM write size %zu.\n", size);
     return -1;
   }
 
@@ -1685,9 +1533,7 @@ static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data,
     {
       current = size - offset;
     }
-    if (wd_royl_write_ram_internal_ccc(address + offset,
-                                       (const uint8_t *)data + offset, current,
-                                       NULL) != 0)
+    if (wd_royl_write_ram_internal_ccc(address + offset, (const uint8_t *)data + offset, current, NULL) != 0)
     {
       return -1;
     }
@@ -1696,8 +1542,7 @@ static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data,
   return 0;
 }
 
-static int wd_royl_detect_ram_size_internal_ccc(
-    uint64_t *ram_size, wd_royl_progress_callback_ccc progress)
+static int wd_royl_detect_ram_size_internal_ccc(uint64_t *ram_size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t base_data[WD_ROYL_SECTOR_SIZE];
   uint8_t probe_data[WD_ROYL_SECTOR_SIZE];
@@ -1705,8 +1550,7 @@ static int wd_royl_detect_ram_size_internal_ccc(
 
   *ram_size = 0;
   wd_royl_progress_ccc(progress, "Detecting drive RAM", 0, 1);
-  if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE, base_data,
-                                    sizeof(base_data), progress) != 0)
+  if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE, base_data, sizeof(base_data), progress) != 0)
   {
     return -1;
   }
@@ -1714,8 +1558,7 @@ static int wd_royl_detect_ram_size_internal_ccc(
   size = WD_ROYL_RAM_MIN_SIZE;
   while (size <= WD_ROYL_RAM_MAX_SIZE)
   {
-    if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE + size, probe_data,
-                                      sizeof(probe_data), progress) != 0)
+    if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE + size, probe_data, sizeof(probe_data), progress) != 0)
     {
       return -1;
     }
@@ -1731,8 +1574,7 @@ static int wd_royl_detect_ram_size_internal_ccc(
   return 0;
 }
 
-int wd_royl_find_ram_size_ccc(uint64_t *ram_size,
-                              wd_royl_progress_callback_ccc progress)
+int wd_royl_find_ram_size_ccc(uint64_t *ram_size, wd_royl_progress_callback_ccc progress)
 {
   int result = -1;
   bool enabled = false;
@@ -1757,16 +1599,14 @@ int wd_royl_find_ram_size_ccc(uint64_t *ram_size,
 
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The RAM size was detected, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("The RAM size was detected, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_read_ram_ccc(uint64_t address, void *data, size_t size,
-                         wd_royl_progress_callback_ccc progress)
+int wd_royl_read_ram_ccc(uint64_t address, void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   int result = -1;
   bool enabled = false;
@@ -1782,15 +1622,13 @@ int wd_royl_read_ram_ccc(uint64_t address, void *data, size_t size,
   }
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "RAM was read, but vendor specific commands could not be disabled.\n");
+    wd_royl_set_error_ccc("RAM was read, but vendor specific commands could not be disabled.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_write_ram_ccc(uint64_t address, const void *data, size_t size,
-                          wd_royl_progress_callback_ccc progress)
+int wd_royl_write_ram_ccc(uint64_t address, const void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   int result = -1;
   bool enabled = false;
@@ -1806,17 +1644,14 @@ int wd_royl_write_ram_ccc(uint64_t address, const void *data, size_t size,
   }
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "RAM was written, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("RAM was written, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
 }
 
-int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
-                                  unsigned int *module_02_count,
-                                  unsigned int *module_32_count,
+int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module_02_count, unsigned int *module_32_count,
                                   wd_royl_progress_callback_ccc progress)
 {
   uint8_t *ram = NULL;
@@ -1857,14 +1692,12 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
   ram = (uint8_t *)malloc((size_t)ram_size);
   if (ram == NULL)
   {
-    wd_royl_set_error_ccc("Unable to allocate %llu bytes for the RAM dump.\n",
-                          (unsigned long long)ram_size);
+    wd_royl_set_error_ccc("Unable to allocate %llu bytes for the RAM dump.\n", (unsigned long long)ram_size);
     goto finish;
   }
 
   wd_royl_progress_ccc(progress, "Reading RAM", 0, ram_size);
-  if (wd_royl_read_ram_chunked_ccc(WD_ROYL_RAM_BASE, ram, (size_t)ram_size,
-                                   progress) != 0)
+  if (wd_royl_read_ram_chunked_ccc(WD_ROYL_RAM_BASE, ram, (size_t)ram_size, progress) != 0)
   {
     goto finish;
   }
@@ -1892,10 +1725,8 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
     }
 
     module_id = wd_royl_get_module_id_ccc(module);
-    if (!((module_id == WD_ROYL_MODULE_02 &&
-           (module_mask & WD_ROYL_MODULE_MASK_02)) ||
-          (module_id == WD_ROYL_MODULE_32 &&
-           (module_mask & WD_ROYL_MODULE_MASK_32))))
+    if (!((module_id == WD_ROYL_MODULE_02 && (module_mask & WD_ROYL_MODULE_MASK_02)) ||
+          (module_id == WD_ROYL_MODULE_32 && (module_mask & WD_ROYL_MODULE_MASK_32))))
     {
       offset += WD_ROYL_SECTOR_SIZE;
       continue;
@@ -1903,8 +1734,7 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
 
     sectors = wd_royl_get_module_sector_count_ccc(module);
     module_size = (size_t)sectors * WD_ROYL_SECTOR_SIZE;
-    if (sectors == 0 || module_size > WD_ROYL_MAX_FILE_SIZE ||
-        offset + module_size > ram_size)
+    if (sectors == 0 || module_size > WD_ROYL_MAX_FILE_SIZE || offset + module_size > ram_size)
     {
       offset += WD_ROYL_SECTOR_SIZE;
       continue;
@@ -1930,22 +1760,19 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
     }
 
     address = WD_ROYL_RAM_BASE + offset;
-    if (wd_royl_write_ram_chunked_ccc(address, module, module_size,
-                                      progress) != 0)
+    if (wd_royl_write_ram_chunked_ccc(address, module, module_size, progress) != 0)
     {
       goto finish;
     }
-    if (wd_royl_read_ram_chunked_ccc(address, verify, module_size,
-                                     progress) != 0)
+    if (wd_royl_read_ram_chunked_ccc(address, verify, module_size, progress) != 0)
     {
       goto finish;
     }
     if (memcmp(verify, module, module_size) != 0)
     {
-      wd_royl_set_error_ccc(
-          "RAM verification failed for module 0x%04x at address "
-          "0x%08llx.\n",
-          module_id, (unsigned long long)address);
+      wd_royl_set_error_ccc("RAM verification failed for module 0x%04x at address "
+                            "0x%08llx.\n",
+                            module_id, (unsigned long long)address);
       goto finish;
     }
 
@@ -1962,11 +1789,9 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask,
 
   if (count_02 == 0 && count_32 == 0)
   {
-    if ((module_mask & WD_ROYL_MODULE_MASK_02) &&
-        (module_mask & WD_ROYL_MODULE_MASK_32))
+    if ((module_mask & WD_ROYL_MODULE_MASK_02) && (module_mask & WD_ROYL_MODULE_MASK_32))
     {
-      wd_royl_set_error_ccc(
-          "Neither module 02 nor module 32 was found in the drive RAM.\n");
+      wd_royl_set_error_ccc("Neither module 02 nor module 32 was found in the drive RAM.\n");
     }
     else if (module_mask & WD_ROYL_MODULE_MASK_02)
     {
@@ -1994,9 +1819,8 @@ finish:
   free(verify);
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
-    wd_royl_set_error_ccc(
-        "The RAM patch completed, but vendor specific commands could not be "
-        "disabled.\n");
+    wd_royl_set_error_ccc("The RAM patch completed, but vendor specific commands could not be "
+                          "disabled.\n");
     result = -1;
   }
   return result;
@@ -2019,48 +1843,40 @@ int wd_royl_read_file_ccc(const char *filename, uint8_t **data, size_t *size)
   file = fopen(filename, "rb");
   if (file == NULL)
   {
-    wd_royl_set_error_ccc("Unable to open %s for reading (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to open %s for reading (%s).\n", filename, strerror(errno));
     return -1;
   }
   if (fseek(file, 0, SEEK_END) != 0)
   {
-    wd_royl_set_error_ccc("Unable to seek in %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to seek in %s (%s).\n", filename, strerror(errno));
     goto finish;
   }
   file_size = ftell(file);
   if (file_size < 0)
   {
-    wd_royl_set_error_ccc("Unable to get the size of %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to get the size of %s (%s).\n", filename, strerror(errno));
     goto finish;
   }
-  if (file_size == 0 ||
-      (unsigned long long)file_size > WD_ROYL_MAX_FILE_SIZE)
+  if (file_size == 0 || (unsigned long long)file_size > WD_ROYL_MAX_FILE_SIZE)
   {
-    wd_royl_set_error_ccc("The file %s has an invalid size of %ld bytes.\n",
-                          filename, file_size);
+    wd_royl_set_error_ccc("The file %s has an invalid size of %ld bytes.\n", filename, file_size);
     goto finish;
   }
   if (fseek(file, 0, SEEK_SET) != 0)
   {
-    wd_royl_set_error_ccc("Unable to rewind %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to rewind %s (%s).\n", filename, strerror(errno));
     goto finish;
   }
 
   buffer = (uint8_t *)malloc((size_t)file_size);
   if (buffer == NULL)
   {
-    wd_royl_set_error_ccc("Unable to allocate %ld bytes for %s.\n", file_size,
-                          filename);
+    wd_royl_set_error_ccc("Unable to allocate %ld bytes for %s.\n", file_size, filename);
     goto finish;
   }
   if (fread(buffer, 1, (size_t)file_size, file) != (size_t)file_size)
   {
-    wd_royl_set_error_ccc("Unable to read all of %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to read all of %s (%s).\n", filename, strerror(errno));
     goto finish;
   }
 
@@ -2079,8 +1895,7 @@ finish:
   return -1;
 }
 
-int wd_royl_write_file_ccc(const char *filename, const uint8_t *data,
-                           size_t size)
+int wd_royl_write_file_ccc(const char *filename, const uint8_t *data, size_t size)
 {
   FILE *file;
 
@@ -2093,21 +1908,18 @@ int wd_royl_write_file_ccc(const char *filename, const uint8_t *data,
   file = fopen(filename, "wb");
   if (file == NULL)
   {
-    wd_royl_set_error_ccc("Unable to open %s for writing (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to open %s for writing (%s).\n", filename, strerror(errno));
     return -1;
   }
   if (fwrite(data, 1, size, file) != size)
   {
-    wd_royl_set_error_ccc("Unable to write all of %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to write all of %s (%s).\n", filename, strerror(errno));
     fclose(file);
     return -1;
   }
   if (fclose(file) != 0)
   {
-    wd_royl_set_error_ccc("Unable to close %s (%s).\n", filename,
-                          strerror(errno));
+    wd_royl_set_error_ccc("Unable to close %s (%s).\n", filename, strerror(errno));
     return -1;
   }
   return 0;

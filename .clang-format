@@ -1,0 +1,31 @@
+---
+# OpenSuperClone C formatting rules.
+#
+# The project uses Allman braces and two-space indentation.  Keep the column
+# limit wide enough to avoid rewrapping most existing expressions, and do not
+# sort includes: some translation units rely on _GNU_SOURCE being defined
+# before system headers.
+Language: C
+BasedOnStyle: LLVM
+IndentWidth: 2
+ContinuationIndentWidth: 2
+TabWidth: 2
+UseTab: Never
+BreakBeforeBraces: Allman
+ColumnLimit: 150
+SpaceBeforeParens: ControlStatements
+PointerAlignment: Right
+DerivePointerAlignment: false
+SortIncludes: false
+IncludeBlocks: Preserve
+ReflowComments: false
+BreakStringLiterals: false
+MaxEmptyLinesToKeep: 2
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+IndentCaseLabels: false
+IndentGotoLabels: false
+AlignEscapedNewlines: Left
+KeepEmptyLinesAtTheStartOfBlocks: false
+...

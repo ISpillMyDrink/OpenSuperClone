@@ -78,6 +78,19 @@ set(CMAKE_EXE_LINKER_FLAGS
 # Add source directory
 add_subdirectory(src)
 
+# Code formatting targets
+add_custom_target(format
+    COMMAND "${CMAKE_SOURCE_DIR}/format.sh"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    COMMENT "Formatting C sources and headers with clang-format"
+)
+
+add_custom_target(format-check
+    COMMAND "${CMAKE_SOURCE_DIR}/format.sh" --check
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    COMMENT "Checking C source and header formatting"
+)
+
 # Package compiled binaries with CPack
 set(CPACK_BUNDLE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")

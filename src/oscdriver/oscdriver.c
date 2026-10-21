@@ -292,7 +292,8 @@ static int wait_for_queue(const int current_queue)
       elapsed_usec = ((long long)tv2.tv_usec + (1000000 * (long long)tv2.tv_sec)) - ((long long)tv1.tv_usec + (1000000 * (long long)tv1.tv_sec));
 #else
       ktime_get_real_ts64(&tv2);
-      elapsed_usec = (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
+      elapsed_usec =
+        (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
 #endif
       if (elapsed_usec > read_ctrl_data(CTRL_REQUEST_TIMEOUT))
       {
@@ -304,7 +305,8 @@ static int wait_for_queue(const int current_queue)
   return 0;
 }
 
-static int data_transfer(struct data_device_structure *dev, sector_t sect, unsigned long long nsect, unsigned long long tsect, char *buffer, int write, int blockio)
+static int data_transfer(struct data_device_structure *dev, sector_t sect, unsigned long long nsect, unsigned long long tsect, char *buffer,
+                         int write, int blockio)
 {
   long long elapsed_usec = 0;
   unsigned long long offset = sect * KERNEL_SECTOR_SIZE;
@@ -384,7 +386,8 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
   }
 
   // check if the chunk is in the current buffer
-  if (read_ctrl_data(CTRL_DATA_VALID) && sect >= read_ctrl_data(CTRL_KSECTOR_START) && (sect + nsect) <= (read_ctrl_data(CTRL_KSECTOR_START) + read_ctrl_data(CTRL_KSECTOR_COUNT)))
+  if (read_ctrl_data(CTRL_DATA_VALID) && sect >= read_ctrl_data(CTRL_KSECTOR_START) &&
+      (sect + nsect) <= (read_ctrl_data(CTRL_KSECTOR_START) + read_ctrl_data(CTRL_KSECTOR_COUNT)))
   {
     // if the mode is set for fast return to get domain, then just return without any other processing to speed things up
     if (read_ctrl_data(CTRL_RETURN_NO_DATA_FAST))
@@ -517,7 +520,8 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
       elapsed_usec = ((long long)tv2.tv_usec + (1000000 * (long long)tv2.tv_sec)) - ((long long)tv1.tv_usec + (1000000 * (long long)tv1.tv_sec));
 #else
       ktime_get_real_ts64(&tv2);
-      elapsed_usec = (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
+      elapsed_usec =
+        (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
 #endif
       if (elapsed_usec > read_ctrl_data(CTRL_READ_TIMEOUT))
       {
@@ -549,7 +553,8 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
 
     // check for io error and if chunk matches what we are looking for
-    if (read_ctrl_data(CTRL_DATA_VALID) && sect >= read_ctrl_data(CTRL_KSECTOR_START) && (sect + nsect) <= (read_ctrl_data(CTRL_KSECTOR_START) + read_ctrl_data(CTRL_KSECTOR_COUNT)))
+    if (read_ctrl_data(CTRL_DATA_VALID) && sect >= read_ctrl_data(CTRL_KSECTOR_START) &&
+        (sect + nsect) <= (read_ctrl_data(CTRL_KSECTOR_START) + read_ctrl_data(CTRL_KSECTOR_COUNT)))
     {
       if (!check_io_error_bitmap(sect - read_ctrl_data(CTRL_KSECTOR_START), nsect))
       {
@@ -613,7 +618,8 @@ static int data_transfer(struct data_device_structure *dev, sector_t sect, unsig
     }
     else
     {
-      printk(KERN_INFO "oscdriver: out of range or invalid IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect, tsect); // debug???
+      printk(KERN_INFO "oscdriver: out of range or invalid IO error sect %lld count %lld total %lld\n", (unsigned long long)sect, nsect,
+             tsect); // debug???
       if (blockio)
       {
         memset(block_io_buffer, 0, nbytes);
@@ -731,7 +737,8 @@ static blk_status_t main_data_request(struct blk_mq_hw_ctx *hctx, const struct b
       write_ctrl_data(CTRL_RESET_REQUEST_TIMER, 0);
     }
     ktime_get_real_ts64(&tv2);
-    elapsed_usec = (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
+    elapsed_usec =
+      (((long long)tv2.tv_nsec / 1000) + (1000000 * (long long)tv2.tv_sec)) - (((long long)tv1.tv_nsec / 1000) + (1000000 * (long long)tv1.tv_sec));
     if (elapsed_usec > read_ctrl_data(CTRL_REQUEST_TIMEOUT))
     {
       stop_signal = 1;
@@ -1160,15 +1167,18 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
         }
         else if (sgio4_obj->request_len == 10)
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5],
+                 cdb[6], cdb[7], cdb[8], cdb[9]); // debug
         }
         else if (sgio4_obj->request_len == 12)
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3],
+                 cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
         }
         else
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1],
+                 cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
         }
       }
       // printk(KERN_INFO "osc_block_device din_xfer_len %d\n", sgio4_obj->din_xfer_len);    //debug
@@ -1241,15 +1251,18 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
         }
         else if (sgio_obj->cmd_len == 10)
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5],
+                 cdb[6], cdb[7], cdb[8], cdb[9]); // debug
         }
         else if (sgio_obj->cmd_len == 12)
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3],
+                 cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11]); // debug
         }
         else
         {
-          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1], cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
+          printk(KERN_INFO "osc_block_device cdb %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", cdb[0], cdb[1],
+                 cdb[2], cdb[3], cdb[4], cdb[5], cdb[6], cdb[7], cdb[8], cdb[9], cdb[10], cdb[11], cdb[12], cdb[13], cdb[14], cdb[15]); // debug
         }
       }
       // printk(KERN_INFO "osc_block_device dxfer_direction %d\n", sgio_obj->dxfer_direction);    //debug
@@ -1321,17 +1334,12 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
   return -ENOIOCTLCMD;
 }
 
-static struct block_device_operations data_operations =
-    {
-        .owner = THIS_MODULE,
-        .getgeo = hddscbd_getgeo,
-        .open = block_device_open,
-        .release = block_device_release,
-        .ioctl = block_device_ioctl};
+static struct block_device_operations data_operations = {
+  .owner = THIS_MODULE, .getgeo = hddscbd_getgeo, .open = block_device_open, .release = block_device_release, .ioctl = block_device_ioctl};
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
 static struct blk_mq_ops _mq_ops = {
-    .queue_rq = main_data_request,
+  .queue_rq = main_data_request,
 };
 #endif
 
@@ -1455,26 +1463,16 @@ static ssize_t device_write(struct file *file, const char __user *buffer, size_t
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
 static const struct proc_ops device_fops = {
-    .proc_open = device_open,
-    .proc_release = device_release,
-    .proc_lseek = device_seek,
-    .proc_read = device_read,
-    .proc_write = device_write};
-static const struct file_operations device_ffops = {
-    .open = device_fops.proc_open,
-    .release = device_fops.proc_release,
-    .llseek = device_fops.proc_lseek,
-    .read = device_fops.proc_read,
-    .write = device_fops.proc_write,
-    .owner = THIS_MODULE};
+  .proc_open = device_open, .proc_release = device_release, .proc_lseek = device_seek, .proc_read = device_read, .proc_write = device_write};
+static const struct file_operations device_ffops = {.open = device_fops.proc_open,
+                                                    .release = device_fops.proc_release,
+                                                    .llseek = device_fops.proc_lseek,
+                                                    .read = device_fops.proc_read,
+                                                    .write = device_fops.proc_write,
+                                                    .owner = THIS_MODULE};
 #else
 static const struct file_operations device_fops = {
-    .open = device_open,
-    .release = device_release,
-    .llseek = device_seek,
-    .read = device_read,
-    .write = device_write,
-    .owner = THIS_MODULE};
+  .open = device_open, .release = device_release, .llseek = device_seek, .read = device_read, .write = device_write, .owner = THIS_MODULE};
 #endif
 
 static long process_ioctl(struct file *f, const unsigned cmd, const unsigned long arg)
@@ -1552,7 +1550,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_queue = blk_mq_alloc_queue(&data_device.tag_set, NULL, NULL);
 #else
       struct queue_limits lim = {
-        .max_hw_sectors   = DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE,
+        .max_hw_sectors = DRIVER_TRANSFER_BUFFER_SIZE / KERNEL_SECTOR_SIZE,
         .max_segment_size = DRIVER_TRANSFER_BUFFER_SIZE,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0)
         .logical_block_size = control_obj->logical_block_size,
@@ -1611,7 +1609,8 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
       add_disk(data_device.gd);
 #else
-      if (add_disk(data_device.gd)) {
+      if (add_disk(data_device.gd))
+      {
         printk(KERN_WARNING "oscdriver: unable to register disk\n");
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
         blk_cleanup_disk(data_device.gd);
@@ -1627,10 +1626,10 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       kfree(control_obj);
       return 0;
 
-    out_unregister:
+out_unregister:
       unregister_blkdev(data_major_num, data_device.device_name);
       data_major_num = 0;
-    out:
+out:
       kfree(control_obj);
       return -ENOMEM;
     }
@@ -1808,11 +1807,10 @@ static int mmap_fault_m(struct vm_fault *vmf)
   // printk("mmap_fault\n");
   return 0;
 }
-static struct vm_operations_struct mmap_vm_ops_m =
-    {
-        .open = mmap_open_m,
-        .close = mmap_close_m,
-        .fault = mmap_fault_m,
+static struct vm_operations_struct mmap_vm_ops_m = {
+  .open = mmap_open_m,
+  .close = mmap_close_m,
+  .fault = mmap_fault_m,
 };
 static int op_mmap_m(struct file *filp, struct vm_area_struct *vma)
 {
@@ -1891,11 +1889,10 @@ static int mmap_fault_tb(struct vm_fault *vmf)
   // printk("mmap_fault\n");
   return 0;
 }
-static struct vm_operations_struct mmap_vm_ops_tb =
-    {
-        .open = mmap_open_tb,
-        .close = mmap_close_tb,
-        .fault = mmap_fault_tb,
+static struct vm_operations_struct mmap_vm_ops_tb = {
+  .open = mmap_open_tb,
+  .close = mmap_close_tb,
+  .fault = mmap_fault_tb,
 };
 static int op_mmap_tb(struct file *filp, struct vm_area_struct *vma)
 {
@@ -1974,11 +1971,10 @@ static int mmap_fault_mdb(struct vm_fault *vmf)
   // printk("mmap_fault\n");
   return 0;
 }
-static struct vm_operations_struct mmap_vm_ops_mdb =
-    {
-        .open = mmap_open_mdb,
-        .close = mmap_close_mdb,
-        .fault = mmap_fault_mdb,
+static struct vm_operations_struct mmap_vm_ops_mdb = {
+  .open = mmap_open_mdb,
+  .close = mmap_close_mdb,
+  .fault = mmap_fault_mdb,
 };
 static int op_mmap_mdb(struct file *filp, struct vm_area_struct *vma)
 {
@@ -2019,51 +2015,28 @@ static int mmapfop_open_mdb(struct inode *inode, struct file *filp)
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
-static const struct proc_ops mmap_fops_m = {
-    .proc_open = mmapfop_open_m,
-    .proc_release = mmapfop_close_m,
-    .proc_mmap = op_mmap_m};
+static const struct proc_ops mmap_fops_m = {.proc_open = mmapfop_open_m, .proc_release = mmapfop_close_m, .proc_mmap = op_mmap_m};
 #else
-static const struct file_operations mmap_fops_m = {
-    .open = mmapfop_open_m,
-    .release = mmapfop_close_m,
-    .mmap = op_mmap_m,
-    .owner = THIS_MODULE};
+static const struct file_operations mmap_fops_m = {.open = mmapfop_open_m, .release = mmapfop_close_m, .mmap = op_mmap_m, .owner = THIS_MODULE};
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
-static const struct proc_ops mmap_fops_tb = {
-    .proc_open = mmapfop_open_tb,
-    .proc_release = mmapfop_close_tb,
-    .proc_mmap = op_mmap_tb};
+static const struct proc_ops mmap_fops_tb = {.proc_open = mmapfop_open_tb, .proc_release = mmapfop_close_tb, .proc_mmap = op_mmap_tb};
 #else
-static const struct file_operations mmap_fops_tb = {
-    .open = mmapfop_open_tb,
-    .release = mmapfop_close_tb,
-    .mmap = op_mmap_tb,
-    .owner = THIS_MODULE};
+static const struct file_operations mmap_fops_tb = {.open = mmapfop_open_tb, .release = mmapfop_close_tb, .mmap = op_mmap_tb, .owner = THIS_MODULE};
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
-static const struct proc_ops mmap_fops_mdb = {
-    .proc_open = mmapfop_open_mdb,
-    .proc_release = mmapfop_close_mdb,
-    .proc_mmap = op_mmap_mdb};
+static const struct proc_ops mmap_fops_mdb = {.proc_open = mmapfop_open_mdb, .proc_release = mmapfop_close_mdb, .proc_mmap = op_mmap_mdb};
 #else
 static const struct file_operations mmap_fops_mdb = {
-    .open = mmapfop_open_mdb,
-    .release = mmapfop_close_mdb,
-    .mmap = op_mmap_mdb,
-    .owner = THIS_MODULE};
+  .open = mmapfop_open_mdb, .release = mmapfop_close_mdb, .mmap = op_mmap_mdb, .owner = THIS_MODULE};
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
-static const struct proc_ops ioctl_fops = {
-    .proc_ioctl = process_ioctl};
+static const struct proc_ops ioctl_fops = {.proc_ioctl = process_ioctl};
 #else
-static const struct file_operations ioctl_fops = {
-    .unlocked_ioctl = process_ioctl,
-    .owner = THIS_MODULE};
+static const struct file_operations ioctl_fops = {.unlocked_ioctl = process_ioctl, .owner = THIS_MODULE};
 #endif
 
 static int __init initialize_driver(void)

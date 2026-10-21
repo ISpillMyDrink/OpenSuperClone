@@ -149,9 +149,12 @@ static void sync_preference_widgets(void)
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(showtimingbutton60), show_timing == 60);
   }
 
-  set_combo_active_from_value(settings_main_grid_size_combo, main_grid_size_values, (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])), main_grid_size);
-  set_combo_active_from_value(settings_auto_update_combo, auto_update_interval_values, (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])), auto_update_interval);
-  set_combo_active_from_value(settings_show_timing_combo, show_timing_values, (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])), show_timing);
+  set_combo_active_from_value(settings_main_grid_size_combo, main_grid_size_values,
+                              (int)(sizeof(main_grid_size_values) / sizeof(main_grid_size_values[0])), main_grid_size);
+  set_combo_active_from_value(settings_auto_update_combo, auto_update_interval_values,
+                              (int)(sizeof(auto_update_interval_values) / sizeof(auto_update_interval_values[0])), auto_update_interval);
+  set_combo_active_from_value(settings_show_timing_combo, show_timing_values, (int)(sizeof(show_timing_values) / sizeof(show_timing_values[0])),
+                              show_timing);
 
   if (settings_show_good_data_check != NULL)
   {
@@ -244,21 +247,19 @@ int main(int argc, char **argv)
 
   // begin processing command line arguments
   int command_line_argument;
-  int arguments_required;          // required number of non-option arguments
-  bool command_line_error = false; // initialize error to false
-  bool log_file_specified = false; // flag to check if log file is specified
+  int arguments_required;             // required number of non-option arguments
+  bool command_line_error = false;    // initialize error to false
+  bool log_file_specified = false;    // flag to check if log file is specified
   bool domain_file_specified = false; // flag to check if domain file is specified
 
   while (1)
   {
-    static struct option long_options[] =
-        {
-            {"debug", no_argument, 0, 'd'},
-            {"help", no_argument, 0, 'h'},
-            {"version", no_argument, 0, 'v'},
-            {"logfile", required_argument, 0, 'l'},
-            {"domainfile", required_argument, 0, 'f'},
-            {0, 0, 0, 0}};
+    static struct option long_options[] = {{"debug", no_argument, 0, 'd'},
+                                           {"help", no_argument, 0, 'h'},
+                                           {"version", no_argument, 0, 'v'},
+                                           {"logfile", required_argument, 0, 'l'},
+                                           {"domainfile", required_argument, 0, 'f'},
+                                           {0, 0, 0, 0}};
     // getopt_long stores the option index here.
     int option_index = 0;
 
@@ -1076,7 +1077,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
         g = gcolor;
         b = bcolor;
         cairo_set_source_rgb(cr, r, g, b);
-        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust - clip_left, (i * main_square_size) + 1 + square_adjust - clip_top, main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
+        cairo_rectangle(cr, (n * main_square_size) + 1 + square_adjust - clip_left, (i * main_square_size) + 1 + square_adjust - clip_top,
+                        main_square_size - 1 - (square_adjust * 2), main_square_size - 1 - (square_adjust * 2));
         cairo_fill(cr);
 
         if (bad_head && show_bad_head)
@@ -1088,7 +1090,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size,
+                          spot_size);
           cairo_stroke(cr);
         }
 
@@ -1101,7 +1104,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size,
+                          spot_size);
           cairo_stroke(cr);
         }
 
@@ -1114,7 +1118,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size,
+                          spot_size);
           cairo_stroke(cr);
         }
 
@@ -1127,7 +1132,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size,
+                          spot_size);
           cairo_stroke(cr);
         }
       }
@@ -1145,7 +1151,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
       g = gcolor;
       b = bcolor;
       cairo_set_source_rgb(cr, r, g, b);
-      cairo_rectangle(cr, (current_col * main_square_size) + spot_adjust - clip_left, (current_row * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+      cairo_rectangle(cr, (current_col * main_square_size) + spot_adjust - clip_left, (current_row * main_square_size) + spot_adjust - clip_top,
+                      spot_size, spot_size);
       cairo_stroke(cr);
     }
 
@@ -1176,7 +1183,8 @@ static void render_main_contents(cairo_t *cr, int clip_left, int clip_top, int c
           g = gcolor;
           b = bcolor;
           cairo_set_source_rgb(cr, r, g, b);
-          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size, spot_size);
+          cairo_rectangle(cr, (n * main_square_size) + spot_adjust - clip_left, (i * main_square_size) + spot_adjust - clip_top, spot_size,
+                          spot_size);
           cairo_stroke(cr);
           get_block_information(blocks_per_square * count, blocks_per_square);
           mouse_x_old = mouse_x;
@@ -1454,7 +1462,8 @@ static gboolean main_drawing_expose_event(GtkWidget *self, cairo_t *cr, gpointer
   gdouble scroll_position = gtk_adjustment_get_value(GTK_ADJUSTMENT(gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(main_scrolled_window))));
   gint scroll_key = (gint)scroll_position;
 
-  if (main_render_cache == NULL || main_render_cache_dirty || main_render_cache_width != clip_width || main_render_cache_height != clip_height || main_render_cache_scroll_position != scroll_key || main_render_cache_clip_x != clip_left || main_render_cache_clip_y != clip_top)
+  if (main_render_cache == NULL || main_render_cache_dirty || main_render_cache_width != clip_width || main_render_cache_height != clip_height ||
+      main_render_cache_scroll_position != scroll_key || main_render_cache_clip_x != clip_left || main_render_cache_clip_y != clip_top)
   {
     clear_render_cache(&main_render_cache, &main_render_cache_width, &main_render_cache_height);
     main_render_cache = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, clip_width, clip_height);
@@ -1650,12 +1659,8 @@ void getsize_left_drawing_area(GtkWidget *widget, GtkAllocation *allocation, voi
 void select_file(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("Log file selection",
-                                       GTK_WINDOW(main_window),
-                                       GTK_FILE_CHOOSER_ACTION_OPEN,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
+  dialog = gtk_file_chooser_dialog_new("Log file selection", GTK_WINDOW(main_window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
     char *filename;
@@ -1698,12 +1703,8 @@ void select_file(void)
 void select_domain(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("Domain file selection",
-                                       GTK_WINDOW(main_window),
-                                       GTK_FILE_CHOOSER_ACTION_OPEN,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
+  dialog = gtk_file_chooser_dialog_new("Domain file selection", GTK_WINDOW(main_window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
     char *filename;
@@ -1744,12 +1745,8 @@ void select_domain(void)
 void select_dmde_domain(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("DMDE bytes file selection",
-                                       GTK_WINDOW(main_window),
-                                       GTK_FILE_CHOOSER_ACTION_OPEN,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
+  dialog = gtk_file_chooser_dialog_new("DMDE bytes file selection", GTK_WINDOW(main_window), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
     char *filename;
@@ -3501,7 +3498,8 @@ int get_block_information(long long position, long long size)
     }
     else
     {
-      snprintf(tempchar, sizeof(tempchar), "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line], (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
+      snprintf(tempchar, sizeof(tempchar), "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line],
+               (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
     }
     strncat(lines, tempchar, sizeof(lines) - strlen(lines) - 1);
   }
@@ -3542,7 +3540,8 @@ int get_block_information(long long position, long long size)
         }
         else
         {
-          snprintf(tempchar, sizeof(tempchar), "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line], (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
+          snprintf(tempchar, sizeof(tempchar), "0x%06llx \t0x%06llx \t0x%llx \t0x%llx \t0x%llx\n", lposition[line], lsize[line],
+                   (lstatus[line] & STATUS_MASK), ((lstatus[line] & INFO_MASK) >> 8), (lstatus[line] >> 32));
         }
         strncat(lines, tempchar, sizeof(lines) - strlen(lines) - 1);
       }
@@ -3604,7 +3603,9 @@ int process_domain(long long position, int size, int status, int status_mask)
       // fprintf (stdout, "position=0x%llx size=0x%x dposition=0x%llx dsize=0x%llx\n", position, size, dposition[middle], dsize[middle]);    //debug
       // fprintf (stdout, "first=%d middle=%d end=%d\n", first, middle, last);    //debug
       //  check if any part of the chunk is in the domain
-      if (((position >= dposition[middle] && position < dposition[middle] + dsize[middle]) || (dposition[middle] >= position && dposition[middle] < position + size)) && ((dstatus[middle] & status_mask) == status))
+      if (((position >= dposition[middle] && position < dposition[middle] + dsize[middle]) ||
+           (dposition[middle] >= position && dposition[middle] < position + size)) &&
+          ((dstatus[middle] & status_mask) == status))
       {
         // found a matching block
         return 1;
@@ -4053,7 +4054,6 @@ void read_config_file(void)
   group = config_setting_get_member(root, "colors");
   if (group != NULL)
   {
-
     setting = config_setting_get_member(group, "good_color");
     if (setting != NULL)
     {

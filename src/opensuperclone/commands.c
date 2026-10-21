@@ -720,7 +720,7 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       // Strip surrounding quotes for display
       const char *msg = rest_of_line;
       int len = strlen(msg);
-      if (len >= 2 && ((msg[0] == '"' && msg[len-1] == '"') || (msg[0] == '\'' && msg[len-1] == '\'')))
+      if (len >= 2 && ((msg[0] == '"' && msg[len - 1] == '"') || (msg[0] == '\'' && msg[len - 1] == '\'')))
       {
         msg++;
         len -= 2;
@@ -2379,7 +2379,8 @@ int scsi_10_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   char *endptr;
   char *error_string = "Error processing SCSI10CMD command on line";
 
-  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4], raw_b[5], raw_b[6], raw_b[7], raw_b[8], raw_b[9], leftover);
+  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4], raw_b[5], raw_b[6],
+                        raw_b[7], raw_b[8], raw_b[9], leftover);
   if (scanline != cmd_length)
   {
     if (scanline < cmd_length)
@@ -2439,7 +2440,8 @@ int scsi_12_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   char *endptr;
   char *error_string = "Error processing SCSI12CMD command on line";
 
-  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4], raw_b[5], raw_b[6], raw_b[7], raw_b[8], raw_b[9], raw_b[10], raw_b[11], leftover);
+  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4], raw_b[5],
+                        raw_b[6], raw_b[7], raw_b[8], raw_b[9], raw_b[10], raw_b[11], leftover);
   if (scanline != cmd_length)
   {
     if (scanline < cmd_length)
@@ -2499,7 +2501,8 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
   char *endptr;
   char *error_string = "Error processing SCSI16CMD command on line";
 
-  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4], raw_b[5], raw_b[6], raw_b[7], raw_b[8], raw_b[9], raw_b[10], raw_b[11], raw_b[12], raw_b[13], raw_b[14], raw_b[15], leftover);
+  int scanline = sscanf(rest_of_line, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %[^\n]", raw_b[0], raw_b[1], raw_b[2], raw_b[3], raw_b[4],
+                        raw_b[5], raw_b[6], raw_b[7], raw_b[8], raw_b[9], raw_b[10], raw_b[11], raw_b[12], raw_b[13], raw_b[14], raw_b[15], leftover);
   if (scanline != cmd_length)
   {
     if (scanline < cmd_length)
@@ -5743,7 +5746,6 @@ int ccc_elseif_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     }
     if (level == 1 && matching_elseif < 1)
     {
-
       if ((find_next_elseif < find_next_if || find_next_if < 1) && find_next_elseif < find_next_endif)
       {
         matching_elseif = find_next_elseif;
@@ -5826,7 +5828,8 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
   // fprintf (stdout, "whilestackcount=%d\n", while_stack_counter_ccc);
 
   char *error_string = "Error processing WHILE command on line";
-  if (!perform_check && while_stack_counter_ccc > 0 && while_condition_ccc[while_stack_counter_ccc - 1] == true && ccc_while_stack_ccc[while_stack_counter_ccc - 1] == line_number)
+  if (!perform_check && while_stack_counter_ccc > 0 && while_condition_ccc[while_stack_counter_ccc - 1] == true &&
+      ccc_while_stack_ccc[while_stack_counter_ccc - 1] == line_number)
   {
     int statement = compare_ccc(perform_check, rest_of_line);
     if (statement < 0)
@@ -7430,7 +7433,8 @@ int serial_open_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     if (token1[0] == '/')
     {
       snprintf(device, sizeof(device), "%s", token1);
-      if (n >= 2) baud = atoi(token2);
+      if (n >= 2)
+        baud = atoi(token2);
     }
     else
     {
@@ -7522,14 +7526,28 @@ int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       int j = 0;
       for (i = 0; i < slen && j < (int)sizeof(printable) - 1; i++)
       {
-        if (p[i] == '\n') { printable[j++] = '\\'; printable[j++] = 'n'; }
-        else if (p[i] == '\r') { printable[j++] = '\\'; printable[j++] = 'r'; }
-        else if (p[i] == '\t') { printable[j++] = '\\'; printable[j++] = 't'; }
-        else if (p[i] >= 32) printable[j++] = p[i];
+        if (p[i] == '\n')
+        {
+          printable[j++] = '\\';
+          printable[j++] = 'n';
+        }
+        else if (p[i] == '\r')
+        {
+          printable[j++] = '\\';
+          printable[j++] = 'r';
+        }
+        else if (p[i] == '\t')
+        {
+          printable[j++] = '\\';
+          printable[j++] = 't';
+        }
+        else if (p[i] >= 32)
+          printable[j++] = p[i];
       }
       printable[j] = '\0';
       snprintf(buf, sizeof(buf), "SND: %s", printable);
-      if (len > 80) strcat(buf, "...");
+      if (len > 80)
+        strcat(buf, "...");
     }
     else
     {
@@ -7672,18 +7690,18 @@ static const char *asclepius_rail_display_name(uint8_t channel)
 {
   switch (channel)
   {
-    case ASCLEPIUS_MAIN12V:
-      return "12V";
-    case ASCLEPIUS_MAIN5V:
-      return "5V";
-    case ASCLEPIUS_USB5V:
-      return "USB";
-    case ASCLEPIUS_MOLEX:
-      return "MOLEX";
-    case ASCLEPIUS_ALL:
-      return "all";
-    default:
-      return "unknown";
+  case ASCLEPIUS_MAIN12V:
+    return "12V";
+  case ASCLEPIUS_MAIN5V:
+    return "5V";
+  case ASCLEPIUS_USB5V:
+    return "USB";
+  case ASCLEPIUS_MOLEX:
+    return "MOLEX";
+  case ASCLEPIUS_ALL:
+    return "all";
+  default:
+    return "unknown";
   }
 }
 
@@ -7728,10 +7746,12 @@ int asclepius_status_ccc(bool perform_check, unsigned int line_number, char *res
   asclepius_lock();
 
   fprintf(stdout, "Asclepius %s: %s", asclepius_rail_display_name(ASCLEPIUS_MAIN12V), asclepius_status.main12v_enabled ? "on " : "off");
-  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main12v_voltage / 1000.0, asclepius_status.main12v_current / 1000.0, asclepius_status.main12v_ocp ? "  (hardware OCP)" : "");
+  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main12v_voltage / 1000.0, asclepius_status.main12v_current / 1000.0,
+          asclepius_status.main12v_ocp ? "  (hardware OCP)" : "");
 
   fprintf(stdout, "Asclepius %s: %s", asclepius_rail_display_name(ASCLEPIUS_MAIN5V), asclepius_status.main5v_enabled ? "on " : "off");
-  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main5v_voltage / 1000.0, asclepius_status.main5v_current / 1000.0, asclepius_status.main5v_ocp ? "  (hardware OCP)" : "");
+  fprintf(stdout, " %6.2f V %6.3f A%s\n", asclepius_status.main5v_voltage / 1000.0, asclepius_status.main5v_current / 1000.0,
+          asclepius_status.main5v_ocp ? "  (hardware OCP)" : "");
 
   // The USB rail is derived from the 5V rail, so the board reports no voltage
   // for it and only the current is meaningful.
@@ -7808,20 +7828,20 @@ static const char *asclepius_ocp_action_name(asclepius_ocp_action_t action)
 {
   switch (action)
   {
-    case ASCLEPIUS_OCP_OFF:
-      return "off";
-    case ASCLEPIUS_OCP_WARN:
-      return "warn";
-    case ASCLEPIUS_OCP_CUT:
-      return "cut";
-    default:
-      return "unknown";
+  case ASCLEPIUS_OCP_OFF:
+    return "off";
+  case ASCLEPIUS_OCP_WARN:
+    return "warn";
+  case ASCLEPIUS_OCP_CUT:
+    return "cut";
+  default:
+    return "unknown";
   }
 }
 
 int asclepius_getocp_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
-  static const uint8_t channels[] = { ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V };
+  static const uint8_t channels[] = {ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V};
   size_t i;
 
   (void)rest_of_line;
@@ -7837,7 +7857,8 @@ int asclepius_getocp_ccc(bool perform_check, unsigned int line_number, char *res
 
     asclepius_ocp_get_rail_state(channels[i], &rail);
 
-    fprintf(stdout, "Asclepius OCP %s: limit %u mA action %s%s\n", asclepius_rail_display_name(channels[i]), rail.limit_ma, asclepius_ocp_action_name(rail.action), rail.tripped ? "  (tripped)" : "");
+    fprintf(stdout, "Asclepius OCP %s: limit %u mA action %s%s\n", asclepius_rail_display_name(channels[i]), rail.limit_ma,
+            asclepius_ocp_action_name(rail.action), rail.tripped ? "  (tripped)" : "");
   }
 
   return 0;
@@ -7876,7 +7897,8 @@ int asclepius_setocp_ccc(bool perform_check, unsigned int line_number, char *res
 
   if (clamped != (unsigned int)limit)
   {
-    fprintf(stdout, "Asclepius: limit %lu mA clamped to %u mA (supported range %u-%u mA)\n", limit, clamped, ASCLEPIUS_OCP_LIMIT_MIN_MA, ASCLEPIUS_OCP_LIMIT_MAX_MA);
+    fprintf(stdout, "Asclepius: limit %lu mA clamped to %u mA (supported range %u-%u mA)\n", limit, clamped, ASCLEPIUS_OCP_LIMIT_MIN_MA,
+            ASCLEPIUS_OCP_LIMIT_MAX_MA);
   }
 
   asclepius_lock();

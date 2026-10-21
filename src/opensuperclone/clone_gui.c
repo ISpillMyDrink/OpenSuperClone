@@ -470,8 +470,8 @@ GtkWidget *primary_relay_board_asclepius_radio_ccc = NULL;
 // mixes the generic USB relay's Energize 1..8 sequencing with the Asclepius
 // device settings, so the two groups are shown according to the selection
 // instead of both appearing at once.
-static GtkWidget *primary_relay_generic_frames_ccc[4] = { NULL, NULL, NULL, NULL };
-static GtkWidget *primary_relay_asclepius_frames_ccc[4] = { NULL, NULL, NULL, NULL };
+static GtkWidget *primary_relay_generic_frames_ccc[4] = {NULL, NULL, NULL, NULL};
+static GtkWidget *primary_relay_asclepius_frames_ccc[4] = {NULL, NULL, NULL, NULL};
 GtkWidget *primary_relay_activation_label_ccc = NULL;
 GtkWidget *activate_primary_relay1_checkbutton_ccc = NULL;
 GtkWidget *activate_primary_relay2_checkbutton_ccc = NULL;
@@ -867,8 +867,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   // gtk_widget_add_accelerator(adddomainmi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(savedomainmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
-  gtk_widget_add_accelerator(asclepiusextmi_ccc,"activate", accel_group, GDK_KEY_T, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
-  gtk_widget_add_accelerator(asclepiusmonitormi_ccc,"activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(asclepiusextmi_ccc, "activate", accel_group, GDK_KEY_T, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(asclepiusmonitormi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
@@ -908,11 +908,18 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(smart_button_ccc, _("Retrieve SMART information"));
   gtk_widget_set_tooltip_text(clone_mode_button_ccc, _("Switch to clone mode"));
   gtk_widget_set_tooltip_text(agressive_driver_checkbutton_ccc, _("Activate slow driver"));
-  gtk_widget_set_tooltip_text(driver_mode1_button_ccc, _("Switch to virtual mode 1: This mode will use all available Phases (starting with Phase 4) when reading from the source"));
-  gtk_widget_set_tooltip_text(driver_mode2_button_ccc, _("Switch to virtual mode 2: This mode will only use Phase 4 and will not perform any further processing of a chunk"));
-  gtk_widget_set_tooltip_text(driver_mode3_button_ccc, _("Switch to virtual mode 3: This mode is the same as mode 2, but it will increase the read size (up to the cluster size) when it detects sequential reads"));
-  gtk_widget_set_tooltip_text(driver_mode4_button_ccc, _("Switch to virtual mode 4: This mode only reads from the destination, and will not read any data from the source"));
-  gtk_widget_set_tooltip_text(driver_mode5_button_ccc, _("Switch to virtual mode 5: This mode does not read any data and will instead return zeroed data"));
+  gtk_widget_set_tooltip_text(
+    driver_mode1_button_ccc,
+    _("Switch to virtual mode 1: This mode will use all available Phases (starting with Phase 4) when reading from the source"));
+  gtk_widget_set_tooltip_text(driver_mode2_button_ccc,
+                              _("Switch to virtual mode 2: This mode will only use Phase 4 and will not perform any further processing of a chunk"));
+  gtk_widget_set_tooltip_text(
+    driver_mode3_button_ccc,
+    _("Switch to virtual mode 3: This mode is the same as mode 2, but it will increase the read size (up to the cluster size) when it detects sequential reads"));
+  gtk_widget_set_tooltip_text(driver_mode4_button_ccc,
+                              _("Switch to virtual mode 4: This mode only reads from the destination, and will not read any data from the source"));
+  gtk_widget_set_tooltip_text(driver_mode5_button_ccc,
+                              _("Switch to virtual mode 5: This mode does not read any data and will instead return zeroed data"));
   gtk_widget_set_tooltip_text(soft_reset_button_ccc, _("Soft reset the drive"));
   gtk_widget_set_tooltip_text(hard_reset_button_ccc, _("Hard reset the drive"));
 
@@ -969,7 +976,8 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(label_skips_ccc, _("The total number of skips so far"));
   gtk_widget_set_tooltip_text(label_slowskips_ccc, _("The total number of skips due to slow reads so far"));
   gtk_widget_set_tooltip_text(label_skipruns_ccc, _("The total number of skip runs so far"));
-  gtk_widget_set_tooltip_text(label_skipresets_ccc, _("The total number of times the skipping was reset due to exceeding the limit of 64 skips in a run"));
+  gtk_widget_set_tooltip_text(label_skipresets_ccc,
+                              _("The total number of times the skipping was reset due to exceeding the limit of 64 skips in a run"));
   gtk_widget_set_tooltip_text(label_runsize_ccc, _("The size of the last skip run"));
   gtk_widget_set_tooltip_text(label_finished_ccc, _("The total number of LBAs recovered so far"));
   gtk_widget_set_tooltip_text(label_nontried_ccc, _("The total number of LBAs that have not been tried to be recovered"));
@@ -977,8 +985,12 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_set_tooltip_text(label_nondivided_ccc, _("The total number of LBAs that have not been divided"));
   gtk_widget_set_tooltip_text(label_nonscraped_ccc, _("The total number of LBAs that have not been scraped"));
   gtk_widget_set_tooltip_text(label_bad_ccc, _("The total number of LBAs that have been marked as bad"));
-  gtk_widget_set_tooltip_text(label_datapreview_ccc, _("A sample of data from the last good read since the last display update (will be all zeroes if no good reads have occurred since the last display update)"));
-  gtk_widget_set_tooltip_text(label_longestreadtime_ccc, _("The longest read time since the last display update / within the last 256 display updates / since the start of the recovery"));
+  gtk_widget_set_tooltip_text(
+    label_datapreview_ccc,
+    _("A sample of data from the last good read since the last display update (will be all zeroes if no good reads have occurred since the last display update)"));
+  gtk_widget_set_tooltip_text(
+    label_longestreadtime_ccc,
+    _("The longest read time since the last display update / within the last 256 display updates / since the start of the recovery"));
   gtk_widget_set_tooltip_text(label_filled_ccc, _("The total number of LBAs that have been filled either in Fill mode or Erase mode"));
   gtk_widget_set_tooltip_text(label_retried_ccc, _("The total number of LBAs that have been retried"));
   gtk_widget_set_tooltip_text(label_retrypasses_ccc, _("The total number of retry passes remaining"));
@@ -1140,9 +1152,10 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gdk_threads_add_timeout(ASCLEPIUS_UI_UPDATE_TIMER, display_status_update_asclepius_action, NULL);
   asclepius_connect();
 
-  if(asclepius_get_connection_status())
+  if (asclepius_get_connection_status())
   {
-    print_gui_error_message_ccc(_("Asclepius companion board was detected.\nEnabling default settings for Asclepius support."), _("Asclepius Connection"), 0);
+    print_gui_error_message_ccc(_("Asclepius companion board was detected.\nEnabling default settings for Asclepius support."),
+                                _("Asclepius Connection"), 0);
 
     // load asclepius settings from config file
     char filename[1024];
@@ -1208,12 +1221,8 @@ int set_data_dump_filename_ccc(void)
 void get_data_dump_filename_ccc(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new("Select Data Dump File",
-                                       GTK_WINDOW(language_window_ccc),
-                                       GTK_FILE_CHOOSER_ACTION_SAVE,
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                       NULL);
+  dialog = gtk_file_chooser_dialog_new("Select Data Dump File", GTK_WINDOW(language_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), "debug_data_dump.log");
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
@@ -1275,12 +1284,8 @@ void select_file_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Load project (progress) file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_OPEN,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Load project (progress) file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN,
+                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     if (log_file_ccc != NULL)
     {
       char *default_path = g_path_get_dirname(log_file_ccc);
@@ -1313,12 +1318,8 @@ void new_file_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("New project (progress) file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("New project (progress) file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE,
+                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -1351,12 +1352,8 @@ void new_domain_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("New Domain File"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("New Domain File"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -1394,12 +1391,8 @@ void select_ddrescue_file_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Import ddrescue log (map) file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_OPEN,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Import ddrescue log (map) file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN,
+                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     if (log_file_ccc != NULL)
     {
       char *default_path = g_path_get_dirname(log_file_ccc);
@@ -1451,12 +1444,8 @@ void save_file_as_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Save Project File As"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Save Project File As"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -1516,12 +1505,8 @@ void save_domain_as_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Save Domain File As"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Save Domain File As"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -1559,12 +1544,8 @@ void export_ddrescue_file_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Export ddrescue log (map) file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Export ddrescue log (map) file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE,
+                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -1602,12 +1583,8 @@ void select_domain_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Load Domain File"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_OPEN,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Load Domain File"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     if (log_file_ccc != NULL)
     {
       char *default_path = g_path_get_dirname(log_file_ccc);
@@ -1644,12 +1621,8 @@ void add_domain_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Choose Destination Image"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_OPEN,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Choose Destination Image"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     if (log_file_ccc != NULL)
     {
       char *default_path = g_path_get_dirname(log_file_ccc);
@@ -1709,7 +1682,9 @@ static void load_log_file_ccc(char *log_file)
       check_log_size_ccc = 1;
       if (ret != 0 || ret2 != 0)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+        snprintf(
+          tempmessage_ccc, TEMP_MESSAGE_SIZE,
+          _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
         message_error_ccc(tempmessage_ccc);
         print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
         clear_error_message_ccc();
@@ -1768,7 +1743,9 @@ static void load_ddrescue_log_file_ccc(char *log_file)
         ret = check_log_ccc();
         if (ret != 0 || ret2 != 0)
         {
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+          snprintf(
+            tempmessage_ccc, TEMP_MESSAGE_SIZE,
+            _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
           message_error_ccc(tempmessage_ccc);
           print_gui_error_message_ccc(error_message_ccc, _("Warning"), 1);
           clear_error_message_ccc();
@@ -1935,7 +1912,9 @@ void choose_source_ccc(void)
   }
   else if (memory_failed_ccc)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+    snprintf(
+      tempmessage_ccc, TEMP_MESSAGE_SIZE,
+      _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -1943,12 +1922,8 @@ void choose_source_ccc(void)
   else if (copy_image_mode_ccc)
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Choose image file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_OPEN,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Choose image file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     if (log_file_ccc != NULL)
     {
       char *default_path = g_path_get_dirname(log_file_ccc);
@@ -2025,7 +2000,9 @@ void choose_source_ccc(void)
     }
     find_all_devices_ccc();
 
-    choose_source_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Choose Source Drive"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+    choose_source_dialog_window_ccc =
+      gtk_dialog_new_with_buttons(_("Choose Source Drive"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                  GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
     // gtk_window_set_title (GTK_WINDOW (choose_source_dialog_window_ccc), "GtkScrolledWindow example");
     gtk_container_set_border_width(GTK_CONTAINER(choose_source_dialog_window_ccc), 0);
     gtk_widget_set_size_request(choose_source_dialog_window_ccc, 600, 400);
@@ -2034,7 +2011,8 @@ void choose_source_ccc(void)
     gtk_container_set_border_width(GTK_CONTAINER(choose_source_scrolled_window_ccc), 10);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(choose_source_scrolled_window_ccc), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(choose_source_dialog_window_ccc)->vbox), choose_source_scrolled_window_ccc, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(choose_source_dialog_window_ccc))), choose_source_scrolled_window_ccc, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(choose_source_dialog_window_ccc))), choose_source_scrolled_window_ccc, TRUE,
+                       TRUE, 0);
 
     choose_source_vbox_ccc = gtk_vbox_new(FALSE, 0);
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(choose_source_scrolled_window_ccc), choose_source_vbox_ccc);
@@ -2049,15 +2027,19 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %d %llx (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %d %llx (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i],
+                   device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i],
+                   model_ccc[i], serial_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %d %llx (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %d %llx (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i],
+                   hba_address_ccc[i], port_number_ccc[i], port_address_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i],
+                   model_ccc[i], serial_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -2072,15 +2054,20 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %llx %llx %d (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i], device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %s %s %llx %llx %llx %d (%lld) %s %s", device_driver_ccc[i], device_bus_ccc[i],
+                   device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i],
+                   drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %llx %llx %d (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s %llx %llx %llx %d (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i],
+                   reg_address_ccc[i], control_address_ccc[i], bus_address_ccc[i], device_select_ccc[i], drive_size_ccc[i], model_ccc[i],
+                   serial_ccc[i]);
         }
         else
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i], model_ccc[i], serial_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%s %s (%lld) %s %s", device_reference_ccc[i], device_name_ccc[i], drive_size_ccc[i],
+                   model_ccc[i], serial_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -2095,15 +2082,19 @@ void choose_source_ccc(void)
         char button_label[MAX_BUTTON_LABEL_SIZE] = "";
         if (verbose_ccc & DEBUG6)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %02x %02x %d %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i], usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %02x %02x %d %s %s %s\n", usb_bus_real_number_ccc[i],
+                   usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_bulk_in_endpoint_ccc[i], usb_bulk_out_endpoint_ccc[i],
+                   usb_mass_storage_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
         }
         else if (verbose_ccc & DEBUG5)
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i],
+                   usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
         }
         else
         {
-          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i], usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i]);
+          snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%d:%d %04x:%04x %s %s\n", usb_bus_real_number_ccc[i], usb_device_number_ccc[i],
+                   usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i]);
         }
         button[i] = gtk_button_new_with_label(button_label);
         gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
@@ -2314,7 +2305,9 @@ void choose_destination_ccc(void)
     generic_mode_ccc = generic_mode_ccc_bak;
     usb_mode_ccc = usb_mode_bak;
 
-    choose_destination_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Destination (All data will be overwritten!)"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+    choose_destination_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Destination (All data will be overwritten!)"), GTK_WINDOW(main_window_ccc),
+                                                                       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK,
+                                                                       GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
     // gtk_window_set_title (GTK_WINDOW (choose_source_dialog_window_ccc), "GtkScrolledWindow example");
     gtk_container_set_border_width(GTK_CONTAINER(choose_destination_dialog_window_ccc), 0);
     gtk_widget_set_size_request(choose_destination_dialog_window_ccc, 600, 400);
@@ -2323,7 +2316,8 @@ void choose_destination_ccc(void)
     gtk_container_set_border_width(GTK_CONTAINER(choose_destination_scrolled_window_ccc), 10);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(choose_destination_scrolled_window_ccc), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(choose_destination_dialog_window_ccc)->vbox), choose_destination_scrolled_window_ccc, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(choose_destination_dialog_window_ccc))), choose_destination_scrolled_window_ccc, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(choose_destination_dialog_window_ccc))), choose_destination_scrolled_window_ccc,
+                       TRUE, TRUE, 0);
 
     choose_destination_vbox_ccc = gtk_vbox_new(FALSE, 0);
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(choose_destination_scrolled_window_ccc), choose_destination_vbox_ccc);
@@ -2427,12 +2421,8 @@ void choose_image_ccc(void)
   else
   {
     GtkWidget *dialog;
-    dialog = gtk_file_chooser_dialog_new(_("Choose image file"),
-                                         GTK_WINDOW(main_window_ccc),
-                                         GTK_FILE_CHOOSER_ACTION_SAVE,
-                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                         NULL);
+    dialog = gtk_file_chooser_dialog_new(_("Choose image file"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     // gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
     if (log_file_ccc != NULL)
     {
@@ -2446,7 +2436,8 @@ void choose_image_ccc(void)
       filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       if (access(filename, F_OK) == 0)
       {
-        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   %s   \n%s", filename, _("The image file currently exists.\nThis will continue the recovery using this image file."));
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "   %s   \n%s", filename,
+                 _("The image file currently exists.\nThis will continue the recovery using this image file."));
         if (!open_confirmation_dialog_ccc(tempmessage_ccc))
         {
           confirmed = 0;
@@ -2554,13 +2545,16 @@ void connect_devices_ccc(void)
   }
 
   int relaycheck = 1;
-  if ((activate_primary_relay_on_error_ccc || power_cycle_primary_relay_ccc) && !(fill_mode_ccc || driver_only_ccc) && !(usbr1_chosen_ccc || asclepius_get_connection_status()))
+  if ((activate_primary_relay_on_error_ccc || power_cycle_primary_relay_ccc) && !(fill_mode_ccc || driver_only_ccc) &&
+      !(usbr1_chosen_ccc || asclepius_get_connection_status()))
   {
     relaycheck = 0;
   }
   if (memory_failed_ccc)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
+    snprintf(
+      tempmessage_ccc, TEMP_MESSAGE_SIZE,
+      _("Unable to get buffer physical address in 32 bit range.\nPlease try Starting the Virtual Disk Driver.\n\n Alternative is to try to choose the mode again (switch to different mode and back), or restart the program."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
     clear_error_message_ccc();
@@ -2587,7 +2581,9 @@ void connect_devices_ccc(void)
     }
     else if (ret || ret2)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(
+        tempmessage_ccc, TEMP_MESSAGE_SIZE,
+        _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -2645,7 +2641,9 @@ void connect_devices_ccc(void)
     }
     else if (ret || ret2)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(
+        tempmessage_ccc, TEMP_MESSAGE_SIZE,
+        _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -2763,7 +2761,9 @@ void set_connected_ccc(void)
   if (driver_mode_ccc && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
+    snprintf(
+      tempmessage_ccc, TEMP_MESSAGE_SIZE,
+      _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
@@ -2807,7 +2807,7 @@ void set_disconnected_ccc(void)
   gtk_widget_set_sensitive(GTK_WIDGET(primaryrelaymi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(chooseprimaryrelaymi_ccc), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(asclepiusextmi_ccc), TRUE);
-  if(usbr1_chosen_ccc || asclepius_get_connection_status())
+  if (usbr1_chosen_ccc || asclepius_get_connection_status())
   {
     gtk_widget_set_sensitive(GTK_WIDGET(activate_primary_relay_button_main_ccc), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(deactivate_primary_relay_button_main_ccc), TRUE);
@@ -2965,7 +2965,9 @@ void check_driver_null_condition_ccc(void)
   if (disk_2_ccc != NULL && driver_mode_ccc == 0 && (strcmp(disk_2_ccc, "/dev/null") == 0))
   {
     clear_error_message_ccc();
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
+    snprintf(
+      tempmessage_ccc, TEMP_MESSAGE_SIZE,
+      _("Warning! Using driver mode with destination of null will clear the current progress log.\nOnce you click on Start, the log will be cleared.\nIf you wish to keep the current log, disconnect and make a copy."));
     message_error_ccc(tempmessage_ccc);
     print_gui_error_message_ccc(error_message_ccc, _("Warning"), 0);
     clear_error_message_ccc();
@@ -3360,12 +3362,17 @@ void start_analyzing_ccc(void)
   snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "#\n");
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
-  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zones", "Total", total_read_attempts, "Good", total_good_reads, "Bad", total_bad_reads, total_timeouts, "Slow", total_slow_reads, "Low", total_low_time / 1000, "High", total_high_time / 1000, "Average", total_average_read_time / 1000);
+  snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "# %s   %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zones", "Total",
+           total_read_attempts, "Good", total_good_reads, "Bad", total_bad_reads, total_timeouts, "Slow", total_slow_reads, "Low",
+           total_low_time / 1000, "High", total_high_time / 1000, "Average", total_average_read_time / 1000);
   strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
 
   for (i = 0; i < sections; i++)
   {
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zone", i, "Total", analyze_read_attempts_ccc[i], "Good", analyze_good_reads_ccc[i], "Bad", analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i], "Slow", analyze_slow_reads_ccc[i], "Low", analyze_low_time_ccc[i] / 1000, "High", analyze_high_time_ccc[i] / 1000, "Average", analyze_data_ccc.average_read_time[i] / 1000);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\n# %s %d    %s %d    %s %d    %s %d (%d)    %s %d    %s %lld    %s %lld    %s %lld", "Zone", i,
+             "Total", analyze_read_attempts_ccc[i], "Good", analyze_good_reads_ccc[i], "Bad", analyze_bad_reads_ccc[i], analyze_timeouts_ccc[i],
+             "Slow", analyze_slow_reads_ccc[i], "Low", analyze_low_time_ccc[i] / 1000, "High", analyze_high_time_ccc[i] / 1000, "Average",
+             analyze_data_ccc.average_read_time[i] / 1000);
     strncat(analyze_text_ccc, tempmessage_ccc, MAX_ANALYZE_TEXT_LENGTH - strlen(analyze_text_ccc) - 1);
   }
   fprintf(stdout, "%s", analyze_text_ccc);
@@ -3432,15 +3439,18 @@ void display_analyze_results_ccc(void)
   gtk_label_set_text(GTK_LABEL(analyze_reads_label), _("Read Statistics"));
 
   char temp[256];
-  snprintf(temp, sizeof(temp), _("Good Reads: %f%% (%d / %d)"), analyze_data_ccc.good_read_percent, analyze_data_ccc.total_good_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Good Reads: %f%% (%d / %d)"), analyze_data_ccc.good_read_percent, analyze_data_ccc.total_good_reads,
+           analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_good_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_good_reads_label), _("Percentage of good reads"));
 
-  snprintf(temp, sizeof(temp), _("Bad Reads: %f%% (%d / %d)"), analyze_data_ccc.bad_read_percent, analyze_data_ccc.total_bad_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Bad Reads: %f%% (%d / %d)"), analyze_data_ccc.bad_read_percent, analyze_data_ccc.total_bad_reads,
+           analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_bad_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_bad_reads_label), _("Percentage of bad reads"));
 
-  snprintf(temp, sizeof(temp), _("Slow Reads: %f%% (%d / %d)"), analyze_data_ccc.slow_read_percent, analyze_data_ccc.total_slow_reads, analyze_data_ccc.total_read_attempts);
+  snprintf(temp, sizeof(temp), _("Slow Reads: %f%% (%d / %d)"), analyze_data_ccc.slow_read_percent, analyze_data_ccc.total_slow_reads,
+           analyze_data_ccc.total_read_attempts);
   gtk_label_set_text(GTK_LABEL(analyze_slow_reads_label), temp);
   gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_reads_label), _("Percentage of slow reads"));
 
@@ -3448,15 +3458,21 @@ void display_analyze_results_ccc(void)
 
   snprintf(temp, sizeof(temp), _("Slow Responding Firmware Issue: %f%%"), analyze_data_ccc.slow_issue_percent);
   gtk_label_set_text(GTK_LABEL(analyze_slow_issue_label), temp);
-  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_slow_issue_label), _("Chance of an issue that causes good reads to be slow due to a firmware background operation. Values below 50% are not likely to be an issue. Values above 50% are a possible indication of an issue. Values above 100% are a likely indication of an issue."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(analyze_slow_issue_label),
+    _("Chance of an issue that causes good reads to be slow due to a firmware background operation. Values below 50% are not likely to be an issue. Values above 50% are a possible indication of an issue. Values above 100% are a likely indication of an issue."));
 
   snprintf(temp, sizeof(temp), _("Partial Access Issue: %f%%"), analyze_data_ccc.partial_access_percent);
   gtk_label_set_text(GTK_LABEL(analyze_partial_access_label), temp);
-  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_partial_access_label), _("Chance of an issue with reads after a certain point, likely caused by a translator issue. Any value above 0% is a possible indication of this issue."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(analyze_partial_access_label),
+    _("Chance of an issue with reads after a certain point, likely caused by a translator issue. Any value above 0% is a possible indication of this issue."));
 
   snprintf(temp, sizeof(temp), _("Bad Or Weak Head: %f%%"), analyze_data_ccc.bad_head_percent);
   gtk_label_set_text(GTK_LABEL(analyze_bad_head_label), temp);
-  gtk_widget_set_tooltip_text(GTK_WIDGET(analyze_bad_head_label), _("Chance of a bad or weak head. Values are between 0% and 100% and are an indication of how widespread the damage across the drive is."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(analyze_bad_head_label),
+    _("Chance of a bad or weak head. Values are between 0% and 100% and are an indication of how widespread the damage across the drive is."));
 
   gtk_label_set_text(GTK_LABEL(analyze_variance_label), _("Variance Statistics"));
 
@@ -3527,7 +3543,8 @@ void display_analyze_results_ccc(void)
 
   gtk_label_set_text(GTK_LABEL(analyze_zones_label), _("Zone Statistics"));
 
-  store = gtk_list_store_new(9, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  store = gtk_list_store_new(9, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                             G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model(GTK_TREE_VIEW(analyze_zone_view), GTK_TREE_MODEL(store));
   g_object_unref(store);
 
@@ -3547,7 +3564,7 @@ void display_analyze_results_ccc(void)
   snprintf(temp, sizeof(temp), "%s (%d)", _("Bad"), analyze_data_ccc.total_bad_reads);
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 3, NULL);
 
-    renderer = gtk_cell_renderer_text_new();
+  renderer = gtk_cell_renderer_text_new();
   snprintf(temp, sizeof(temp), "%s (%d)", _("Timeout"), analyze_data_ccc.total_timeouts);
   gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(analyze_zone_view), -1, temp, renderer, "text", 4, NULL);
 
@@ -3606,27 +3623,29 @@ int get_smart_attribute_level_ccc(int id, long long value, int current, int wors
 
   switch (id)
   {
-    // Reallocated Sectors Count
-    case 5:
-    // Current Pending Sectors
-    case 197:
-      if (value > 0) level = 2;
-      break;
+  // Reallocated Sectors Count
+  case 5:
+  // Current Pending Sectors
+  case 197:
+    if (value > 0)
+      level = 2;
+    break;
 
-  	// Reported Uncorrectable Errors
-    case 187:
-    // Command Timeout
-    case 188:
-    // Off-line Uncorrectable
-    case 198:
-    // UDMA CRC Error Rate
-    case 199:
-      if (value > 0) level = 1;
-      break;
+  // Reported Uncorrectable Errors
+  case 187:
+  // Command Timeout
+  case 188:
+  // Off-line Uncorrectable
+  case 198:
+  // UDMA CRC Error Rate
+  case 199:
+    if (value > 0)
+      level = 1;
+    break;
 
-    default:
-      level = 0;
-      break;
+  default:
+    level = 0;
+    break;
   }
 
   return level;
@@ -3661,7 +3680,7 @@ void display_smart_data_ccc(void)
   }
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_dialog"));
-  GtkWidget *smart_results_box_label = GTK_WIDGET (gtk_builder_get_object (builder, "smart_results_box_label"));
+  GtkWidget *smart_results_box_label = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_box_label"));
   // GtkWidget *smart_update_button = GTK_WIDGET (gtk_builder_get_object (builder, "smart_update_button"));
 
   char smart_data_version_label[256];
@@ -3676,7 +3695,8 @@ void display_smart_data_ccc(void)
   GtkWidget *treeview;
 
   treeview = GTK_WIDGET(gtk_builder_get_object(builder, "smart_results_view"));
-  store = gtk_list_store_new(8, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, GDK_TYPE_PIXBUF);
+  store =
+    gtk_list_store_new(8, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, GDK_TYPE_PIXBUF);
   gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
   g_object_unref(store);
 
@@ -3721,7 +3741,8 @@ void display_smart_data_ccc(void)
 
       GdkPixbuf *pixbuf = NULL;
 
-      level = get_smart_attribute_level_ccc(smart_data_ccc.id[i], smart_data_ccc.raw[i], smart_data_ccc.current[i], smart_data_ccc.worst[i], smart_data_ccc.threshold[i]);
+      level = get_smart_attribute_level_ccc(smart_data_ccc.id[i], smart_data_ccc.raw[i], smart_data_ccc.current[i], smart_data_ccc.worst[i],
+                                            smart_data_ccc.threshold[i]);
 
       if (level == 2)
       {
@@ -3814,11 +3835,11 @@ void display_identify_data_ccc(void)
   gtk_button_set_label(GTK_BUTTON(identify_ncq_checkbox), _("NCQ Supported"));
   gtk_button_set_label(GTK_BUTTON(identify_sct_error_recovery_checkbox), _("SCT Error Recovery Supported"));
   gtk_button_set_label(GTK_BUTTON(identify_trim_supported_checkbox), _("TRIM Supported"));
-  
+
   gtk_label_set_text(GTK_LABEL(identify_mdma_label), _("Multiword DMA Support"));
   gtk_label_set_text(GTK_LABEL(identify_mdma_supported_label), _("Supported"));
   gtk_label_set_text(GTK_LABEL(identify_mdma_selected_label), _("Selected"));
-  
+
   gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_0_checkbox), _("0"));
   gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_1_checkbox), _("1"));
   gtk_button_set_label(GTK_BUTTON(identify_mdma_supported_2_checkbox), _("2"));
@@ -3878,7 +3899,7 @@ void display_identify_data_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(identify_udma_selected_6_checkbox), identify_device_data_ccc.udma_mode_6_selected);
 
   gtk_label_set_text(GTK_LABEL(identify_raw_buffer_label), _("Raw Data"));
-  
+
   gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(identify_raw_data_textbox)), identify_device_raw_text_ccc, -1);
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Identify Results"));
@@ -3985,7 +4006,8 @@ void open_clone_settings_dialog_ccc(void)
   gtk_widget_set_tooltip_text(divide2_check_button_ccc, _("Perform two dividing passes instead of one"));
   gtk_widget_set_tooltip_text(trim_check_button_ccc, _("Enable Trimming (read non-trimmed blocks one sector at a time forwards and backwards)"));
   gtk_widget_set_tooltip_text(scrape_check_button_ccc, _("Enable Scrape (read non-scraped blocks one sector at a time forwards)"));
-  gtk_widget_set_tooltip_text(markbad_check_button_ccc, _("Enable Mark Bad Head (uses the skipping information during phases 1-2 to mark what is considered a bad head)"));
+  gtk_widget_set_tooltip_text(markbad_check_button_ccc,
+                              _("Enable Mark Bad Head (uses the skipping information during phases 1-2 to mark what is considered a bad head)"));
   gtk_widget_set_tooltip_text(readbad_check_button_ccc, _("Enable Read Bad Head (read sectors from heads marked as bad)"));
   gtk_widget_set_tooltip_text(rebuild_assist_check_button_ccc, _("Enable Rebuild Assist (use the Rebuild Assist phase instead of phase 1)"));
   gtk_widget_set_tooltip_text(reverse_check_button_ccc, _("Enable Reverse (reverse the direction of all passes)"));
@@ -3995,15 +4017,24 @@ void open_clone_settings_dialog_ccc(void)
   gtk_widget_set_tooltip_text(clustersize_button_label_ccc, _("Number of sectors per read block in phases 1-4"));
   gtk_widget_set_tooltip_text(inputoffset_button_label_ccc, _("Number of sectors to skip at the beginning"));
   gtk_widget_set_tooltip_text(size_button_label_ccc, _("Number of sectors to copy"));
-  gtk_widget_set_tooltip_text(blocksize_button_label_ccc, _("Number of logical sectors per physical sector. All reads will be aligned to this value."));
-  gtk_widget_set_tooltip_text(skipsize_button_label_ccc, _("Number of sectors to skip in LBAs during phases 1-3. This number can grow during phases 1-2 to adjust to the head skipping algorithm."));
-  gtk_widget_set_tooltip_text(maxskipsize_button_label_ccc, _("Maximum number of sectors to skip in LBAs during phases 1-2. The default is calculated as drive size / 1000 or 1GB, whichever is smaller."));
+  gtk_widget_set_tooltip_text(blocksize_button_label_ccc,
+                              _("Number of logical sectors per physical sector. All reads will be aligned to this value."));
+  gtk_widget_set_tooltip_text(
+    skipsize_button_label_ccc,
+    _("Number of sectors to skip in LBAs during phases 1-3. This number can grow during phases 1-2 to adjust to the head skipping algorithm."));
+  gtk_widget_set_tooltip_text(
+    maxskipsize_button_label_ccc,
+    _("Maximum number of sectors to skip in LBAs during phases 1-2. The default is calculated as drive size / 1000 or 1GB, whichever is smaller."));
   gtk_widget_set_tooltip_text(skipthreshold_button_label_ccc, _("Number of milliseconds to wait for a read before triggering a skip in phases 1-2"));
   gtk_widget_set_tooltip_text(rateskip_button_label_ccc, _("Lowest read rate in kB/s before triggering a skip in phase 3"));
   gtk_widget_set_tooltip_text(exitonslow_button_label_ccc, _("Lowest read rate in kB/s before triggering an exit in phases 1-2"));
-  gtk_widget_set_tooltip_text(exitonslowtime_button_label_ccc, _("Number of seconds to wait for a slow read before triggering an exit in phases 1-2"));
-  gtk_widget_set_tooltip_text(sectorsize_button_label_ccc, _("Number of bytes per sector. This value will be detected automatically when choosing a source."));
-  gtk_widget_set_tooltip_text(alignment_button_label_ccc, _("Number of logical sectors to align the source to. This value will be detected automatically when choosing a source."));
+  gtk_widget_set_tooltip_text(exitonslowtime_button_label_ccc,
+                              _("Number of seconds to wait for a slow read before triggering an exit in phases 1-2"));
+  gtk_widget_set_tooltip_text(sectorsize_button_label_ccc,
+                              _("Number of bytes per sector. This value will be detected automatically when choosing a source."));
+  gtk_widget_set_tooltip_text(
+    alignment_button_label_ccc,
+    _("Number of logical sectors to align the source to. This value will be detected automatically when choosing a source."));
   gtk_widget_set_tooltip_text(maxreadrate_button_label_ccc, _("Limit for the maximum read rate in kB/s"));
 
   g_signal_connect(G_OBJECT(phase1_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PHASE1));
@@ -4016,7 +4047,8 @@ void open_clone_settings_dialog_ccc(void)
   g_signal_connect(G_OBJECT(scrape_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_SCRAPE));
   g_signal_connect(G_OBJECT(markbad_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_MARKBAD));
   g_signal_connect(G_OBJECT(readbad_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_READBAD));
-  g_signal_connect(G_OBJECT(rebuild_assist_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_REBUILDASSIST));
+  g_signal_connect(G_OBJECT(rebuild_assist_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_REBUILDASSIST));
   g_signal_connect(G_OBJECT(reverse_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_REVERSE));
   g_signal_connect(G_OBJECT(skipfast_check_button_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_SKIPFAST));
 
@@ -4087,7 +4119,8 @@ void open_advanced_settings_dialog_ccc(void)
   enable_output_sector_size_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "enable_output_sector_size_checkbutton"));
   output_sector_size_button_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "output_sector_size_button_label"));
   driver_io_scsi_only_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_io_scsi_only_checkbutton"));
-  use_physical_sector_size_for_virtual_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "use_physical_sector_size_for_virtual_checkbutton"));
+  use_physical_sector_size_for_virtual_checkbutton_ccc =
+    GTK_WIDGET(gtk_builder_get_object(builder, "use_physical_sector_size_for_virtual_checkbutton"));
   output_sector_size_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "output_sector_size_spinbutton"));
   driver_error_options_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_error_options_label"));
   driver_return_error_radio_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "driver_return_error_radio_button"));
@@ -4133,39 +4166,77 @@ void open_advanced_settings_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(driver_minimum_cluster_size_button_label_ccc), _("Virtual Disk minimum cluster read size (mode 3)"));
   gtk_label_set_text(GTK_LABEL(virtual_disk_device_name_label_ccc), _("Virtual Disk device name"));
 
-  gtk_widget_set_tooltip_text(GTK_WIDGET(no_log_backup_checkbutton_ccc), _("If checked, no log backups will be created when writing to the progess log (not recommended)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(force_mounted_checkbutton_ccc), _("Force working with the source even when it is mounted (not recommended)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(force_dangerous_checkbutton_ccc), _("Force working with the source even if it is detected that there is another drive on the same controller (not recommended)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_offset_checkbutton_ccc), _("Enable output offset adjustment. You must close and reopen the Advanced Settings to take effect."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(output_offset_button_label_ccc), _("Offset in LBAs to start writing to the destination (default -1 follows input offset)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_current_position_checkbutton_ccc), _("Enable current position adjustment. You must close and reopen the Advanced Settings to take effect."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(current_position_button_label_ccc), _("Current position in the recovery (it is not recommended to change this)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(action_on_error_label_ccc), _("A major driver error is something other than a typical read error. The Exit or Slow condition is considered a major error."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(no_log_backup_checkbutton_ccc),
+                              _("If checked, no log backups will be created when writing to the progess log (not recommended)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(force_mounted_checkbutton_ccc),
+                              _("Force working with the source even when it is mounted (not recommended)"));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(force_dangerous_checkbutton_ccc),
+    _("Force working with the source even if it is detected that there is another drive on the same controller (not recommended)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_offset_checkbutton_ccc),
+                              _("Enable output offset adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(output_offset_button_label_ccc),
+                              _("Offset in LBAs to start writing to the destination (default -1 follows input offset)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_current_position_checkbutton_ccc),
+                              _("Enable current position adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(current_position_button_label_ccc),
+                              _("Current position in the recovery (it is not recommended to change this)"));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(action_on_error_label_ccc),
+    _("A major driver error is something other than a typical read error. The Exit or Slow condition is considered a major error."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(stop_on_error_radio_button_ccc), _("Stop cloning and show an error message indicating the fault"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(call_command_radio_button_ccc), _("Call the specified command and continue cloning. If the command returns an error, the clone will be stopped."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(call_command_radio_button_ccc),
+                              _("Call the specified command and continue cloning. If the command returns an error, the clone will be stopped."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(test_command_button_ccc), _("Test the specified command"));
   gtk_widget_set_tooltip_text(GTK_WIDGET(primary_relay_on_error_radio_button_ccc), _("Activate the primary relay board and continue cloning"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_disable_radio_button_ccc), _("Disable the OS write buffer for writes to the destination. Safer in case of power loss, but slower."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_enable_radio_button_ccc), _("Enable the OS write buffer for writes to the destination. Faster, but may cause corruption in case of power loss."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_label_ccc), _("Enable or disable the OS write buffer for writes to the destination. Disabling it is safer in case of power loss, but slower."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(disable_identify_checkbutton_ccc), _("Disable the identify device command when listing source drives in Direct AHCI and IDE modes. This is to prevent a system lockup or error when listing possible source drives."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_disable_radio_button_ccc),
+                              _("Disable the OS write buffer for writes to the destination. Safer in case of power loss, but slower."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(write_buffer_enable_radio_button_ccc),
+                              _("Enable the OS write buffer for writes to the destination. Faster, but may cause corruption in case of power loss."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(write_buffer_label_ccc),
+    _("Enable or disable the OS write buffer for writes to the destination. Disabling it is safer in case of power loss, but slower."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(disable_identify_checkbutton_ccc),
+    _("Disable the identify device command when listing source drives in Direct AHCI and IDE modes. This is to prevent a system lockup or error when listing possible source drives."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(pio_mode_checkbutton_ccc), _("Use PIO instead of DMA for reading the source drive."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_rebuild_assist_checkbutton_ccc), _("Enable Rebuild Assist. The Rebuild Assist selection in the Clone settings will have no effect if this is not checked."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_process_chunk_checkbutton_ccc), _("When a bad cluster is read in Passthrough ATA or Direct modes, the ATA return data can include the LBA of the first reported bad sector for the read. When this option is selected, data up to that LBA will be read, the problem sector marked as Bad, and the rest of the chunk marked as Non-Trimmed."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_read_twice_checkbutton_ccc), _("When enabled and the soft reset timeout is exceeded when reading, after the reset a second read attempt will be performed. The second read attempt will use the Retry reset time as the soft reset time for the this second read attempt."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_retry_connecting_checkbutton_ccc), _("If the device fails to identify after a relay power cycle, enabling this option will cause a second attempt to disconnect and reconnect the device."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_scsi_write_checkbutton_ccc), _("If the destination drive sector size is not a multiple of 512, you must enable this to be able to write to the drive."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_phase_log_checkbutton_ccc), _("When enabled a log with a time and phase stamp in the name will be created at the end of every phase."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_sector_size_checkbutton_ccc), _("Enable output sector size adjustment. You must close and reopen the Advanced Settings to take effect."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(output_sector_size_button_label_ccc), _("Output sector adjustment in bytes (relative to the source sector size)"));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_io_scsi_only_checkbutton_ccc), _("Only use IO SCSI for reading the virtual disk. Normal block reads will return all zeros when this is enabled."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(use_physical_sector_size_for_virtual_checkbutton_ccc), _("This will use the physical sector size as the logical sector size when presenting the virtual disk to the operating system. The physical size is determined by the Block size setting in the Clone Settings."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(enable_rebuild_assist_checkbutton_ccc),
+    _("Enable Rebuild Assist. The Rebuild Assist selection in the Clone settings will have no effect if this is not checked."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(enable_process_chunk_checkbutton_ccc),
+    _("When a bad cluster is read in Passthrough ATA or Direct modes, the ATA return data can include the LBA of the first reported bad sector for the read. When this option is selected, data up to that LBA will be read, the problem sector marked as Bad, and the rest of the chunk marked as Non-Trimmed."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(enable_read_twice_checkbutton_ccc),
+    _("When enabled and the soft reset timeout is exceeded when reading, after the reset a second read attempt will be performed. The second read attempt will use the Retry reset time as the soft reset time for the this second read attempt."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(enable_retry_connecting_checkbutton_ccc),
+    _("If the device fails to identify after a relay power cycle, enabling this option will cause a second attempt to disconnect and reconnect the device."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(enable_scsi_write_checkbutton_ccc),
+    _("If the destination drive sector size is not a multiple of 512, you must enable this to be able to write to the drive."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_phase_log_checkbutton_ccc),
+                              _("When enabled a log with a time and phase stamp in the name will be created at the end of every phase."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(enable_output_sector_size_checkbutton_ccc),
+                              _("Enable output sector size adjustment. You must close and reopen the Advanced Settings to take effect."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(output_sector_size_button_label_ccc),
+                              _("Output sector adjustment in bytes (relative to the source sector size)"));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_io_scsi_only_checkbutton_ccc),
+                              _("Only use IO SCSI for reading the virtual disk. Normal block reads will return all zeros when this is enabled."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(use_physical_sector_size_for_virtual_checkbutton_ccc),
+    _("This will use the physical sector size as the logical sector size when presenting the virtual disk to the operating system. The physical size is determined by the Block size setting in the Clone Settings."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_error_radio_button_ccc), _("Read errors will return with a standard I/O error."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_zeros_radio_button_ccc), _("Read errors will return zero filled data."));
   gtk_widget_set_tooltip_text(GTK_WIDGET(driver_return_marked_radio_button_ccc), _("Read errors will return with mark filled data."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_error_options_label_ccc), _("Options for how the virtual disk handles read errors as presented by the recovery."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_minimum_cluster_size_button_label_ccc), _("When in virtual mode 3, this will be the minimum cluster read size. When cloning using a domain, this will also be the minimum cluster read size, so that small domain reads can be prevented if desired."));
-  gtk_widget_set_tooltip_text(GTK_WIDGET(virtual_disk_device_name_label_ccc), _("The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). Note that if you choose a name that is already in use, it will cause a system crash. Also, you should choose a conventional name with the SDx format, or some software will not find or list it."));
+  gtk_widget_set_tooltip_text(GTK_WIDGET(driver_error_options_label_ccc),
+                              _("Options for how the virtual disk handles read errors as presented by the recovery."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(driver_minimum_cluster_size_button_label_ccc),
+    _("When in virtual mode 3, this will be the minimum cluster read size. When cloning using a domain, this will also be the minimum cluster read size, so that small domain reads can be prevented if desired."));
+  gtk_widget_set_tooltip_text(
+    GTK_WIDGET(virtual_disk_device_name_label_ccc),
+    _("The name of the virtual disk in /dev. The default name is sdv (/dev/sdv). Note that if you choose a name that is already in use, it will cause a system crash. Also, you should choose a conventional name with the SDx format, or some software will not find or list it."));
 
   if (!advanced_settings_ccc.enable_output_offset)
   {
@@ -4185,20 +4256,33 @@ void open_advanced_settings_dialog_ccc(void)
 
   g_signal_connect(G_OBJECT(no_log_backup_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_NOLOGBACK));
   g_signal_connect(G_OBJECT(force_mounted_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_FORCE));
-  g_signal_connect(G_OBJECT(force_dangerous_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_FORCEDANGEROUS));
-  g_signal_connect(G_OBJECT(enable_output_offset_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_OFFSET));
-  g_signal_connect(G_OBJECT(enable_current_position_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_POSITION));
-  g_signal_connect(G_OBJECT(disable_identify_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_DONTIDENTIFY));
+  g_signal_connect(G_OBJECT(force_dangerous_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_FORCEDANGEROUS));
+  g_signal_connect(G_OBJECT(enable_output_offset_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_OFFSET));
+  g_signal_connect(G_OBJECT(enable_current_position_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_POSITION));
+  g_signal_connect(G_OBJECT(disable_identify_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_DONTIDENTIFY));
   g_signal_connect(G_OBJECT(pio_mode_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_PIOMODE));
-  g_signal_connect(G_OBJECT(enable_rebuild_assist_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEREBUILDASSIST));
-  g_signal_connect(G_OBJECT(enable_process_chunk_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEPROCESSCHUNK));
-  g_signal_connect(G_OBJECT(enable_read_twice_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEREADTWICE));
-  g_signal_connect(G_OBJECT(enable_retry_connecting_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLERETRYCONNECTING));
-  g_signal_connect(G_OBJECT(enable_scsi_write_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLESCSIWRITE));
-  g_signal_connect(G_OBJECT(enable_phase_log_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEPHASELOGS));
-  g_signal_connect(G_OBJECT(enable_output_sector_size_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_ENABLEOUTPUTSECTOR));
-  g_signal_connect(G_OBJECT(driver_io_scsi_only_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_IOSCSIONLY));
-  g_signal_connect(G_OBJECT(use_physical_sector_size_for_virtual_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc), GINT_TO_POINTER(BUTTONID_USEPHYSICALSECTORSIZE));
+  g_signal_connect(G_OBJECT(enable_rebuild_assist_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLEREBUILDASSIST));
+  g_signal_connect(G_OBJECT(enable_process_chunk_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLEPROCESSCHUNK));
+  g_signal_connect(G_OBJECT(enable_read_twice_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLEREADTWICE));
+  g_signal_connect(G_OBJECT(enable_retry_connecting_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLERETRYCONNECTING));
+  g_signal_connect(G_OBJECT(enable_scsi_write_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLESCSIWRITE));
+  g_signal_connect(G_OBJECT(enable_phase_log_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLEPHASELOGS));
+  g_signal_connect(G_OBJECT(enable_output_sector_size_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_ENABLEOUTPUTSECTOR));
+  g_signal_connect(G_OBJECT(driver_io_scsi_only_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_IOSCSIONLY));
+  g_signal_connect(G_OBJECT(use_physical_sector_size_for_virtual_checkbutton_ccc), "toggled", G_CALLBACK(set_state_from_button_ccc),
+                   GINT_TO_POINTER(BUTTONID_USEPHYSICALSECTORSIZE));
 
   load_advanced_settings_ccc();
   gtk_entry_set_text(GTK_ENTRY(command_to_call_text_ccc), advanced_settings_ccc.command_to_call);
@@ -4300,7 +4384,8 @@ void open_timer_settings_dialog_ccc(void)
   g_object_unref(builder);
 
   gtk_label_set_text(GTK_LABEL(timer_settings_label_ccc), "");
-  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc), _("These timer settings are only for the Direct modes.\nThey have no effect with the Passthrough modes.\n"));
+  gtk_label_set_text(GTK_LABEL(timer_settings_info_label_ccc),
+                     _("These timer settings are only for the Direct modes.\nThey have no effect with the Passthrough modes.\n"));
   gtk_label_set_text(GTK_LABEL(initial_busy_wait_time_button_label_ccc), _("Initial busy wait time (ms)"));
   gtk_label_set_text(GTK_LABEL(busy_wait_time_button_label_ccc), _("Busy wait time (ms)"));
   gtk_label_set_text(GTK_LABEL(soft_reset_time_button_label_ccc), _("Soft reset time (ms)"));
@@ -4433,8 +4518,10 @@ int open_ports_dialog_ccc(char *current_ports)
 
   new_ports_ccc[0] = '\0';
   char portsinfo[4096] = "";
-  snprintf(portsinfo, sizeof(portsinfo), "%s%s", _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"),
-           _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
+  snprintf(
+    portsinfo, sizeof(portsinfo), "%s%s",
+    _("Disable ports for AHCI mode to hide a drive from the operating system.\nWarning! If you disable the port for the operating system drive,\nthe system will not be able to boot!\n"),
+    _("Enter the ports you wish to be disabled as integers separated by spaces.\nIt is best that the port numbers are in order from lowest to highest.\nYou can find port information by listing source drives in AHCI mode.\n"));
   gtk_label_set_text(GTK_LABEL(disable_ports_info_label_ccc), portsinfo);
   gtk_label_set_text(GTK_LABEL(disable_ports_label_ccc), _("Disable Ports"));
   gtk_label_set_text(GTK_LABEL(current_ports_label_ccc), _("Current disabled ports (GRUB data)"));
@@ -4503,12 +4590,12 @@ int set_lun_dialog_ccc(int max_lun)
 
 // Preset status poll rates for the Asclepius poller thread. The millisecond
 // value itself is persisted, so reordering this list cannot corrupt a config.
-static const unsigned int asclepius_poll_intervals_ccc[] = { 25, 50, 100, 200, 500, 1000, 2000, 5000 };
+static const unsigned int asclepius_poll_intervals_ccc[] = {25, 50, 100, 200, 500, 1000, 2000, 5000};
 #define ASCLEPIUS_NUM_POLL_INTERVALS (sizeof(asclepius_poll_intervals_ccc) / sizeof(asclepius_poll_intervals_ccc[0]))
 
 // Preset software OCP trip limits in mA. As with the poll rate, the mA value
 // is persisted rather than an index into this table.
-static const unsigned int asclepius_ocp_limits_ccc[] = { 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500 };
+static const unsigned int asclepius_ocp_limits_ccc[] = {500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500};
 #define ASCLEPIUS_NUM_OCP_LIMITS (sizeof(asclepius_ocp_limits_ccc) / sizeof(asclepius_ocp_limits_ccc[0]))
 
 // Index of the first preset at or above value, clamped into the table
@@ -4533,13 +4620,13 @@ void update_primary_relay_board_type_visibility_ccc(void)
 {
   bool asclepius = primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
 
-  for(int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
-    if(primary_relay_generic_frames_ccc[i] != NULL)
+    if (primary_relay_generic_frames_ccc[i] != NULL)
     {
       gtk_widget_set_visible(primary_relay_generic_frames_ccc[i], !asclepius);
     }
-    if(primary_relay_asclepius_frames_ccc[i] != NULL)
+    if (primary_relay_asclepius_frames_ccc[i] != NULL)
     {
       gtk_widget_set_visible(primary_relay_asclepius_frames_ccc[i], asclepius);
     }
@@ -4547,11 +4634,11 @@ void update_primary_relay_board_type_visibility_ccc(void)
 
   // The relay buttons only work when the selected board is actually reachable.
   bool connected = primary_relay_board_is_connected_ccc(primary_relay_board_type_ccc);
-  if(activate_primary_relay_button_ccc != NULL)
+  if (activate_primary_relay_button_ccc != NULL)
   {
     gtk_widget_set_sensitive(activate_primary_relay_button_ccc, connected);
   }
-  if(deactivate_primary_relay_button_ccc != NULL)
+  if (deactivate_primary_relay_button_ccc != NULL)
   {
     gtk_widget_set_sensitive(deactivate_primary_relay_button_ccc, connected);
   }
@@ -4561,12 +4648,12 @@ static void update_primary_relay_connection_summary_ccc(void)
 {
   char summary[512];
 
-  if(data_current_relay_board_a_ccc == NULL)
+  if (data_current_relay_board_a_ccc == NULL)
   {
     return;
   }
 
-  if(primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS)
+  if (primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS)
   {
     snprintf(summary, sizeof(summary), _("Asclepius\nConnection: %s\nControl port: %s"),
              asclepius_get_connection_status() ? _("Connected") : _("Disconnected"),
@@ -4574,8 +4661,7 @@ static void update_primary_relay_connection_summary_ccc(void)
   }
   else
   {
-    snprintf(summary, sizeof(summary), _("USB relay\nConnection: %s"),
-             usbr1_chosen_ccc ? _("Selected") : _("Not selected"));
+    snprintf(summary, sizeof(summary), _("USB relay\nConnection: %s"), usbr1_chosen_ccc ? _("Selected") : _("Not selected"));
   }
 
   gtk_label_set_text(GTK_LABEL(data_current_relay_board_a_ccc), summary);
@@ -4586,14 +4672,14 @@ void on_primary_relay_board_type_changed_ccc(GtkWidget *button, gpointer data)
   (void)data;
 
   // Both radios fire this handler, so only act on the one that became active.
-  if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+  if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
   {
     return;
   }
 
   int board_type = PRIMARY_RELAY_BOARD_GENERIC;
 
-  if(button == primary_relay_board_asclepius_radio_ccc)
+  if (button == primary_relay_board_asclepius_radio_ccc)
   {
     board_type = PRIMARY_RELAY_BOARD_ASCLEPIUS;
   }
@@ -4707,7 +4793,7 @@ void open_primary_relay_dialog_ccc(void)
     GtkWidget *ports_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ports_button"));
     if (ports_btn)
     {
-      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer)"asclepius_tty_device_text");
+      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer) "asclepius_tty_device_text");
       g_signal_connect(ports_btn, "clicked", G_CALLBACK(on_asclepius_ports_clicked_ccc), NULL);
     }
   }
@@ -4736,19 +4822,19 @@ void open_primary_relay_dialog_ccc(void)
   // The caption lives in the frame's label child, not the frame itself.
   // Passing the GtkFrame to gtk_label_set_text() only trips an assertion and
   // leaves the untranslated glade string in place.
-  if(primary_relay_board_type_frame_label_ccc != NULL)
+  if (primary_relay_board_type_frame_label_ccc != NULL)
   {
     gtk_label_set_text(GTK_LABEL(primary_relay_board_type_frame_label_ccc), _("Relay board in use"));
   }
-  if(primary_relay_board_type_label_ccc != NULL)
+  if (primary_relay_board_type_label_ccc != NULL)
   {
     gtk_label_set_text(GTK_LABEL(primary_relay_board_type_label_ccc), _("Board type"));
   }
-  if(primary_relay_board_generic_radio_ccc != NULL)
+  if (primary_relay_board_generic_radio_ccc != NULL)
   {
     gtk_button_set_label(GTK_BUTTON(primary_relay_board_generic_radio_ccc), _("USB relay"));
   }
-  if(primary_relay_board_asclepius_radio_ccc != NULL)
+  if (primary_relay_board_asclepius_radio_ccc != NULL)
   {
     gtk_button_set_label(GTK_BUTTON(primary_relay_board_asclepius_radio_ccc), _("Asclepius"));
   }
@@ -4795,7 +4881,7 @@ void open_primary_relay_dialog_ccc(void)
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_ocp_limit_usb_combobox_ccc), limit_text);
   }
 
-  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
+  GtkWidget *action_combos[] = {asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc};
   for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
   {
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Off"));
@@ -4823,7 +4909,7 @@ void open_primary_relay_dialog_ccc(void)
     // which stores the choice and shows the matching settings section.
     bool asclepius = primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
     GtkWidget *target = asclepius ? primary_relay_board_asclepius_radio_ccc : primary_relay_board_generic_radio_ccc;
-    if(target != NULL)
+    if (target != NULL)
     {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(target), TRUE);
     }
@@ -4906,8 +4992,8 @@ void update_primary_relay_settings_from_buttons_ccc(void)
     }
   }
 
-  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
-  GtkWidget *limit_combos[] = { asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc };
+  GtkWidget *action_combos[] = {asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc};
+  GtkWidget *limit_combos[] = {asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc};
   size_t i;
 
   for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
@@ -5083,7 +5169,7 @@ int cycle_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(relay_controls_use_asclepius_ccc())
+  if (relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -5176,7 +5262,9 @@ void update_ports_ccc(void)
   strcpy(new_ports_ccc, "libata.force=");
   int first = 1;
   int count = 0;
-  int scanline = sscanf(line, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", rawport[0], rawport[1], rawport[2], rawport[3], rawport[4], rawport[5], rawport[6], rawport[7], rawport[8], rawport[9], rawport[10], rawport[11], rawport[12], rawport[13], rawport[14], rawport[15]);
+  int scanline =
+    sscanf(line, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", rawport[0], rawport[1], rawport[2], rawport[3], rawport[4], rawport[5],
+           rawport[6], rawport[7], rawport[8], rawport[9], rawport[10], rawport[11], rawport[12], rawport[13], rawport[14], rawport[15]);
   while (scanline > 0)
   {
     unsigned int port = strtoull(rawport[count], NULL, 0);
@@ -5417,7 +5505,8 @@ static void set_asclepius_soft_ocp_tooltip_ccc(GtkWidget *icon, const char *rail
 {
   char tooltip[128];
 
-  snprintf(tooltip, sizeof(tooltip), _("%s Channel - Software OCP tripped at %.2fA (limit %.2fA%s)"), rail_name, (float)ocp->trip_ma / 1000, (float)ocp->limit_ma / 1000, ocp->action == ASCLEPIUS_OCP_CUT ? ", channel off" : "");
+  snprintf(tooltip, sizeof(tooltip), _("%s Channel - Software OCP tripped at %.2fA (limit %.2fA%s)"), rail_name, (float)ocp->trip_ma / 1000,
+           (float)ocp->limit_ma / 1000, ocp->action == ASCLEPIUS_OCP_CUT ? ", channel off" : "");
 
   gtk_image_set_from_file(GTK_IMAGE(icon), error_icon_on_path);
   gtk_widget_set_tooltip_text(icon, tooltip);
@@ -5488,7 +5577,7 @@ void update_asclepius_status(void)
       gtk_widget_set_tooltip_text(asclepius_12v_icon, _("12V Channel - Overcurrent Detected!"));
     }
 
-    if(status.main5v_enabled)
+    if (status.main5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_5v_icon), status_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Active"));
@@ -5521,7 +5610,7 @@ void update_asclepius_status(void)
       gtk_widget_set_tooltip_text(asclepius_5v_icon, _("5V Channel - Overcurrent Detected!"));
     }
 
-    if(status.usb5v_enabled)
+    if (status.usb5v_enabled)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), status_icon_on_path);
       gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Active"));
@@ -5551,7 +5640,7 @@ void update_asclepius_status(void)
     if (status.usb5v_ocp)
     {
       gtk_image_set_from_file(GTK_IMAGE(asclepius_usb_icon), error_icon_on_path);
-        gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Overcurrent Detected"));
+      gtk_widget_set_tooltip_text(asclepius_usb_icon, _("USB 5V Channel - Overcurrent Detected"));
     }
 
     char temp[16];
@@ -5700,7 +5789,8 @@ void update_advanced_button_settings_ccc(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_phase_log_checkbutton_ccc), advanced_settings_ccc.enable_phase_log);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_output_sector_size_checkbutton_ccc), advanced_settings_ccc.enable_output_sector_size);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(driver_io_scsi_only_checkbutton_ccc), advanced_settings_ccc.driver_io_scsi_only);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_physical_sector_size_for_virtual_checkbutton_ccc), advanced_settings_ccc.use_physical_sector_size_for_virtual);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(use_physical_sector_size_for_virtual_checkbutton_ccc),
+                               advanced_settings_ccc.use_physical_sector_size_for_virtual);
 
   gtk_adjustment_ccc = (GtkAdjustment *)gtk_adjustment_new(0, -1, 0x7fffffffffffffff, 1, 100, 0);
   gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(output_offset_spinbutton_ccc), gtk_adjustment_ccc);
@@ -5867,13 +5957,17 @@ void update_primary_relay_button_settings_ccc(void)
 
   if (asclepius_poll_interval_combobox_ccc)
   {
-    gtk_combo_box_set_active(GTK_COMBO_BOX(asclepius_poll_interval_combobox_ccc), asclepius_preset_index_ccc(asclepius_poll_intervals_ccc, ASCLEPIUS_NUM_POLL_INTERVALS, primary_relay_settings_ccc.asclepius_poll_interval_ms));
+    gtk_combo_box_set_active(
+      GTK_COMBO_BOX(asclepius_poll_interval_combobox_ccc),
+      asclepius_preset_index_ccc(asclepius_poll_intervals_ccc, ASCLEPIUS_NUM_POLL_INTERVALS, primary_relay_settings_ccc.asclepius_poll_interval_ms));
   }
 
-  GtkWidget *action_combos[] = { asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc };
-  int actions[] = { primary_relay_settings_ccc.asclepius_ocp_action_12v, primary_relay_settings_ccc.asclepius_ocp_action_5v, primary_relay_settings_ccc.asclepius_ocp_action_usb };
-  GtkWidget *limit_combos[] = { asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc };
-  unsigned int limits[] = { primary_relay_settings_ccc.asclepius_ocp_limit_12v, primary_relay_settings_ccc.asclepius_ocp_limit_5v, primary_relay_settings_ccc.asclepius_ocp_limit_usb };
+  GtkWidget *action_combos[] = {asclepius_ocp_action_12v_combobox_ccc, asclepius_ocp_action_5v_combobox_ccc, asclepius_ocp_action_usb_combobox_ccc};
+  int actions[] = {primary_relay_settings_ccc.asclepius_ocp_action_12v, primary_relay_settings_ccc.asclepius_ocp_action_5v,
+                   primary_relay_settings_ccc.asclepius_ocp_action_usb};
+  GtkWidget *limit_combos[] = {asclepius_ocp_limit_12v_combobox_ccc, asclepius_ocp_limit_5v_combobox_ccc, asclepius_ocp_limit_usb_combobox_ccc};
+  unsigned int limits[] = {primary_relay_settings_ccc.asclepius_ocp_limit_12v, primary_relay_settings_ccc.asclepius_ocp_limit_5v,
+                           primary_relay_settings_ccc.asclepius_ocp_limit_usb};
   size_t i;
 
   for (i = 0; i < sizeof(action_combos) / sizeof(action_combos[0]); i++)
@@ -5884,7 +5978,8 @@ void update_primary_relay_button_settings_ccc(void)
     }
     if (limit_combos[i])
     {
-      gtk_combo_box_set_active(GTK_COMBO_BOX(limit_combos[i]), asclepius_preset_index_ccc(asclepius_ocp_limits_ccc, ASCLEPIUS_NUM_OCP_LIMITS, limits[i]));
+      gtk_combo_box_set_active(GTK_COMBO_BOX(limit_combos[i]),
+                               asclepius_preset_index_ccc(asclepius_ocp_limits_ccc, ASCLEPIUS_NUM_OCP_LIMITS, limits[i]));
     }
   }
 
@@ -6109,7 +6204,9 @@ void do_reset_status_ccc(void)
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(_("Reset Current Status"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window =
+    gtk_dialog_new_with_buttons(_("Reset Current Status"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
   GtkWidget *new_label = gtk_label_new(_("This will reset the current log status to Phase1,\n and current position to 0,\n and reset all skip data"));
@@ -6140,10 +6237,12 @@ void do_reset_log_status_ccc(void)
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(_("Reset Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window = gtk_dialog_new_with_buttons(_("Reset Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                  GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
-  GtkWidget *new_label = gtk_label_new(_("This will reset the position to 0, \nthe current status to non-tried, \nand will change all unfinished blocks \nin the log to a status of non-tried. \nThis will also reset all skipping data."));
+  GtkWidget *new_label = gtk_label_new(_(
+    "This will reset the position to 0, \nthe current status to non-tried, \nand will change all unfinished blocks \nin the log to a status of non-tried. \nThis will also reset all skipping data."));
   // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(new_dialog_window)->vbox), new_label, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(new_dialog_window))), new_label, TRUE, TRUE, 0);
 
@@ -6189,10 +6288,12 @@ void do_repair_log_ccc(void)
     return;
   }
   GtkWidget *new_dialog_window;
-  new_dialog_window = gtk_dialog_new_with_buttons(_("Repair Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  new_dialog_window = gtk_dialog_new_with_buttons(_("Repair Log"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                                  GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   // gtk_widget_set_size_request (new_dialog_window, 400, 200);
 
-  GtkWidget *new_label = gtk_label_new(_("This will repair the current progress log in memory. \nIt is recommended to make a backup copy of the log before repairing."));
+  GtkWidget *new_label =
+    gtk_label_new(_("This will repair the current progress log in memory. \nIt is recommended to make a backup copy of the log before repairing."));
   // gtk_box_pack_start (GTK_BOX (GTK_DIALOG(new_dialog_window)->vbox), new_label, TRUE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(new_dialog_window))), new_label, TRUE, TRUE, 0);
 
@@ -6215,7 +6316,9 @@ void do_repair_log_ccc(void)
     int ret = check_and_repair_log_ccc();
     if (check_log_ccc() || ret)
     {
-      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
+      snprintf(
+        tempmessage_ccc, TEMP_MESSAGE_SIZE,
+        _("The log file has errors!\nThe log file will need to be repaired before it can be used.\nPlease reference console messages for more information.\n"));
       message_error_ccc(tempmessage_ccc);
       print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
       clear_error_message_ccc();
@@ -6257,7 +6360,9 @@ void choose_primary_usb_ccc(void)
 {
   find_all_usb_devices_ccc();
 
-  choose_usb_dialog_window_ccc = gtk_dialog_new_with_buttons(_("Choose USB Relay"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
+  choose_usb_dialog_window_ccc =
+    gtk_dialog_new_with_buttons(_("Choose USB Relay"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_STOCK_OK,
+                                GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
   gtk_container_set_border_width(GTK_CONTAINER(choose_usb_dialog_window_ccc), 0);
   gtk_widget_set_size_request(choose_usb_dialog_window_ccc, 600, 400);
 
@@ -6278,7 +6383,8 @@ void choose_primary_usb_ccc(void)
     if (usb_known_relay_ccc[i])
     {
       char button_label[MAX_BUTTON_LABEL_SIZE] = "";
-      snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%04x:%04x %s %s %s\n", usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i], usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
+      snprintf(button_label, MAX_BUTTON_LABEL_SIZE, "%04x:%04x %s %s %s\n", usb_vendor_id_ccc[i], usb_product_id_ccc[i], usb_vendor_string_ccc[i],
+               usb_product_string_ccc[i], usb_extra_id_string_ccc[i]);
       button[i] = gtk_button_new_with_label(button_label);
       gtk_button_set_alignment(GTK_BUTTON(button[i]), 0, .5);
       g_signal_connect(button[i], "clicked", G_CALLBACK(get_usb_from_button_ccc), GINT_TO_POINTER(i));
@@ -6308,7 +6414,8 @@ void choose_primary_usb_ccc(void)
       usbr1_chosen_ccc = 1;
       logfile_changed_ccc = true;
       char name[MAX_RELAY_NAME_LENGTH];
-      snprintf(name, MAX_RELAY_NAME_LENGTH, "%04x:%04x %s %s %s\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc, usbr1_vendor_string_ccc, usbr1_product_string_ccc, usbr1_extra_id_string_ccc);
+      snprintf(name, MAX_RELAY_NAME_LENGTH, "%04x:%04x %s %s %s\n", usbr1_vendor_id_ccc, usbr1_product_id_ccc, usbr1_vendor_string_ccc,
+               usbr1_product_string_ccc, usbr1_extra_id_string_ccc);
       strcpy(primary_relay_settings_ccc.primary_relay_name, name);
       strcpy(primary_relay_name_ccc, name);
       // Choosing a generic relay makes it the board the relay controls drive,
@@ -6377,7 +6484,7 @@ void do_activate_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(relay_controls_use_asclepius_ccc())
+  if (relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -6486,7 +6593,7 @@ void do_deactivate_primary_relay_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(relay_controls_use_asclepius_ccc())
+  if (relay_controls_use_asclepius_ccc())
   {
     if (asclepius_enable_channel(asclepius_relay_source) != 0)
     {
@@ -6615,7 +6722,7 @@ void do_activate_primary_relay_main_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(relay_controls_use_asclepius_ccc())
+  if (relay_controls_use_asclepius_ccc())
   {
     if (asclepius_disable_channel(asclepius_relay_source) != 0)
     {
@@ -6658,7 +6765,7 @@ void do_deactivate_primary_relay_main_ccc(void)
     asclepius_relay_source = ASCLEPIUS_ALL;
   }
 
-  if(relay_controls_use_asclepius_ccc())
+  if (relay_controls_use_asclepius_ccc())
   {
     if (asclepius_enable_channel(asclepius_relay_source) != 0)
     {
@@ -6732,12 +6839,12 @@ void open_in_oscviewer_ccc(void)
   }
   else
   {
-  snprintf(temp, sizeof(temp), "%s/oscviewer -l %s", OSC_INSTALL_PATH, log_file_ccc);
+    snprintf(temp, sizeof(temp), "%s/oscviewer -l %s", OSC_INSTALL_PATH, log_file_ccc);
   }
   g_spawn_command_line_async(temp, NULL);
 }
 
-void read_config_file_with_name_ccc(char* filename)
+void read_config_file_with_name_ccc(char *filename)
 {
   FILE *config_file = fopen(filename, "r");
   if (config_file == NULL)
@@ -6787,7 +6894,6 @@ void read_config_file_with_name_ccc(char* filename)
   group = config_setting_get_member(root, "clone");
   if (group != NULL)
   {
-  
     setting = config_setting_get_member(group, "no_phase1");
     if (setting != NULL)
     {
@@ -6884,7 +6990,8 @@ void read_config_file_with_name_ccc(char* filename)
       clone_settings_ccc.input_offset = config_setting_get_int64(setting);
     }
 
-    setting = config_setting_get_member(group, "read_size");;
+    setting = config_setting_get_member(group, "read_size");
+    ;
     if (setting != NULL)
     {
       clone_settings_ccc.read_size = config_setting_get_int64(setting);
@@ -6985,7 +7092,8 @@ void read_config_file_with_name_ccc(char* filename)
       advanced_settings_ccc.no_log_backup = config_setting_get_bool(setting);
     }
 
-    setting = config_setting_get_member(group, "enable_output_offset");;
+    setting = config_setting_get_member(group, "enable_output_offset");
+    ;
     if (setting != NULL)
     {
       advanced_settings_ccc.enable_output_offset = config_setting_get_bool(setting);
@@ -7028,7 +7136,8 @@ void read_config_file_with_name_ccc(char* filename)
       advanced_settings_ccc.call_command = config_setting_get_bool(setting);
     }
 
-    setting = config_setting_get_member(group, "activate_primary_relay");;
+    setting = config_setting_get_member(group, "activate_primary_relay");
+    ;
     if (setting != NULL)
     {
       advanced_settings_ccc.activate_primary_relay = config_setting_get_bool(setting);
@@ -7346,7 +7455,8 @@ void read_config_file_with_name_ccc(char* filename)
       primary_relay_settings_ccc.activate_primary_relay4 = config_setting_get_bool(setting);
     }
 
-    setting = config_setting_get_member(group, "activate_primary_relay5");;
+    setting = config_setting_get_member(group, "activate_primary_relay5");
+    ;
     if (setting != NULL)
     {
       primary_relay_settings_ccc.activate_primary_relay5 = config_setting_get_bool(setting);
@@ -7532,20 +7642,16 @@ void read_config_file_with_name_ccc(char* filename)
 void read_config_file_ccc(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new(_("Load Settings File"),
-                                        GTK_WINDOW(main_window_ccc),
-                                        GTK_FILE_CHOOSER_ACTION_OPEN,
-                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                        NULL);
-  
+  dialog = gtk_file_chooser_dialog_new(_("Load Settings File"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), template_directory);
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
     char *filename;
     filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    
+
     read_config_file_with_name_ccc(filename);
 
     g_free(filename);
@@ -7553,7 +7659,7 @@ void read_config_file_ccc(void)
   gtk_widget_destroy(dialog);
 }
 
-void write_config_file_with_name_ccc(char* filename)
+void write_config_file_with_name_ccc(char *filename)
 {
   FILE *config_file = fopen(filename, "w");
   if (config_file == NULL)
@@ -7956,19 +8062,15 @@ void write_config_file_with_name_ccc(char* filename)
 void write_config_file_ccc(void)
 {
   GtkWidget *dialog;
-  dialog = gtk_file_chooser_dialog_new(_("Save Settings File As"),
-                                        GTK_WINDOW(main_window_ccc),
-                                        GTK_FILE_CHOOSER_ACTION_SAVE,
-                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                        NULL);
+  dialog = gtk_file_chooser_dialog_new(_("Save Settings File As"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), template_directory);
 
   char defaultfilename[1024];
   snprintf(defaultfilename, sizeof(defaultfilename), "%s.cfg", current_source_model_ccc);
   gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), defaultfilename);
-  
+
   gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
@@ -7993,10 +8095,7 @@ void check_source_against_templates_ccc(void)
   if (access(filename, F_OK) != -1)
   {
     GtkWidget *dialog;
-    dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
-                                    GTK_DIALOG_DESTROY_WITH_PARENT,
-                                    GTK_MESSAGE_QUESTION,
-                                    GTK_BUTTONS_YES_NO,
+    dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
                                     _("Source was detected as %s.\nLoad optimized settings for this drive?"), current_source_model_ccc);
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -8012,10 +8111,7 @@ void check_source_against_templates_ccc(void)
   else if (identify_device_data_ccc.solid_state_drive)
   {
     GtkWidget *dialog;
-    dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc),
-                                    GTK_DIALOG_DESTROY_WITH_PARENT,
-                                    GTK_MESSAGE_QUESTION,
-                                    GTK_BUTTONS_YES_NO,
+    dialog = gtk_message_dialog_new(GTK_WINDOW(main_window_ccc), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
                                     _("Source was detected as a solid state drive.\nLoad optimized settings for SSDs?"));
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -8065,21 +8161,25 @@ typedef enum
   EXT_EOL_CRLF = 3
 } ext_eol_t;
 
-#define EXT_TAG_TS    "ext_tag_ts"
-#define EXT_TAG_INF   "ext_tag_inf"
-#define EXT_TAG_SND   "ext_tag_snd"
-#define EXT_TAG_RCV   "ext_tag_rcv"
-#define EXT_TAG_ERR   "ext_tag_err"
+#define EXT_TAG_TS "ext_tag_ts"
+#define EXT_TAG_INF "ext_tag_inf"
+#define EXT_TAG_SND "ext_tag_snd"
+#define EXT_TAG_RCV "ext_tag_rcv"
+#define EXT_TAG_ERR "ext_tag_err"
 #define EXT_TAG_SCRIPT "ext_tag_script"
 #define EXT_TERMINAL_MAX_LOG_CHARS (1024 * 1024)
 #define EXT_TERMINAL_HISTORY_MAX 32
 
 static const char *ext_prefix_tag(const char *prefix)
 {
-  if (strncmp(prefix, "INF:", 4) == 0) return EXT_TAG_INF;
-  if (strncmp(prefix, "SND:", 4) == 0) return EXT_TAG_SND;
-  if (strncmp(prefix, "RCV:", 4) == 0) return EXT_TAG_RCV;
-  if (strncmp(prefix, "ERR:", 4) == 0) return EXT_TAG_ERR;
+  if (strncmp(prefix, "INF:", 4) == 0)
+    return EXT_TAG_INF;
+  if (strncmp(prefix, "SND:", 4) == 0)
+    return EXT_TAG_SND;
+  if (strncmp(prefix, "RCV:", 4) == 0)
+    return EXT_TAG_RCV;
+  if (strncmp(prefix, "ERR:", 4) == 0)
+    return EXT_TAG_ERR;
   return NULL;
 }
 
@@ -8094,7 +8194,7 @@ static void ext_trim_terminal_log(GtkTextBuffer *buf)
 {
   int count = gtk_text_buffer_get_char_count(buf);
 
-  if(count <= EXT_TERMINAL_MAX_LOG_CHARS)
+  if (count <= EXT_TERMINAL_MAX_LOG_CHARS)
   {
     return;
   }
@@ -8149,14 +8249,14 @@ static void append_ext_terminal_line(GtkWidget *textview, const char *prefix, co
 static void update_ext_status(GtkWidget *dialog)
 {
   GtkWidget *label = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_status_label"));
-  if (!label) return;
+  if (!label)
+    return;
   unsigned int rx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_rx_count"));
   unsigned int tx = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_tx_count"));
   char text[320];
   if (asclepius_ext_connected)
   {
-    snprintf(text, sizeof(text), _("%s @ %d  |  RX: %u  TX: %u"),
-             asclepius_ext_tty_device_ccc, asclepius_ext_baud_rate_ccc, rx, tx);
+    snprintf(text, sizeof(text), _("%s @ %d  |  RX: %u  TX: %u"), asclepius_ext_tty_device_ccc, asclepius_ext_baud_rate_ccc, rx, tx);
   }
   else
   {
@@ -8171,16 +8271,16 @@ static gboolean on_ext_terminal_entry_key_press(GtkWidget *entry, GdkEventKey *e
   GPtrArray *history = g_object_get_data(G_OBJECT(dialog), "ext_command_history");
   guint history_index;
 
-  if(history == NULL || history->len == 0)
+  if (history == NULL || history->len == 0)
   {
     return FALSE;
   }
 
   history_index = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_history_index"));
 
-  if(event->keyval == GDK_KEY_Up)
+  if (event->keyval == GDK_KEY_Up)
   {
-    if(history_index > 0)
+    if (history_index > 0)
     {
       history_index--;
     }
@@ -8190,9 +8290,9 @@ static gboolean on_ext_terminal_entry_key_press(GtkWidget *entry, GdkEventKey *e
     return TRUE;
   }
 
-  if(event->keyval == GDK_KEY_Down)
+  if (event->keyval == GDK_KEY_Down)
   {
-    if(history_index + 1 < history->len)
+    if (history_index + 1 < history->len)
     {
       history_index++;
       gtk_entry_set_text(GTK_ENTRY(entry), g_ptr_array_index(history, history_index));
@@ -8214,18 +8314,18 @@ static void ext_terminal_history_add(GtkWidget *dialog, const char *text)
 {
   GPtrArray *history = g_object_get_data(G_OBJECT(dialog), "ext_command_history");
 
-  if(history == NULL || text == NULL || text[0] == '\0')
+  if (history == NULL || text == NULL || text[0] == '\0')
   {
     return;
   }
 
-  if(history->len > 0 && strcmp(g_ptr_array_index(history, history->len - 1), text) == 0)
+  if (history->len > 0 && strcmp(g_ptr_array_index(history, history->len - 1), text) == 0)
   {
     g_object_set_data(G_OBJECT(dialog), "ext_history_index", GUINT_TO_POINTER(history->len));
     return;
   }
 
-  if(history->len >= EXT_TERMINAL_HISTORY_MAX)
+  if (history->len >= EXT_TERMINAL_HISTORY_MAX)
   {
     g_ptr_array_remove_index(history, 0);
   }
@@ -8279,13 +8379,8 @@ void on_ext_terminal_save_ccc(GtkWidget *button)
   GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
   GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
 
-  GtkWidget *fc = gtk_file_chooser_dialog_new(
-      _("Save Log"),
-      GTK_WINDOW(dialog),
-      GTK_FILE_CHOOSER_ACTION_SAVE,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-      NULL);
+  GtkWidget *fc = gtk_file_chooser_dialog_new(_("Save Log"), GTK_WINDOW(dialog), GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                              GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
 
   {
     char default_name[64];
@@ -8310,12 +8405,8 @@ void on_ext_terminal_save_ccc(GtkWidget *button)
     }
     else
     {
-      GtkWidget *err = gtk_message_dialog_new(
-          GTK_WINDOW(dialog),
-          GTK_DIALOG_DESTROY_WITH_PARENT,
-          GTK_MESSAGE_ERROR,
-          GTK_BUTTONS_OK,
-          _("Failed to save log:\n%s"), strerror(errno));
+      GtkWidget *err = gtk_message_dialog_new(GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+                                              _("Failed to save log:\n%s"), strerror(errno));
       gtk_dialog_run(GTK_DIALOG(err));
       gtk_widget_destroy(err);
     }
@@ -8430,24 +8521,24 @@ void on_ext_terminal_send_ccc(GtkWidget *sender)
   }
 
   int eol = eol_combo ? gtk_combo_box_get_active(GTK_COMBO_BOX(eol_combo)) : EXT_EOL_NONE;
-  if(eol < EXT_EOL_NONE || eol > EXT_EOL_CRLF)
+  if (eol < EXT_EOL_NONE || eol > EXT_EOL_CRLF)
   {
     eol = EXT_EOL_NONE;
   }
 
-  if(eol == EXT_EOL_LF || eol == EXT_EOL_CR || eol == EXT_EOL_CRLF)
+  if (eol == EXT_EOL_LF || eol == EXT_EOL_CR || eol == EXT_EOL_CRLF)
   {
-    if(len >= (int)sizeof(parsed) - (eol == EXT_EOL_CRLF ? 2 : 1))
+    if (len >= (int)sizeof(parsed) - (eol == EXT_EOL_CRLF ? 2 : 1))
     {
       append_ext_terminal_line(textview, "ERR:", _("Command is too long with the selected line ending"));
       return;
     }
 
-    if(eol == EXT_EOL_LF)
+    if (eol == EXT_EOL_LF)
     {
       parsed[len++] = '\n';
     }
-    else if(eol == EXT_EOL_CR)
+    else if (eol == EXT_EOL_CR)
     {
       parsed[len++] = '\r';
     }
@@ -8667,14 +8758,16 @@ void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
 
     // Sync struct for config persistence
     primary_relay_settings_ccc.asclepius_ext_baud_rate = asclepius_ext_baud_rate_ccc;
-    snprintf(primary_relay_settings_ccc.asclepius_ext_tty_device, sizeof(primary_relay_settings_ccc.asclepius_ext_tty_device), "%s", asclepius_ext_tty_device_ccc);
+    snprintf(primary_relay_settings_ccc.asclepius_ext_tty_device, sizeof(primary_relay_settings_ccc.asclepius_ext_tty_device), "%s",
+             asclepius_ext_tty_device_ccc);
 
     if (asclepius_ext_open() == 0)
     {
       gtk_button_set_label(GTK_BUTTON(button), _("Disconnect"));
       GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
       GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
-      if (script_btn) gtk_widget_set_sensitive(script_btn, TRUE);
+      if (script_btn)
+        gtk_widget_set_sensitive(script_btn, TRUE);
       guint old_tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
       if (!old_tid)
       {
@@ -8713,7 +8806,8 @@ void on_ext_terminal_connect_toggled_ccc(GtkWidget *button)
     gtk_button_set_label(GTK_BUTTON(button), _("Connect"));
     GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
     GtkWidget *script_btn = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_script_button"));
-    if (script_btn) gtk_widget_set_sensitive(script_btn, FALSE);
+    if (script_btn)
+      gtk_widget_set_sensitive(script_btn, FALSE);
     append_ext_terminal_line(textview, "INF:", "Disconnected");
     update_ext_status(dialog);
   }
@@ -8724,13 +8818,8 @@ void on_ext_terminal_script_clicked_ccc(GtkWidget *button)
   GtkWidget *dialog = GTK_WIDGET(gtk_widget_get_toplevel(button));
   GtkWidget *textview = GTK_WIDGET(g_object_get_data(G_OBJECT(dialog), "ext_terminal_textview"));
 
-  GtkWidget *filechooser = gtk_file_chooser_dialog_new(
-      _("Select Script"),
-      GTK_WINDOW(dialog),
-      GTK_FILE_CHOOSER_ACTION_OPEN,
-      _("_Cancel"), GTK_RESPONSE_CANCEL,
-      _("_Open"), GTK_RESPONSE_ACCEPT,
-      NULL);
+  GtkWidget *filechooser = gtk_file_chooser_dialog_new(_("Select Script"), GTK_WINDOW(dialog), GTK_FILE_CHOOSER_ACTION_OPEN, _("_Cancel"),
+                                                       GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser), OSC_SCRIPT_PATH);
 
   if (gtk_dialog_run(GTK_DIALOG(filechooser)) == GTK_RESPONSE_ACCEPT)
@@ -8772,7 +8861,8 @@ static GtkWidget *ext_terminal_output_textview = NULL;
 
 static void ext_terminal_output_callback(const char *text, int byte_count)
 {
-  if (!ext_terminal_output_textview) return;
+  if (!ext_terminal_output_textview)
+    return;
 
   GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(ext_terminal_output_textview));
   GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ext_terminal_output_textview));
@@ -8863,7 +8953,8 @@ static void on_ext_terminal_destroy_ccc(GtkWidget *widget, gpointer data)
   (void)data;
 
   guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(widget), "ext_terminal_timer"));
-  if (tid) g_source_remove(tid);
+  if (tid)
+    g_source_remove(tid);
 
   ext_terminal_dialog_ccc = NULL;
   asclepius_ext_output_ccc = NULL;
@@ -8886,7 +8977,7 @@ static void asclepius_refresh_port_list(GtkWidget *list, GtkWidget *status)
   // Emptied by hand rather than with gtk_list_box_clear(), which is newer than
   // the GTK this project builds against.
   GList *kids = gtk_container_get_children(GTK_CONTAINER(list));
-  for(GList *k = kids; k != NULL; k = k->next)
+  for (GList *k = kids; k != NULL; k = k->next)
   {
     gtk_widget_destroy(GTK_WIDGET(k->data));
   }
@@ -8895,7 +8986,7 @@ static void asclepius_refresh_port_list(GtkWidget *list, GtkWidget *status)
   int found = asclepius_list_serial_ports(names, ASCLEPIUS_PORT_LIST_MAX);
   int shown = found < ASCLEPIUS_PORT_LIST_MAX ? found : ASCLEPIUS_PORT_LIST_MAX;
 
-  for(int i = 0; i < shown; i++)
+  for (int i = 0; i < shown; i++)
   {
     GtkWidget *row = gtk_list_box_row_new();
     GtkWidget *label = gtk_label_new(names[i]);
@@ -8907,14 +8998,14 @@ static void asclepius_refresh_port_list(GtkWidget *list, GtkWidget *status)
 
   g_object_set_data(G_OBJECT(list), "ext_port_count", GUINT_TO_POINTER(shown));
 
-  if(status != NULL)
+  if (status != NULL)
   {
     char text[160];
-    if(found == 0)
+    if (found == 0)
     {
       snprintf(text, sizeof(text), "%s", _("No serial ports found"));
     }
-    else if(found > shown)
+    else if (found > shown)
     {
       snprintf(text, sizeof(text), _("Showing %d of %d ports"), shown, found);
     }
@@ -8944,7 +9035,7 @@ static void on_ports_row_activated_ccc(GtkWidget *row, gpointer data)
   GtkWidget *child = gtk_bin_get_child(GTK_BIN(row));
   const char *text = child ? gtk_label_get_text(GTK_LABEL(child)) : NULL;
 
-  if(entry != NULL && text != NULL)
+  if (entry != NULL && text != NULL)
   {
     gtk_entry_set_text(GTK_ENTRY(entry), text);
   }
@@ -8959,11 +9050,8 @@ void on_asclepius_ports_clicked_ccc(GtkWidget *button)
   GtkWidget *parent = GTK_WIDGET(gtk_widget_get_toplevel(button));
   GtkWidget *entry = GTK_WIDGET(g_object_get_data(G_OBJECT(parent), target_key ? target_key : "asclepius_tty_device_text"));
 
-  GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Select Serial Port"), GTK_WINDOW(gtk_widget_get_toplevel(parent)),
-                                                  GTK_DIALOG_MODAL,
-                                                  _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                                  _("_Select"), GTK_RESPONSE_OK,
-                                                  NULL);
+  GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Select Serial Port"), GTK_WINDOW(gtk_widget_get_toplevel(parent)), GTK_DIALOG_MODAL,
+                                                  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Select"), GTK_RESPONSE_OK, NULL);
   GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
   GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
   GtkWidget *list = gtk_list_box_new();
@@ -8988,27 +9076,27 @@ void on_asclepius_ports_clicked_ccc(GtkWidget *button)
 
   asclepius_refresh_port_list(list, status);
 
-  while(TRUE)
+  while (TRUE)
   {
     int response = gtk_dialog_run(GTK_DIALOG(dialog));
 
-    if(response == GTK_RESPONSE_APPLY)
+    if (response == GTK_RESPONSE_APPLY)
     {
       asclepius_refresh_port_list(list, status);
       continue;
     }
 
-    if(response == GTK_RESPONSE_OK)
+    if (response == GTK_RESPONSE_OK)
     {
       // Accept whatever row is selected, so the button works as well as
       // double-clicking a row.
       GtkWidget *row = GTK_WIDGET(gtk_list_box_get_selected_row(GTK_LIST_BOX(list)));
 
-      if(row != NULL && entry != NULL)
+      if (row != NULL && entry != NULL)
       {
         GtkWidget *label = gtk_bin_get_child(GTK_BIN(row));
 
-        if(label != NULL)
+        if (label != NULL)
         {
           gtk_entry_set_text(GTK_ENTRY(entry), gtk_label_get_text(GTK_LABEL(label)));
         }
@@ -9037,7 +9125,11 @@ void open_asclepius_ext_terminal_ccc(void)
 
   gtk_builder_connect_signals(builder, NULL);
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_terminal_dialog"));
-  if (!dialog) { g_object_unref(builder); return; }
+  if (!dialog)
+  {
+    g_object_unref(builder);
+    return;
+  }
 
   GtkWidget *textview = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_terminal_textview"));
   GtkWidget *entry = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_entry"));
@@ -9051,16 +9143,26 @@ void open_asclepius_ext_terminal_ccc(void)
   GtkWidget *connect_button = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ext_connect_button"));
 
   // Store references in dialog
-  if (textview) g_object_set_data(G_OBJECT(dialog), "ext_terminal_textview", textview);
-  if (entry) g_object_set_data(G_OBJECT(dialog), "ext_terminal_entry", entry);
-  if (tty_text) g_object_set_data(G_OBJECT(dialog), "ext_terminal_tty_text", tty_text);
-  if (baud_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_baud_combo", baud_combo);
-  if (view_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_view_combo", view_combo);
-  if (send_mode_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo", send_mode_combo);
-  if (eol_combo) g_object_set_data(G_OBJECT(dialog), "ext_terminal_eol_combo", eol_combo);
-  if (ctrl_check) g_object_set_data(G_OBJECT(dialog), "ext_terminal_ctrl_check", ctrl_check);
-  if (script_btn) g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
-  if (connect_button) g_object_set_data(G_OBJECT(dialog), "ext_terminal_connect_button", connect_button);
+  if (textview)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_textview", textview);
+  if (entry)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_entry", entry);
+  if (tty_text)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_tty_text", tty_text);
+  if (baud_combo)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_baud_combo", baud_combo);
+  if (view_combo)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_view_combo", view_combo);
+  if (send_mode_combo)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_send_mode_combo", send_mode_combo);
+  if (eol_combo)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_eol_combo", eol_combo);
+  if (ctrl_check)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_ctrl_check", ctrl_check);
+  if (script_btn)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_script_button", script_btn);
+  if (connect_button)
+    g_object_set_data(G_OBJECT(dialog), "ext_terminal_connect_button", connect_button);
 
   if (entry)
   {
@@ -9077,7 +9179,11 @@ void open_asclepius_ext_terminal_ccc(void)
     g_object_set_data_full(G_OBJECT(dialog), "ext_linebuf", lb, g_free);
   }
 
-  if (!textview || !entry) { g_object_unref(builder); return; }
+  if (!textview || !entry)
+  {
+    g_object_unref(builder);
+    return;
+  }
 
   // Populate baud combo
   if (baud_combo)
@@ -9118,7 +9224,8 @@ void open_asclepius_ext_terminal_ccc(void)
   }
 
   // Set current values from globals
-  if (tty_text) gtk_entry_set_text(GTK_ENTRY(tty_text), asclepius_ext_tty_device_ccc);
+  if (tty_text)
+    gtk_entry_set_text(GTK_ENTRY(tty_text), asclepius_ext_tty_device_ccc);
   if (baud_combo)
   {
     int idx = 2;
@@ -9134,7 +9241,8 @@ void open_asclepius_ext_terminal_ccc(void)
     gtk_combo_box_set_active(GTK_COMBO_BOX(baud_combo), idx);
   }
 
-  if (tty_text) gtk_entry_set_max_length(GTK_ENTRY(tty_text), 255);
+  if (tty_text)
+    gtk_entry_set_max_length(GTK_ENTRY(tty_text), 255);
 
   // Port picker for the passthrough, same as the control port in the relay
   // settings. Stored under the dialog key the handler looks up.
@@ -9142,7 +9250,7 @@ void open_asclepius_ext_terminal_ccc(void)
     GtkWidget *ports_btn = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_ports_button"));
     if (ports_btn)
     {
-      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer)"ext_terminal_tty_text");
+      g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer) "ext_terminal_tty_text");
       g_signal_connect(ports_btn, "clicked", G_CALLBACK(on_asclepius_ports_clicked_ccc), NULL);
     }
   }
@@ -9157,7 +9265,12 @@ void open_asclepius_ext_terminal_ccc(void)
 
   // Connect escape sequence button signals (custom data needed per-button)
   {
-    static const struct { const char *id; const char *label; unsigned int byte; } esc[] = {
+    static const struct
+    {
+      const char *id;
+      const char *label;
+      unsigned int byte;
+    } esc[] = {
       {"ext_terminal_esc_z", "^Z", 0x1A},
       {"ext_terminal_esc_c", "^C", 0x03},
       {"ext_terminal_esc_l", "^L", 0x0C},
@@ -9179,7 +9292,8 @@ void open_asclepius_ext_terminal_ccc(void)
   // Store status label reference for RX/TX counter
   {
     GtkWidget *status_label = GTK_WIDGET(gtk_builder_get_object(builder, "ext_terminal_status_label"));
-    if (status_label) g_object_set_data(G_OBJECT(dialog), "ext_status_label", status_label);
+    if (status_label)
+      g_object_set_data(G_OBJECT(dialog), "ext_status_label", status_label);
   }
 
   g_object_set_data(G_OBJECT(dialog), "ext_autoscroll", GUINT_TO_POINTER(1));
@@ -9230,9 +9344,7 @@ static GtkWidget *wd_royl_progress_bar_ccc = NULL;
 // message dialogs to the editor instead of the main window.
 static GtkWindow *wd_royl_dialog_parent_override_ccc = NULL;
 
-static void wd_royl_progress_update_ccc(const char *stage,
-                                        unsigned long long done,
-                                        unsigned long long total)
+static void wd_royl_progress_update_ccc(const char *stage, unsigned long long done, unsigned long long total)
 {
   double fraction = 0.0;
 
@@ -9258,8 +9370,7 @@ static void wd_royl_progress_update_ccc(const char *stage,
   }
   if (wd_royl_progress_bar_ccc != NULL)
   {
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc),
-                                  fraction);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc), fraction);
   }
   while (gtk_events_pending())
   {
@@ -9273,33 +9384,25 @@ static void wd_royl_progress_begin_ccc(const char *title, const char *stage)
 
   wd_royl_progress_dialog_ccc = gtk_dialog_new();
   gtk_window_set_title(GTK_WINDOW(wd_royl_progress_dialog_ccc), title);
-  gtk_window_set_transient_for(
-      GTK_WINDOW(wd_royl_progress_dialog_ccc),
-      wd_royl_dialog_parent_override_ccc != NULL
-          ? wd_royl_dialog_parent_override_ccc
-          : GTK_WINDOW(main_window_ccc));
+  gtk_window_set_transient_for(GTK_WINDOW(wd_royl_progress_dialog_ccc),
+                               wd_royl_dialog_parent_override_ccc != NULL ? wd_royl_dialog_parent_override_ccc : GTK_WINDOW(main_window_ccc));
   gtk_window_set_modal(GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
-  gtk_window_set_destroy_with_parent(
-      GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
+  gtk_window_set_destroy_with_parent(GTK_WINDOW(wd_royl_progress_dialog_ccc), TRUE);
   gtk_window_set_resizable(GTK_WINDOW(wd_royl_progress_dialog_ccc), FALSE);
   gtk_window_set_deletable(GTK_WINDOW(wd_royl_progress_dialog_ccc), FALSE);
 
-  content = gtk_dialog_get_content_area(
-      GTK_DIALOG(wd_royl_progress_dialog_ccc));
+  content = gtk_dialog_get_content_area(GTK_DIALOG(wd_royl_progress_dialog_ccc));
   gtk_container_set_border_width(GTK_CONTAINER(content), 12);
   gtk_box_set_spacing(GTK_BOX(content), 8);
 
   wd_royl_progress_label_ccc = gtk_label_new(stage != NULL ? stage : "");
   gtk_label_set_line_wrap(GTK_LABEL(wd_royl_progress_label_ccc), TRUE);
   gtk_label_set_xalign(GTK_LABEL(wd_royl_progress_label_ccc), 0.0);
-  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_label_ccc, FALSE,
-                     FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_label_ccc, FALSE, FALSE, 0);
 
   wd_royl_progress_bar_ccc = gtk_progress_bar_new();
-  gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc),
-                                 TRUE);
-  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_bar_ccc, FALSE, FALSE,
-                     0);
+  gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(wd_royl_progress_bar_ccc), TRUE);
+  gtk_box_pack_start(GTK_BOX(content), wd_royl_progress_bar_ccc, FALSE, FALSE, 0);
 
   gtk_widget_show_all(wd_royl_progress_dialog_ccc);
   while (gtk_events_pending())
@@ -9323,30 +9426,25 @@ static void wd_royl_progress_end_ccc(void)
   }
 }
 
-static void wd_royl_show_message_ccc(GtkMessageType type, const char *title,
-                                     const char *format, ...)
+static void wd_royl_show_message_ccc(GtkMessageType type, const char *title, const char *format, ...)
 {
   va_list args;
   char *text;
   GtkWidget *dialog;
-  GtkWindow *parent = wd_royl_dialog_parent_override_ccc != NULL
-                          ? wd_royl_dialog_parent_override_ccc
-                          : GTK_WINDOW(main_window_ccc);
+  GtkWindow *parent = wd_royl_dialog_parent_override_ccc != NULL ? wd_royl_dialog_parent_override_ccc : GTK_WINDOW(main_window_ccc);
 
   va_start(args, format);
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT,
-                                  type, GTK_BUTTONS_OK, "%s", text);
+  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT, type, GTK_BUTTONS_OK, "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
   g_free(text);
 }
 
-static bool wd_royl_confirm_ccc(const char *title, const char *accept_label,
-                                const char *format, ...)
+static bool wd_royl_confirm_ccc(const char *title, const char *accept_label, const char *format, ...)
 {
   va_list args;
   char *text;
@@ -9357,16 +9455,10 @@ static bool wd_royl_confirm_ccc(const char *title, const char *accept_label,
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(
-      wd_royl_dialog_parent_override_ccc != NULL
-          ? wd_royl_dialog_parent_override_ccc
-          : GTK_WINDOW(main_window_ccc),
-      GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-      "%s", text);
+  dialog = gtk_message_dialog_new(wd_royl_dialog_parent_override_ccc != NULL ? wd_royl_dialog_parent_override_ccc : GTK_WINDOW(main_window_ccc),
+                                  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
-  gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL,
-                         GTK_RESPONSE_CANCEL, accept_label,
-                         GTK_RESPONSE_ACCEPT, NULL);
+  gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, accept_label, GTK_RESPONSE_ACCEPT, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
   response = gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -9374,25 +9466,19 @@ static bool wd_royl_confirm_ccc(const char *title, const char *accept_label,
   return response == GTK_RESPONSE_ACCEPT;
 }
 
-static char *wd_royl_choose_file_ccc(bool save, const char *title,
-                                     const char *default_name)
+static char *wd_royl_choose_file_ccc(bool save, const char *title, const char *default_name)
 {
   GtkWidget *dialog;
   char *filename = NULL;
 
-  dialog = gtk_file_chooser_dialog_new(
-      title, GTK_WINDOW(main_window_ccc),
-      save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+  dialog = gtk_file_chooser_dialog_new(title, GTK_WINDOW(main_window_ccc), save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   if (save)
   {
-    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
-                                                   TRUE);
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (default_name != NULL)
     {
-      gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog),
-                                        default_name);
+      gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), default_name);
     }
   }
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
@@ -9403,8 +9489,7 @@ static char *wd_royl_choose_file_ccc(bool save, const char *title,
   return filename;
 }
 
-static void wd_royl_sanitize_name_ccc(const char *input, char *output,
-                                      size_t output_size)
+static void wd_royl_sanitize_name_ccc(const char *input, char *output, size_t output_size)
 {
   size_t in;
   size_t out = 0;
@@ -9432,8 +9517,7 @@ static void wd_royl_sanitize_name_ccc(const char *input, char *output,
   }
 }
 
-static void wd_royl_make_backup_name_ccc(char *buffer, size_t buffer_size,
-                                         const char *kind)
+static void wd_royl_make_backup_name_ccc(char *buffer, size_t buffer_size, const char *kind)
 {
   char serial[64];
   char timestamp[32];
@@ -9449,12 +9533,10 @@ static void wd_royl_make_backup_name_ccc(char *buffer, size_t buffer_size,
   {
     snprintf(timestamp, sizeof(timestamp), "unknown_time");
   }
-  snprintf(buffer, buffer_size, "wd_royl_%s_%s_%s.bin", serial, kind,
-           timestamp);
+  snprintf(buffer, buffer_size, "wd_royl_%s_%s_%s.bin", serial, kind, timestamp);
 }
 
-static void wd_royl_make_backup_path_ccc(char *buffer, size_t buffer_size,
-                                         const char *kind)
+static void wd_royl_make_backup_path_ccc(char *buffer, size_t buffer_size, const char *kind)
 {
   char name[512];
   const char *home = g_get_home_dir();
@@ -9474,34 +9556,30 @@ static bool wd_royl_operation_ready_ccc(void)
 {
   if (running_clone_ccc)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL"),
-        _("A copy operation is running. Stop it before using vendor specific "
-          "commands."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL"),
+                             _("A copy operation is running. Stop it before using vendor specific "
+                               "commands."));
     return false;
   }
   if (running_analyze_ccc)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL"),
-        _("A drive analysis is running. Stop it before using vendor specific "
-          "commands."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL"),
+                             _("A drive analysis is running. Stop it before using vendor specific "
+                               "commands."));
     return false;
   }
   if (!source_chosen_ccc)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL"),
-        _("Choose and connect a source drive before using vendor specific "
-          "commands."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL"),
+                             _("Choose and connect a source drive before using vendor specific "
+                               "commands."));
     return false;
   }
   if (usb_mode_ccc && !usb_allow_ata_ccc)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL"),
-        _("Vendor specific commands require USB ATA mode. Select USB ATA mode "
-          "and choose the source drive again."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL"),
+                             _("Vendor specific commands require USB ATA mode. Select USB ATA mode "
+                               "and choose the source drive again."));
     return false;
   }
   return true;
@@ -9509,8 +9587,7 @@ static bool wd_royl_operation_ready_ccc(void)
 
 static void wd_royl_report_error_ccc(const char *title, const char *prefix)
 {
-  wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, title, "%s\n\n%s", prefix,
-                           wd_royl_last_error_ccc());
+  wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, title, "%s\n\n%s", prefix, wd_royl_last_error_ccc());
 }
 
 // Vendor commands need direct access to the selected source drive. Choosing a
@@ -9527,11 +9604,10 @@ static bool wd_royl_begin_source_access_ccc(bool *temporary)
   if (connect_source_disk_ccc() != 0)
   {
     release_devices_ccc();
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_ERROR, _("WD ROYL"),
-        _("Unable to open the selected source drive.\n\nChoose the source "
-          "drive again and make sure it is still connected, then retry the "
-          "operation."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL"),
+                             _("Unable to open the selected source drive.\n\nChoose the source "
+                               "drive again and make sure it is still connected, then retry the "
+                               "operation."));
     return false;
   }
   *temporary = true;
@@ -9572,8 +9648,7 @@ typedef struct
   unsigned long long total;
 } wd_royl_sa_backup_progress_ccc_t;
 
-static wd_royl_sa_backup_progress_ccc_t *wd_royl_sa_backup_progress_state_ccc =
-    NULL;
+static wd_royl_sa_backup_progress_ccc_t *wd_royl_sa_backup_progress_state_ccc = NULL;
 
 typedef struct
 {
@@ -9582,8 +9657,7 @@ typedef struct
   uint16_t module;
 } wd_royl_sa_restore_progress_ccc_t;
 
-static wd_royl_sa_restore_progress_ccc_t *wd_royl_sa_restore_progress_state_ccc =
-    NULL;
+static wd_royl_sa_restore_progress_ccc_t *wd_royl_sa_restore_progress_state_ccc = NULL;
 
 typedef struct
 {
@@ -9624,12 +9698,10 @@ typedef struct
   wd_royl_sa_manifest_ccc *manifest;
 } wd_royl_sa_restore_picker_ccc_t;
 
-static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer,
-                                    size_t buffer_size);
+static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer, size_t buffer_size);
 static int wd_royl_compare_module_entries_ccc(const void *a, const void *b);
 
-static void wd_royl_join_path_ccc(char *destination, size_t destination_size,
-                                  const char *directory, const char *name)
+static void wd_royl_join_path_ccc(char *destination, size_t destination_size, const char *directory, const char *name)
 {
   char *path = g_build_filename(directory, name, NULL);
 
@@ -9637,8 +9709,7 @@ static void wd_royl_join_path_ccc(char *destination, size_t destination_size,
   g_free(path);
 }
 
-static char *wd_royl_key_string_ccc(GKeyFile *key, const char *group,
-                                    const char *name)
+static char *wd_royl_key_string_ccc(GKeyFile *key, const char *group, const char *name)
 {
   GError *error = NULL;
   char *value = g_key_file_get_string(key, group, name, &error);
@@ -9650,8 +9721,7 @@ static char *wd_royl_key_string_ccc(GKeyFile *key, const char *group,
   return value;
 }
 
-static gint wd_royl_key_integer_ccc(GKeyFile *key, const char *group,
-                                    const char *name, gint default_value)
+static gint wd_royl_key_integer_ccc(GKeyFile *key, const char *group, const char *name, gint default_value)
 {
   GError *error = NULL;
   gint value = g_key_file_get_integer(key, group, name, &error);
@@ -9664,9 +9734,7 @@ static gint wd_royl_key_integer_ccc(GKeyFile *key, const char *group,
   return value;
 }
 
-static gboolean wd_royl_key_boolean_ccc(GKeyFile *key, const char *group,
-                                        const char *name,
-                                        gboolean default_value)
+static gboolean wd_royl_key_boolean_ccc(GKeyFile *key, const char *group, const char *name, gboolean default_value)
 {
   GError *error = NULL;
   gboolean value = g_key_file_get_boolean(key, group, name, &error);
@@ -9679,8 +9747,7 @@ static gboolean wd_royl_key_boolean_ccc(GKeyFile *key, const char *group,
   return value;
 }
 
-static void wd_royl_set_hex_ccc(GKeyFile *key, const char *group,
-                                const char *name, uint32_t value)
+static void wd_royl_set_hex_ccc(GKeyFile *key, const char *group, const char *name, uint32_t value)
 {
   char text[16];
 
@@ -9688,11 +9755,9 @@ static void wd_royl_set_hex_ccc(GKeyFile *key, const char *group,
   g_key_file_set_string(key, group, name, text);
 }
 
-static void wd_royl_sha256_ccc(const uint8_t *data, size_t size, char *output,
-                               size_t output_size)
+static void wd_royl_sha256_ccc(const uint8_t *data, size_t size, char *output, size_t output_size)
 {
-  char *checksum =
-      g_compute_checksum_for_data(G_CHECKSUM_SHA256, data, size);
+  char *checksum = g_compute_checksum_for_data(G_CHECKSUM_SHA256, data, size);
 
   g_strlcpy(output, checksum != NULL ? checksum : "", output_size);
   g_free(checksum);
@@ -9700,8 +9765,7 @@ static void wd_royl_sha256_ccc(const uint8_t *data, size_t size, char *output,
 
 static bool wd_royl_module_checksum_ok_ccc(const uint8_t *data, size_t size)
 {
-  return wd_royl_get_module_checksum_ccc(data) ==
-         wd_royl_calculate_checksum_ccc(data, size);
+  return wd_royl_get_module_checksum_ccc(data) == wd_royl_calculate_checksum_ccc(data, size);
 }
 
 static const char *wd_royl_transport_name_ccc(void)
@@ -9729,20 +9793,16 @@ static const char *wd_royl_transport_name_ccc(void)
   return "Unknown";
 }
 
-static char *wd_royl_choose_folder_ccc(const char *title,
-                                       const char *initial_folder)
+static char *wd_royl_choose_folder_ccc(const char *title, const char *initial_folder)
 {
   GtkWidget *dialog;
   char *folder = NULL;
 
-  dialog = gtk_file_chooser_dialog_new(
-      title, GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Select Folder"),
-      GTK_RESPONSE_ACCEPT, NULL);
+  dialog = gtk_file_chooser_dialog_new(title, GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL,
+                                       GTK_RESPONSE_CANCEL, _("Select Folder"), GTK_RESPONSE_ACCEPT, NULL);
   if (initial_folder != NULL && initial_folder[0] != '\0')
   {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
-                                        initial_folder);
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), initial_folder);
   }
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
   {
@@ -9752,9 +9812,7 @@ static char *wd_royl_choose_folder_ccc(const char *title,
   return folder;
 }
 
-static void wd_royl_make_backup_folder_path_ccc(const char *parent,
-                                                char *path, size_t path_size,
-                                                unsigned int attempt)
+static void wd_royl_make_backup_folder_path_ccc(const char *parent, char *path, size_t path_size, unsigned int attempt)
 {
   char serial[64];
   char timestamp[32];
@@ -9777,15 +9835,12 @@ static void wd_royl_make_backup_folder_path_ccc(const char *parent,
   }
   else
   {
-    snprintf(name, sizeof(name), "wd_royl_%s_sa_%s_%u", serial, timestamp,
-             attempt + 1);
+    snprintf(name, sizeof(name), "wd_royl_%s_sa_%s_%u", serial, timestamp, attempt + 1);
   }
   wd_royl_join_path_ccc(path, path_size, parent, name);
 }
 
-static int wd_royl_create_backup_folder_ccc(const char *parent, char *path,
-                                            size_t path_size, char *error,
-                                            size_t error_size)
+static int wd_royl_create_backup_folder_ccc(const char *parent, char *path, size_t path_size, char *error, size_t error_size)
 {
   unsigned int attempt;
 
@@ -9798,19 +9853,15 @@ static int wd_royl_create_backup_folder_ccc(const char *parent, char *path,
     }
     if (errno != EEXIST)
     {
-      snprintf(error, error_size,
-               _("Unable to create the backup folder:\n%s\n\n%s"), path,
-               g_strerror(errno));
+      snprintf(error, error_size, _("Unable to create the backup folder:\n%s\n\n%s"), path, g_strerror(errno));
       return -1;
     }
   }
-  snprintf(error, error_size,
-           _("Unable to find an unused name for the backup folder."));
+  snprintf(error, error_size, _("Unable to find an unused name for the backup folder."));
   return -1;
 }
 
-static void wd_royl_make_pre_restore_path_ccc(const char *backup_directory,
-                                              char *path, size_t path_size)
+static void wd_royl_make_pre_restore_path_ccc(const char *backup_directory, char *path, size_t path_size)
 {
   char timestamp[32];
   char name[128];
@@ -9834,8 +9885,7 @@ static void wd_royl_make_pre_restore_path_ccc(const char *backup_directory,
     }
     else
     {
-      snprintf(name, sizeof(name), "pre_restore_%s_%u", timestamp,
-               attempt + 1);
+      snprintf(name, sizeof(name), "pre_restore_%s_%u", timestamp, attempt + 1);
     }
     wd_royl_join_path_ccc(path, path_size, backup_directory, name);
     if (!g_file_test(path, G_FILE_TEST_EXISTS))
@@ -9845,8 +9895,7 @@ static void wd_royl_make_pre_restore_path_ccc(const char *backup_directory,
   }
 }
 
-static void wd_royl_trim_identity_ccc(const char *input, char *output,
-                                      size_t output_size)
+static void wd_royl_trim_identity_ccc(const char *input, char *output, size_t output_size)
 {
   size_t start = 0;
   size_t end;
@@ -9872,8 +9921,7 @@ static void wd_royl_trim_identity_ccc(const char *input, char *output,
   output[end - start] = '\0';
 }
 
-static bool wd_royl_identity_value_matches_ccc(const char *backup_value,
-                                               const char *current_value)
+static bool wd_royl_identity_value_matches_ccc(const char *backup_value, const char *current_value)
 {
   char backup[128];
   char current[128];
@@ -9887,31 +9935,23 @@ static bool wd_royl_identity_value_matches_ccc(const char *backup_value,
   return g_ascii_strcasecmp(backup, current) == 0;
 }
 
-static bool wd_royl_restore_identity_ok_ccc(const char *backup_model,
-                                            const char *backup_serial)
+static bool wd_royl_restore_identity_ok_ccc(const char *backup_model, const char *backup_serial)
 {
-  if (wd_royl_identity_value_matches_ccc(backup_model,
-                                         current_source_model_ccc) &&
-      wd_royl_identity_value_matches_ccc(backup_serial,
-                                         current_source_serial_ccc))
+  if (wd_royl_identity_value_matches_ccc(backup_model, current_source_model_ccc) &&
+      wd_royl_identity_value_matches_ccc(backup_serial, current_source_serial_ccc))
   {
     return true;
   }
 
-  return wd_royl_confirm_ccc(
-      _("WD ROYL drive identity mismatch"), _("Restore Anyway"),
-      _("The backup was created from a different drive.\n\n"
-        "Backup: %s / %s\nCurrent source: %s / %s\n\n"
-        "Writing these service area modules to a different drive can damage "
-        "it. Continue only if you are sure this is the correct drive."),
-      backup_model != NULL && backup_model[0] != '\0' ? backup_model
-                                                       : _("Unknown"),
-      backup_serial != NULL && backup_serial[0] != '\0' ? backup_serial
-                                                         : _("Unknown"),
-      current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                          : _("Unknown"),
-      current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                           : _("Unknown"));
+  return wd_royl_confirm_ccc(_("WD ROYL drive identity mismatch"), _("Restore Anyway"),
+                             _("The backup was created from a different drive.\n\n"
+                               "Backup: %s / %s\nCurrent source: %s / %s\n\n"
+                               "Writing these service area modules to a different drive can damage "
+                               "it. Continue only if you are sure this is the correct drive."),
+                             backup_model != NULL && backup_model[0] != '\0' ? backup_model : _("Unknown"),
+                             backup_serial != NULL && backup_serial[0] != '\0' ? backup_serial : _("Unknown"),
+                             current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                             current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"));
 }
 
 static const char *wd_royl_restore_status_text_ccc(const char *status)
@@ -9957,19 +9997,15 @@ static const char *wd_royl_restore_status_text_ccc(const char *status)
 
 static int wd_royl_compare_restore_entries_ccc(const void *a, const void *b)
 {
-  const wd_royl_sa_restore_entry_ccc *entry_a =
-      (const wd_royl_sa_restore_entry_ccc *)a;
-  const wd_royl_sa_restore_entry_ccc *entry_b =
-      (const wd_royl_sa_restore_entry_ccc *)b;
+  const wd_royl_sa_restore_entry_ccc *entry_a = (const wd_royl_sa_restore_entry_ccc *)a;
+  const wd_royl_sa_restore_entry_ccc *entry_b = (const wd_royl_sa_restore_entry_ccc *)b;
 
   // The directory module points at the other modules, so restore it last.
-  if (entry_a->module == WD_ROYL_MODULE_01 &&
-      entry_b->module != WD_ROYL_MODULE_01)
+  if (entry_a->module == WD_ROYL_MODULE_01 && entry_b->module != WD_ROYL_MODULE_01)
   {
     return 1;
   }
-  if (entry_b->module == WD_ROYL_MODULE_01 &&
-      entry_a->module != WD_ROYL_MODULE_01)
+  if (entry_b->module == WD_ROYL_MODULE_01 && entry_a->module != WD_ROYL_MODULE_01)
   {
     return -1;
   }
@@ -9984,11 +10020,9 @@ static int wd_royl_compare_restore_entries_ccc(const void *a, const void *b)
   return 0;
 }
 
-static void wd_royl_sa_backup_progress_callback_ccc(
-    const char *stage, unsigned long long done, unsigned long long total)
+static void wd_royl_sa_backup_progress_callback_ccc(const char *stage, unsigned long long done, unsigned long long total)
 {
-  wd_royl_sa_backup_progress_ccc_t *state =
-      wd_royl_sa_backup_progress_state_ccc;
+  wd_royl_sa_backup_progress_ccc_t *state = wd_royl_sa_backup_progress_state_ccc;
   char text[256];
   unsigned long long current;
   unsigned long long overall;
@@ -10008,17 +10042,13 @@ static void wd_royl_sa_backup_progress_callback_ccc(
   {
     overall = state->total;
   }
-  snprintf(text, sizeof(text), _("Module 0x%04x (%u of %u): %s"),
-           state->module, state->index, state->count,
-           stage != NULL ? stage : "");
+  snprintf(text, sizeof(text), _("Module 0x%04x (%u of %u): %s"), state->module, state->index, state->count, stage != NULL ? stage : "");
   wd_royl_progress_update_ccc(text, overall, state->total);
 }
 
-static void wd_royl_sa_restore_progress_callback_ccc(
-    const char *stage, unsigned long long done, unsigned long long total)
+static void wd_royl_sa_restore_progress_callback_ccc(const char *stage, unsigned long long done, unsigned long long total)
 {
-  wd_royl_sa_restore_progress_ccc_t *state =
-      wd_royl_sa_restore_progress_state_ccc;
+  wd_royl_sa_restore_progress_ccc_t *state = wd_royl_sa_restore_progress_state_ccc;
   char text[256];
 
   if (state == NULL)
@@ -10026,9 +10056,7 @@ static void wd_royl_sa_restore_progress_callback_ccc(
     wd_royl_progress_update_ccc(stage, done, total);
     return;
   }
-  snprintf(text, sizeof(text), _("Module 0x%04x (%zu of %zu): %s"),
-           state->module, (size_t)state->index, state->count,
-           stage != NULL ? stage : "");
+  snprintf(text, sizeof(text), _("Module 0x%04x (%zu of %zu): %s"), state->module, (size_t)state->index, state->count, stage != NULL ? stage : "");
   wd_royl_progress_update_ccc(text, done, total);
 }
 
@@ -10042,9 +10070,7 @@ static void wd_royl_sa_manifest_clear_ccc(wd_royl_sa_manifest_ccc *manifest)
   memset(manifest, 0, sizeof(*manifest));
 }
 
-static int wd_royl_load_sa_manifest_ccc(const char *path,
-                                        wd_royl_sa_manifest_ccc *manifest,
-                                        char *error, size_t error_size)
+static int wd_royl_load_sa_manifest_ccc(const char *path, wd_royl_sa_manifest_ccc *manifest, char *error, size_t error_size)
 {
   GKeyFile *key = NULL;
   GError *gerror = NULL;
@@ -10067,9 +10093,7 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
   key = g_key_file_new();
   if (!g_key_file_load_from_file(key, path, G_KEY_FILE_NONE, &gerror))
   {
-    snprintf(error, error_size,
-             _("Unable to read the backup manifest:\n%s\n\n%s"), path,
-             gerror != NULL ? gerror->message : _("Unknown error"));
+    snprintf(error, error_size, _("Unable to read the backup manifest:\n%s\n\n%s"), path, gerror != NULL ? gerror->message : _("Unknown error"));
     if (gerror != NULL)
     {
       g_error_free(gerror);
@@ -10080,15 +10104,13 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
   format = wd_royl_key_string_ccc(key, "backup", "format");
   if (format == NULL || strcmp(format, WD_ROYL_SA_MANIFEST_FORMAT) != 0)
   {
-    snprintf(error, error_size,
-             _("The selected file is not a WD ROYL SA backup manifest."));
+    snprintf(error, error_size, _("The selected file is not a WD ROYL SA backup manifest."));
     goto finish;
   }
   version = wd_royl_key_integer_ccc(key, "backup", "version", 0);
   if (version != WD_ROYL_SA_MANIFEST_VERSION)
   {
-    snprintf(error, error_size,
-             _("The backup manifest uses unsupported version %d."), version);
+    snprintf(error, error_size, _("The backup manifest uses unsupported version %d."), version);
     goto finish;
   }
 
@@ -10119,14 +10141,11 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
   value = wd_royl_key_string_ccc(key, "backup", "directory_sha256");
   if (value != NULL)
   {
-    g_strlcpy(manifest->directory_sha256, value,
-              sizeof(manifest->directory_sha256));
+    g_strlcpy(manifest->directory_sha256, value, sizeof(manifest->directory_sha256));
     g_free(value);
   }
-  manifest->directory_size = (unsigned long long)wd_royl_key_integer_ccc(
-      key, "backup", "directory_size", 0);
-  manifest->directory_checksum_ok = wd_royl_key_boolean_ccc(
-      key, "backup", "directory_checksum_ok", FALSE);
+  manifest->directory_size = (unsigned long long)wd_royl_key_integer_ccc(key, "backup", "directory_size", 0);
+  manifest->directory_checksum_ok = wd_royl_key_boolean_ccc(key, "backup", "directory_checksum_ok", FALSE);
 
   groups = g_key_file_get_groups(key, &group_count);
   for (group_index = 0; group_index < group_count; group_index++)
@@ -10144,62 +10163,48 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
     {
       continue;
     }
-    module_id =
-        wd_royl_key_integer_ccc(key, groups[group_index], "id", 0);
+    module_id = wd_royl_key_integer_ccc(key, groups[group_index], "id", 0);
     if (module_id <= 0 || module_id > 0xffff)
     {
       continue;
     }
     if (manifest->entry_count >= 4096)
     {
-      snprintf(error, error_size,
-               _("The backup manifest lists too many modules."));
+      snprintf(error, error_size, _("The backup manifest lists too many modules."));
       goto finish;
     }
 
-    new_entries = (wd_royl_sa_restore_entry_ccc *)realloc(
-        manifest->entries,
-        (manifest->entry_count + 1) * sizeof(*manifest->entries));
+    new_entries = (wd_royl_sa_restore_entry_ccc *)realloc(manifest->entries, (manifest->entry_count + 1) * sizeof(*manifest->entries));
     if (new_entries == NULL)
     {
-      snprintf(error, error_size,
-               _("Unable to allocate memory for the backup manifest."));
+      snprintf(error, error_size, _("Unable to allocate memory for the backup manifest."));
       goto finish;
     }
     manifest->entries = new_entries;
     entry = &manifest->entries[manifest->entry_count];
     memset(entry, 0, sizeof(*entry));
     entry->module = (uint16_t)module_id;
-    entry->directory_sectors = (uint16_t)wd_royl_key_integer_ccc(
-        key, groups[group_index], "directory_sectors", 0);
-    entry->directory_copies = (uint8_t)wd_royl_key_integer_ccc(
-        key, groups[group_index], "directory_copies", 0);
-    value = wd_royl_key_string_ccc(key, groups[group_index],
-                                   "directory_location1");
+    entry->directory_sectors = (uint16_t)wd_royl_key_integer_ccc(key, groups[group_index], "directory_sectors", 0);
+    entry->directory_copies = (uint8_t)wd_royl_key_integer_ccc(key, groups[group_index], "directory_copies", 0);
+    value = wd_royl_key_string_ccc(key, groups[group_index], "directory_location1");
     if (value != NULL)
     {
-      entry->directory_location1 =
-          (uint32_t)g_ascii_strtoull(value, NULL, 0);
+      entry->directory_location1 = (uint32_t)g_ascii_strtoull(value, NULL, 0);
       g_free(value);
     }
-    value = wd_royl_key_string_ccc(key, groups[group_index],
-                                   "directory_location2");
+    value = wd_royl_key_string_ccc(key, groups[group_index], "directory_location2");
     if (value != NULL)
     {
-      entry->directory_location2 =
-          (uint32_t)g_ascii_strtoull(value, NULL, 0);
+      entry->directory_location2 = (uint32_t)g_ascii_strtoull(value, NULL, 0);
       g_free(value);
     }
-    entry->file_size = (unsigned long long)wd_royl_key_integer_ccc(
-        key, groups[group_index], "read_size", 0);
-    entry->manifest_checksum_ok = wd_royl_key_boolean_ccc(
-        key, groups[group_index], "checksum_ok", FALSE);
+    entry->file_size = (unsigned long long)wd_royl_key_integer_ccc(key, groups[group_index], "read_size", 0);
+    entry->manifest_checksum_ok = wd_royl_key_boolean_ccc(key, groups[group_index], "checksum_ok", FALSE);
 
     file = wd_royl_key_string_ccc(key, groups[group_index], "file");
     status = wd_royl_key_string_ccc(key, groups[group_index], "status");
     sha256 = wd_royl_key_string_ccc(key, groups[group_index], "sha256");
-    module_error =
-        wd_royl_key_string_ccc(key, groups[group_index], "error");
+    module_error = wd_royl_key_string_ccc(key, groups[group_index], "error");
     if (status != NULL && status[0] != '\0')
     {
       g_strlcpy(entry->status, status, sizeof(entry->status));
@@ -10218,15 +10223,12 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
     }
 
     valid_file_name =
-        file != NULL && file[0] != '\0' && strchr(file, '/') == NULL &&
-        strchr(file, '\\') == NULL && strcmp(file, ".") != 0 &&
-        strcmp(file, "..") != 0;
+      file != NULL && file[0] != '\0' && strchr(file, '/') == NULL && strchr(file, '\\') == NULL && strcmp(file, ".") != 0 && strcmp(file, "..") != 0;
     if (valid_file_name)
     {
       GStatBuf stat_buffer;
 
-      wd_royl_join_path_ccc(entry->path, sizeof(entry->path),
-                            manifest->directory, file);
+      wd_royl_join_path_ccc(entry->path, sizeof(entry->path), manifest->directory, file);
       entry->available = strcmp(entry->status, "ok") == 0;
       if (entry->available)
       {
@@ -10235,16 +10237,13 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
           entry->available = false;
           g_strlcpy(entry->status, "file_missing", sizeof(entry->status));
         }
-        else if (g_stat(entry->path, &stat_buffer) != 0 ||
-                 stat_buffer.st_size <= 0 ||
-                 (unsigned long long)stat_buffer.st_size >
-                     WD_ROYL_MAX_FILE_SIZE)
+        else if (g_stat(entry->path, &stat_buffer) != 0 || stat_buffer.st_size <= 0 ||
+                 (unsigned long long)stat_buffer.st_size > WD_ROYL_MAX_FILE_SIZE)
         {
           entry->available = false;
           g_strlcpy(entry->status, "file_invalid", sizeof(entry->status));
         }
-        else if (entry->file_size != 0 &&
-                 (unsigned long long)stat_buffer.st_size != entry->file_size)
+        else if (entry->file_size != 0 && (unsigned long long)stat_buffer.st_size != entry->file_size)
         {
           entry->available = false;
           g_strlcpy(entry->status, "size_mismatch", sizeof(entry->status));
@@ -10252,8 +10251,7 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
         else if (!entry->manifest_checksum_ok)
         {
           entry->available = false;
-          g_strlcpy(entry->status, "checksum_mismatch",
-                    sizeof(entry->status));
+          g_strlcpy(entry->status, "checksum_mismatch", sizeof(entry->status));
         }
       }
     }
@@ -10273,13 +10271,11 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
 
   if (manifest->entry_count == 0)
   {
-    snprintf(error, error_size,
-             _("The backup manifest does not list any modules."));
+    snprintf(error, error_size, _("The backup manifest does not list any modules."));
     goto finish;
   }
 
-  qsort(manifest->entries, manifest->entry_count,
-        sizeof(*manifest->entries), wd_royl_compare_restore_entries_ccc);
+  qsort(manifest->entries, manifest->entry_count, sizeof(*manifest->entries), wd_royl_compare_restore_entries_ccc);
   if (manifest->entry_count > 1)
   {
     size_t input_index;
@@ -10287,8 +10283,7 @@ static int wd_royl_load_sa_manifest_ccc(const char *path,
 
     for (input_index = 1; input_index < manifest->entry_count; input_index++)
     {
-      if (manifest->entries[input_index].module !=
-          manifest->entries[output_index - 1].module)
+      if (manifest->entries[input_index].module != manifest->entries[output_index - 1].module)
       {
         if (output_index != input_index)
         {
@@ -10319,14 +10314,10 @@ finish:
   return result;
 }
 
-static void wd_royl_restore_add_text_column_ccc(GtkWidget *tree_view,
-                                                const char *title,
-                                                int model_column, int width,
-                                                float xalign)
+static void wd_royl_restore_add_text_column_ccc(GtkWidget *tree_view, const char *title, int model_column, int width, float xalign)
 {
   GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-  GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
-      title, renderer, "text", model_column, NULL);
+  GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(title, renderer, "text", model_column, NULL);
 
   gtk_tree_view_column_set_resizable(column, TRUE);
   gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
@@ -10335,23 +10326,19 @@ static void wd_royl_restore_add_text_column_ccc(GtkWidget *tree_view,
   gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
 }
 
-static void wd_royl_restore_toggle_ccc(GtkCellRendererToggle *renderer,
-                                       gchar *path_string, gpointer user_data)
+static void wd_royl_restore_toggle_ccc(GtkCellRendererToggle *renderer, gchar *path_string, gpointer user_data)
 {
-  wd_royl_sa_restore_picker_ccc_t *picker =
-      (wd_royl_sa_restore_picker_ccc_t *)user_data;
+  wd_royl_sa_restore_picker_ccc_t *picker = (wd_royl_sa_restore_picker_ccc_t *)user_data;
   GtkTreeIter iter;
   gboolean selected;
   gboolean available;
   guint index;
 
-  if (!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(picker->store), &iter,
-                                           path_string))
+  if (!gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(picker->store), &iter, path_string))
   {
     return;
   }
-  gtk_tree_model_get(GTK_TREE_MODEL(picker->store), &iter, 0, &selected, 1,
-                     &available, 6, &index, -1);
+  gtk_tree_model_get(GTK_TREE_MODEL(picker->store), &iter, 0, &selected, 1, &available, 6, &index, -1);
   if (!available || index >= picker->manifest->entry_count)
   {
     return;
@@ -10361,8 +10348,7 @@ static void wd_royl_restore_toggle_ccc(GtkCellRendererToggle *renderer,
   picker->manifest->entries[index].selected = selected;
 }
 
-static void wd_royl_restore_set_all_ccc(
-    wd_royl_sa_restore_picker_ccc_t *picker, bool selected)
+static void wd_royl_restore_set_all_ccc(wd_royl_sa_restore_picker_ccc_t *picker, bool selected)
 {
   GtkTreeIter iter;
   GtkTreeModel *model = GTK_TREE_MODEL(picker->store);
@@ -10385,22 +10371,17 @@ static void wd_royl_restore_set_all_ccc(
   } while (gtk_tree_model_iter_next(model, &iter));
 }
 
-static void wd_royl_restore_select_all_clicked_ccc(GtkWidget *widget,
-                                                   gpointer user_data)
+static void wd_royl_restore_select_all_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
-  wd_royl_restore_set_all_ccc(
-      (wd_royl_sa_restore_picker_ccc_t *)user_data, true);
+  wd_royl_restore_set_all_ccc((wd_royl_sa_restore_picker_ccc_t *)user_data, true);
 }
 
-static void wd_royl_restore_select_none_clicked_ccc(GtkWidget *widget,
-                                                    gpointer user_data)
+static void wd_royl_restore_select_none_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
-  wd_royl_restore_set_all_ccc(
-      (wd_royl_sa_restore_picker_ccc_t *)user_data, false);
+  wd_royl_restore_set_all_ccc((wd_royl_sa_restore_picker_ccc_t *)user_data, false);
 }
 
-static size_t wd_royl_restore_selected_count_ccc(
-    wd_royl_sa_restore_picker_ccc_t *picker)
+static size_t wd_royl_restore_selected_count_ccc(wd_royl_sa_restore_picker_ccc_t *picker)
 {
   size_t count = 0;
   size_t i;
@@ -10415,23 +10396,17 @@ static size_t wd_royl_restore_selected_count_ccc(
   return count;
 }
 
-static void wd_royl_restore_selection_response_ccc(GtkDialog *dialog,
-                                                   gint response,
-                                                   gpointer user_data)
+static void wd_royl_restore_selection_response_ccc(GtkDialog *dialog, gint response, gpointer user_data)
 {
-  wd_royl_sa_restore_picker_ccc_t *picker =
-      (wd_royl_sa_restore_picker_ccc_t *)user_data;
+  wd_royl_sa_restore_picker_ccc_t *picker = (wd_royl_sa_restore_picker_ccc_t *)user_data;
   GtkWidget *message;
 
-  if (response != GTK_RESPONSE_ACCEPT ||
-      wd_royl_restore_selected_count_ccc(picker) > 0)
+  if (response != GTK_RESPONSE_ACCEPT || wd_royl_restore_selected_count_ccc(picker) > 0)
   {
     return;
   }
-  message = gtk_message_dialog_new(
-      GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING,
-      GTK_BUTTONS_OK, "%s",
-      _("Select at least one available module to restore."));
+  message = gtk_message_dialog_new(GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s",
+                                   _("Select at least one available module to restore."));
   gtk_window_set_title(GTK_WINDOW(message), _("WD ROYL SA Restore"));
   gtk_dialog_run(GTK_DIALOG(message));
   gtk_widget_destroy(message);
@@ -10467,13 +10442,11 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
     }
   }
 
-  picker.dialog = gtk_dialog_new_with_buttons(
-      _("Restore WD ROYL SA Modules"), GTK_WINDOW(main_window_ccc),
-      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
-      GTK_RESPONSE_CANCEL, _("Restore Selected"), GTK_RESPONSE_ACCEPT, NULL);
+  picker.dialog =
+    gtk_dialog_new_with_buttons(_("Restore WD ROYL SA Modules"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Restore Selected"), GTK_RESPONSE_ACCEPT, NULL);
   gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 900, 560);
-  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog),
-                                  GTK_RESPONSE_ACCEPT);
+  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog), GTK_RESPONSE_ACCEPT);
 
   content = gtk_dialog_get_content_area(GTK_DIALOG(picker.dialog));
   gtk_container_set_border_width(GTK_CONTAINER(content), 10);
@@ -10485,11 +10458,8 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
              "Modules in manifest: %zu    Ready to restore: %zu\n\n"
              "The directory module 0x0001 is restored last. Each current "
              "module is backed up before it is written."),
-           manifest->created[0] != '\0' ? manifest->created : _("Unknown"),
-           manifest->model[0] != '\0' ? manifest->model : _("Unknown"),
-           manifest->serial[0] != '\0' ? manifest->serial : _("Unknown"),
-           manifest->transport[0] != '\0' ? manifest->transport
-                                          : _("Unknown"),
+           manifest->created[0] != '\0' ? manifest->created : _("Unknown"), manifest->model[0] != '\0' ? manifest->model : _("Unknown"),
+           manifest->serial[0] != '\0' ? manifest->serial : _("Unknown"), manifest->transport[0] != '\0' ? manifest->transport : _("Unknown"),
            manifest->entry_count, ready_count);
   info_label = gtk_label_new(info_text);
   gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
@@ -10497,26 +10467,21 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
   gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 0);
 
   {
-    GType columns[8] = {G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_STRING,
-                        G_TYPE_STRING,  G_TYPE_STRING,  G_TYPE_STRING,
-                        G_TYPE_UINT,    G_TYPE_STRING};
+    GType columns[8] = {G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_STRING};
     picker.store = gtk_list_store_newv(8, columns);
   }
   tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(picker.store));
   gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(tree_view), FALSE);
-  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(tree_view),
-                               GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(tree_view), GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
   gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(tree_view), 7);
 
   toggle_renderer = gtk_cell_renderer_toggle_new();
-  toggle_column = gtk_tree_view_column_new_with_attributes(
-      _("Restore"), toggle_renderer, "active", 0, "activatable", 1, NULL);
+  toggle_column = gtk_tree_view_column_new_with_attributes(_("Restore"), toggle_renderer, "active", 0, "activatable", 1, NULL);
   gtk_tree_view_column_set_resizable(toggle_column, FALSE);
   gtk_tree_view_column_set_sizing(toggle_column, GTK_TREE_VIEW_COLUMN_FIXED);
   gtk_tree_view_column_set_fixed_width(toggle_column, 72);
   gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), toggle_column);
-  g_signal_connect(toggle_renderer, "toggled",
-                   G_CALLBACK(wd_royl_restore_toggle_ccc), &picker);
+  g_signal_connect(toggle_renderer, "toggled", G_CALLBACK(wd_royl_restore_toggle_ccc), &picker);
 
   wd_royl_restore_add_text_column_ccc(tree_view, _("Module"), 2, 90, 0.0);
   wd_royl_restore_add_text_column_ccc(tree_view, _("Size"), 3, 110, 0.0);
@@ -10550,15 +10515,12 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
     }
 
     gtk_list_store_append(picker.store, &iter);
-    gtk_list_store_set(picker.store, &iter, 0, entry->selected, 1,
-                       entry->available, 2, module_text, 3, size_text, 4,
-                       status_text, 5, sha_text, 6, (guint)i, 7,
-                       entry->error, -1);
+    gtk_list_store_set(picker.store, &iter, 0, entry->selected, 1, entry->available, 2, module_text, 3, size_text, 4, status_text, 5, sha_text, 6,
+                       (guint)i, 7, entry->error, -1);
   }
 
   scrolled = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
-                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_widget_set_size_request(scrolled, -1, 330);
   gtk_container_add(GTK_CONTAINER(scrolled), tree_view);
   gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
@@ -10569,14 +10531,9 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
   gtk_box_pack_start(GTK_BOX(button_row), select_all_button, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(button_row), select_none_button, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(vbox), button_row, FALSE, FALSE, 0);
-  g_signal_connect(select_all_button, "clicked",
-                   G_CALLBACK(wd_royl_restore_select_all_clicked_ccc),
-                   &picker);
-  g_signal_connect(select_none_button, "clicked",
-                   G_CALLBACK(wd_royl_restore_select_none_clicked_ccc),
-                   &picker);
-  g_signal_connect(picker.dialog, "response",
-                   G_CALLBACK(wd_royl_restore_selection_response_ccc), &picker);
+  g_signal_connect(select_all_button, "clicked", G_CALLBACK(wd_royl_restore_select_all_clicked_ccc), &picker);
+  g_signal_connect(select_none_button, "clicked", G_CALLBACK(wd_royl_restore_select_none_clicked_ccc), &picker);
+  g_signal_connect(picker.dialog, "response", G_CALLBACK(wd_royl_restore_selection_response_ccc), &picker);
 
   gtk_widget_show_all(picker.dialog);
   response = gtk_dialog_run(GTK_DIALOG(picker.dialog));
@@ -10591,10 +10548,9 @@ static size_t wd_royl_restore_selection_ccc(wd_royl_sa_manifest_ccc *manifest)
   return wd_royl_restore_selected_count_ccc(&picker);
 }
 
-static int wd_royl_restore_one_module_ccc(
-    const wd_royl_sa_restore_entry_ccc *entry, const char *pre_restore_directory,
-    char *pre_restore_file, size_t pre_restore_file_size, bool *fatal,
-    char *error, size_t error_size, wd_royl_progress_callback_ccc progress)
+static int wd_royl_restore_one_module_ccc(const wd_royl_sa_restore_entry_ccc *entry, const char *pre_restore_directory, char *pre_restore_file,
+                                          size_t pre_restore_file_size, bool *fatal, char *error, size_t error_size,
+                                          wd_royl_progress_callback_ccc progress)
 {
   uint8_t *backup_data = NULL;
   uint8_t *current_data = NULL;
@@ -10621,8 +10577,7 @@ static int wd_royl_restore_one_module_ccc(
     snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
     goto finish;
   }
-  if (entry->file_size != 0 &&
-      (unsigned long long)backup_size != entry->file_size)
+  if (entry->file_size != 0 && (unsigned long long)backup_size != entry->file_size)
   {
     snprintf(error, error_size,
              _("The backup file is %zu bytes, but the manifest reports %llu "
@@ -10632,12 +10587,10 @@ static int wd_royl_restore_one_module_ccc(
   }
   if (entry->sha256[0] != '\0')
   {
-    wd_royl_sha256_ccc(backup_data, backup_size, calculated_sha256,
-                       sizeof(calculated_sha256));
+    wd_royl_sha256_ccc(backup_data, backup_size, calculated_sha256, sizeof(calculated_sha256));
     if (g_ascii_strcasecmp(calculated_sha256, entry->sha256) != 0)
     {
-      snprintf(error, error_size,
-               _("The backup file SHA-256 does not match the manifest."));
+      snprintf(error, error_size, _("The backup file SHA-256 does not match the manifest."));
       goto finish;
     }
   }
@@ -10647,17 +10600,16 @@ static int wd_royl_restore_one_module_ccc(
     goto finish;
   }
 
-  if (wd_royl_read_module_ccc(entry->module, &current_data, &current_size,
-                              progress) != 0)
+  if (wd_royl_read_module_ccc(entry->module, &current_data, &current_size, progress) != 0)
   {
     snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
     goto finish;
   }
-  if (wd_royl_validate_module_header_ccc(current_data, current_size,
-                                         entry->module) != 0)
+  if (wd_royl_validate_module_header_ccc(current_data, current_size, entry->module) != 0)
   {
-    snprintf(error, error_size, _("The current module could not be validated. "
-                                  "%s"),
+    snprintf(error, error_size,
+             _("The current module could not be validated. "
+               "%s"),
              wd_royl_last_error_ccc());
     goto finish;
   }
@@ -10670,10 +10622,8 @@ static int wd_royl_restore_one_module_ccc(
     goto finish;
   }
 
-  snprintf(module_file, sizeof(module_file), "module_%04x.bin",
-           entry->module);
-  wd_royl_join_path_ccc(pre_restore_file, pre_restore_file_size,
-                        pre_restore_directory, module_file);
+  snprintf(module_file, sizeof(module_file), "module_%04x.bin", entry->module);
+  wd_royl_join_path_ccc(pre_restore_file, pre_restore_file_size, pre_restore_directory, module_file);
   if (wd_royl_write_file_ccc(pre_restore_file, current_data, current_size) != 0)
   {
     snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
@@ -10687,8 +10637,7 @@ static int wd_royl_restore_one_module_ccc(
              wd_royl_last_error_ccc());
     goto finish;
   }
-  if (saved_size != current_size ||
-      memcmp(saved_data, current_data, current_size) != 0)
+  if (saved_size != current_size || memcmp(saved_data, current_data, current_size) != 0)
   {
     snprintf(error, error_size,
              _("The previous module backup could not be verified. The write "
@@ -10698,15 +10647,13 @@ static int wd_royl_restore_one_module_ccc(
   free(saved_data);
   saved_data = NULL;
 
-  if (wd_royl_write_module_ccc(entry->module, backup_data, backup_size,
-                               progress) != 0)
+  if (wd_royl_write_module_ccc(entry->module, backup_data, backup_size, progress) != 0)
   {
     *fatal = true;
     snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
     goto finish;
   }
-  if (wd_royl_verify_module_ccc(entry->module, backup_data, backup_size,
-                                progress) != 0)
+  if (wd_royl_verify_module_ccc(entry->module, backup_data, backup_size, progress) != 0)
   {
     *fatal = true;
     snprintf(error, error_size, "%s", wd_royl_last_error_ccc());
@@ -10756,25 +10703,19 @@ void run_wd_royl_backup_sa_ccc(void)
   {
     return;
   }
-  parent_directory = wd_royl_choose_folder_ccc(
-      _("Choose a folder for the WD ROYL SA backup"), g_get_home_dir());
+  parent_directory = wd_royl_choose_folder_ccc(_("Choose a folder for the WD ROYL SA backup"), g_get_home_dir());
   if (parent_directory == NULL)
   {
     goto cleanup;
   }
-  wd_royl_make_backup_folder_path_ccc(parent_directory, backup_directory,
-                                      sizeof(backup_directory), 0);
-  if (!wd_royl_confirm_ccc(
-          _("Back up WD ROYL SA"), _("Back Up"),
-          _("Back up every module listed in SA directory 0x0001?\n\n"
-            "Drive: %s\nSerial: %s\nDestination:\n%s\n\n"
-            "The backup continues if an individual module cannot be read.\n\n"
-            "Continue?"),
-          current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                              : _("Unknown"),
-          current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                                : _("Unknown"),
-          backup_directory))
+  wd_royl_make_backup_folder_path_ccc(parent_directory, backup_directory, sizeof(backup_directory), 0);
+  if (!wd_royl_confirm_ccc(_("Back up WD ROYL SA"), _("Back Up"),
+                           _("Back up every module listed in SA directory 0x0001?\n\n"
+                             "Drive: %s\nSerial: %s\nDestination:\n%s\n\n"
+                             "The backup continues if an individual module cannot be read.\n\n"
+                             "Continue?"),
+                           current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                           current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"), backup_directory))
   {
     goto cleanup;
   }
@@ -10784,20 +10725,14 @@ void run_wd_royl_backup_sa_ccc(void)
     goto cleanup;
   }
   source_open = true;
-  if (wd_royl_create_backup_folder_ccc(
-          parent_directory, backup_directory, sizeof(backup_directory),
-          folder_error, sizeof(folder_error)) != 0)
+  if (wd_royl_create_backup_folder_ccc(parent_directory, backup_directory, sizeof(backup_directory), folder_error, sizeof(folder_error)) != 0)
   {
-    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s",
-                             folder_error);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s", folder_error);
     goto cleanup;
   }
-  wd_royl_progress_begin_ccc(_("WD ROYL SA Backup"),
-                             _("Reading module directory 0x0001"));
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Backup"), _("Reading module directory 0x0001"));
   progress_active = true;
-  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data,
-                              &directory_size,
-                              wd_royl_progress_update_ccc) != 0)
+  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data, &directory_size, wd_royl_progress_update_ccc) != 0)
   {
     snprintf(failure_message, sizeof(failure_message),
              _("Unable to read the SA module directory. The backup was not "
@@ -10805,8 +10740,7 @@ void run_wd_royl_backup_sa_ccc(void)
              wd_royl_last_error_ccc());
     goto cleanup;
   }
-  if (wd_royl_parse_module_directory_ccc(directory_data, directory_size,
-                                         &entries, &entry_count) != 0)
+  if (wd_royl_parse_module_directory_ccc(directory_data, directory_size, &entries, &entry_count) != 0)
   {
     snprintf(failure_message, sizeof(failure_message),
              _("Unable to parse the SA module directory. The backup was not "
@@ -10826,24 +10760,19 @@ void run_wd_royl_backup_sa_ccc(void)
         break;
       }
     }
-    if (!have_directory_entry &&
-        directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
+    if (!have_directory_entry && directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
     {
-      wd_royl_module_entry_ccc *new_entries =
-          (wd_royl_module_entry_ccc *)realloc(
-              entries, (entry_count + 1) * sizeof(*entries));
+      wd_royl_module_entry_ccc *new_entries = (wd_royl_module_entry_ccc *)realloc(entries, (entry_count + 1) * sizeof(*entries));
 
       if (new_entries == NULL)
       {
-        snprintf(failure_message, sizeof(failure_message),
-                 _("Unable to allocate memory for the module directory."));
+        snprintf(failure_message, sizeof(failure_message), _("Unable to allocate memory for the module directory."));
         goto cleanup;
       }
       entries = new_entries;
       memset(&entries[entry_count], 0, sizeof(entries[entry_count]));
       entries[entry_count].module_id = WD_ROYL_MODULE_01;
-      entries[entry_count].sectors =
-          (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
+      entries[entry_count].sectors = (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
       entries[entry_count].copies = 1;
       entry_count++;
     }
@@ -10853,8 +10782,7 @@ void run_wd_royl_backup_sa_ccc(void)
   {
     size_t output_index = 1;
 
-    qsort(entries, entry_count, sizeof(*entries),
-          wd_royl_compare_module_entries_ccc);
+    qsort(entries, entry_count, sizeof(*entries), wd_royl_compare_module_entries_ccc);
     for (i = 1; i < entry_count; i++)
     {
       if (entries[i].module_id != entries[output_index - 1].module_id)
@@ -10869,10 +10797,8 @@ void run_wd_royl_backup_sa_ccc(void)
     entry_count = output_index;
   }
 
-  directory_checksum_ok =
-      wd_royl_module_checksum_ok_ccc(directory_data, directory_size);
-  wd_royl_sha256_ccc(directory_data, directory_size, directory_sha256,
-                     sizeof(directory_sha256));
+  directory_checksum_ok = wd_royl_module_checksum_ok_ccc(directory_data, directory_size);
+  wd_royl_sha256_ccc(directory_data, directory_size, directory_sha256, sizeof(directory_sha256));
   for (i = 0; i < entry_count; i++)
   {
     if (entries[i].module_id == WD_ROYL_MODULE_01)
@@ -10881,8 +10807,7 @@ void run_wd_royl_backup_sa_ccc(void)
     }
     else if (entries[i].sectors > 0)
     {
-      total_bytes += (unsigned long long)entries[i].sectors *
-                     WD_ROYL_SECTOR_SIZE;
+      total_bytes += (unsigned long long)entries[i].sectors * WD_ROYL_SECTOR_SIZE;
     }
     else
     {
@@ -10909,48 +10834,33 @@ void run_wd_royl_backup_sa_ccc(void)
   }
 
   manifest = g_key_file_new();
-  g_key_file_set_string(manifest, "backup", "format",
-                        WD_ROYL_SA_MANIFEST_FORMAT);
-  g_key_file_set_integer(manifest, "backup", "version",
-                         WD_ROYL_SA_MANIFEST_VERSION);
+  g_key_file_set_string(manifest, "backup", "format", WD_ROYL_SA_MANIFEST_FORMAT);
+  g_key_file_set_integer(manifest, "backup", "version", WD_ROYL_SA_MANIFEST_VERSION);
   g_key_file_set_string(manifest, "backup", "created", created);
-  g_key_file_set_string(manifest, "backup", "model",
-                        current_source_model_ccc);
-  g_key_file_set_string(manifest, "backup", "serial",
-                        current_source_serial_ccc);
+  g_key_file_set_string(manifest, "backup", "model", current_source_model_ccc);
+  g_key_file_set_string(manifest, "backup", "serial", current_source_serial_ccc);
   g_key_file_set_string(manifest, "backup", "firmware", "");
-  g_key_file_set_string(manifest, "backup", "transport",
-                        wd_royl_transport_name_ccc());
-  g_key_file_set_integer(manifest, "backup", "directory_module",
-                         WD_ROYL_MODULE_01);
-  g_key_file_set_integer(manifest, "backup", "directory_size",
-                         (gint)directory_size);
-  g_key_file_set_string(manifest, "backup", "directory_sha256",
-                        directory_sha256);
-  g_key_file_set_boolean(manifest, "backup", "directory_checksum_ok",
-                         directory_checksum_ok);
-  g_key_file_set_integer(manifest, "backup", "module_count",
-                         (gint)entry_count);
+  g_key_file_set_string(manifest, "backup", "transport", wd_royl_transport_name_ccc());
+  g_key_file_set_integer(manifest, "backup", "directory_module", WD_ROYL_MODULE_01);
+  g_key_file_set_integer(manifest, "backup", "directory_size", (gint)directory_size);
+  g_key_file_set_string(manifest, "backup", "directory_sha256", directory_sha256);
+  g_key_file_set_boolean(manifest, "backup", "directory_checksum_ok", directory_checksum_ok);
+  g_key_file_set_integer(manifest, "backup", "module_count", (gint)entry_count);
 
   summary = g_string_new(NULL);
   g_string_append(summary, "WD ROYL SA Backup\n");
   g_string_append_printf(summary, "Created: %s\n", created);
   g_string_append_printf(summary, "Model: %s\n", current_source_model_ccc);
   g_string_append_printf(summary, "Serial: %s\n", current_source_serial_ccc);
-  g_string_append_printf(summary, "Transport: %s\n",
-                         wd_royl_transport_name_ccc());
-  g_string_append_printf(summary,
-                         "Directory module 0x0001: %zu bytes, checksum %s\n",
-                         directory_size,
-                         directory_checksum_ok ? "ok" : "MISMATCH");
+  g_string_append_printf(summary, "Transport: %s\n", wd_royl_transport_name_ccc());
+  g_string_append_printf(summary, "Directory module 0x0001: %zu bytes, checksum %s\n", directory_size, directory_checksum_ok ? "ok" : "MISMATCH");
   g_string_append_printf(summary, "Modules listed: %zu\n\n", entry_count);
 
   memset(&progress_state, 0, sizeof(progress_state));
   progress_state.count = (unsigned int)entry_count;
   progress_state.total = total_bytes;
   wd_royl_sa_backup_progress_state_ccc = &progress_state;
-  wd_royl_progress_update_ccc(_("Backing up service area modules"), 0,
-                              total_bytes);
+  wd_royl_progress_update_ccc(_("Backing up service area modules"), 0, total_bytes);
 
   for (i = 0; i < entry_count; i++)
   {
@@ -10980,55 +10890,45 @@ void run_wd_royl_backup_sa_ccc(void)
       module_size = directory_size;
       module_from_directory = true;
       module_read_ok = true;
-      wd_royl_sa_backup_progress_callback_ccc(
-          _("Saving module directory"), 0, directory_size);
+      wd_royl_sa_backup_progress_callback_ccc(_("Saving module directory"), 0, directory_size);
     }
-    else if (wd_royl_read_module_ccc(
-                 module_id, &module_data, &module_size,
-                 wd_royl_sa_backup_progress_callback_ccc) == 0)
+    else if (wd_royl_read_module_ccc(module_id, &module_data, &module_size, wd_royl_sa_backup_progress_callback_ccc) == 0)
     {
       module_read_ok = true;
     }
     else
     {
-      snprintf(error_text, sizeof(error_text), "%s",
-               wd_royl_last_error_ccc());
+      snprintf(error_text, sizeof(error_text), "%s", wd_royl_last_error_ccc());
       status = "read_failed";
       read_failed_count++;
     }
 
     if (module_read_ok)
     {
-      if (wd_royl_validate_module_header_ccc(module_data, module_size,
-                                             module_id) != 0)
+      if (wd_royl_validate_module_header_ccc(module_data, module_size, module_id) != 0)
       {
-        snprintf(error_text, sizeof(error_text), "%s",
-                 wd_royl_last_error_ccc());
+        snprintf(error_text, sizeof(error_text), "%s", wd_royl_last_error_ccc());
         status = "header_invalid";
         read_failed_count++;
       }
       else
       {
         stored_checksum = wd_royl_get_module_checksum_ccc(module_data);
-        calculated_checksum =
-            wd_royl_calculate_checksum_ccc(module_data, module_size);
+        calculated_checksum = wd_royl_calculate_checksum_ccc(module_data, module_size);
         checksum_ok = stored_checksum == calculated_checksum;
         if (!checksum_ok)
         {
           checksum_mismatch_count++;
         }
-        wd_royl_sha256_ccc(module_data, module_size, module_sha256,
-                           sizeof(module_sha256));
+        wd_royl_sha256_ccc(module_data, module_size, module_sha256, sizeof(module_sha256));
         snprintf(file_name, sizeof(file_name), "module_%04x.bin", module_id);
         {
           char file_path[PATH_MAX];
 
-          wd_royl_join_path_ccc(file_path, sizeof(file_path),
-                                backup_directory, file_name);
+          wd_royl_join_path_ccc(file_path, sizeof(file_path), backup_directory, file_name);
           if (wd_royl_write_file_ccc(file_path, module_data, module_size) != 0)
           {
-            snprintf(error_text, sizeof(error_text), "%s",
-                     wd_royl_last_error_ccc());
+            snprintf(error_text, sizeof(error_text), "%s", wd_royl_last_error_ccc());
             status = "file_write_failed";
             file_write_failed_count++;
             file_name[0] = '\0';
@@ -11041,21 +10941,14 @@ void run_wd_royl_backup_sa_ccc(void)
     g_key_file_set_integer(manifest, group_name, "id", module_id);
     g_key_file_set_string(manifest, group_name, "file", file_name);
     g_key_file_set_string(manifest, group_name, "status", status);
-    g_key_file_set_integer(manifest, group_name, "directory_sectors",
-                           entries[i].sectors);
-    g_key_file_set_integer(manifest, group_name, "directory_copies",
-                           entries[i].copies);
-    wd_royl_set_hex_ccc(manifest, group_name, "directory_location1",
-                        entries[i].location1);
-    wd_royl_set_hex_ccc(manifest, group_name, "directory_location2",
-                        entries[i].location2);
-    g_key_file_set_integer(manifest, group_name, "read_size",
-                           (gint)module_size);
+    g_key_file_set_integer(manifest, group_name, "directory_sectors", entries[i].sectors);
+    g_key_file_set_integer(manifest, group_name, "directory_copies", entries[i].copies);
+    wd_royl_set_hex_ccc(manifest, group_name, "directory_location1", entries[i].location1);
+    wd_royl_set_hex_ccc(manifest, group_name, "directory_location2", entries[i].location2);
+    g_key_file_set_integer(manifest, group_name, "read_size", (gint)module_size);
     g_key_file_set_string(manifest, group_name, "sha256", module_sha256);
-    wd_royl_set_hex_ccc(manifest, group_name, "stored_checksum",
-                        stored_checksum);
-    wd_royl_set_hex_ccc(manifest, group_name, "calculated_checksum",
-                        calculated_checksum);
+    wd_royl_set_hex_ccc(manifest, group_name, "stored_checksum", stored_checksum);
+    wd_royl_set_hex_ccc(manifest, group_name, "calculated_checksum", calculated_checksum);
     g_key_file_set_boolean(manifest, group_name, "checksum_ok", checksum_ok);
     {
       char *clean_error = g_strdup(error_text);
@@ -11083,11 +10976,8 @@ void run_wd_royl_backup_sa_ccc(void)
     {
       g_strlcpy(size_text, "-", sizeof(size_text));
     }
-    g_string_append_printf(
-        summary, "0x%04x  %-10s  %-16s  checksum=%s  sha256=%s\n", module_id,
-        size_text, status,
-        module_size == 0 ? "-" : (checksum_ok ? "ok" : "mismatch"),
-        module_sha256[0] != '\0' ? module_sha256 : "-");
+    g_string_append_printf(summary, "0x%04x  %-10s  %-16s  checksum=%s  sha256=%s\n", module_id, size_text, status,
+                           module_size == 0 ? "-" : (checksum_ok ? "ok" : "mismatch"), module_sha256[0] != '\0' ? module_sha256 : "-");
     if (error_text[0] != '\0')
     {
       char *clean_error = g_strdup(error_text);
@@ -11118,8 +11008,7 @@ void run_wd_royl_backup_sa_ccc(void)
     {
       progress_state.completed = progress_state.total;
     }
-    wd_royl_progress_update_ccc(NULL, progress_state.completed,
-                                progress_state.total);
+    wd_royl_progress_update_ccc(NULL, progress_state.completed, progress_state.total);
 
     if (!module_from_directory)
     {
@@ -11128,39 +11017,28 @@ void run_wd_royl_backup_sa_ccc(void)
   }
 
   wd_royl_sa_backup_progress_state_ccc = NULL;
-  g_string_append_printf(
-      summary,
-      "\nBacked up: %u\nFailed: %u\nRead failures: %u\nFile write failures: "
-      "%u\nChecksum mismatches: %u\n",
-      ok_count, failed_count, read_failed_count, file_write_failed_count,
-      checksum_mismatch_count);
-  g_key_file_set_integer(manifest, "backup", "backup_ok_count",
-                         (gint)ok_count);
-  g_key_file_set_integer(manifest, "backup", "backup_failed_count",
-                         (gint)failed_count);
-  g_key_file_set_integer(manifest, "backup", "read_failed_count",
-                         (gint)read_failed_count);
-  g_key_file_set_integer(manifest, "backup", "file_write_failed_count",
-                         (gint)file_write_failed_count);
-  g_key_file_set_integer(manifest, "backup", "checksum_mismatch_count",
-                         (gint)checksum_mismatch_count);
+  g_string_append_printf(summary,
+                         "\nBacked up: %u\nFailed: %u\nRead failures: %u\nFile write failures: "
+                         "%u\nChecksum mismatches: %u\n",
+                         ok_count, failed_count, read_failed_count, file_write_failed_count, checksum_mismatch_count);
+  g_key_file_set_integer(manifest, "backup", "backup_ok_count", (gint)ok_count);
+  g_key_file_set_integer(manifest, "backup", "backup_failed_count", (gint)failed_count);
+  g_key_file_set_integer(manifest, "backup", "read_failed_count", (gint)read_failed_count);
+  g_key_file_set_integer(manifest, "backup", "file_write_failed_count", (gint)file_write_failed_count);
+  g_key_file_set_integer(manifest, "backup", "checksum_mismatch_count", (gint)checksum_mismatch_count);
 
-  wd_royl_join_path_ccc(manifest_path, sizeof(manifest_path),
-                        backup_directory, WD_ROYL_SA_MANIFEST_NAME);
+  wd_royl_join_path_ccc(manifest_path, sizeof(manifest_path), backup_directory, WD_ROYL_SA_MANIFEST_NAME);
   {
     GError *gerror = NULL;
     gsize manifest_length = 0;
     char *manifest_data = g_key_file_to_data(manifest, &manifest_length, NULL);
 
-    if (manifest_data == NULL ||
-        !g_file_set_contents(manifest_path, manifest_data,
-                             (gssize)manifest_length, &gerror))
+    if (manifest_data == NULL || !g_file_set_contents(manifest_path, manifest_data, (gssize)manifest_length, &gerror))
     {
       snprintf(failure_message, sizeof(failure_message),
                _("The module files were written to:\n%s\n\nbut the backup "
                  "manifest could not be saved:\n%s\n\n%s"),
-               backup_directory, manifest_path,
-               gerror != NULL ? gerror->message : _("Unknown error"));
+               backup_directory, manifest_path, gerror != NULL ? gerror->message : _("Unknown error"));
       if (gerror != NULL)
       {
         g_error_free(gerror);
@@ -11171,13 +11049,11 @@ void run_wd_royl_backup_sa_ccc(void)
     g_free(manifest_data);
   }
 
-  wd_royl_join_path_ccc(summary_path, sizeof(summary_path), backup_directory,
-                        WD_ROYL_SA_SUMMARY_NAME);
+  wd_royl_join_path_ccc(summary_path, sizeof(summary_path), backup_directory, WD_ROYL_SA_SUMMARY_NAME);
   {
     GError *gerror = NULL;
 
-    summary_written =
-        g_file_set_contents(summary_path, summary->str, -1, &gerror);
+    summary_written = g_file_set_contents(summary_path, summary->str, -1, &gerror);
     if (gerror != NULL)
     {
       g_error_free(gerror);
@@ -11191,49 +11067,36 @@ void run_wd_royl_backup_sa_ccc(void)
 
   if (failed_count == 0 && checksum_mismatch_count == 0)
   {
-    wd_royl_show_message_ccc(
-        summary_written ? GTK_MESSAGE_INFO : GTK_MESSAGE_WARNING,
-        _("WD ROYL SA Backup"),
-        _("SA backup completed.\n\nDrive: %s\nSerial: %s\nModules backed up: "
-          "%u of %zu\nFolder:\n%s\n\nManifest:\n%s%s"),
-        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                            : _("Unknown"),
-        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                             : _("Unknown"),
-        ok_count, entry_count, backup_directory, manifest_path,
-        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+    wd_royl_show_message_ccc(summary_written ? GTK_MESSAGE_INFO : GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
+                             _("SA backup completed.\n\nDrive: %s\nSerial: %s\nModules backed up: "
+                               "%u of %zu\nFolder:\n%s\n\nManifest:\n%s%s"),
+                             current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                             current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"), ok_count, entry_count, backup_directory,
+                             manifest_path, summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
   }
   else if (failed_count == 0)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
-        _("SA backup completed, but some modules have checksum mismatches.\n\n"
-          "Drive: %s\nSerial: %s\nModules backed up: %u of %zu\nChecksum "
-          "mismatches: %u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt "
-          "for the affected modules.%s"),
-        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                            : _("Unknown"),
-        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                             : _("Unknown"),
-        ok_count, entry_count, checksum_mismatch_count, backup_directory,
-        manifest_path,
-        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
+                             _("SA backup completed, but some modules have checksum mismatches.\n\n"
+                               "Drive: %s\nSerial: %s\nModules backed up: %u of %zu\nChecksum "
+                               "mismatches: %u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt "
+                               "for the affected modules.%s"),
+                             current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                             current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"), ok_count, entry_count,
+                             checksum_mismatch_count, backup_directory, manifest_path,
+                             summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
   }
   else
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
-        _("SA backup completed with failures.\n\nDrive: %s\nSerial: %s\n"
-          "Modules backed up: %u of %zu\nFailed: %u\nChecksum mismatches: "
-          "%u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt for the "
-          "failed module details.%s"),
-        current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                            : _("Unknown"),
-        current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                             : _("Unknown"),
-        ok_count, entry_count, failed_count, checksum_mismatch_count,
-        backup_directory, manifest_path,
-        summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL SA Backup"),
+                             _("SA backup completed with failures.\n\nDrive: %s\nSerial: %s\n"
+                               "Modules backed up: %u of %zu\nFailed: %u\nChecksum mismatches: "
+                               "%u\nFolder:\n%s\n\nManifest:\n%s\n\nSee summary.txt for the "
+                               "failed module details.%s"),
+                             current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                             current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"), ok_count, entry_count, failed_count,
+                             checksum_mismatch_count, backup_directory, manifest_path,
+                             summary_written ? "" : _("\n\nWarning: summary.txt was not written."));
   }
 
 cleanup:
@@ -11248,8 +11111,7 @@ cleanup:
   }
   if (failure_message[0] != '\0')
   {
-    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s",
-                             failure_message);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Backup"), "%s", failure_message);
   }
   if (manifest != NULL)
   {
@@ -11292,17 +11154,14 @@ void run_wd_royl_restore_sa_ccc(void)
   {
     return;
   }
-  manifest_path = wd_royl_choose_file_ccc(
-      _("Select a WD ROYL SA backup manifest"), false, NULL);
+  manifest_path = wd_royl_choose_file_ccc(_("Select a WD ROYL SA backup manifest"), false, NULL);
   if (manifest_path == NULL)
   {
     goto cleanup;
   }
-  if (wd_royl_load_sa_manifest_ccc(manifest_path, &manifest, load_error,
-                                   sizeof(load_error)) != 0)
+  if (wd_royl_load_sa_manifest_ccc(manifest_path, &manifest, load_error, sizeof(load_error)) != 0)
   {
-    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s",
-                             load_error);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s", load_error);
     goto cleanup;
   }
 
@@ -11316,23 +11175,17 @@ void run_wd_royl_restore_sa_ccc(void)
     goto cleanup;
   }
 
-  wd_royl_make_pre_restore_path_ccc(manifest.directory, pre_restore_directory,
-                                    sizeof(pre_restore_directory));
-  if (!wd_royl_confirm_ccc(
-          _("Restore WD ROYL SA"), _("Restore"),
-          _("Restore %zu selected module(s) to the current source drive?\n\n"
-            "Backup drive: %s / %s\nCurrent source: %s / %s\n\n"
-            "Each current module will be backed up to:\n%s\n\n"
-            "Module 0x0001 is restored last. Every write will be verified.\n\n"
-            "Continue?"),
-          selected_count,
-          manifest.model[0] != '\0' ? manifest.model : _("Unknown"),
-          manifest.serial[0] != '\0' ? manifest.serial : _("Unknown"),
-          current_source_model_ccc[0] != '\0' ? current_source_model_ccc
-                                              : _("Unknown"),
-          current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc
-                                               : _("Unknown"),
-          pre_restore_directory))
+  wd_royl_make_pre_restore_path_ccc(manifest.directory, pre_restore_directory, sizeof(pre_restore_directory));
+  if (!wd_royl_confirm_ccc(_("Restore WD ROYL SA"), _("Restore"),
+                           _("Restore %zu selected module(s) to the current source drive?\n\n"
+                             "Backup drive: %s / %s\nCurrent source: %s / %s\n\n"
+                             "Each current module will be backed up to:\n%s\n\n"
+                             "Module 0x0001 is restored last. Every write will be verified.\n\n"
+                             "Continue?"),
+                           selected_count, manifest.model[0] != '\0' ? manifest.model : _("Unknown"),
+                           manifest.serial[0] != '\0' ? manifest.serial : _("Unknown"),
+                           current_source_model_ccc[0] != '\0' ? current_source_model_ccc : _("Unknown"),
+                           current_source_serial_ccc[0] != '\0' ? current_source_serial_ccc : _("Unknown"), pre_restore_directory))
   {
     goto cleanup;
   }
@@ -11345,9 +11198,8 @@ void run_wd_royl_restore_sa_ccc(void)
   source_open = true;
   if (g_mkdir_with_parents(pre_restore_directory, 0755) != 0)
   {
-    snprintf(failure_message, sizeof(failure_message),
-             _("Unable to create the pre-restore backup folder:\n%s\n\n%s"),
-             pre_restore_directory, g_strerror(errno));
+    snprintf(failure_message, sizeof(failure_message), _("Unable to create the pre-restore backup folder:\n%s\n\n%s"), pre_restore_directory,
+             g_strerror(errno));
     goto cleanup;
   }
 
@@ -11371,13 +11223,9 @@ void run_wd_royl_restore_sa_ccc(void)
   g_string_append(restore_log, "WD ROYL SA Restore\n");
   g_string_append_printf(restore_log, "Started: %s\n", started);
   g_string_append_printf(restore_log, "Manifest: %s\n", manifest.path);
-  g_string_append_printf(restore_log, "Backup drive: %s / %s\n",
-                         manifest.model, manifest.serial);
-  g_string_append_printf(restore_log, "Selected modules: %zu\n",
-                         selected_count);
-  g_string_append_printf(restore_log,
-                         "Pre-restore module backups: %s\n\n",
-                         pre_restore_directory);
+  g_string_append_printf(restore_log, "Backup drive: %s / %s\n", manifest.model, manifest.serial);
+  g_string_append_printf(restore_log, "Selected modules: %zu\n", selected_count);
+  g_string_append_printf(restore_log, "Pre-restore module backups: %s\n\n", pre_restore_directory);
 
   memset(&progress_state, 0, sizeof(progress_state));
   progress_state.count = selected_count;
@@ -11402,78 +11250,59 @@ void run_wd_royl_restore_sa_ccc(void)
     // directory that may point at modules that were not restored.
     if (entry->module == WD_ROYL_MODULE_01 && failed_count > 0)
     {
-      char *clean_error = g_strdup(
-          _("Directory module not restored because another selected module "
-            "failed."));
+      char *clean_error = g_strdup(_("Directory module not restored because another selected module "
+                                     "failed."));
 
       g_strdelimit(clean_error, "\r\n", ' ');
       failed_count++;
-      g_string_append_printf(restore_log, "0x0001 SKIPPED: %s\n",
-                             clean_error);
+      g_string_append_printf(restore_log, "0x0001 SKIPPED: %s\n", clean_error);
       g_string_append_printf(failure_summary, "0x0001: %s\n", clean_error);
       g_free(clean_error);
       continue;
     }
     if (!entry->available)
     {
-      char *clean_error = g_strdup(
-          entry->error[0] != '\0' ? entry->error
-                                  : wd_royl_restore_status_text_ccc(
-                                        entry->status));
+      char *clean_error = g_strdup(entry->error[0] != '\0' ? entry->error : wd_royl_restore_status_text_ccc(entry->status));
 
       g_strdelimit(clean_error, "\r\n", ' ');
       failed_count++;
-      g_string_append_printf(restore_log, "0x%04x SKIPPED: %s\n",
-                             entry->module, clean_error);
-      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module,
-                             clean_error);
+      g_string_append_printf(restore_log, "0x%04x SKIPPED: %s\n", entry->module, clean_error);
+      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module, clean_error);
       g_free(clean_error);
       continue;
     }
 
     progress_state.index = (unsigned int)module_index;
     progress_state.module = entry->module;
-    snprintf(stage, sizeof(stage),
-             _("Module 0x%04x (%zu of %zu): checking backup file"),
-             entry->module, module_index, selected_count);
+    snprintf(stage, sizeof(stage), _("Module 0x%04x (%zu of %zu): checking backup file"), entry->module, module_index, selected_count);
     wd_royl_progress_update_ccc(stage, 0, 1);
 
-    result = wd_royl_restore_one_module_ccc(
-        entry, pre_restore_directory, pre_restore_file,
-        sizeof(pre_restore_file), &fatal, error_text, sizeof(error_text),
-        wd_royl_sa_restore_progress_callback_ccc);
+    result = wd_royl_restore_one_module_ccc(entry, pre_restore_directory, pre_restore_file, sizeof(pre_restore_file), &fatal, error_text,
+                                            sizeof(error_text), wd_royl_sa_restore_progress_callback_ccc);
     if (result == 0)
     {
       restored_count++;
-      g_string_append_printf(
-          restore_log, "0x%04x OK: previous module saved to %s\n",
-          entry->module, pre_restore_file);
+      g_string_append_printf(restore_log, "0x%04x OK: previous module saved to %s\n", entry->module, pre_restore_file);
       continue;
     }
 
     {
-      char *clean_error =
-          g_strdup(error_text[0] != '\0' ? error_text : _("Unknown error"));
+      char *clean_error = g_strdup(error_text[0] != '\0' ? error_text : _("Unknown error"));
 
       g_strdelimit(clean_error, "\r\n", ' ');
       failed_count++;
-      g_string_append_printf(restore_log, "0x%04x FAILED: %s\n",
-                             entry->module, clean_error);
+      g_string_append_printf(restore_log, "0x%04x FAILED: %s\n", entry->module, clean_error);
       if (pre_restore_file[0] != '\0')
       {
-        g_string_append_printf(restore_log, "  previous module: %s\n",
-                               pre_restore_file);
+        g_string_append_printf(restore_log, "  previous module: %s\n", pre_restore_file);
       }
-      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module,
-                             clean_error);
+      g_string_append_printf(failure_summary, "0x%04x: %s\n", entry->module, clean_error);
       g_free(clean_error);
     }
     if (fatal)
     {
       stopped = true;
-      g_string_append(
-          restore_log,
-          "Restore stopped after a write or verification failure.\n");
+      g_string_append(restore_log, "Restore stopped after a write or verification failure.\n");
       break;
     }
   }
@@ -11482,17 +11311,13 @@ void run_wd_royl_restore_sa_ccc(void)
   progress_active = false;
   wd_royl_progress_end_ccc();
 
-  wd_royl_join_path_ccc(restore_log_path, sizeof(restore_log_path),
-                        pre_restore_directory, WD_ROYL_SA_RESTORE_LOG_NAME);
+  wd_royl_join_path_ccc(restore_log_path, sizeof(restore_log_path), pre_restore_directory, WD_ROYL_SA_RESTORE_LOG_NAME);
   {
     GError *gerror = NULL;
 
-    if (!g_file_set_contents(restore_log_path, restore_log->str, -1,
-                             &gerror))
+    if (!g_file_set_contents(restore_log_path, restore_log->str, -1, &gerror))
     {
-      g_strlcpy(restore_log_error,
-                gerror != NULL ? gerror->message : _("Unknown error"),
-                sizeof(restore_log_error));
+      g_strlcpy(restore_log_error, gerror != NULL ? gerror->message : _("Unknown error"), sizeof(restore_log_error));
       if (gerror != NULL)
       {
         g_error_free(gerror);
@@ -11505,19 +11330,15 @@ void run_wd_royl_restore_sa_ccc(void)
   {
     char *failures = NULL;
     char *message;
-    size_t completed_selected =
-        (size_t)restored_count + (size_t)failed_count;
-    size_t remaining = selected_count > completed_selected
-                           ? selected_count - completed_selected
-                           : 0;
+    size_t completed_selected = (size_t)restored_count + (size_t)failed_count;
+    size_t remaining = selected_count > completed_selected ? selected_count - completed_selected : 0;
 
     if (failure_summary->len > 0)
     {
       failures = g_strndup(failure_summary->str, 3000);
       if (failure_summary->len > 3000)
       {
-        char *truncated = g_strconcat(
-            failures, _("\n... see restore.txt for the full list."), NULL);
+        char *truncated = g_strconcat(failures, _("\n... see restore.txt for the full list."), NULL);
 
         g_free(failures);
         failures = truncated;
@@ -11525,29 +11346,25 @@ void run_wd_royl_restore_sa_ccc(void)
     }
     if (stopped && remaining > 0)
     {
-      char *with_remaining = g_strdup_printf(
-          _("%s\n\nThe restore stopped before %zu selected module(s) were "
-            "attempted."),
-          failures != NULL ? failures : "", remaining);
+      char *with_remaining = g_strdup_printf(_("%s\n\nThe restore stopped before %zu selected module(s) were "
+                                               "attempted."),
+                                             failures != NULL ? failures : "", remaining);
 
       g_free(failures);
       failures = with_remaining;
     }
     if (restore_log_error[0] != '\0')
     {
-      char *with_log_error = g_strdup_printf(
-          _("%s\n\nWarning: restore.txt could not be written: %s"),
-          failures != NULL ? failures : "", restore_log_error);
+      char *with_log_error =
+        g_strdup_printf(_("%s\n\nWarning: restore.txt could not be written: %s"), failures != NULL ? failures : "", restore_log_error);
 
       g_free(failures);
       failures = with_log_error;
     }
 
-    message = g_strdup_printf(
-        _("Restore finished.\n\nRestored and verified: %u\nFailed or "
-          "skipped: %u\nPrevious module backups:\n%s%s"),
-        restored_count, failed_count, pre_restore_directory,
-        failures != NULL && failures[0] != '\0' ? "\n\n" : "");
+    message = g_strdup_printf(_("Restore finished.\n\nRestored and verified: %u\nFailed or "
+                                "skipped: %u\nPrevious module backups:\n%s%s"),
+                              restored_count, failed_count, pre_restore_directory, failures != NULL && failures[0] != '\0' ? "\n\n" : "");
     if (failures != NULL && failures[0] != '\0')
     {
       char *with_failures = g_strconcat(message, failures, NULL);
@@ -11557,21 +11374,17 @@ void run_wd_royl_restore_sa_ccc(void)
     }
     if (failed_count > 0 || stopped)
     {
-      char *with_recovery = g_strconcat(
-          message,
-          _("\n\nIf a module was not written correctly, use the SA Module "
-            "Editor to write the matching module_XXXX.bin file from the "
-            "previous module backups folder."),
-          NULL);
+      char *with_recovery = g_strconcat(message,
+                                        _("\n\nIf a module was not written correctly, use the SA Module "
+                                          "Editor to write the matching module_XXXX.bin file from the "
+                                          "previous module backups folder."),
+                                        NULL);
 
       g_free(message);
       message = with_recovery;
     }
-    wd_royl_show_message_ccc(
-        failed_count == 0 && !stopped && restore_log_error[0] == '\0'
-            ? GTK_MESSAGE_INFO
-            : GTK_MESSAGE_WARNING,
-        _("WD ROYL SA Restore"), "%s", message);
+    wd_royl_show_message_ccc(failed_count == 0 && !stopped && restore_log_error[0] == '\0' ? GTK_MESSAGE_INFO : GTK_MESSAGE_WARNING,
+                             _("WD ROYL SA Restore"), "%s", message);
     g_free(message);
     g_free(failures);
   }
@@ -11596,8 +11409,7 @@ cleanup:
   }
   if (failure_message[0] != '\0')
   {
-    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s",
-                             failure_message);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL SA Restore"), "%s", failure_message);
   }
   wd_royl_sa_manifest_clear_ccc(&manifest);
   g_free(manifest_path);
@@ -11633,10 +11445,7 @@ typedef struct
   bool dirty;
 } wd_royl_editor_ccc_t;
 
-static void wd_royl_editor_message_ccc(wd_royl_editor_ccc_t *editor,
-                                       GtkMessageType type,
-                                       const char *title,
-                                       const char *format, ...)
+static void wd_royl_editor_message_ccc(wd_royl_editor_ccc_t *editor, GtkMessageType type, const char *title, const char *format, ...)
 {
   va_list args;
   char *text;
@@ -11652,18 +11461,14 @@ static void wd_royl_editor_message_ccc(wd_royl_editor_ccc_t *editor,
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT, type,
-                                  GTK_BUTTONS_OK, "%s", text);
+  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT, type, GTK_BUTTONS_OK, "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
   g_free(text);
 }
 
-static bool wd_royl_editor_confirm_ccc(wd_royl_editor_ccc_t *editor,
-                                       const char *title,
-                                       const char *accept_label,
-                                       const char *format, ...)
+static bool wd_royl_editor_confirm_ccc(wd_royl_editor_ccc_t *editor, const char *title, const char *accept_label, const char *format, ...)
 {
   va_list args;
   char *text;
@@ -11680,13 +11485,9 @@ static bool wd_royl_editor_confirm_ccc(wd_royl_editor_ccc_t *editor,
   text = g_strdup_vprintf(format, args);
   va_end(args);
 
-  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT,
-                                  GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-                                  "%s", text);
+  dialog = gtk_message_dialog_new(parent, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, "%s", text);
   gtk_window_set_title(GTK_WINDOW(dialog), title);
-  gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL,
-                         GTK_RESPONSE_CANCEL, accept_label,
-                         GTK_RESPONSE_ACCEPT, NULL);
+  gtk_dialog_add_buttons(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, accept_label, GTK_RESPONSE_ACCEPT, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
   response = gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -11694,17 +11495,12 @@ static bool wd_royl_editor_confirm_ccc(wd_royl_editor_ccc_t *editor,
   return response == GTK_RESPONSE_ACCEPT;
 }
 
-static void wd_royl_editor_report_error_ccc(wd_royl_editor_ccc_t *editor,
-                                            const char *title,
-                                            const char *prefix)
+static void wd_royl_editor_report_error_ccc(wd_royl_editor_ccc_t *editor, const char *title, const char *prefix)
 {
-  wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, title, "%s\n\n%s",
-                             prefix, wd_royl_last_error_ccc());
+  wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, title, "%s\n\n%s", prefix, wd_royl_last_error_ccc());
 }
 
-static bool wd_royl_parse_number_ccc(const char *text,
-                                     unsigned long long maximum,
-                                     unsigned long long *value)
+static bool wd_royl_parse_number_ccc(const char *text, unsigned long long maximum, unsigned long long *value)
 {
   const char *start;
   const char *scan;
@@ -11758,28 +11554,20 @@ static bool wd_royl_parse_number_ccc(const char *text,
   return true;
 }
 
-static char *wd_royl_editor_choose_file_ccc(wd_royl_editor_ccc_t *editor,
-                                            bool save, const char *title,
-                                            const char *default_name)
+static char *wd_royl_editor_choose_file_ccc(wd_royl_editor_ccc_t *editor, bool save, const char *title, const char *default_name)
 {
   GtkWidget *dialog;
   char *filename = NULL;
 
-  dialog = gtk_file_chooser_dialog_new(
-      title, editor != NULL && editor->dialog != NULL
-                 ? GTK_WINDOW(editor->dialog)
-                 : GTK_WINDOW(main_window_ccc),
-      save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+  dialog = gtk_file_chooser_dialog_new(title, editor != NULL && editor->dialog != NULL ? GTK_WINDOW(editor->dialog) : GTK_WINDOW(main_window_ccc),
+                                       save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                       save ? GTK_STOCK_SAVE : GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   if (save)
   {
-    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
-                                                   TRUE);
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
     if (default_name != NULL)
     {
-      gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog),
-                                        default_name);
+      gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), default_name);
     }
   }
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
@@ -11796,29 +11584,24 @@ static void wd_royl_editor_update_info_ccc(wd_royl_editor_ccc_t *editor)
 
   if (!editor->loaded)
   {
-    gtk_label_set_text(
-        GTK_LABEL(editor->info_label),
-        _("No module is loaded. Enter a module number and select Read from "
-          "Drive, or load a module file."));
+    gtk_label_set_text(GTK_LABEL(editor->info_label), _("No module is loaded. Enter a module number and select Read from "
+                                                        "Drive, or load a module file."));
     return;
   }
 
   uint32_t stored = wd_royl_get_module_checksum_ccc(editor->data);
-  uint32_t calculated =
-      wd_royl_calculate_checksum_ccc(editor->data, editor->size);
+  uint32_t calculated = wd_royl_calculate_checksum_ccc(editor->data, editor->size);
   uint16_t records = wd_royl_get_module_record_count_ccc(editor->data);
 
   snprintf(text, sizeof(text),
            _("Module 0x%04x  |  %zu bytes  |  %u records  |  checksum "
              "0x%08x (%s)%s"),
-           editor->module, editor->size, records, stored,
-           stored == calculated ? _("valid") : _("will be updated"),
+           editor->module, editor->size, records, stored, stored == calculated ? _("valid") : _("will be updated"),
            editor->dirty ? _("  |  modified") : "");
   gtk_label_set_text(GTK_LABEL(editor->info_label), text);
 }
 
-static void wd_royl_editor_update_navigation_ccc(
-    wd_royl_editor_ccc_t *editor)
+static void wd_royl_editor_update_navigation_ccc(wd_royl_editor_ccc_t *editor)
 {
   size_t pages;
   size_t page;
@@ -11841,11 +11624,9 @@ static void wd_royl_editor_update_navigation_ccc(
   {
     end = editor->size;
   }
-  pages = (editor->size + WD_ROYL_EDITOR_PAGE_SIZE - 1) /
-          WD_ROYL_EDITOR_PAGE_SIZE;
+  pages = (editor->size + WD_ROYL_EDITOR_PAGE_SIZE - 1) / WD_ROYL_EDITOR_PAGE_SIZE;
   page = editor->page_start / WD_ROYL_EDITOR_PAGE_SIZE + 1;
-  snprintf(text, sizeof(text), _("Offset 0x%08zx - 0x%08zx   Page %zu/%zu"),
-           editor->page_start, end > 0 ? end - 1 : 0, page, pages);
+  snprintf(text, sizeof(text), _("Offset 0x%08zx - 0x%08zx   Page %zu/%zu"), editor->page_start, end > 0 ? end - 1 : 0, page, pages);
   gtk_label_set_text(GTK_LABEL(editor->page_label), text);
 
   gtk_widget_set_sensitive(editor->prev_button, editor->page_start > 0);
@@ -11855,9 +11636,7 @@ static void wd_royl_editor_update_navigation_ccc(
   gtk_widget_set_sensitive(editor->write_button, TRUE);
 }
 
-static void wd_royl_editor_update_row_ccc(wd_royl_editor_ccc_t *editor,
-                                          GtkTreeIter *iter,
-                                          size_t row_start)
+static void wd_royl_editor_update_row_ccc(wd_royl_editor_ccc_t *editor, GtkTreeIter *iter, size_t row_start)
 {
   char ascii[WD_ROYL_EDITOR_BYTES_PER_ROW + 1];
   int i;
@@ -11899,9 +11678,7 @@ static void wd_royl_editor_load_page_ccc(wd_royl_editor_ccc_t *editor)
 
   if (editor->page_start >= editor->size)
   {
-    editor->page_start =
-        ((editor->size - 1) / WD_ROYL_EDITOR_PAGE_SIZE) *
-        WD_ROYL_EDITOR_PAGE_SIZE;
+    editor->page_start = ((editor->size - 1) / WD_ROYL_EDITOR_PAGE_SIZE) * WD_ROYL_EDITOR_PAGE_SIZE;
   }
   end = editor->page_start + WD_ROYL_EDITOR_PAGE_SIZE;
   if (end > editor->size)
@@ -11909,8 +11686,7 @@ static void wd_royl_editor_load_page_ccc(wd_royl_editor_ccc_t *editor)
     end = editor->size;
   }
 
-  for (row_start = editor->page_start; row_start < end;
-       row_start += WD_ROYL_EDITOR_BYTES_PER_ROW)
+  for (row_start = editor->page_start; row_start < end; row_start += WD_ROYL_EDITOR_BYTES_PER_ROW)
   {
     char offset_text[16];
     snprintf(offset_text, sizeof(offset_text), "%08zx", row_start);
@@ -11923,9 +11699,7 @@ static void wd_royl_editor_load_page_ccc(wd_royl_editor_ccc_t *editor)
   wd_royl_editor_update_navigation_ccc(editor);
 }
 
-static void wd_royl_editor_set_data_ccc(wd_royl_editor_ccc_t *editor,
-                                        uint8_t *data, size_t size,
-                                        uint16_t module, bool dirty)
+static void wd_royl_editor_set_data_ccc(wd_royl_editor_ccc_t *editor, uint8_t *data, size_t size, uint16_t module, bool dirty)
 {
   free(editor->data);
   editor->data = data;
@@ -11944,20 +11718,16 @@ static void wd_royl_editor_set_data_ccc(wd_royl_editor_ccc_t *editor,
   wd_royl_editor_load_page_ccc(editor);
 }
 
-static bool wd_royl_editor_confirm_discard_ccc(
-    wd_royl_editor_ccc_t *editor)
+static bool wd_royl_editor_confirm_discard_ccc(wd_royl_editor_ccc_t *editor)
 {
   if (!editor->dirty)
   {
     return true;
   }
-  return wd_royl_editor_confirm_ccc(
-      editor, _("Discard changes?"), _("Discard"),
-      _("The current module has unsaved changes.\n\nDiscard them?"));
+  return wd_royl_editor_confirm_ccc(editor, _("Discard changes?"), _("Discard"), _("The current module has unsaved changes.\n\nDiscard them?"));
 }
 
-static void wd_royl_editor_update_checksum_ccc(
-    wd_royl_editor_ccc_t *editor)
+static void wd_royl_editor_update_checksum_ccc(wd_royl_editor_ccc_t *editor)
 {
   uint32_t previous;
 
@@ -11974,9 +11744,7 @@ static void wd_royl_editor_update_checksum_ccc(
   wd_royl_editor_load_page_ccc(editor);
 }
 
-static void wd_royl_editor_byte_edited_ccc(GtkCellRendererText *renderer,
-                                           char *path, char *new_text,
-                                           gpointer user_data)
+static void wd_royl_editor_byte_edited_ccc(GtkCellRendererText *renderer, char *path, char *new_text, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   GtkTreePath *tree_path;
@@ -11993,12 +11761,9 @@ static void wd_royl_editor_byte_edited_ccc(GtkCellRendererText *renderer,
   {
     return;
   }
-  byte_index =
-      GPOINTER_TO_INT(g_object_get_data(G_OBJECT(renderer), "byte_index"));
+  byte_index = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(renderer), "byte_index"));
   tree_path = gtk_tree_path_new_from_string(path);
-  if (tree_path == NULL ||
-      !gtk_tree_model_get_iter(GTK_TREE_MODEL(editor->store), &iter,
-                               tree_path))
+  if (tree_path == NULL || !gtk_tree_model_get_iter(GTK_TREE_MODEL(editor->store), &iter, tree_path))
   {
     if (tree_path != NULL)
     {
@@ -12039,19 +11804,13 @@ static void wd_royl_editor_byte_edited_ccc(GtkCellRendererText *renderer,
     scan++;
   }
 
-  offset = editor->page_start +
-           (size_t)row * WD_ROYL_EDITOR_BYTES_PER_ROW + (size_t)byte_index;
-  if (row < 0 || offset >= editor->size || digits == 0 || digits > 2 ||
-      *scan != '\0' || value > 0xff)
+  offset = editor->page_start + (size_t)row * WD_ROYL_EDITOR_BYTES_PER_ROW + (size_t)byte_index;
+  if (row < 0 || offset >= editor->size || digits == 0 || digits > 2 || *scan != '\0' || value > 0xff)
   {
     gdk_display_beep(gdk_display_get_default());
-    gtk_label_set_text(GTK_LABEL(editor->status_label),
-                       _("Invalid byte value. Use one or two hexadecimal "
-                         "digits."));
-    wd_royl_editor_update_row_ccc(editor, &iter,
-                                  editor->page_start +
-                                      (size_t)row *
-                                          WD_ROYL_EDITOR_BYTES_PER_ROW);
+    gtk_label_set_text(GTK_LABEL(editor->status_label), _("Invalid byte value. Use one or two hexadecimal "
+                                                          "digits."));
+    wd_royl_editor_update_row_ccc(editor, &iter, editor->page_start + (size_t)row * WD_ROYL_EDITOR_BYTES_PER_ROW);
     return;
   }
 
@@ -12059,31 +11818,21 @@ static void wd_royl_editor_byte_edited_ccc(GtkCellRendererText *renderer,
   {
     editor->data[offset] = (uint8_t)value;
     editor->dirty = true;
-    wd_royl_editor_update_row_ccc(editor, &iter,
-                                  editor->page_start +
-                                      (size_t)row *
-                                          WD_ROYL_EDITOR_BYTES_PER_ROW);
+    wd_royl_editor_update_row_ccc(editor, &iter, editor->page_start + (size_t)row * WD_ROYL_EDITOR_BYTES_PER_ROW);
     wd_royl_editor_update_info_ccc(editor);
     {
       char status[128];
-      snprintf(status, sizeof(status), _("Modified byte at offset 0x%08zx."),
-               offset);
+      snprintf(status, sizeof(status), _("Modified byte at offset 0x%08zx."), offset);
       gtk_label_set_text(GTK_LABEL(editor->status_label), status);
     }
   }
   else
   {
-    wd_royl_editor_update_row_ccc(editor, &iter,
-                                  editor->page_start +
-                                      (size_t)row *
-                                          WD_ROYL_EDITOR_BYTES_PER_ROW);
+    wd_royl_editor_update_row_ccc(editor, &iter, editor->page_start + (size_t)row * WD_ROYL_EDITOR_BYTES_PER_ROW);
   }
 }
 
-static void wd_royl_editor_add_column_ccc(wd_royl_editor_ccc_t *editor,
-                                          const char *title, int model_column,
-                                          int width, bool editable,
-                                          float xalign)
+static void wd_royl_editor_add_column_ccc(wd_royl_editor_ccc_t *editor, const char *title, int model_column, int width, bool editable, float xalign)
 {
   GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
   GtkTreeViewColumn *column;
@@ -12092,16 +11841,12 @@ static void wd_royl_editor_add_column_ccc(wd_royl_editor_ccc_t *editor,
   if (editable)
   {
     g_object_set(renderer, "editable", TRUE, NULL);
-    g_object_set_data(G_OBJECT(renderer), "byte_index",
-                      GINT_TO_POINTER(model_column - 1));
+    g_object_set_data(G_OBJECT(renderer), "byte_index", GINT_TO_POINTER(model_column - 1));
     // Run after the tree view has stored the entered text in the model so
     // invalid values can be replaced with the original byte.
-    g_signal_connect_after(renderer, "edited",
-                           G_CALLBACK(wd_royl_editor_byte_edited_ccc),
-                           editor);
+    g_signal_connect_after(renderer, "edited", G_CALLBACK(wd_royl_editor_byte_edited_ccc), editor);
   }
-  column = gtk_tree_view_column_new_with_attributes(title, renderer, "text",
-                                                    model_column, NULL);
+  column = gtk_tree_view_column_new_with_attributes(title, renderer, "text", model_column, NULL);
   gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
   gtk_tree_view_column_set_fixed_width(column, width);
   gtk_tree_view_column_set_expand(column, FALSE);
@@ -12141,13 +11886,11 @@ typedef struct
   uint16_t selected_module;
 } wd_royl_module_picker_ccc_t;
 
-static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer,
-                                    size_t buffer_size)
+static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer, size_t buffer_size)
 {
   if (bytes >= 1024ULL * 1024ULL)
   {
-    snprintf(buffer, buffer_size, "%.1f MiB",
-             (double)bytes / (1024.0 * 1024.0));
+    snprintf(buffer, buffer_size, "%.1f MiB", (double)bytes / (1024.0 * 1024.0));
   }
   else if (bytes >= 1024ULL)
   {
@@ -12161,10 +11904,8 @@ static void wd_royl_format_size_ccc(unsigned long long bytes, char *buffer,
 
 static int wd_royl_compare_module_entries_ccc(const void *a, const void *b)
 {
-  const wd_royl_module_entry_ccc *entry_a =
-      (const wd_royl_module_entry_ccc *)a;
-  const wd_royl_module_entry_ccc *entry_b =
-      (const wd_royl_module_entry_ccc *)b;
+  const wd_royl_module_entry_ccc *entry_a = (const wd_royl_module_entry_ccc *)a;
+  const wd_royl_module_entry_ccc *entry_b = (const wd_royl_module_entry_ccc *)b;
 
   if (entry_a->module_id < entry_b->module_id)
   {
@@ -12177,9 +11918,8 @@ static int wd_royl_compare_module_entries_ccc(const void *a, const void *b)
   return 0;
 }
 
-static void wd_royl_module_entry_health_ccc(
-    const wd_royl_module_entry_ccc *entries, size_t entry_count,
-    size_t entry_index, char *health, size_t health_size, bool *warning)
+static void wd_royl_module_entry_health_ccc(const wd_royl_module_entry_ccc *entries, size_t entry_count, size_t entry_index, char *health,
+                                            size_t health_size, bool *warning)
 {
   const wd_royl_module_entry_ccc *entry = &entries[entry_index];
   bool duplicate_id = false;
@@ -12203,15 +11943,11 @@ static void wd_royl_module_entry_health_ccc(
     {
       duplicate_id = true;
     }
-    if (entry->location1 != 0 &&
-        (entries[i].location1 == entry->location1 ||
-         entries[i].location2 == entry->location1))
+    if (entry->location1 != 0 && (entries[i].location1 == entry->location1 || entries[i].location2 == entry->location1))
     {
       shared_location = true;
     }
-    if (entry->location2 != 0 &&
-        (entries[i].location1 == entry->location2 ||
-         entries[i].location2 == entry->location2))
+    if (entry->location2 != 0 && (entries[i].location1 == entry->location2 || entries[i].location2 == entry->location2))
     {
       shared_location = true;
     }
@@ -12294,15 +12030,15 @@ static const char *wd_royl_known_module_name_ccc(uint16_t module_id)
     uint16_t module_id;
     const char *name;
   } known_modules[] = {
-      {WD_ROYL_MODULE_01, N_("Directory")},
-      {WD_ROYL_MODULE_02, N_("Configuration")},
-      {0x000a, N_("Head map")},
-      {0x0031, N_("P-list translator")},
-      {0x0032, N_("G-list")},
-      {0x0033, N_("P-list")},
-      {0x0047, N_("Read adaptives")},
-      {0x0102, N_("Head map (SA)")},
-      {0x0103, N_("Read adaptives (SA)")},
+    {WD_ROYL_MODULE_01, N_("Directory")},
+    {WD_ROYL_MODULE_02, N_("Configuration")},
+    {0x000a, N_("Head map")},
+    {0x0031, N_("P-list translator")},
+    {0x0032, N_("G-list")},
+    {0x0033, N_("P-list")},
+    {0x0047, N_("Read adaptives")},
+    {0x0102, N_("Head map (SA)")},
+    {0x0103, N_("Read adaptives (SA)")},
   };
   size_t i;
 
@@ -12316,16 +12052,12 @@ static const char *wd_royl_known_module_name_ccc(uint16_t module_id)
   return NULL;
 }
 
-static gboolean wd_royl_picker_filter_visible_ccc(GtkTreeModel *model,
-                                                  GtkTreeIter *iter,
-                                                  gpointer user_data)
+static gboolean wd_royl_picker_filter_visible_ccc(GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   gboolean warning = FALSE;
 
-  if (picker->warnings_only == NULL ||
-      !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(picker->warnings_only)))
+  if (picker->warnings_only == NULL || !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(picker->warnings_only)))
   {
     return TRUE;
   }
@@ -12333,11 +12065,9 @@ static gboolean wd_royl_picker_filter_visible_ccc(GtkTreeModel *model,
   return warning;
 }
 
-static void wd_royl_picker_warnings_only_toggled_ccc(GtkToggleButton *button,
-                                                     gpointer user_data)
+static void wd_royl_picker_warnings_only_toggled_ccc(GtkToggleButton *button, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
 
   (void)button;
   if (picker->filter != NULL)
@@ -12346,8 +12076,7 @@ static void wd_royl_picker_warnings_only_toggled_ccc(GtkToggleButton *button,
   }
 }
 
-static void wd_royl_picker_format_location_ccc(uint32_t location, char *buffer,
-                                               size_t buffer_size)
+static void wd_royl_picker_format_location_ccc(uint32_t location, char *buffer, size_t buffer_size)
 {
   if (location == 0)
   {
@@ -12355,17 +12084,13 @@ static void wd_royl_picker_format_location_ccc(uint32_t location, char *buffer,
   }
   else
   {
-    snprintf(buffer, buffer_size, _("sector 0x%08x (byte 0x%08llx)"),
-             location,
-             (unsigned long long)location * WD_ROYL_SECTOR_SIZE);
+    snprintf(buffer, buffer_size, _("sector 0x%08x (byte 0x%08llx)"), location, (unsigned long long)location * WD_ROYL_SECTOR_SIZE);
   }
 }
 
-static void wd_royl_picker_update_details_ccc(GtkTreeSelection *selection,
-                                              gpointer user_data)
+static void wd_royl_picker_update_details_ccc(GtkTreeSelection *selection, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   GtkTreeModel *model;
   GtkTreeIter iter;
 
@@ -12391,35 +12116,27 @@ static void wd_royl_picker_update_details_ccc(GtkTreeSelection *selection,
     char location2_text[96];
     char details[640];
 
-    gtk_tree_model_get(
-        model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id,
-        WD_ROYL_PICKER_NAME_COLUMN, &name, WD_ROYL_PICKER_SIZE_COLUMN,
-        &size_text, WD_ROYL_PICKER_COPIES_COLUMN, &copies_text,
-        WD_ROYL_PICKER_HEALTH_COLUMN, &health,
-        WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, &location1,
-        WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN, &location2, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id, WD_ROYL_PICKER_NAME_COLUMN, &name, WD_ROYL_PICKER_SIZE_COLUMN,
+                       &size_text, WD_ROYL_PICKER_COPIES_COLUMN, &copies_text, WD_ROYL_PICKER_HEALTH_COLUMN, &health,
+                       WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, &location1, WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN, &location2, -1);
 
-    wd_royl_picker_format_location_ccc((uint32_t)location1, location1_text,
-                                       sizeof(location1_text));
-    wd_royl_picker_format_location_ccc((uint32_t)location2, location2_text,
-                                       sizeof(location2_text));
+    wd_royl_picker_format_location_ccc((uint32_t)location1, location1_text, sizeof(location1_text));
+    wd_royl_picker_format_location_ccc((uint32_t)location2, location2_text, sizeof(location2_text));
     if (name != NULL && name[0] != '\0')
     {
       snprintf(details, sizeof(details),
                _("Module 0x%04x - %s\nSize: %s   Copies: %s   Health: %s\n"
                  "Copy 1: %s   Copy 2: %s"),
-               module_id, name, size_text != NULL ? size_text : "-",
-               copies_text != NULL ? copies_text : "-",
-               health != NULL ? health : "-", location1_text, location2_text);
+               module_id, name, size_text != NULL ? size_text : "-", copies_text != NULL ? copies_text : "-", health != NULL ? health : "-",
+               location1_text, location2_text);
     }
     else
     {
       snprintf(details, sizeof(details),
                _("Module 0x%04x (name not confirmed)\nSize: %s   Copies: %s   "
                  "Health: %s\nCopy 1: %s   Copy 2: %s"),
-               module_id, size_text != NULL ? size_text : "-",
-               copies_text != NULL ? copies_text : "-",
-               health != NULL ? health : "-", location1_text, location2_text);
+               module_id, size_text != NULL ? size_text : "-", copies_text != NULL ? copies_text : "-", health != NULL ? health : "-", location1_text,
+               location2_text);
     }
     gtk_label_set_text(GTK_LABEL(picker->details_label), details);
     g_free(name);
@@ -12429,9 +12146,8 @@ static void wd_royl_picker_update_details_ccc(GtkTreeSelection *selection,
   }
 }
 
-static GtkTreeViewColumn *wd_royl_picker_add_column_ccc(
-    GtkWidget *tree_view, const char *title, int model_column, int width,
-    bool monospace, float xalign, int weight_column)
+static GtkTreeViewColumn *wd_royl_picker_add_column_ccc(GtkWidget *tree_view, const char *title, int model_column, int width, bool monospace,
+                                                        float xalign, int weight_column)
 {
   GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
   GtkTreeViewColumn *column;
@@ -12443,13 +12159,11 @@ static GtkTreeViewColumn *wd_royl_picker_add_column_ccc(
   }
   if (weight_column >= 0)
   {
-    column = gtk_tree_view_column_new_with_attributes(
-        title, renderer, "text", model_column, "weight", weight_column, NULL);
+    column = gtk_tree_view_column_new_with_attributes(title, renderer, "text", model_column, "weight", weight_column, NULL);
   }
   else
   {
-    column = gtk_tree_view_column_new_with_attributes(title, renderer, "text",
-                                                      model_column, NULL);
+    column = gtk_tree_view_column_new_with_attributes(title, renderer, "text", model_column, NULL);
   }
   gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
   gtk_tree_view_column_set_fixed_width(column, width);
@@ -12457,11 +12171,9 @@ static GtkTreeViewColumn *wd_royl_picker_add_column_ccc(
   return column;
 }
 
-static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection,
-                                                 gpointer user_data)
+static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   GtkTreeModel *model;
   GtkTreeIter iter;
   guint module_id;
@@ -12469,21 +12181,16 @@ static void wd_royl_picker_selection_changed_ccc(GtkTreeSelection *selection,
   if (gtk_tree_selection_get_selected(selection, &model, &iter))
   {
     char text[16];
-    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
-                       &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id, -1);
     snprintf(text, sizeof(text), "0x%04x", module_id);
     gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
   }
   wd_royl_picker_update_details_ccc(selection, user_data);
 }
 
-static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view,
-                                             GtkTreePath *path,
-                                             GtkTreeViewColumn *column,
-                                             gpointer user_data)
+static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   GtkTreeModel *model = gtk_tree_view_get_model(tree_view);
   GtkTreeIter iter;
   guint module_id;
@@ -12491,27 +12198,22 @@ static void wd_royl_picker_row_activated_ccc(GtkTreeView *tree_view,
   if (gtk_tree_model_get_iter(model, &iter, path))
   {
     char text[16];
-    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
-                       &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id, -1);
     snprintf(text, sizeof(text), "0x%04x", module_id);
     gtk_entry_set_text(GTK_ENTRY(picker->manual_entry), text);
   }
   gtk_dialog_response(GTK_DIALOG(picker->dialog), GTK_RESPONSE_ACCEPT);
 }
 
-static void wd_royl_picker_entry_activate_ccc(GtkEntry *entry,
-                                              gpointer user_data)
+static void wd_royl_picker_entry_activate_ccc(GtkEntry *entry, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   gtk_dialog_response(GTK_DIALOG(picker->dialog), GTK_RESPONSE_ACCEPT);
 }
 
-static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
-                                        gpointer user_data)
+static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response, gpointer user_data)
 {
-  wd_royl_module_picker_ccc_t *picker =
-      (wd_royl_module_picker_ccc_t *)user_data;
+  wd_royl_module_picker_ccc_t *picker = (wd_royl_module_picker_ccc_t *)user_data;
   unsigned long long value = 0;
   GtkTreeSelection *selection;
   GtkTreeModel *model;
@@ -12522,10 +12224,7 @@ static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
   {
     return;
   }
-  if (wd_royl_parse_number_ccc(
-          gtk_entry_get_text(GTK_ENTRY(picker->manual_entry)), 0xffff,
-          &value) &&
-      value != 0)
+  if (wd_royl_parse_number_ccc(gtk_entry_get_text(GTK_ENTRY(picker->manual_entry)), 0xffff, &value) && value != 0)
   {
     picker->selected_module = (uint16_t)value;
     return;
@@ -12535,8 +12234,7 @@ static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
   if (gtk_tree_selection_get_selected(selection, &model, &iter))
   {
     guint module_id;
-    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
-                       &module_id, -1);
+    gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id, -1);
     if (module_id != 0)
     {
       picker->selected_module = (uint16_t)module_id;
@@ -12544,11 +12242,9 @@ static void wd_royl_picker_response_ccc(GtkDialog *dialog, gint response,
     }
   }
 
-  message = gtk_message_dialog_new(
-      GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING,
-      GTK_BUTTONS_OK, "%s",
-      _("Select a module from the list or enter a module number from 1 to "
-        "0xffff."));
+  message = gtk_message_dialog_new(GTK_WINDOW(dialog), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s",
+                                   _("Select a module from the list or enter a module number from 1 to "
+                                     "0xffff."));
   gtk_window_set_title(GTK_WINDOW(message), _("WD ROYL SA Module Editor"));
   gtk_dialog_run(GTK_DIALOG(message));
   gtk_widget_destroy(message);
@@ -12590,9 +12286,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   int response;
 
   memset(&picker, 0, sizeof(picker));
-  parent = editor != NULL && editor->dialog != NULL
-               ? GTK_WINDOW(editor->dialog)
-               : GTK_WINDOW(main_window_ccc);
+  parent = editor != NULL && editor->dialog != NULL ? GTK_WINDOW(editor->dialog) : GTK_WINDOW(main_window_ccc);
 
   wd_royl_dialog_parent_override_ccc = parent;
   if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
@@ -12601,27 +12295,21 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     return 0;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
-                             _("Reading module directory"));
-  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data,
-                              &directory_size,
-                              wd_royl_progress_update_ccc) == 0)
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"), _("Reading module directory"));
+  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_01, &directory_data, &directory_size, wd_royl_progress_update_ccc) == 0)
   {
-    if (wd_royl_parse_module_directory_ccc(
-            directory_data, directory_size, &entries, &entry_count) == 0)
+    if (wd_royl_parse_module_directory_ccc(directory_data, directory_size, &entries, &entry_count) == 0)
     {
       directory_ok = true;
     }
     else
     {
-      g_strlcpy(directory_error, wd_royl_last_error_ccc(),
-                sizeof(directory_error));
+      g_strlcpy(directory_error, wd_royl_last_error_ccc(), sizeof(directory_error));
     }
   }
   else
   {
-    g_strlcpy(directory_error, wd_royl_last_error_ccc(),
-              sizeof(directory_error));
+    g_strlcpy(directory_error, wd_royl_last_error_ccc(), sizeof(directory_error));
   }
   wd_royl_progress_end_ccc();
   wd_royl_end_source_access_ccc(temporary_source_access);
@@ -12640,36 +12328,29 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
         break;
       }
     }
-    if (!have_directory_entry &&
-        directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
+    if (!have_directory_entry && directory_size >= (size_t)WD_ROYL_SECTOR_SIZE)
     {
-      wd_royl_module_entry_ccc *new_entries = (wd_royl_module_entry_ccc *)
-          realloc(entries, (entry_count + 1) * sizeof(*entries));
+      wd_royl_module_entry_ccc *new_entries = (wd_royl_module_entry_ccc *)realloc(entries, (entry_count + 1) * sizeof(*entries));
       if (new_entries != NULL)
       {
         entries = new_entries;
         memset(&entries[entry_count], 0, sizeof(entries[entry_count]));
         entries[entry_count].module_id = WD_ROYL_MODULE_01;
-        entries[entry_count].sectors =
-            (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
+        entries[entry_count].sectors = (uint16_t)(directory_size / WD_ROYL_SECTOR_SIZE);
         entries[entry_count].copies = 1;
         entry_count++;
       }
     }
     if (entry_count > 1)
     {
-      qsort(entries, entry_count, sizeof(*entries),
-            wd_royl_compare_module_entries_ccc);
+      qsort(entries, entry_count, sizeof(*entries), wd_royl_compare_module_entries_ccc);
     }
   }
 
-  picker.dialog = gtk_dialog_new_with_buttons(
-      _("Select WD ROYL SA Module"), parent,
-      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
-      GTK_RESPONSE_CANCEL, _("Open Module"), GTK_RESPONSE_ACCEPT, NULL);
+  picker.dialog = gtk_dialog_new_with_buttons(_("Select WD ROYL SA Module"), parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Open Module"), GTK_RESPONSE_ACCEPT, NULL);
   gtk_window_set_default_size(GTK_WINDOW(picker.dialog), 970, 600);
-  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog),
-                                  GTK_RESPONSE_ACCEPT);
+  gtk_dialog_set_default_response(GTK_DIALOG(picker.dialog), GTK_RESPONSE_ACCEPT);
 
   content = gtk_dialog_get_content_area(GTK_DIALOG(picker.dialog));
   gtk_container_set_border_width(GTK_CONTAINER(content), 10);
@@ -12679,43 +12360,38 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   info_label = gtk_label_new("");
   gtk_label_set_line_wrap(GTK_LABEL(info_label), TRUE);
   gtk_label_set_xalign(GTK_LABEL(info_label), 0.0);
-  gtk_widget_set_tooltip_text(
-      info_label,
-      _("Copy health is based on the copy count and locations reported in "
-        "directory module 0x0001. Copy 1 and Copy 2 are SA sector numbers; "
-        "the byte address is the value multiplied by 512. Known names are "
-        "shown only for confirmed module IDs."));
+  gtk_widget_set_tooltip_text(info_label, _("Copy health is based on the copy count and locations reported in "
+                                            "directory module 0x0001. Copy 1 and Copy 2 are SA sector numbers; "
+                                            "the byte address is the value multiplied by 512. Known names are "
+                                            "shown only for confirmed module IDs."));
   gtk_box_pack_start(GTK_BOX(vbox), info_label, FALSE, FALSE, 0);
 
   {
     GType columns[WD_ROYL_PICKER_COLUMN_COUNT] = {
-        G_TYPE_STRING,  /* Module */
-        G_TYPE_STRING,  /* Known name */
-        G_TYPE_STRING,  /* Size */
-        G_TYPE_STRING,  /* Copies */
-        G_TYPE_STRING,  /* Copy 1 */
-        G_TYPE_STRING,  /* Copy 2 */
-        G_TYPE_STRING,  /* Copy health */
-        G_TYPE_INT,     /* Health font weight */
-        G_TYPE_UINT,    /* Module ID, hidden sort key */
-        G_TYPE_UINT,    /* Size in sectors, hidden sort key */
-        G_TYPE_UINT,    /* Copies, hidden sort key */
-        G_TYPE_UINT64,  /* Copy 1 location, hidden sort key */
-        G_TYPE_UINT64,  /* Copy 2 location, hidden sort key */
-        G_TYPE_BOOLEAN, /* Warning flag, hidden filter key */
-        G_TYPE_STRING   /* Row tooltip */
+      G_TYPE_STRING,  /* Module */
+      G_TYPE_STRING,  /* Known name */
+      G_TYPE_STRING,  /* Size */
+      G_TYPE_STRING,  /* Copies */
+      G_TYPE_STRING,  /* Copy 1 */
+      G_TYPE_STRING,  /* Copy 2 */
+      G_TYPE_STRING,  /* Copy health */
+      G_TYPE_INT,     /* Health font weight */
+      G_TYPE_UINT,    /* Module ID, hidden sort key */
+      G_TYPE_UINT,    /* Size in sectors, hidden sort key */
+      G_TYPE_UINT,    /* Copies, hidden sort key */
+      G_TYPE_UINT64,  /* Copy 1 location, hidden sort key */
+      G_TYPE_UINT64,  /* Copy 2 location, hidden sort key */
+      G_TYPE_BOOLEAN, /* Warning flag, hidden filter key */
+      G_TYPE_STRING   /* Row tooltip */
     };
     picker.store = gtk_list_store_newv(WD_ROYL_PICKER_COLUMN_COUNT, columns);
   }
   picker.filter = gtk_tree_model_filter_new(GTK_TREE_MODEL(picker.store), NULL);
-  gtk_tree_model_filter_set_visible_func(
-      GTK_TREE_MODEL_FILTER(picker.filter), wd_royl_picker_filter_visible_ccc,
-      &picker, NULL);
+  gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(picker.filter), wd_royl_picker_filter_visible_ccc, &picker, NULL);
   picker.sort = gtk_tree_model_sort_new_with_model(picker.filter);
   picker.tree_view = gtk_tree_view_new_with_model(picker.sort);
   gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(picker.tree_view), TRUE);
-  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(picker.tree_view),
-                               GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(picker.tree_view), GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
   {
     GtkTreeViewColumn *module_column;
     GtkTreeViewColumn *name_column;
@@ -12725,47 +12401,26 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     GtkTreeViewColumn *location2_column;
     GtkTreeViewColumn *health_column;
 
-    module_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Module"), WD_ROYL_PICKER_MODULE_COLUMN, 85, true,
-        0.0, -1);
-    name_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Known Name"), WD_ROYL_PICKER_NAME_COLUMN, 170,
-        false, 0.0, -1);
-    size_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Size"), WD_ROYL_PICKER_SIZE_COLUMN, 180, false,
-        0.0, -1);
-    copies_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Copies"), WD_ROYL_PICKER_COPIES_COLUMN, 65, false,
-        0.5, -1);
-    location1_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Copy 1"), WD_ROYL_PICKER_LOCATION1_COLUMN, 105,
-        true, 0.0, -1);
-    location2_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Copy 2"), WD_ROYL_PICKER_LOCATION2_COLUMN, 105,
-        true, 0.0, -1);
-    health_column = wd_royl_picker_add_column_ccc(
-        picker.tree_view, _("Copy Health"), WD_ROYL_PICKER_HEALTH_COLUMN, 190,
-        false, 0.0, WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN);
+    module_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Module"), WD_ROYL_PICKER_MODULE_COLUMN, 85, true, 0.0, -1);
+    name_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Known Name"), WD_ROYL_PICKER_NAME_COLUMN, 170, false, 0.0, -1);
+    size_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Size"), WD_ROYL_PICKER_SIZE_COLUMN, 180, false, 0.0, -1);
+    copies_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Copies"), WD_ROYL_PICKER_COPIES_COLUMN, 65, false, 0.5, -1);
+    location1_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 1"), WD_ROYL_PICKER_LOCATION1_COLUMN, 105, true, 0.0, -1);
+    location2_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy 2"), WD_ROYL_PICKER_LOCATION2_COLUMN, 105, true, 0.0, -1);
+    health_column = wd_royl_picker_add_column_ccc(picker.tree_view, _("Copy Health"), WD_ROYL_PICKER_HEALTH_COLUMN, 190, false, 0.0,
+                                                  WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN);
 
-    gtk_tree_view_column_set_sort_column_id(
-        name_column, WD_ROYL_PICKER_NAME_COLUMN);
-    gtk_tree_view_column_set_sort_column_id(
-        size_column, WD_ROYL_PICKER_SIZE_SECTORS_COLUMN);
-    gtk_tree_view_column_set_sort_column_id(
-        copies_column, WD_ROYL_PICKER_COPIES_VALUE_COLUMN);
-    gtk_tree_view_column_set_sort_column_id(
-        location1_column, WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN);
-    gtk_tree_view_column_set_sort_column_id(
-        location2_column, WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN);
-    gtk_tree_view_column_set_sort_column_id(
-        health_column, WD_ROYL_PICKER_WARNING_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(name_column, WD_ROYL_PICKER_NAME_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(size_column, WD_ROYL_PICKER_SIZE_SECTORS_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(copies_column, WD_ROYL_PICKER_COPIES_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(location1_column, WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(location2_column, WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(health_column, WD_ROYL_PICKER_WARNING_COLUMN);
     // Use the module ID as the initial sort. Calling this last makes it the
     // active sort column while leaving the other headers clickable.
-    gtk_tree_view_column_set_sort_column_id(
-        module_column, WD_ROYL_PICKER_MODULE_ID_COLUMN);
+    gtk_tree_view_column_set_sort_column_id(module_column, WD_ROYL_PICKER_MODULE_ID_COLUMN);
   }
-  gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(picker.tree_view),
-                                   WD_ROYL_PICKER_TOOLTIP_COLUMN);
+  gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(picker.tree_view), WD_ROYL_PICKER_TOOLTIP_COLUMN);
 
   for (i = 0; i < entry_count; i++)
   {
@@ -12778,19 +12433,14 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     char health[64];
     char tooltip[256];
     bool warning = false;
-    const char *known_name =
-        wd_royl_known_module_name_ccc(entries[i].module_id);
+    const char *known_name = wd_royl_known_module_name_ccc(entries[i].module_id);
     const char *name_text = known_name != NULL ? known_name : "";
 
-    snprintf(module_text, sizeof(module_text), "0x%04x",
-             entries[i].module_id);
+    snprintf(module_text, sizeof(module_text), "0x%04x", entries[i].module_id);
     if (entries[i].sectors != 0)
     {
-      wd_royl_format_size_ccc((unsigned long long)entries[i].sectors *
-                                  WD_ROYL_SECTOR_SIZE,
-                              human_size, sizeof(human_size));
-      snprintf(size_text, sizeof(size_text), "%u sec (%s)",
-               entries[i].sectors, human_size);
+      wd_royl_format_size_ccc((unsigned long long)entries[i].sectors * WD_ROYL_SECTOR_SIZE, human_size, sizeof(human_size));
+      snprintf(size_text, sizeof(size_text), "%u sec (%s)", entries[i].sectors, human_size);
     }
     else
     {
@@ -12806,8 +12456,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     }
     if (entries[i].location1 != 0)
     {
-      snprintf(location1, sizeof(location1), "0x%08x",
-               entries[i].location1);
+      snprintf(location1, sizeof(location1), "0x%08x", entries[i].location1);
     }
     else
     {
@@ -12815,15 +12464,13 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     }
     if (entries[i].location2 != 0)
     {
-      snprintf(location2, sizeof(location2), "0x%08x",
-               entries[i].location2);
+      snprintf(location2, sizeof(location2), "0x%08x", entries[i].location2);
     }
     else
     {
       g_strlcpy(location2, "-", sizeof(location2));
     }
-    wd_royl_module_entry_health_ccc(entries, entry_count, i, health,
-                                    sizeof(health), &warning);
+    wd_royl_module_entry_health_ccc(entries, entry_count, i, health, sizeof(health), &warning);
     if (warning)
     {
       warning_count++;
@@ -12832,26 +12479,16 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     {
       known_count++;
     }
-    snprintf(tooltip, sizeof(tooltip), _("%s\nCopy 1: %s\nCopy 2: %s"), health,
-             location1, location2);
+    snprintf(tooltip, sizeof(tooltip), _("%s\nCopy 1: %s\nCopy 2: %s"), health, location1, location2);
 
     gtk_list_store_append(picker.store, &iter);
-    gtk_list_store_set(
-        picker.store, &iter, WD_ROYL_PICKER_MODULE_COLUMN, module_text,
-        WD_ROYL_PICKER_NAME_COLUMN, name_text, WD_ROYL_PICKER_SIZE_COLUMN,
-        size_text, WD_ROYL_PICKER_COPIES_COLUMN, copies_text,
-        WD_ROYL_PICKER_LOCATION1_COLUMN, location1,
-        WD_ROYL_PICKER_LOCATION2_COLUMN, location2,
-        WD_ROYL_PICKER_HEALTH_COLUMN, health,
-        WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN,
-        warning ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
-        WD_ROYL_PICKER_MODULE_ID_COLUMN, (guint)entries[i].module_id,
-        WD_ROYL_PICKER_SIZE_SECTORS_COLUMN, (guint)entries[i].sectors,
-        WD_ROYL_PICKER_COPIES_VALUE_COLUMN, (guint)entries[i].copies,
-        WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, (guint64)entries[i].location1,
-        WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN, (guint64)entries[i].location2,
-        WD_ROYL_PICKER_WARNING_COLUMN, warning, WD_ROYL_PICKER_TOOLTIP_COLUMN,
-        tooltip, -1);
+    gtk_list_store_set(picker.store, &iter, WD_ROYL_PICKER_MODULE_COLUMN, module_text, WD_ROYL_PICKER_NAME_COLUMN, name_text,
+                       WD_ROYL_PICKER_SIZE_COLUMN, size_text, WD_ROYL_PICKER_COPIES_COLUMN, copies_text, WD_ROYL_PICKER_LOCATION1_COLUMN, location1,
+                       WD_ROYL_PICKER_LOCATION2_COLUMN, location2, WD_ROYL_PICKER_HEALTH_COLUMN, health, WD_ROYL_PICKER_HEALTH_WEIGHT_COLUMN,
+                       warning ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, WD_ROYL_PICKER_MODULE_ID_COLUMN, (guint)entries[i].module_id,
+                       WD_ROYL_PICKER_SIZE_SECTORS_COLUMN, (guint)entries[i].sectors, WD_ROYL_PICKER_COPIES_VALUE_COLUMN, (guint)entries[i].copies,
+                       WD_ROYL_PICKER_LOCATION1_VALUE_COLUMN, (guint64)entries[i].location1, WD_ROYL_PICKER_LOCATION2_VALUE_COLUMN,
+                       (guint64)entries[i].location2, WD_ROYL_PICKER_WARNING_COLUMN, warning, WD_ROYL_PICKER_TOOLTIP_COLUMN, tooltip, -1);
   }
 
   if (directory_ok && listed_count > 0)
@@ -12890,8 +12527,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   gtk_label_set_text(GTK_LABEL(info_label), info_text);
 
   scrolled = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
-                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_widget_set_size_request(scrolled, -1, 300);
   gtk_container_add(GTK_CONTAINER(scrolled), picker.tree_view);
   gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
@@ -12903,9 +12539,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   gtk_label_set_line_wrap(GTK_LABEL(picker.details_label), TRUE);
   gtk_label_set_xalign(GTK_LABEL(picker.details_label), 0.0);
   gtk_label_set_selectable(GTK_LABEL(picker.details_label), TRUE);
-  gtk_widget_set_tooltip_text(
-      picker.details_label,
-      _("The selected module's directory record and raw SA copy locations."));
+  gtk_widget_set_tooltip_text(picker.details_label, _("The selected module's directory record and raw SA copy locations."));
   gtk_box_pack_start(GTK_BOX(vbox), picker.details_label, FALSE, FALSE, 0);
 
   manual_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
@@ -12914,29 +12548,19 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   gtk_box_pack_start(GTK_BOX(manual_row), manual_label, FALSE, FALSE, 0);
   picker.manual_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(picker.manual_entry), 14);
-  gtk_widget_set_tooltip_text(
-      picker.manual_entry,
-      _("Decimal or 0x-prefixed hexadecimal module number"));
-  g_signal_connect(picker.manual_entry, "activate",
-                   G_CALLBACK(wd_royl_picker_entry_activate_ccc), &picker);
+  gtk_widget_set_tooltip_text(picker.manual_entry, _("Decimal or 0x-prefixed hexadecimal module number"));
+  g_signal_connect(picker.manual_entry, "activate", G_CALLBACK(wd_royl_picker_entry_activate_ccc), &picker);
   gtk_box_pack_start(GTK_BOX(manual_row), picker.manual_entry, FALSE, FALSE, 0);
 
   picker.warnings_only = gtk_check_button_new_with_label(_("Warnings only"));
-  gtk_widget_set_tooltip_text(
-      picker.warnings_only,
-      _("Show only modules with copy or directory metadata warnings."));
-  g_signal_connect(picker.warnings_only, "toggled",
-                   G_CALLBACK(wd_royl_picker_warnings_only_toggled_ccc),
-                   &picker);
+  gtk_widget_set_tooltip_text(picker.warnings_only, _("Show only modules with copy or directory metadata warnings."));
+  g_signal_connect(picker.warnings_only, "toggled", G_CALLBACK(wd_royl_picker_warnings_only_toggled_ccc), &picker);
   gtk_box_pack_end(GTK_BOX(manual_row), picker.warnings_only, FALSE, FALSE, 0);
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(picker.tree_view));
-  g_signal_connect(selection, "changed",
-                   G_CALLBACK(wd_royl_picker_selection_changed_ccc), &picker);
-  g_signal_connect(picker.tree_view, "row-activated",
-                   G_CALLBACK(wd_royl_picker_row_activated_ccc), &picker);
-  g_signal_connect(picker.dialog, "response",
-                   G_CALLBACK(wd_royl_picker_response_ccc), &picker);
+  g_signal_connect(selection, "changed", G_CALLBACK(wd_royl_picker_selection_changed_ccc), &picker);
+  g_signal_connect(picker.tree_view, "row-activated", G_CALLBACK(wd_royl_picker_row_activated_ccc), &picker);
+  g_signal_connect(picker.dialog, "response", G_CALLBACK(wd_royl_picker_response_ccc), &picker);
 
   gtk_widget_show_all(picker.dialog);
 
@@ -12948,8 +12572,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     do
     {
       guint module_id;
-      gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN,
-                         &module_id, -1);
+      gtk_tree_model_get(model, &iter, WD_ROYL_PICKER_MODULE_ID_COLUMN, &module_id, -1);
       if (module_id == WD_ROYL_MODULE_02)
       {
         default_iter = iter;
@@ -12979,8 +12602,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
     {
       GtkTreePath *path = gtk_tree_model_get_path(model, &default_iter);
       gtk_tree_selection_select_path(selection, path);
-      gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(picker.tree_view), path, NULL,
-                                   TRUE, 0.5, 0.0);
+      gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(picker.tree_view), path, NULL, TRUE, 0.5, 0.0);
       gtk_tree_path_free(path);
     }
   }
@@ -13010,8 +12632,7 @@ static uint16_t wd_royl_choose_module_ccc(wd_royl_editor_ccc_t *editor)
   return picker.selected_module;
 }
 
-static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
-                                            gpointer user_data)
+static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   unsigned long long module_value = 0;
@@ -13020,15 +12641,11 @@ static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
   bool temporary_source_access = false;
   int result;
 
-  if (!wd_royl_parse_number_ccc(
-          gtk_entry_get_text(GTK_ENTRY(editor->module_entry)), 0xffff,
-          &module_value) ||
-      module_value == 0)
+  if (!wd_royl_parse_number_ccc(gtk_entry_get_text(GTK_ENTRY(editor->module_entry)), 0xffff, &module_value) || module_value == 0)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
-        _("Enter a module number from 1 to 0xffff. Decimal and 0x-prefixed "
-          "hexadecimal numbers are accepted."));
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
+                               _("Enter a module number from 1 to 0xffff. Decimal and 0x-prefixed "
+                                 "hexadecimal numbers are accepted."));
     return;
   }
   if (!wd_royl_editor_confirm_discard_ccc(editor))
@@ -13048,35 +12665,28 @@ static void wd_royl_editor_read_clicked_ccc(GtkWidget *widget,
     return;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
-                             _("Reading module"));
-  result = wd_royl_read_module_ccc((uint16_t)module_value, &data, &size,
-                                   wd_royl_progress_update_ccc);
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"), _("Reading module"));
+  result = wd_royl_read_module_ccc((uint16_t)module_value, &data, &size, wd_royl_progress_update_ccc);
   wd_royl_progress_end_ccc();
   wd_royl_end_source_access_ccc(temporary_source_access);
   wd_royl_dialog_parent_override_ccc = NULL;
 
   if (result != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("Unable to read the module from the drive."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("Unable to read the module from the drive."));
     free(data);
     return;
   }
 
-  wd_royl_editor_set_data_ccc(editor, data, size,
-                              (uint16_t)module_value, false);
+  wd_royl_editor_set_data_ccc(editor, data, size, (uint16_t)module_value, false);
   {
     char status[128];
-    snprintf(status, sizeof(status), _("Read module 0x%04x (%zu bytes)."),
-             (unsigned int)module_value, size);
+    snprintf(status, sizeof(status), _("Read module 0x%04x (%zu bytes)."), (unsigned int)module_value, size);
     gtk_label_set_text(GTK_LABEL(editor->status_label), status);
   }
 }
 
-static void wd_royl_editor_choose_clicked_ccc(GtkWidget *widget,
-                                              gpointer user_data)
+static void wd_royl_editor_choose_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   uint16_t module = wd_royl_choose_module_ccc(editor);
@@ -13091,8 +12701,7 @@ static void wd_royl_editor_choose_clicked_ccc(GtkWidget *widget,
   wd_royl_editor_read_clicked_ccc(NULL, editor);
 }
 
-static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget,
-                                            gpointer user_data)
+static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   char *filename;
@@ -13100,27 +12709,21 @@ static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget,
   size_t size = 0;
   uint16_t module;
 
-  filename = wd_royl_editor_choose_file_ccc(
-      editor, false, _("Load WD ROYL SA module"), NULL);
+  filename = wd_royl_editor_choose_file_ccc(editor, false, _("Load WD ROYL SA module"), NULL);
   if (filename == NULL)
   {
     return;
   }
   if (wd_royl_read_file_ccc(filename, &data, &size) != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("Unable to read the selected module file."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("Unable to read the selected module file."));
     g_free(filename);
     return;
   }
-  if (size == 0 || size > WD_ROYL_MAX_FILE_SIZE ||
-      wd_royl_validate_module_header_ccc(data, size, 0) != 0)
+  if (size == 0 || size > WD_ROYL_MAX_FILE_SIZE || wd_royl_validate_module_header_ccc(data, size, 0) != 0)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
-        _("The selected file is not a valid ROYL service area module.\n\n%s"),
-        wd_royl_last_error_ccc());
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
+                               _("The selected file is not a valid ROYL service area module.\n\n%s"), wd_royl_last_error_ccc());
     free(data);
     g_free(filename);
     return;
@@ -13128,9 +12731,8 @@ static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget,
   module = wd_royl_get_module_id_ccc(data);
   if (module == 0)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
-        _("The selected file does not contain a valid module number."));
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
+                               _("The selected file does not contain a valid module number."));
     free(data);
     g_free(filename);
     return;
@@ -13145,15 +12747,13 @@ static void wd_royl_editor_load_clicked_ccc(GtkWidget *widget,
   wd_royl_editor_set_data_ccc(editor, data, size, module, false);
   {
     char status[512];
-    snprintf(status, sizeof(status), _("Loaded module 0x%04x from %s."),
-             module, filename);
+    snprintf(status, sizeof(status), _("Loaded module 0x%04x from %s."), module, filename);
     gtk_label_set_text(GTK_LABEL(editor->status_label), status);
   }
   g_free(filename);
 }
 
-static void wd_royl_editor_save_clicked_ccc(GtkWidget *widget,
-                                            gpointer user_data)
+static void wd_royl_editor_save_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   char default_name[256];
@@ -13162,16 +12762,13 @@ static void wd_royl_editor_save_clicked_ccc(GtkWidget *widget,
 
   if (!editor->loaded)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
-        _("Read or load a module before saving it."));
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"), _("Read or load a module before saving it."));
     return;
   }
 
   snprintf(kind, sizeof(kind), "module_%04x", editor->module);
   wd_royl_make_backup_name_ccc(default_name, sizeof(default_name), kind);
-  filename = wd_royl_editor_choose_file_ccc(
-      editor, true, _("Save WD ROYL SA module"), default_name);
+  filename = wd_royl_editor_choose_file_ccc(editor, true, _("Save WD ROYL SA module"), default_name);
   if (filename == NULL)
   {
     return;
@@ -13180,9 +12777,7 @@ static void wd_royl_editor_save_clicked_ccc(GtkWidget *widget,
   wd_royl_editor_update_checksum_ccc(editor);
   if (wd_royl_write_file_ccc(filename, editor->data, editor->size) != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("Unable to save the module file."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("Unable to save the module file."));
     g_free(filename);
     return;
   }
@@ -13191,15 +12786,13 @@ static void wd_royl_editor_save_clicked_ccc(GtkWidget *widget,
   wd_royl_editor_update_info_ccc(editor);
   {
     char status[512];
-    snprintf(status, sizeof(status), _("Saved module 0x%04x to %s."),
-             editor->module, filename);
+    snprintf(status, sizeof(status), _("Saved module 0x%04x to %s."), editor->module, filename);
     gtk_label_set_text(GTK_LABEL(editor->status_label), status);
   }
   g_free(filename);
 }
 
-static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
-                                             gpointer user_data)
+static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   uint8_t *current = NULL;
@@ -13211,27 +12804,21 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
 
   if (!editor->loaded)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
-        _("Read or load a module before writing it."));
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"), _("Read or load a module before writing it."));
     return;
   }
 
   wd_royl_editor_update_checksum_ccc(editor);
-  if (wd_royl_validate_module_ccc(editor->data, editor->size,
-                                  editor->module) != 0)
+  if (wd_royl_validate_module_ccc(editor->data, editor->size, editor->module) != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("The module data is not valid and was not written."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("The module data is not valid and was not written."));
     return;
   }
-  if (!wd_royl_editor_confirm_ccc(
-          editor, _("Confirm module write"), _("Write Module"),
-          _("You are about to write module 0x%04x to the service area of the "
-            "selected drive.\n\nSize: %zu bytes\n\nThe current module will be "
-            "backed up first, and the write will be verified.\n\nContinue?"),
-          editor->module, editor->size))
+  if (!wd_royl_editor_confirm_ccc(editor, _("Confirm module write"), _("Write Module"),
+                                  _("You are about to write module 0x%04x to the service area of the "
+                                    "selected drive.\n\nSize: %zu bytes\n\nThe current module will be "
+                                    "backed up first, and the write will be verified.\n\nContinue?"),
+                                  editor->module, editor->size))
   {
     return;
   }
@@ -13243,35 +12830,28 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
     return;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
-                             _("Checking the current module"));
-  if (wd_royl_read_module_ccc(editor->module, &current, &current_size,
-                              wd_royl_progress_update_ccc) != 0)
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"), _("Checking the current module"));
+  if (wd_royl_read_module_ccc(editor->module, &current, &current_size, wd_royl_progress_update_ccc) != 0)
   {
     wd_royl_progress_end_ccc();
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("Unable to back up the current module. The module was not written."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("Unable to back up the current module. The module was not written."));
     goto finish;
   }
   wd_royl_progress_end_ccc();
 
-  if (wd_royl_validate_module_header_ccc(current, current_size,
-                                         editor->module) != 0)
+  if (wd_royl_validate_module_header_ccc(current, current_size, editor->module) != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("The current module could not be validated. The module was not "
-          "written."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"),
+                                    _("The current module could not be validated. The module was not "
+                                      "written."));
     goto finish;
   }
   if (current_size != editor->size)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
-        _("The module on the drive is %zu bytes, but the editor contains %zu "
-          "bytes. Modules cannot be resized by the editor."),
-        current_size, editor->size);
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
+                               _("The module on the drive is %zu bytes, but the editor contains %zu "
+                                 "bytes. Modules cannot be resized by the editor."),
+                               current_size, editor->size);
     goto finish;
   }
 
@@ -13279,44 +12859,35 @@ static void wd_royl_editor_write_clicked_ccc(GtkWidget *widget,
   wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name), kind);
   if (wd_royl_write_file_ccc(backup_name, current, current_size) != 0)
   {
-    wd_royl_editor_report_error_ccc(
-        editor, _("WD ROYL SA Module Editor"),
-        _("Unable to save the module backup. The module was not written."));
+    wd_royl_editor_report_error_ccc(editor, _("WD ROYL SA Module Editor"), _("Unable to save the module backup. The module was not written."));
     goto finish;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"),
-                             _("Writing module"));
-  result = wd_royl_write_module_ccc(editor->module, editor->data, editor->size,
-                                    wd_royl_progress_update_ccc);
+  wd_royl_progress_begin_ccc(_("WD ROYL SA Module Editor"), _("Writing module"));
+  result = wd_royl_write_module_ccc(editor->module, editor->data, editor->size, wd_royl_progress_update_ccc);
   if (result == 0)
   {
-    result = wd_royl_verify_module_ccc(editor->module, editor->data,
-                                       editor->size,
-                                       wd_royl_progress_update_ccc);
+    result = wd_royl_verify_module_ccc(editor->module, editor->data, editor->size, wd_royl_progress_update_ccc);
   }
   wd_royl_progress_end_ccc();
 
   if (result != 0)
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
-        _("The module write or verification failed.\n\n%s\n\nDo not power off "
-          "the drive. Try the write again; if it still fails, the backup is "
-          "at:\n%s"),
-        wd_royl_last_error_ccc(), backup_name);
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_ERROR, _("WD ROYL SA Module Editor"),
+                               _("The module write or verification failed.\n\n%s\n\nDo not power off "
+                                 "the drive. Try the write again; if it still fails, the backup is "
+                                 "at:\n%s"),
+                               wd_royl_last_error_ccc(), backup_name);
     goto finish;
   }
 
   editor->dirty = false;
   wd_royl_editor_update_info_ccc(editor);
-  gtk_label_set_text(GTK_LABEL(editor->status_label),
-                     _("Module written and verified."));
-  wd_royl_editor_message_ccc(
-      editor, GTK_MESSAGE_INFO, _("WD ROYL SA Module Editor"),
-      _("Module 0x%04x was written and verified successfully.\n\nThe previous "
-        "module is backed up at:\n%s"),
-      editor->module, backup_name);
+  gtk_label_set_text(GTK_LABEL(editor->status_label), _("Module written and verified."));
+  wd_royl_editor_message_ccc(editor, GTK_MESSAGE_INFO, _("WD ROYL SA Module Editor"),
+                             _("Module 0x%04x was written and verified successfully.\n\nThe previous "
+                               "module is backed up at:\n%s"),
+                             editor->module, backup_name);
 
 finish:
   wd_royl_dialog_parent_override_ccc = NULL;
@@ -13324,8 +12895,7 @@ finish:
   wd_royl_end_source_access_ccc(temporary_source_access);
 }
 
-static void wd_royl_editor_prev_clicked_ccc(GtkWidget *widget,
-                                            gpointer user_data)
+static void wd_royl_editor_prev_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
 
@@ -13336,21 +12906,18 @@ static void wd_royl_editor_prev_clicked_ccc(GtkWidget *widget,
   }
 }
 
-static void wd_royl_editor_next_clicked_ccc(GtkWidget *widget,
-                                            gpointer user_data)
+static void wd_royl_editor_next_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
 
-  if (editor->loaded &&
-      editor->page_start + WD_ROYL_EDITOR_PAGE_SIZE < editor->size)
+  if (editor->loaded && editor->page_start + WD_ROYL_EDITOR_PAGE_SIZE < editor->size)
   {
     editor->page_start += WD_ROYL_EDITOR_PAGE_SIZE;
     wd_royl_editor_load_page_ccc(editor);
   }
 }
 
-static void wd_royl_editor_go_clicked_ccc(GtkWidget *widget,
-                                          gpointer user_data)
+static void wd_royl_editor_go_clicked_ccc(GtkWidget *widget, gpointer user_data)
 {
   wd_royl_editor_ccc_t *editor = (wd_royl_editor_ccc_t *)user_data;
   unsigned long long offset = 0;
@@ -13359,29 +12926,20 @@ static void wd_royl_editor_go_clicked_ccc(GtkWidget *widget,
   {
     return;
   }
-  if (!wd_royl_parse_number_ccc(
-          gtk_entry_get_text(GTK_ENTRY(editor->offset_entry)),
-          editor->size - 1, &offset))
+  if (!wd_royl_parse_number_ccc(gtk_entry_get_text(GTK_ENTRY(editor->offset_entry)), editor->size - 1, &offset))
   {
-    wd_royl_editor_message_ccc(
-        editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
-        _("Enter an offset between 0 and 0x%zx. Decimal and 0x-prefixed "
-          "hexadecimal numbers are accepted."),
-        editor->size - 1);
+    wd_royl_editor_message_ccc(editor, GTK_MESSAGE_WARNING, _("WD ROYL SA Module Editor"),
+                               _("Enter an offset between 0 and 0x%zx. Decimal and 0x-prefixed "
+                                 "hexadecimal numbers are accepted."),
+                               editor->size - 1);
     return;
   }
-  editor->page_start =
-      ((size_t)offset / WD_ROYL_EDITOR_PAGE_SIZE) * WD_ROYL_EDITOR_PAGE_SIZE;
+  editor->page_start = ((size_t)offset / WD_ROYL_EDITOR_PAGE_SIZE) * WD_ROYL_EDITOR_PAGE_SIZE;
   wd_royl_editor_load_page_ccc(editor);
   {
-    GtkTreePath *path = gtk_tree_path_new_from_indices(
-        (int)(((size_t)offset - editor->page_start) /
-              WD_ROYL_EDITOR_BYTES_PER_ROW),
-        -1);
-    gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(editor->tree_view), path, NULL,
-                                 TRUE, 0.5, 0.0);
-    gtk_tree_view_set_cursor(GTK_TREE_VIEW(editor->tree_view), path, NULL,
-                             FALSE);
+    GtkTreePath *path = gtk_tree_path_new_from_indices((int)(((size_t)offset - editor->page_start) / WD_ROYL_EDITOR_BYTES_PER_ROW), -1);
+    gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(editor->tree_view), path, NULL, TRUE, 0.5, 0.0);
+    gtk_tree_view_set_cursor(GTK_TREE_VIEW(editor->tree_view), path, NULL, FALSE);
     gtk_tree_path_free(path);
   }
 }
@@ -13419,13 +12977,10 @@ void open_wd_royl_module_editor_ccc(void)
   }
 
   editor = g_new0(wd_royl_editor_ccc_t, 1);
-  editor->dialog = gtk_dialog_new_with_buttons(
-      _("WD ROYL SA Module Editor"), GTK_WINDOW(main_window_ccc),
-      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE,
-      GTK_RESPONSE_CLOSE, NULL);
+  editor->dialog = gtk_dialog_new_with_buttons(_("WD ROYL SA Module Editor"), GTK_WINDOW(main_window_ccc),
+                                               GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
   gtk_window_set_default_size(GTK_WINDOW(editor->dialog), 1120, 720);
-  gtk_dialog_set_default_response(GTK_DIALOG(editor->dialog),
-                                  GTK_RESPONSE_CLOSE);
+  gtk_dialog_set_default_response(GTK_DIALOG(editor->dialog), GTK_RESPONSE_CLOSE);
 
   content = gtk_dialog_get_content_area(GTK_DIALOG(editor->dialog));
   gtk_container_set_border_width(GTK_CONTAINER(content), 10);
@@ -13440,42 +12995,30 @@ void open_wd_royl_module_editor_ccc(void)
   editor->module_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(editor->module_entry), 10);
   gtk_entry_set_text(GTK_ENTRY(editor->module_entry), "0x02");
-  gtk_widget_set_tooltip_text(
-      editor->module_entry,
-      _("Decimal or 0x-prefixed hexadecimal module number"));
-  g_signal_connect(editor->module_entry, "activate",
-                   G_CALLBACK(wd_royl_editor_read_clicked_ccc), editor);
+  gtk_widget_set_tooltip_text(editor->module_entry, _("Decimal or 0x-prefixed hexadecimal module number"));
+  g_signal_connect(editor->module_entry, "activate", G_CALLBACK(wd_royl_editor_read_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), editor->module_entry, FALSE, FALSE, 0);
 
   read_button = gtk_button_new_with_label(_("Read from Drive"));
-  g_signal_connect(read_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_read_clicked_ccc), editor);
+  g_signal_connect(read_button, "clicked", G_CALLBACK(wd_royl_editor_read_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), read_button, FALSE, FALSE, 0);
 
   choose_button = gtk_button_new_with_label(_("Choose Module..."));
-  gtk_widget_set_tooltip_text(
-      choose_button,
-      _("Choose a module from the service area directory in module 0x0001"));
-  g_signal_connect(choose_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_choose_clicked_ccc), editor);
+  gtk_widget_set_tooltip_text(choose_button, _("Choose a module from the service area directory in module 0x0001"));
+  g_signal_connect(choose_button, "clicked", G_CALLBACK(wd_royl_editor_choose_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), choose_button, FALSE, FALSE, 0);
 
   load_button = gtk_button_new_with_label(_("Load File..."));
-  g_signal_connect(load_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_load_clicked_ccc), editor);
+  g_signal_connect(load_button, "clicked", G_CALLBACK(wd_royl_editor_load_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), load_button, FALSE, FALSE, 0);
 
   editor->save_button = gtk_button_new_with_label(_("Save File..."));
-  g_signal_connect(editor->save_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_save_clicked_ccc), editor);
+  g_signal_connect(editor->save_button, "clicked", G_CALLBACK(wd_royl_editor_save_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(top_row), editor->save_button, FALSE, FALSE, 0);
 
   editor->write_button = gtk_button_new_with_label(_("Write Module..."));
-  gtk_widget_set_tooltip_text(
-      editor->write_button,
-      _("Write the edited module to the service area after making a backup"));
-  g_signal_connect(editor->write_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_write_clicked_ccc), editor);
+  gtk_widget_set_tooltip_text(editor->write_button, _("Write the edited module to the service area after making a backup"));
+  g_signal_connect(editor->write_button, "clicked", G_CALLBACK(wd_royl_editor_write_clicked_ccc), editor);
   gtk_box_pack_end(GTK_BOX(top_row), editor->write_button, FALSE, FALSE, 0);
 
   editor->info_label = gtk_label_new("");
@@ -13487,14 +13030,11 @@ void open_wd_royl_module_editor_ccc(void)
   {
     columns[i] = G_TYPE_STRING;
   }
-  editor->store =
-      gtk_list_store_newv(WD_ROYL_EDITOR_MODEL_COLUMNS, columns);
-  editor->tree_view =
-      gtk_tree_view_new_with_model(GTK_TREE_MODEL(editor->store));
+  editor->store = gtk_list_store_newv(WD_ROYL_EDITOR_MODEL_COLUMNS, columns);
+  editor->tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(editor->store));
   gtk_tree_view_set_headers_clickable(GTK_TREE_VIEW(editor->tree_view), FALSE);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(editor->tree_view), FALSE);
-  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(editor->tree_view),
-                               GTK_TREE_VIEW_GRID_LINES_NONE);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(editor->tree_view), GTK_TREE_VIEW_GRID_LINES_NONE);
   wd_royl_editor_add_column_ccc(editor, _("Offset"), 0, 92, false, 0.0);
   for (i = 0; i < WD_ROYL_EDITOR_BYTES_PER_ROW; i++)
   {
@@ -13505,8 +13045,7 @@ void open_wd_royl_module_editor_ccc(void)
   wd_royl_editor_add_column_ccc(editor, _("ASCII"), 17, 150, false, 0.0);
 
   scrolled = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),
-                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_widget_set_size_request(scrolled, -1, 420);
   gtk_container_add(GTK_CONTAINER(scrolled), editor->tree_view);
   gtk_box_pack_start(GTK_BOX(vbox), scrolled, TRUE, TRUE, 0);
@@ -13515,38 +13054,31 @@ void open_wd_royl_module_editor_ccc(void)
   gtk_box_pack_start(GTK_BOX(vbox), nav_row, FALSE, FALSE, 0);
 
   editor->prev_button = gtk_button_new_with_label(_("Previous Page"));
-  g_signal_connect(editor->prev_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_prev_clicked_ccc), editor);
+  g_signal_connect(editor->prev_button, "clicked", G_CALLBACK(wd_royl_editor_prev_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(nav_row), editor->prev_button, FALSE, FALSE, 0);
 
   editor->next_button = gtk_button_new_with_label(_("Next Page"));
-  g_signal_connect(editor->next_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_next_clicked_ccc), editor);
+  g_signal_connect(editor->next_button, "clicked", G_CALLBACK(wd_royl_editor_next_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(nav_row), editor->next_button, FALSE, FALSE, 0);
 
   offset_label = gtk_label_new(_("Go to offset:"));
   gtk_box_pack_start(GTK_BOX(nav_row), offset_label, FALSE, FALSE, 0);
   editor->offset_entry = gtk_entry_new();
   gtk_entry_set_width_chars(GTK_ENTRY(editor->offset_entry), 14);
-  gtk_widget_set_tooltip_text(
-      editor->offset_entry,
-      _("Decimal or 0x-prefixed hexadecimal byte offset"));
-  g_signal_connect(editor->offset_entry, "activate",
-                   G_CALLBACK(wd_royl_editor_go_clicked_ccc), editor);
+  gtk_widget_set_tooltip_text(editor->offset_entry, _("Decimal or 0x-prefixed hexadecimal byte offset"));
+  g_signal_connect(editor->offset_entry, "activate", G_CALLBACK(wd_royl_editor_go_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(nav_row), editor->offset_entry, FALSE, FALSE, 0);
 
   go_button = gtk_button_new_with_label(_("Go"));
-  g_signal_connect(go_button, "clicked",
-                   G_CALLBACK(wd_royl_editor_go_clicked_ccc), editor);
+  g_signal_connect(go_button, "clicked", G_CALLBACK(wd_royl_editor_go_clicked_ccc), editor);
   gtk_box_pack_start(GTK_BOX(nav_row), go_button, FALSE, FALSE, 0);
 
   editor->page_label = gtk_label_new("");
   gtk_label_set_xalign(GTK_LABEL(editor->page_label), 1.0);
   gtk_box_pack_end(GTK_BOX(nav_row), editor->page_label, FALSE, FALSE, 0);
 
-  hint_label = gtk_label_new(
-      _("Double-click a hexadecimal byte to edit it. The ROYL checksum is "
-        "recalculated when the module is saved or written."));
+  hint_label = gtk_label_new(_("Double-click a hexadecimal byte to edit it. The ROYL checksum is "
+                               "recalculated when the module is saved or written."));
   gtk_label_set_line_wrap(GTK_LABEL(hint_label), TRUE);
   gtk_label_set_xalign(GTK_LABEL(hint_label), 0.0);
   gtk_box_pack_start(GTK_BOX(vbox), hint_label, FALSE, FALSE, 0);
@@ -13569,8 +13101,7 @@ void open_wd_royl_module_editor_ccc(void)
   while (!done)
   {
     response = gtk_dialog_run(GTK_DIALOG(editor->dialog));
-    if (response == GTK_RESPONSE_CLOSE ||
-        response == GTK_RESPONSE_DELETE_EVENT)
+    if (response == GTK_RESPONSE_CLOSE || response == GTK_RESPONSE_DELETE_EVENT)
     {
       if (wd_royl_editor_confirm_discard_ccc(editor))
       {
@@ -13602,8 +13133,7 @@ static int wd_royl_patch_sa_module_ccc(uint16_t module)
   char backup_name[512];
   int result = -1;
 
-  if (wd_royl_read_module_ccc(module, &original, &size,
-                              wd_royl_progress_update_ccc) != 0)
+  if (wd_royl_read_module_ccc(module, &original, &size, wd_royl_progress_update_ccc) != 0)
   {
     goto finish;
   }
@@ -13639,22 +13169,18 @@ static int wd_royl_patch_sa_module_ccc(uint16_t module)
 
   if (memcmp(original, patched, size) == 0)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
-        _("Module 0x%04x is already patched. Nothing was written."), module);
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"), _("Module 0x%04x is already patched. Nothing was written."), module);
     result = 0;
     goto finish;
   }
 
   if (module == WD_ROYL_MODULE_02)
   {
-    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
-                                 "mod02_original");
+    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name), "mod02_original");
   }
   else
   {
-    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
-                                 "mod32_original");
+    wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name), "mod32_original");
   }
   if (wd_royl_write_file_ccc(backup_name, original, size) != 0)
   {
@@ -13669,13 +13195,11 @@ static int wd_royl_patch_sa_module_ccc(uint16_t module)
     wd_royl_progress_update_ccc(message, 0, 1);
   }
 
-  if (wd_royl_write_module_ccc(module, patched, size,
-                               wd_royl_progress_update_ccc) != 0)
+  if (wd_royl_write_module_ccc(module, patched, size, wd_royl_progress_update_ccc) != 0)
   {
     goto finish;
   }
-  if (wd_royl_verify_module_ccc(module, patched, size,
-                                wd_royl_progress_update_ccc) != 0)
+  if (wd_royl_verify_module_ccc(module, patched, size, wd_royl_progress_update_ccc) != 0)
   {
     goto finish;
   }
@@ -13714,10 +13238,8 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
     return;
   }
 
-  dialog = gtk_dialog_new_with_buttons(
-      _("WD ROYL Slow Fix"), GTK_WINDOW(main_window_ccc),
-      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CANCEL,
-      GTK_RESPONSE_CANCEL, _("Apply Patch"), GTK_RESPONSE_ACCEPT, NULL);
+  dialog = gtk_dialog_new_with_buttons(_("WD ROYL Slow Fix"), GTK_WINDOW(main_window_ccc), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Apply Patch"), GTK_RESPONSE_ACCEPT, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
 
   content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
@@ -13726,12 +13248,11 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
   gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
 
-  description = gtk_label_new(
-      _("This applies the common Western Digital ROYL slow-responding fix. "
-        "Use it only when reads are good but the drive is very slow.\n\n"
-        "The RAM patch is temporary and is lost when the drive is power "
-        "cycled. The service area patch is permanent and must be used with "
-        "care."));
+  description = gtk_label_new(_("This applies the common Western Digital ROYL slow-responding fix. "
+                                "Use it only when reads are good but the drive is very slow.\n\n"
+                                "The RAM patch is temporary and is lost when the drive is power "
+                                "cycled. The service area patch is permanent and must be used with "
+                                "care."));
   gtk_label_set_line_wrap(GTK_LABEL(description), TRUE);
   gtk_label_set_xalign(GTK_LABEL(description), 0.0);
   gtk_box_pack_start(GTK_BOX(vbox), description, FALSE, FALSE, 0);
@@ -13742,13 +13263,10 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   gtk_container_set_border_width(GTK_CONTAINER(location_box), 8);
   gtk_container_add(GTK_CONTAINER(location_frame), location_box);
 
-  ram_radio = gtk_radio_button_new_with_label(
-      NULL, _("RAM patch (temporary, until the drive is power cycled)"));
+  ram_radio = gtk_radio_button_new_with_label(NULL, _("RAM patch (temporary, until the drive is power cycled)"));
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ram_radio), TRUE);
   gtk_box_pack_start(GTK_BOX(location_box), ram_radio, FALSE, FALSE, 0);
-  sa_radio = gtk_radio_button_new_with_label_from_widget(
-      GTK_RADIO_BUTTON(ram_radio),
-      _("Service area patch (permanent)"));
+  sa_radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(ram_radio), _("Service area patch (permanent)"));
   gtk_box_pack_start(GTK_BOX(location_box), sa_radio, FALSE, FALSE, 0);
 
   modules_frame = gtk_frame_new(_("Modules to patch"));
@@ -13757,18 +13275,15 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   gtk_container_set_border_width(GTK_CONTAINER(modules_box), 8);
   gtk_container_add(GTK_CONTAINER(modules_frame), modules_box);
 
-  mod02_check = gtk_check_button_new_with_label(
-      _("Module 02 (recommended, disables background scanning)"));
+  mod02_check = gtk_check_button_new_with_label(_("Module 02 (recommended, disables background scanning)"));
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mod02_check), TRUE);
   gtk_box_pack_start(GTK_BOX(modules_box), mod02_check, FALSE, FALSE, 0);
-  mod32_check = gtk_check_button_new_with_label(
-      _("Module 32 (clears the RE-LO list; normally not needed)"));
+  mod32_check = gtk_check_button_new_with_label(_("Module 32 (clears the RE-LO list; normally not needed)"));
   gtk_box_pack_start(GTK_BOX(modules_box), mod32_check, FALSE, FALSE, 0);
 
-  warning_label = gtk_label_new(
-      _("Service area writes modify the drive firmware. A backup is saved "
-        "before each write, but do not remove power or disconnect the drive "
-        "while the operation is running."));
+  warning_label = gtk_label_new(_("Service area writes modify the drive firmware. A backup is saved "
+                                  "before each write, but do not remove power or disconnect the drive "
+                                  "while the operation is running."));
   gtk_label_set_line_wrap(GTK_LABEL(warning_label), TRUE);
   gtk_label_set_xalign(GTK_LABEL(warning_label), 0.0);
   gtk_box_pack_start(GTK_BOX(vbox), warning_label, FALSE, FALSE, 0);
@@ -13787,8 +13302,7 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   }
   if (!do_mod02 && !do_mod32)
   {
-    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Slow Fix"),
-                             _("Select at least one module to patch."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Slow Fix"), _("Select at least one module to patch."));
     return;
   }
   if (do_mod02)
@@ -13802,13 +13316,11 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
 
   if (use_sa)
   {
-    if (!wd_royl_confirm_ccc(
-            _("Confirm service area patch"),
-            _("Write Service Area"),
-            _("You are about to modify the service area of the selected "
-              "drive.\n\nThe original module(s) will be saved to a backup "
-              "file before writing, and every write is verified.\n\nIf power "
-              "is lost during a write, the drive may be damaged. Continue?")))
+    if (!wd_royl_confirm_ccc(_("Confirm service area patch"), _("Write Service Area"),
+                             _("You are about to modify the service area of the selected "
+                               "drive.\n\nThe original module(s) will be saved to a backup "
+                               "file before writing, and every write is verified.\n\nIf power "
+                               "is lost during a write, the drive may be damaged. Continue?")))
     {
       return;
     }
@@ -13818,16 +13330,13 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       return;
     }
 
-    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
-                               _("Starting service area patch"));
+    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"), _("Starting service area patch"));
     if (do_mod02 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_02) != 0)
     {
       wd_royl_progress_end_ccc();
       wd_royl_end_source_access_ccc(temporary_source_access);
-      wd_royl_report_error_ccc(
-          _("WD ROYL Slow Fix"),
-          _("Failed to patch module 02. The drive was not left in a verified "
-            "state."));
+      wd_royl_report_error_ccc(_("WD ROYL Slow Fix"), _("Failed to patch module 02. The drive was not left in a verified "
+                                                        "state."));
       return;
     }
     if (do_mod32 && wd_royl_patch_sa_module_ccc(WD_ROYL_MODULE_32) != 0)
@@ -13836,37 +13345,31 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       wd_royl_end_source_access_ccc(temporary_source_access);
       if (do_mod02)
       {
-        wd_royl_report_error_ccc(
-            _("WD ROYL Slow Fix"),
-            _("Module 02 was patched and verified, but module 32 failed."));
+        wd_royl_report_error_ccc(_("WD ROYL Slow Fix"), _("Module 02 was patched and verified, but module 32 failed."));
       }
       else
       {
-        wd_royl_report_error_ccc(
-            _("WD ROYL Slow Fix"),
-            _("Failed to patch module 32. The drive was not left in a "
-              "verified state."));
+        wd_royl_report_error_ccc(_("WD ROYL Slow Fix"), _("Failed to patch module 32. The drive was not left in a "
+                                                          "verified state."));
       }
       return;
     }
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
 
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
-        _("The service area patch completed and was verified.\n\nPower cycle "
-          "the drive for the changes to take effect."));
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+                             _("The service area patch completed and was verified.\n\nPower cycle "
+                               "the drive for the changes to take effect."));
   }
   else
   {
     unsigned int count_02 = 0;
     unsigned int count_32 = 0;
 
-    if (!wd_royl_confirm_ccc(
-            _("Confirm RAM patch"), _("Patch RAM"),
-            _("This patches module(s) in the selected drive RAM.\n\nThe "
-              "change is temporary and will be lost when the drive is power "
-              "cycled. Continue?")))
+    if (!wd_royl_confirm_ccc(_("Confirm RAM patch"), _("Patch RAM"),
+                             _("This patches module(s) in the selected drive RAM.\n\nThe "
+                               "change is temporary and will be lost when the drive is power "
+                               "cycled. Continue?")))
     {
       return;
     }
@@ -13876,26 +13379,22 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
       return;
     }
 
-    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"),
-                               _("Starting RAM patch"));
-    if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32,
-                                      wd_royl_progress_update_ccc) != 0)
+    wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"), _("Starting RAM patch"));
+    if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32, wd_royl_progress_update_ccc) != 0)
     {
       wd_royl_progress_end_ccc();
       wd_royl_end_source_access_ccc(temporary_source_access);
-      wd_royl_report_error_ccc(_("WD ROYL Slow Fix"),
-                               _("The RAM patch failed."));
+      wd_royl_report_error_ccc(_("WD ROYL Slow Fix"), _("The RAM patch failed."));
       return;
     }
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
 
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
-        _("The RAM patch completed and was verified.\n\nModule 02 copies "
-          "patched: %u\nModule 32 copies patched: %u\n\nPower cycle the drive "
-          "to undo the change."),
-        count_02, count_32);
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+                             _("The RAM patch completed and was verified.\n\nModule 02 copies "
+                               "patched: %u\nModule 32 copies patched: %u\n\nPower cycle the drive "
+                               "to undo the change."),
+                             count_02, count_32);
   }
 }
 
@@ -13914,8 +13413,7 @@ void run_wd_royl_read_rom_ccc(void)
   }
 
   wd_royl_make_backup_name_ccc(default_name, sizeof(default_name), "rom");
-  filename = wd_royl_choose_file_ccc(true, _("Save WD ROYL ROM dump"),
-                                     default_name);
+  filename = wd_royl_choose_file_ccc(true, _("Save WD ROYL ROM dump"), default_name);
   if (filename == NULL)
   {
     return;
@@ -13927,26 +13425,22 @@ void run_wd_royl_read_rom_ccc(void)
     return;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL Read ROM"),
-                             _("Starting ROM read"));
-  result = wd_royl_read_rom_ccc(&rom, &rom_size,
-                                wd_royl_progress_update_ccc);
+  wd_royl_progress_begin_ccc(_("WD ROYL Read ROM"), _("Starting ROM read"));
+  result = wd_royl_read_rom_ccc(&rom, &rom_size, wd_royl_progress_update_ccc);
   wd_royl_progress_end_ccc();
   wd_royl_end_source_access_ccc(temporary_source_access);
 
   if (result != 0)
   {
-    wd_royl_report_error_ccc(_("WD ROYL Read ROM"),
-                             _("Failed to read the ROM from the drive."));
+    wd_royl_report_error_ccc(_("WD ROYL Read ROM"), _("Failed to read the ROM from the drive."));
     g_free(filename);
     return;
   }
 
   if (wd_royl_write_file_ccc(filename, rom, rom_size) != 0)
   {
-    wd_royl_report_error_ccc(_("WD ROYL Read ROM"),
-                             _("The ROM was read from the drive, but the file "
-                               "could not be saved."));
+    wd_royl_report_error_ccc(_("WD ROYL Read ROM"), _("The ROM was read from the drive, but the file "
+                                                      "could not be saved."));
     g_free(filename);
     free(rom);
     return;
@@ -13976,8 +13470,7 @@ void run_wd_royl_write_rom_ccc(void)
     return;
   }
 
-  filename = wd_royl_choose_file_ccc(false, _("Select WD ROYL ROM file"),
-                                     NULL);
+  filename = wd_royl_choose_file_ccc(false, _("Select WD ROYL ROM file"), NULL);
   if (filename == NULL)
   {
     return;
@@ -13985,18 +13478,16 @@ void run_wd_royl_write_rom_ccc(void)
 
   if (wd_royl_read_file_ccc(filename, &new_rom, &new_size) != 0)
   {
-    wd_royl_report_error_ccc(_("WD ROYL Write ROM"),
-                             _("Unable to read the selected ROM file."));
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"), _("Unable to read the selected ROM file."));
     g_free(filename);
     return;
   }
   if (wd_royl_validate_rom_ccc(new_rom, new_size) != 0)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
-        _("The selected file is not a valid ROYL ROM image. It has not been "
-          "written to the drive.\n\n%s"),
-        wd_royl_last_error_ccc());
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+                             _("The selected file is not a valid ROYL ROM image. It has not been "
+                               "written to the drive.\n\n%s"),
+                             wd_royl_last_error_ccc());
     free(new_rom);
     g_free(filename);
     return;
@@ -14009,14 +13500,12 @@ void run_wd_royl_write_rom_ccc(void)
     return;
   }
 
-  wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"),
-                             _("Checking the current ROM"));
+  wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"), _("Checking the current ROM"));
   if (wd_royl_get_rom_size_ccc(&current_size) != 0)
   {
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
-    wd_royl_report_error_ccc(_("WD ROYL Write ROM"),
-                             _("Unable to read the ROM size from the drive."));
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"), _("Unable to read the ROM size from the drive."));
     free(new_rom);
     g_free(filename);
     return;
@@ -14025,11 +13514,10 @@ void run_wd_royl_write_rom_ccc(void)
   {
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
-        _("The selected ROM is %zu bytes, but the drive reports a %zu byte "
-          "ROM. The file has not been written."),
-        new_size, current_size);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+                             _("The selected ROM is %zu bytes, but the drive reports a %zu byte "
+                               "ROM. The file has not been written."),
+                             new_size, current_size);
     free(new_rom);
     g_free(filename);
     return;
@@ -14037,14 +13525,11 @@ void run_wd_royl_write_rom_ccc(void)
 
   // Always keep a copy of the ROM that is currently in the drive. If this
   // fails there is no safe way to continue.
-  if (wd_royl_read_rom_ccc(&current_rom, &current_size,
-                           wd_royl_progress_update_ccc) != 0)
+  if (wd_royl_read_rom_ccc(&current_rom, &current_size, wd_royl_progress_update_ccc) != 0)
   {
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
-    wd_royl_report_error_ccc(
-        _("WD ROYL Write ROM"),
-        _("Unable to back up the current ROM. The file has not been written."));
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"), _("Unable to back up the current ROM. The file has not been written."));
     free(new_rom);
     g_free(filename);
     return;
@@ -14054,40 +13539,35 @@ void run_wd_royl_write_rom_ccc(void)
   if (current_size != new_size)
   {
     wd_royl_end_source_access_ccc(temporary_source_access);
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
-        _("The ROM backup size (%zu bytes) does not match the selected file "
-          "(%zu bytes). The file has not been written."),
-        current_size, new_size);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+                             _("The ROM backup size (%zu bytes) does not match the selected file "
+                               "(%zu bytes). The file has not been written."),
+                             current_size, new_size);
     free(current_rom);
     free(new_rom);
     g_free(filename);
     return;
   }
 
-  wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name),
-                               "rom_backup");
+  wd_royl_make_backup_path_ccc(backup_name, sizeof(backup_name), "rom_backup");
   if (wd_royl_write_file_ccc(backup_name, current_rom, current_size) != 0)
   {
     wd_royl_end_source_access_ccc(temporary_source_access);
-    wd_royl_report_error_ccc(
-        _("WD ROYL Write ROM"),
-        _("Unable to save the ROM backup file. The selected file has not been "
-          "written."));
+    wd_royl_report_error_ccc(_("WD ROYL Write ROM"), _("Unable to save the ROM backup file. The selected file has not been "
+                                                       "written."));
     free(current_rom);
     free(new_rom);
     g_free(filename);
     return;
   }
 
-  if (!wd_royl_confirm_ccc(
-          _("Confirm ROM write"), _("Erase and Write ROM"),
-          _("You are about to erase and rewrite the ROM of the selected "
-            "drive.\n\nFile: %s\nSize: %zu bytes\nBackup: %s\n\nDo not remove "
-            "power or disconnect the drive while this is running. If the "
-            "write fails after the erase, do not power off the drive.\n\n"
-            "Continue?"),
-          filename, new_size, backup_name))
+  if (!wd_royl_confirm_ccc(_("Confirm ROM write"), _("Erase and Write ROM"),
+                           _("You are about to erase and rewrite the ROM of the selected "
+                             "drive.\n\nFile: %s\nSize: %zu bytes\nBackup: %s\n\nDo not remove "
+                             "power or disconnect the drive while this is running. If the "
+                             "write fails after the erase, do not power off the drive.\n\n"
+                             "Continue?"),
+                           filename, new_size, backup_name))
   {
     wd_royl_end_source_access_ccc(temporary_source_access);
     free(current_rom);
@@ -14097,32 +13577,28 @@ void run_wd_royl_write_rom_ccc(void)
   }
 
   wd_royl_progress_begin_ccc(_("WD ROYL Write ROM"), _("Erasing ROM"));
-  result = wd_royl_write_rom_ccc(new_rom, new_size, false,
-                                 wd_royl_progress_update_ccc);
+  result = wd_royl_write_rom_ccc(new_rom, new_size, false, wd_royl_progress_update_ccc);
   if (result == 0)
   {
-    result = wd_royl_verify_rom_ccc(new_rom, new_size,
-                                    wd_royl_progress_update_ccc);
+    result = wd_royl_verify_rom_ccc(new_rom, new_size, wd_royl_progress_update_ccc);
   }
   wd_royl_progress_end_ccc();
   wd_royl_end_source_access_ccc(temporary_source_access);
 
   if (result != 0)
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
-        _("The ROM write or verification failed.\n\n%s\n\nDo not power off "
-          "the drive. Try the write again; if it still fails, the backup ROM "
-          "is at:\n%s"),
-        wd_royl_last_error_ccc(), backup_name);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Write ROM"),
+                             _("The ROM write or verification failed.\n\n%s\n\nDo not power off "
+                               "the drive. Try the write again; if it still fails, the backup ROM "
+                               "is at:\n%s"),
+                             wd_royl_last_error_ccc(), backup_name);
   }
   else
   {
-    wd_royl_show_message_ccc(
-        GTK_MESSAGE_INFO, _("WD ROYL Write ROM"),
-        _("The ROM was written and verified successfully.\n\nThe previous "
-          "ROM backup is at:\n%s\n\nPower cycle the drive before using it."),
-        backup_name);
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Write ROM"),
+                             _("The ROM was written and verified successfully.\n\nThe previous "
+                               "ROM backup is at:\n%s\n\nPower cycle the drive before using it."),
+                             backup_name);
   }
 
   free(current_rom);

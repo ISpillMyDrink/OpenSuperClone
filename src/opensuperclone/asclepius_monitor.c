@@ -104,24 +104,17 @@ extern unsigned int opensuperclone_glade_len;
 #define MON_PLOT_BOTTOM 20
 
 // Selected time window, in milliseconds. 0 means "all time".
-static const unsigned int mon_window_ms_ccc[] = {
-  10000, 30000, 60000, 300000, 0
-};
+static const unsigned int mon_window_ms_ccc[] = {10000, 30000, 60000, 300000, 0};
 #define MON_NUM_WINDOWS (sizeof(mon_window_ms_ccc) / sizeof(mon_window_ms_ccc[0]))
 
 // Fills out with the localized name for each selectable window. The literals
 // sit inside this function so xgettext can extract them for translation.
 static void mon_window_names(char out[MON_NUM_WINDOWS][32])
 {
-  static const char *const names[MON_NUM_WINDOWS] = {
-    N_("Last 10 seconds"),
-    N_("Last 30 seconds"),
-    N_("Last 1 minute"),
-    N_("Last 5 minutes"),
-    N_("All time")
-  };
+  static const char *const names[MON_NUM_WINDOWS] = {N_("Last 10 seconds"), N_("Last 30 seconds"), N_("Last 1 minute"), N_("Last 5 minutes"),
+                                                     N_("All time")};
 
-  for(size_t i = 0; i < MON_NUM_WINDOWS; i++)
+  for (size_t i = 0; i < MON_NUM_WINDOWS; i++)
   {
     snprintf(out[i], 32, "%s", _(names[i]));
   }
@@ -137,7 +130,7 @@ static GtkWidget *asclepius_mon_reset_ocp_button_ccc = NULL;
 static GtkWidget *asclepius_mon_pause_button_ccc = NULL;
 static GtkWidget *asclepius_mon_voltage_stats_label_ccc = NULL;
 static GtkWidget *asclepius_mon_current_stats_label_ccc = NULL;
-static GtkWidget *asclepius_mon_power_buttons_ccc[5] = { NULL, NULL, NULL, NULL, NULL };
+static GtkWidget *asclepius_mon_power_buttons_ccc[5] = {NULL, NULL, NULL, NULL, NULL};
 
 // Refresh timer, so it can be removed on close.
 static guint asclepius_monitor_timer_id = 0;
@@ -162,10 +155,10 @@ static unsigned int mon_hover_t_ms_ccc = 0;
 // Which series a hover was captured over, so the tooltip can name it.
 typedef enum
 {
-    MON_HOVER_NONE = 0,
-    MON_HOVER_V12,
-    MON_HOVER_V5,
-    MON_HOVER_CURRENT
+  MON_HOVER_NONE = 0,
+  MON_HOVER_V12,
+  MON_HOVER_V5,
+  MON_HOVER_CURRENT
 } mon_hover_kind_t;
 
 static mon_hover_kind_t mon_hover_kind_ccc = MON_HOVER_NONE;
@@ -174,32 +167,32 @@ static mon_hover_kind_t mon_hover_kind_ccc = MON_HOVER_NONE;
 
 static void mon_set_source(cairo_t *cr, double r, double g, double b)
 {
-    cairo_set_source_rgb(cr, r, g, b);
+  cairo_set_source_rgb(cr, r, g, b);
 }
 
 // Sets the source colour with an explicit alpha. cairo_set_source_alpha() is
 // newer than the cairo we build against, so use the RGBA form directly.
 static void mon_set_source_rgba(cairo_t *cr, double r, double g, double b, double alpha)
 {
-    cairo_set_source_rgba(cr, r, g, b, alpha);
+  cairo_set_source_rgba(cr, r, g, b, alpha);
 }
 
 // Formats a duration as the monitor's relative labels: now / -5s / -1:05
 static void mon_format_age(char *out, size_t out_size, unsigned int age_ms)
 {
-    if(age_ms < 1000)
-    {
-        snprintf(out, out_size, "now");
-    }
-    else if(age_ms < 60000)
-    {
-        snprintf(out, out_size, "-%us", (unsigned int)(age_ms / 1000));
-    }
-    else
-    {
-        unsigned int total = age_ms / 1000;
-        snprintf(out, out_size, "-%u:%02u", total / 60, total % 60);
-    }
+  if (age_ms < 1000)
+  {
+    snprintf(out, out_size, "now");
+  }
+  else if (age_ms < 60000)
+  {
+    snprintf(out, out_size, "-%us", (unsigned int)(age_ms / 1000));
+  }
+  else
+  {
+    unsigned int total = age_ms / 1000;
+    snprintf(out, out_size, "-%u:%02u", total / 60, total % 60);
+  }
 }
 
 // ------------------------------------------------------------------ drawing
@@ -207,218 +200,233 @@ static void mon_format_age(char *out, size_t out_size, unsigned int age_ms)
 // Shared axis/scale state for one plot.
 typedef struct
 {
-    double x0, y0;   // plot area origin
-    double w, h;     // plot area size
-    double ymin;
-    double ymax;
-    uint32_t t_min;
-    uint32_t t_max;
-    int count;       // points in mon_points_ccc
+  double x0, y0; // plot area origin
+  double w, h;   // plot area size
+  double ymin;
+  double ymax;
+  uint32_t t_min;
+  uint32_t t_max;
+  int count; // points in mon_points_ccc
 } mon_plot_t;
 
 static void mon_setup_plot(mon_plot_t *p, int width, int height, double ymin, double ymax, uint32_t t_min, uint32_t t_max)
 {
-    p->x0 = MON_PLOT_LEFT;
-    p->y0 = MON_PLOT_TOP;
-    p->w = width - MON_PLOT_LEFT - MON_PLOT_RIGHT;
-    p->h = height - MON_PLOT_TOP - MON_PLOT_BOTTOM;
-    p->ymin = ymin;
-    p->ymax = ymax;
-    p->t_min = t_min;
-    p->t_max = t_max;
-    p->count = mon_copy_range(&asclepius_monitor, t_min, t_max, mon_points_ccc, MON_MAX_POINTS);
+  p->x0 = MON_PLOT_LEFT;
+  p->y0 = MON_PLOT_TOP;
+  p->w = width - MON_PLOT_LEFT - MON_PLOT_RIGHT;
+  p->h = height - MON_PLOT_TOP - MON_PLOT_BOTTOM;
+  p->ymin = ymin;
+  p->ymax = ymax;
+  p->t_min = t_min;
+  p->t_max = t_max;
+  p->count = mon_copy_range(&asclepius_monitor, t_min, t_max, mon_points_ccc, MON_MAX_POINTS);
 }
 
 static double mon_map_x(const mon_plot_t *p, uint32_t t_ms)
 {
-    if(p->t_max <= p->t_min)
-    {
-        return p->x0;
-    }
+  if (p->t_max <= p->t_min)
+  {
+    return p->x0;
+  }
 
-    return p->x0 + p->w * ((double)(t_ms - p->t_min) / (double)(p->t_max - p->t_min));
+  return p->x0 + p->w * ((double)(t_ms - p->t_min) / (double)(p->t_max - p->t_min));
 }
 
 static double mon_map_y(const mon_plot_t *p, double value)
 {
-    if(p->ymax <= p->ymin)
-    {
-        return p->y0 + p->h;
-    }
+  if (p->ymax <= p->ymin)
+  {
+    return p->y0 + p->h;
+  }
 
-    return p->y0 + p->h * (1.0 - (value - p->ymin) / (p->ymax - p->ymin));
+  return p->y0 + p->h * (1.0 - (value - p->ymin) / (p->ymax - p->ymin));
 }
 
 // Shaded ATX zone bands: red outside the spec window, green inside.
 static void mon_draw_zone_bands(cairo_t *cr, const mon_plot_t *p, double spec_min, double spec_max)
 {
-    cairo_save(cr);
-    cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
-    cairo_clip(cr);
+  cairo_save(cr);
+  cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
+  cairo_clip(cr);
 
-    mon_set_source_rgba(cr, MON_COL_ZONE_BAD_R, MON_COL_ZONE_BAD_G, MON_COL_ZONE_BAD_B, MON_COL_ZONE_BAD_A);
-    double above_y = mon_map_y(p, spec_max);
-    if(above_y > p->y0)
-    {
-        cairo_rectangle(cr, p->x0, p->y0, p->w, above_y - p->y0);
-        cairo_fill(cr);
-    }
-
-    double below_y = mon_map_y(p, spec_min);
-    if(below_y < p->y0 + p->h)
-    {
-        cairo_rectangle(cr, p->x0, below_y, p->w, p->y0 + p->h - below_y);
-        cairo_fill(cr);
-    }
-
-    mon_set_source_rgba(cr, MON_COL_ZONE_OK_R, MON_COL_ZONE_OK_G, MON_COL_ZONE_OK_B, MON_COL_ZONE_OK_A);
-    cairo_rectangle(cr, p->x0, above_y, p->w, below_y - above_y);
+  mon_set_source_rgba(cr, MON_COL_ZONE_BAD_R, MON_COL_ZONE_BAD_G, MON_COL_ZONE_BAD_B, MON_COL_ZONE_BAD_A);
+  double above_y = mon_map_y(p, spec_max);
+  if (above_y > p->y0)
+  {
+    cairo_rectangle(cr, p->x0, p->y0, p->w, above_y - p->y0);
     cairo_fill(cr);
+  }
 
-    cairo_restore(cr);
+  double below_y = mon_map_y(p, spec_min);
+  if (below_y < p->y0 + p->h)
+  {
+    cairo_rectangle(cr, p->x0, below_y, p->w, p->y0 + p->h - below_y);
+    cairo_fill(cr);
+  }
+
+  mon_set_source_rgba(cr, MON_COL_ZONE_OK_R, MON_COL_ZONE_OK_G, MON_COL_ZONE_OK_B, MON_COL_ZONE_OK_A);
+  cairo_rectangle(cr, p->x0, above_y, p->w, below_y - above_y);
+  cairo_fill(cr);
+
+  cairo_restore(cr);
 }
 
 static void mon_draw_dashed_limit(cairo_t *cr, const mon_plot_t *p, double value)
 {
-    double y = mon_map_y(p, value);
+  double y = mon_map_y(p, value);
 
-    if(y < p->y0 || y > p->y0 + p->h)
-    {
-        return;
-    }
+  if (y < p->y0 || y > p->y0 + p->h)
+  {
+    return;
+  }
 
-    cairo_save(cr);
-    cairo_set_line_width(cr, 1.0);
-    cairo_set_dash(cr, (const double[]){ 4.0, 3.0 }, 2, 0);
-    mon_set_source(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B);
-    cairo_move_to(cr, p->x0, y);
-    cairo_line_to(cr, p->x0 + p->w, y);
-    cairo_stroke(cr);
-    cairo_restore(cr);
+  cairo_save(cr);
+  cairo_set_line_width(cr, 1.0);
+  cairo_set_dash(cr, (const double[]){4.0, 3.0}, 2, 0);
+  mon_set_source(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B);
+  cairo_move_to(cr, p->x0, y);
+  cairo_line_to(cr, p->x0 + p->w, y);
+  cairo_stroke(cr);
+  cairo_restore(cr);
 
-    char text[24];
-    snprintf(text, sizeof(text), "%.2f V", value);
-    cairo_save(cr);
-    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 10.0);
-    cairo_text_extents_t ext;
-    cairo_text_extents(cr, text, &ext);
-    double bx = p->x0 + p->w - ext.width - 4;
-    double by = y - ext.height - 1;
-    mon_set_source_rgba(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B, MON_COL_LIMIT_TAG_A);
-    cairo_rectangle(cr, bx - 2, by - 1, ext.width + 4, ext.height + 3);
-    cairo_fill(cr);
-    mon_set_source(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B);
-    cairo_move_to(cr, bx, by + ext.height);
-    cairo_show_text(cr, text);
-    cairo_restore(cr);
+  char text[24];
+  snprintf(text, sizeof(text), "%.2f V", value);
+  cairo_save(cr);
+  cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 10.0);
+  cairo_text_extents_t ext;
+  cairo_text_extents(cr, text, &ext);
+  double bx = p->x0 + p->w - ext.width - 4;
+  double by = y - ext.height - 1;
+  mon_set_source_rgba(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B, MON_COL_LIMIT_TAG_A);
+  cairo_rectangle(cr, bx - 2, by - 1, ext.width + 4, ext.height + 3);
+  cairo_fill(cr);
+  mon_set_source(cr, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B);
+  cairo_move_to(cr, bx, by + ext.height);
+  cairo_show_text(cr, text);
+  cairo_restore(cr);
 }
 
 static void mon_draw_grid(cairo_t *cr, const mon_plot_t *p, const char *unit)
 {
-    cairo_save(cr);
+  cairo_save(cr);
 
-    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 10.0);
+  cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 10.0);
 
-    for(int i = 0; i <= 4; i++)
-    {
-        double frac = (double)i / 4.0;
-        double value = p->ymax - frac * (p->ymax - p->ymin);
-        double y = p->y0 + frac * p->h;
+  for (int i = 0; i <= 4; i++)
+  {
+    double frac = (double)i / 4.0;
+    double value = p->ymax - frac * (p->ymax - p->ymin);
+    double y = p->y0 + frac * p->h;
 
-        mon_set_source(cr, MON_COL_GRID_R, MON_COL_GRID_G, MON_COL_GRID_B);
-        cairo_set_line_width(cr, 0.5);
-        cairo_move_to(cr, p->x0, y);
-        cairo_line_to(cr, p->x0 + p->w, y);
-        cairo_stroke(cr);
+    mon_set_source(cr, MON_COL_GRID_R, MON_COL_GRID_G, MON_COL_GRID_B);
+    cairo_set_line_width(cr, 0.5);
+    cairo_move_to(cr, p->x0, y);
+    cairo_line_to(cr, p->x0 + p->w, y);
+    cairo_stroke(cr);
 
-        char text[32];
-        snprintf(text, sizeof(text), "%.2f %s", value, unit);
-        cairo_text_extents_t ext;
-        cairo_text_extents(cr, text, &ext);
-        mon_set_source(cr, MON_COL_AXIS_R, MON_COL_AXIS_G, MON_COL_AXIS_B);
-        cairo_move_to(cr, p->x0 - ext.width - 4, y + ext.height / 2.0);
-        cairo_show_text(cr, text);
-    }
+    char text[32];
+    snprintf(text, sizeof(text), "%.2f %s", value, unit);
+    cairo_text_extents_t ext;
+    cairo_text_extents(cr, text, &ext);
+    mon_set_source(cr, MON_COL_AXIS_R, MON_COL_AXIS_G, MON_COL_AXIS_B);
+    cairo_move_to(cr, p->x0 - ext.width - 4, y + ext.height / 2.0);
+    cairo_show_text(cr, text);
+  }
 
-    for(int i = 0; i <= 6; i++)
-    {
-        double frac = (double)i / 6.0;
-        double x = p->x0 + frac * p->w;
-        uint32_t t = p->t_min + (uint32_t)(frac * (double)(p->t_max - p->t_min));
+  for (int i = 0; i <= 6; i++)
+  {
+    double frac = (double)i / 6.0;
+    double x = p->x0 + frac * p->w;
+    uint32_t t = p->t_min + (uint32_t)(frac * (double)(p->t_max - p->t_min));
 
-        mon_set_source(cr, MON_COL_GRID_R, MON_COL_GRID_G, MON_COL_GRID_B);
-        cairo_set_line_width(cr, 0.5);
-        cairo_move_to(cr, x, p->y0);
-        cairo_line_to(cr, x, p->y0 + p->h);
-        cairo_stroke(cr);
+    mon_set_source(cr, MON_COL_GRID_R, MON_COL_GRID_G, MON_COL_GRID_B);
+    cairo_set_line_width(cr, 0.5);
+    cairo_move_to(cr, x, p->y0);
+    cairo_line_to(cr, x, p->y0 + p->h);
+    cairo_stroke(cr);
 
-        char text[24];
-        uint32_t age = p->t_max > t ? p->t_max - t : 0;
-        mon_format_age(text, sizeof(text), age);
-        cairo_text_extents_t ext;
-        cairo_text_extents(cr, text, &ext);
-        mon_set_source(cr, MON_COL_AXIS_R, MON_COL_AXIS_G, MON_COL_AXIS_B);
-        cairo_move_to(cr, x - ext.width / 2.0, p->y0 + p->h + ext.height + 3);
-        cairo_show_text(cr, text);
-    }
+    char text[24];
+    uint32_t age = p->t_max > t ? p->t_max - t : 0;
+    mon_format_age(text, sizeof(text), age);
+    cairo_text_extents_t ext;
+    cairo_text_extents(cr, text, &ext);
+    mon_set_source(cr, MON_COL_AXIS_R, MON_COL_AXIS_G, MON_COL_AXIS_B);
+    cairo_move_to(cr, x - ext.width / 2.0, p->y0 + p->h + ext.height + 3);
+    cairo_show_text(cr, text);
+  }
 
-    cairo_restore(cr);
+  cairo_restore(cr);
 }
 
 // Draws one series. series picks which field of the sample to read.
 typedef double (*mon_series_fn)(const mon_sample_t *s);
 
-static double mon_series_v12(const mon_sample_t *s) { return s->v12; }
-static double mon_series_v5(const mon_sample_t *s) { return s->v5; }
-static double mon_series_a12(const mon_sample_t *s) { return s->a12; }
-static double mon_series_a5(const mon_sample_t *s) { return s->a5; }
-static double mon_series_ausb(const mon_sample_t *s) { return s->ausb; }
+static double mon_series_v12(const mon_sample_t *s)
+{
+  return s->v12;
+}
+static double mon_series_v5(const mon_sample_t *s)
+{
+  return s->v5;
+}
+static double mon_series_a12(const mon_sample_t *s)
+{
+  return s->a12;
+}
+static double mon_series_a5(const mon_sample_t *s)
+{
+  return s->a5;
+}
+static double mon_series_ausb(const mon_sample_t *s)
+{
+  return s->ausb;
+}
 
 static void mon_draw_series(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, double r, double g, double b)
 {
-    if(p->count <= 0)
+  if (p->count <= 0)
+  {
+    return;
+  }
+
+  cairo_save(cr);
+  cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
+  cairo_clip(cr);
+
+  cairo_set_line_width(cr, 1.5);
+  cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
+  mon_set_source(cr, r, g, b);
+
+  bool started = false;
+  for (int i = 0; i < p->count; i++)
+  {
+    double x = mon_map_x(p, mon_points_ccc[i].t_ms);
+    double y = mon_map_y(p, fn(&mon_points_ccc[i]));
+
+    if (!started)
     {
-        return;
+      cairo_move_to(cr, x, y);
+      started = true;
     }
-
-    cairo_save(cr);
-    cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
-    cairo_clip(cr);
-
-    cairo_set_line_width(cr, 1.5);
-    cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
-    mon_set_source(cr, r, g, b);
-
-    bool started = false;
-    for(int i = 0; i < p->count; i++)
+    else
     {
-        double x = mon_map_x(p, mon_points_ccc[i].t_ms);
-        double y = mon_map_y(p, fn(&mon_points_ccc[i]));
-
-        if(!started)
-        {
-            cairo_move_to(cr, x, y);
-            started = true;
-        }
-        else
-        {
-            cairo_line_to(cr, x, y);
-        }
+      cairo_line_to(cr, x, y);
     }
+  }
 
-    if(started)
-    {
-        cairo_stroke(cr);
+  if (started)
+  {
+    cairo_stroke(cr);
 
-        double lx = mon_map_x(p, mon_points_ccc[p->count - 1].t_ms);
-        double ly = mon_map_y(p, fn(&mon_points_ccc[p->count - 1]));
-        cairo_arc(cr, lx, ly, 2.5, 0, 2 * M_PI);
-        cairo_fill(cr);
-    }
+    double lx = mon_map_x(p, mon_points_ccc[p->count - 1].t_ms);
+    double ly = mon_map_y(p, fn(&mon_points_ccc[p->count - 1]));
+    cairo_arc(cr, lx, ly, 2.5, 0, 2 * M_PI);
+    cairo_fill(cr);
+  }
 
-    cairo_restore(cr);
+  cairo_restore(cr);
 }
 
 // Red dots on flagged samples: out of spec on the voltage plots, or
@@ -426,173 +434,192 @@ static void mon_draw_series(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, 
 // the caller passes which value to centre it on.
 typedef double (*mon_value_fn)(const mon_sample_t *s);
 
-static double mon_mark_value_v12(const mon_sample_t *s) { return s->v12; }
-static double mon_mark_value_v5(const mon_sample_t *s) { return s->v5; }
-static double mon_mark_value_a12(const mon_sample_t *s) { return s->a12; }
+static double mon_mark_value_v12(const mon_sample_t *s)
+{
+  return s->v12;
+}
+static double mon_mark_value_v5(const mon_sample_t *s)
+{
+  return s->v5;
+}
+static double mon_mark_value_a12(const mon_sample_t *s)
+{
+  return s->a12;
+}
 
 static void mon_draw_markers(cairo_t *cr, const mon_plot_t *p, bool (*bad)(const mon_sample_t *s), mon_value_fn value)
 {
-    if(p->count <= 0)
+  if (p->count <= 0)
+  {
+    return;
+  }
+
+  cairo_save(cr);
+  cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
+  cairo_clip(cr);
+  mon_set_source(cr, MON_COL_MARKER_R, MON_COL_MARKER_G, MON_COL_MARKER_B);
+
+  // Dedupe to one marker per pixel column so a long excursion stays legible.
+  double last_x = -1000;
+  for (int i = 0; i < p->count; i++)
+  {
+    if (!bad(&mon_points_ccc[i]))
     {
-        return;
+      continue;
     }
 
-    cairo_save(cr);
-    cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
-    cairo_clip(cr);
-    mon_set_source(cr, MON_COL_MARKER_R, MON_COL_MARKER_G, MON_COL_MARKER_B);
-
-    // Dedupe to one marker per pixel column so a long excursion stays legible.
-    double last_x = -1000;
-    for(int i = 0; i < p->count; i++)
+    double x = mon_map_x(p, mon_points_ccc[i].t_ms);
+    if (fabs(x - last_x) < 2.0)
     {
-        if(!bad(&mon_points_ccc[i]))
-        {
-            continue;
-        }
-
-        double x = mon_map_x(p, mon_points_ccc[i].t_ms);
-        if(fabs(x - last_x) < 2.0)
-        {
-            continue;
-        }
-        last_x = x;
-
-        double y = mon_map_y(p, value(&mon_points_ccc[i]));
-        cairo_arc(cr, x, y, 1.5, 0, 2 * M_PI);
-        cairo_fill(cr);
+      continue;
     }
+    last_x = x;
 
-    cairo_restore(cr);
+    double y = mon_map_y(p, value(&mon_points_ccc[i]));
+    cairo_arc(cr, x, y, 1.5, 0, 2 * M_PI);
+    cairo_fill(cr);
+  }
+
+  cairo_restore(cr);
 }
 
-static bool mon_bad_v12(const mon_sample_t *s) { return s->oos12 != 0; }
-static bool mon_bad_v5(const mon_sample_t *s) { return s->oos5 != 0; }
-static bool mon_bad_any_current(const mon_sample_t *s) { return s->ocp12 || s->ocp5 || s->ocpusb; }
+static bool mon_bad_v12(const mon_sample_t *s)
+{
+  return s->oos12 != 0;
+}
+static bool mon_bad_v5(const mon_sample_t *s)
+{
+  return s->oos5 != 0;
+}
+static bool mon_bad_any_current(const mon_sample_t *s)
+{
+  return s->ocp12 || s->ocp5 || s->ocpusb;
+}
 
 static void mon_draw_border(cairo_t *cr, const mon_plot_t *p)
 {
-    mon_set_source(cr, MON_COL_BORDER_R, MON_COL_BORDER_G, MON_COL_BORDER_B);
-    cairo_set_line_width(cr, 1.0);
-    cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
-    cairo_stroke(cr);
+  mon_set_source(cr, MON_COL_BORDER_R, MON_COL_BORDER_G, MON_COL_BORDER_B);
+  cairo_set_line_width(cr, 1.0);
+  cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
+  cairo_stroke(cr);
 }
 
 static void mon_draw_title(cairo_t *cr, const mon_plot_t *p, const char *title)
 {
-    cairo_save(cr);
-    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 11.0);
-    mon_set_source(cr, MON_COL_TITLE_R, MON_COL_TITLE_G, MON_COL_TITLE_B);
-    cairo_move_to(cr, p->x0, p->y0 - 5);
-    cairo_show_text(cr, title);
-    cairo_restore(cr);
+  cairo_save(cr);
+  cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 11.0);
+  mon_set_source(cr, MON_COL_TITLE_R, MON_COL_TITLE_G, MON_COL_TITLE_B);
+  cairo_move_to(cr, p->x0, p->y0 - 5);
+  cairo_show_text(cr, title);
+  cairo_restore(cr);
 }
 
 static void mon_draw_legend(cairo_t *cr, const mon_plot_t *p, const char *const *labels, const double *cols, int n)
 {
-    cairo_save(cr);
-    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 10.0);
+  cairo_save(cr);
+  cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 10.0);
 
-    double x = p->x0 + p->w;
-    for(int i = 0; i < n; i++)
-    {
-        cairo_text_extents_t ext;
-        cairo_text_extents(cr, labels[i], &ext);
-        x -= ext.width + 8;
+  double x = p->x0 + p->w;
+  for (int i = 0; i < n; i++)
+  {
+    cairo_text_extents_t ext;
+    cairo_text_extents(cr, labels[i], &ext);
+    x -= ext.width + 8;
 
-        cairo_set_source_rgb(cr, cols[i * 3], cols[i * 3 + 1], cols[i * 3 + 2]);
-        cairo_rectangle(cr, x, p->y0 - 11, 8, 3);
-        cairo_fill(cr);
+    cairo_set_source_rgb(cr, cols[i * 3], cols[i * 3 + 1], cols[i * 3 + 2]);
+    cairo_rectangle(cr, x, p->y0 - 11, 8, 3);
+    cairo_fill(cr);
 
-        cairo_set_source_rgb(cr, MON_COL_LEGEND_R, MON_COL_LEGEND_G, MON_COL_LEGEND_B);
-        cairo_move_to(cr, x + 11, p->y0 - 7);
-        cairo_show_text(cr, labels[i]);
+    cairo_set_source_rgb(cr, MON_COL_LEGEND_R, MON_COL_LEGEND_G, MON_COL_LEGEND_B);
+    cairo_move_to(cr, x + 11, p->y0 - 7);
+    cairo_show_text(cr, labels[i]);
 
-        x -= 4;
-    }
+    x -= 4;
+  }
 
-    cairo_restore(cr);
+  cairo_restore(cr);
 }
 
 // Crosshair plus a read-out tooltip for the hovered sample.
 static void mon_draw_hover(cairo_t *cr, const mon_plot_t *p, mon_series_fn fn, double r, double g, double b, const char *name, const char *unit)
 {
-    if(!mon_hover_active_ccc || mon_points_ccc == NULL || p->count <= 0)
+  if (!mon_hover_active_ccc || mon_points_ccc == NULL || p->count <= 0)
+  {
+    return;
+  }
+
+  int best = 0;
+  uint32_t best_delta = UINT32_MAX;
+  for (int i = 0; i < p->count; i++)
+  {
+    uint32_t d =
+      mon_points_ccc[i].t_ms > mon_hover_t_ms_ccc ? mon_points_ccc[i].t_ms - mon_hover_t_ms_ccc : mon_hover_t_ms_ccc - mon_points_ccc[i].t_ms;
+    if (d < best_delta)
     {
-        return;
+      best_delta = d;
+      best = i;
     }
+  }
 
-    int best = 0;
-    uint32_t best_delta = UINT32_MAX;
-    for(int i = 0; i < p->count; i++)
-    {
-        uint32_t d = mon_points_ccc[i].t_ms > mon_hover_t_ms_ccc ? mon_points_ccc[i].t_ms - mon_hover_t_ms_ccc : mon_hover_t_ms_ccc - mon_points_ccc[i].t_ms;
-        if(d < best_delta)
-        {
-            best_delta = d;
-            best = i;
-        }
-    }
+  const mon_sample_t *s = &mon_points_ccc[best];
+  double x = mon_map_x(p, s->t_ms);
+  double y = mon_map_y(p, fn(s));
 
-    const mon_sample_t *s = &mon_points_ccc[best];
-    double x = mon_map_x(p, s->t_ms);
-    double y = mon_map_y(p, fn(s));
+  cairo_save(cr);
+  cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
+  cairo_clip(cr);
 
-    cairo_save(cr);
-    cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
-    cairo_clip(cr);
+  mon_set_source(cr, MON_COL_CROSSHAIR_R, MON_COL_CROSSHAIR_G, MON_COL_CROSSHAIR_B);
+  cairo_set_line_width(cr, 1.0);
+  cairo_move_to(cr, x, p->y0);
+  cairo_line_to(cr, x, p->y0 + p->h);
+  cairo_stroke(cr);
 
-    mon_set_source(cr, MON_COL_CROSSHAIR_R, MON_COL_CROSSHAIR_G, MON_COL_CROSSHAIR_B);
-    cairo_set_line_width(cr, 1.0);
-    cairo_move_to(cr, x, p->y0);
-    cairo_line_to(cr, x, p->y0 + p->h);
-    cairo_stroke(cr);
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_arc(cr, x, y, 3.5, 0, 2 * M_PI);
+  cairo_fill(cr);
 
-    cairo_set_source_rgb(cr, r, g, b);
-    cairo_arc(cr, x, y, 3.5, 0, 2 * M_PI);
-    cairo_fill(cr);
+  // Tooltip box, flipped to stay inside the plot
+  char text[96];
+  uint32_t age = mon_hover_t_ms_ccc > s->t_ms ? mon_hover_t_ms_ccc - s->t_ms : 0;
+  snprintf(text, sizeof(text), "%s  %.3f %s  (%u ms ago)", name, fn(s), unit, age);
 
-    // Tooltip box, flipped to stay inside the plot
-    char text[96];
-    uint32_t age = mon_hover_t_ms_ccc > s->t_ms ? mon_hover_t_ms_ccc - s->t_ms : 0;
-    snprintf(text, sizeof(text), "%s  %.3f %s  (%u ms ago)", name, fn(s), unit, age);
+  cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+  cairo_set_font_size(cr, 10.0);
+  cairo_text_extents_t ext;
+  cairo_text_extents(cr, text, &ext);
 
-    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size(cr, 10.0);
-    cairo_text_extents_t ext;
-    cairo_text_extents(cr, text, &ext);
+  double bx = x + 8;
+  if (bx + ext.width + 8 > p->x0 + p->w)
+  {
+    bx = x - ext.width - 12;
+  }
+  if (bx < p->x0)
+  {
+    bx = p->x0 + 2;
+  }
 
-    double bx = x + 8;
-    if(bx + ext.width + 8 > p->x0 + p->w)
-    {
-        bx = x - ext.width - 12;
-    }
-    if(bx < p->x0)
-    {
-        bx = p->x0 + 2;
-    }
+  double by = y + 8;
+  if (by + ext.height + 6 > p->y0 + p->h)
+  {
+    by = y - ext.height - 10;
+  }
+  if (by < p->y0)
+  {
+    by = p->y0 + 2;
+  }
 
-    double by = y + 8;
-    if(by + ext.height + 6 > p->y0 + p->h)
-    {
-        by = y - ext.height - 10;
-    }
-    if(by < p->y0)
-    {
-        by = p->y0 + 2;
-    }
+  mon_set_source_rgba(cr, MON_COL_TOOLTIP_BG_R, MON_COL_TOOLTIP_BG_G, MON_COL_TOOLTIP_BG_B, MON_COL_TOOLTIP_BG_A);
+  cairo_rectangle(cr, bx, by, ext.width + 8, ext.height + 6);
+  cairo_fill(cr);
 
-    mon_set_source_rgba(cr, MON_COL_TOOLTIP_BG_R, MON_COL_TOOLTIP_BG_G, MON_COL_TOOLTIP_BG_B, MON_COL_TOOLTIP_BG_A);
-    cairo_rectangle(cr, bx, by, ext.width + 8, ext.height + 6);
-    cairo_fill(cr);
+  mon_set_source(cr, MON_COL_TOOLTIP_FG_R, MON_COL_TOOLTIP_FG_G, MON_COL_TOOLTIP_FG_B);
+  cairo_move_to(cr, bx + 4, by + ext.height + 2);
+  cairo_show_text(cr, text);
 
-    mon_set_source(cr, MON_COL_TOOLTIP_FG_R, MON_COL_TOOLTIP_FG_G, MON_COL_TOOLTIP_FG_B);
-    cairo_move_to(cr, bx + 4, by + ext.height + 2);
-    cairo_show_text(cr, text);
-
-    cairo_restore(cr);
+  cairo_restore(cr);
 }
 
 // Per-plot draw callbacks. Each resolves the time window first so all three
@@ -605,183 +632,180 @@ void asclepius_monitor_stop_refresh_ccc(void);
 
 static void mon_resolve_window(uint32_t *t_min, uint32_t *t_max)
 {
-  if(asclepius_mon_paused_ccc)
+  if (asclepius_mon_paused_ccc)
   {
     *t_min = asclepius_mon_paused_t_min_ccc;
     *t_max = asclepius_mon_paused_t_max_ccc;
     return;
   }
 
-    uint32_t oldest = 0;
-    uint32_t newest = 0;
+  uint32_t oldest = 0;
+  uint32_t newest = 0;
 
-    if(!mon_time_span(&asclepius_monitor, &oldest, &newest))
-    {
-        *t_min = 0;
-        *t_max = 1;
-        return;
-    }
+  if (!mon_time_span(&asclepius_monitor, &oldest, &newest))
+  {
+    *t_min = 0;
+    *t_max = 1;
+    return;
+  }
 
-    *t_max = newest;
-    unsigned int window = mon_window_ms_ccc[asclepius_monitor_window_index_ccc];
+  *t_max = newest;
+  unsigned int window = mon_window_ms_ccc[asclepius_monitor_window_index_ccc];
 
-    if(window == 0 || (uint32_t)window > newest - oldest)
-    {
-        *t_min = oldest;
-    }
-    else
-    {
-        *t_min = newest - window;
-    }
+  if (window == 0 || (uint32_t)window > newest - oldest)
+  {
+    *t_min = oldest;
+  }
+  else
+  {
+    *t_min = newest - window;
+  }
 }
 
 // Which plot to draw. The GTK draw callbacks are thin wrappers around
 // mon_draw_plot so the rendering can also be exercised headlessly.
 typedef enum
 {
-    MON_PLOT_V12 = 0,
-    MON_PLOT_V5,
-    MON_PLOT_CURRENT
+  MON_PLOT_V12 = 0,
+  MON_PLOT_V5,
+  MON_PLOT_CURRENT
 } mon_plot_kind_t;
 
 // Core renderer: draws one plot into the given cairo context at the given
 // pixel size. Returns false without drawing if the area is too small.
 static bool mon_draw_plot(cairo_t *cr, int width, int height, mon_plot_kind_t kind)
 {
-    if(width <= MON_PLOT_LEFT + MON_PLOT_RIGHT || height <= MON_PLOT_TOP + MON_PLOT_BOTTOM)
+  if (width <= MON_PLOT_LEFT + MON_PLOT_RIGHT || height <= MON_PLOT_TOP + MON_PLOT_BOTTOM)
+  {
+    return false;
+  }
+
+  uint32_t t_min, t_max;
+  mon_resolve_window(&t_min, &t_max);
+
+  if (kind == MON_PLOT_V12)
+  {
+    static const char *const labels[] = {"12V", "Spec"};
+    const double cols[] = {MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B};
+
+    mon_plot_t plot;
+    mon_setup_plot(&plot, width, height, 10.0, 14.0, t_min, t_max);
+
+    mon_draw_zone_bands(cr, &plot, ASCLEPIUS_V12_MIN_MV / 1000.0, ASCLEPIUS_V12_MAX_MV / 1000.0);
+    mon_draw_grid(cr, &plot, "V");
+    mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MIN_MV / 1000.0);
+    mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MAX_MV / 1000.0);
+    mon_draw_markers(cr, &plot, mon_bad_v12, mon_mark_value_v12);
+    mon_draw_series(cr, &plot, mon_series_v12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
+    if (mon_hover_kind_ccc == MON_HOVER_V12)
     {
-        return false;
+      mon_draw_hover(cr, &plot, mon_series_v12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, "12V", "V");
+    }
+    mon_draw_border(cr, &plot);
+    mon_draw_title(cr, &plot, "12V voltage");
+    mon_draw_legend(cr, &plot, labels, cols, 2);
+
+    return true;
+  }
+
+  if (kind == MON_PLOT_V5)
+  {
+    static const char *const labels[] = {"5V", "Spec"};
+    const double cols[] = {MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B};
+
+    mon_plot_t plot;
+    mon_setup_plot(&plot, width, height, 4.4, 5.6, t_min, t_max);
+
+    mon_draw_zone_bands(cr, &plot, ASCLEPIUS_V5_MIN_MV / 1000.0, ASCLEPIUS_V5_MAX_MV / 1000.0);
+    mon_draw_grid(cr, &plot, "V");
+    mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MIN_MV / 1000.0);
+    mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MAX_MV / 1000.0);
+    mon_draw_markers(cr, &plot, mon_bad_v5, mon_mark_value_v5);
+    mon_draw_series(cr, &plot, mon_series_v5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
+    if (mon_hover_kind_ccc == MON_HOVER_V5)
+    {
+      mon_draw_hover(cr, &plot, mon_series_v5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, "5V", "V");
+    }
+    mon_draw_border(cr, &plot);
+    mon_draw_title(cr, &plot, "5V voltage");
+    mon_draw_legend(cr, &plot, labels, cols, 2);
+
+    return true;
+  }
+
+  // Combined current plot: three stacked series on one shared scale.
+  {
+    static const char *const labels[] = {"12V", "5V", "USB"};
+    const double cols[] = {MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, MON_COL_5V_R, MON_COL_5V_G,
+                           MON_COL_5V_B,  MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B};
+
+    // Auto-scale to the visible data with headroom and a sane floor. This
+    // copy is the one mon_setup_plot repeats, so scan it directly.
+    int n = mon_copy_range(&asclepius_monitor, t_min, t_max, mon_points_ccc, MON_MAX_POINTS);
+    double peak_seen = 0.0;
+    for (int i = 0; i < n; i++)
+    {
+      double peak = mon_points_ccc[i].a12;
+      if (mon_points_ccc[i].a5 > peak)
+      {
+        peak = mon_points_ccc[i].a5;
+      }
+      if (mon_points_ccc[i].ausb > peak)
+      {
+        peak = mon_points_ccc[i].ausb;
+      }
+      if (peak > peak_seen)
+      {
+        peak_seen = peak;
+      }
+    }
+    double ymax = peak_seen > 0.0 ? peak_seen * 1.08 + 0.02 : 0.1;
+
+    mon_plot_t plot;
+    mon_setup_plot(&plot, width, height, 0.0, ymax, t_min, t_max);
+
+    mon_draw_grid(cr, &plot, "A");
+    mon_draw_markers(cr, &plot, mon_bad_any_current, mon_mark_value_a12);
+    mon_draw_series(cr, &plot, mon_series_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
+    mon_draw_series(cr, &plot, mon_series_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
+    mon_draw_series(cr, &plot, mon_series_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B);
+
+    if (mon_hover_kind_ccc == MON_HOVER_CURRENT)
+    {
+      // All three rails share this plot, so show a read-out for each.
+      mon_draw_hover(cr, &plot, mon_series_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, "12V", "A");
+      mon_draw_hover(cr, &plot, mon_series_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, "5V", "A");
+      mon_draw_hover(cr, &plot, mon_series_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B, "USB", "A");
     }
 
-    uint32_t t_min, t_max;
-    mon_resolve_window(&t_min, &t_max);
+    mon_draw_border(cr, &plot);
+    mon_draw_title(cr, &plot, "current draw");
+    mon_draw_legend(cr, &plot, labels, cols, 3);
 
-    if(kind == MON_PLOT_V12)
-    {
-        static const char *const labels[] = { "12V", "Spec" };
-        const double cols[] = { MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B };
-
-        mon_plot_t plot;
-        mon_setup_plot(&plot, width, height, 10.0, 14.0, t_min, t_max);
-
-        mon_draw_zone_bands(cr, &plot, ASCLEPIUS_V12_MIN_MV / 1000.0, ASCLEPIUS_V12_MAX_MV / 1000.0);
-        mon_draw_grid(cr, &plot, "V");
-        mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MIN_MV / 1000.0);
-        mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MAX_MV / 1000.0);
-        mon_draw_markers(cr, &plot, mon_bad_v12, mon_mark_value_v12);
-        mon_draw_series(cr, &plot, mon_series_v12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
-        if(mon_hover_kind_ccc == MON_HOVER_V12)
-        {
-            mon_draw_hover(cr, &plot, mon_series_v12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, "12V", "V");
-        }
-        mon_draw_border(cr, &plot);
-        mon_draw_title(cr, &plot, "12V voltage");
-        mon_draw_legend(cr, &plot, labels, cols, 2);
-
-        return true;
-    }
-
-    if(kind == MON_PLOT_V5)
-    {
-        static const char *const labels[] = { "5V", "Spec" };
-        const double cols[] = { MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, MON_COL_LIMIT_R, MON_COL_LIMIT_G, MON_COL_LIMIT_B };
-
-        mon_plot_t plot;
-        mon_setup_plot(&plot, width, height, 4.4, 5.6, t_min, t_max);
-
-        mon_draw_zone_bands(cr, &plot, ASCLEPIUS_V5_MIN_MV / 1000.0, ASCLEPIUS_V5_MAX_MV / 1000.0);
-        mon_draw_grid(cr, &plot, "V");
-        mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MIN_MV / 1000.0);
-        mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MAX_MV / 1000.0);
-        mon_draw_markers(cr, &plot, mon_bad_v5, mon_mark_value_v5);
-        mon_draw_series(cr, &plot, mon_series_v5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
-        if(mon_hover_kind_ccc == MON_HOVER_V5)
-        {
-            mon_draw_hover(cr, &plot, mon_series_v5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, "5V", "V");
-        }
-        mon_draw_border(cr, &plot);
-        mon_draw_title(cr, &plot, "5V voltage");
-        mon_draw_legend(cr, &plot, labels, cols, 2);
-
-        return true;
-    }
-
-    // Combined current plot: three stacked series on one shared scale.
-    {
-        static const char *const labels[] = { "12V", "5V", "USB" };
-        const double cols[] = {
-            MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B,
-            MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B,
-            MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B
-        };
-
-        // Auto-scale to the visible data with headroom and a sane floor. This
-        // copy is the one mon_setup_plot repeats, so scan it directly.
-        int n = mon_copy_range(&asclepius_monitor, t_min, t_max, mon_points_ccc, MON_MAX_POINTS);
-        double peak_seen = 0.0;
-        for(int i = 0; i < n; i++)
-        {
-            double peak = mon_points_ccc[i].a12;
-            if(mon_points_ccc[i].a5 > peak)
-            {
-                peak = mon_points_ccc[i].a5;
-            }
-            if(mon_points_ccc[i].ausb > peak)
-            {
-                peak = mon_points_ccc[i].ausb;
-            }
-            if(peak > peak_seen)
-            {
-                peak_seen = peak;
-            }
-        }
-        double ymax = peak_seen > 0.0 ? peak_seen * 1.08 + 0.02 : 0.1;
-
-        mon_plot_t plot;
-        mon_setup_plot(&plot, width, height, 0.0, ymax, t_min, t_max);
-
-        mon_draw_grid(cr, &plot, "A");
-        mon_draw_markers(cr, &plot, mon_bad_any_current, mon_mark_value_a12);
-        mon_draw_series(cr, &plot, mon_series_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
-        mon_draw_series(cr, &plot, mon_series_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
-        mon_draw_series(cr, &plot, mon_series_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B);
-
-        if(mon_hover_kind_ccc == MON_HOVER_CURRENT)
-        {
-            // All three rails share this plot, so show a read-out for each.
-            mon_draw_hover(cr, &plot, mon_series_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B, "12V", "A");
-            mon_draw_hover(cr, &plot, mon_series_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B, "5V", "A");
-            mon_draw_hover(cr, &plot, mon_series_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B, "USB", "A");
-        }
-
-        mon_draw_border(cr, &plot);
-        mon_draw_title(cr, &plot, "current draw");
-        mon_draw_legend(cr, &plot, labels, cols, 3);
-
-        return true;
-    }
+    return true;
+  }
 }
 
 // GTK draw callbacks: thin wrappers that supply the allocated size.
 static gboolean on_draw_v12(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-    (void)data;
-    mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_V12);
-    return FALSE;
+  (void)data;
+  mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_V12);
+  return FALSE;
 }
 
 static gboolean on_draw_v5(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-    (void)data;
-    mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_V5);
-    return FALSE;
+  (void)data;
+  mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_V5);
+  return FALSE;
 }
 
 static gboolean on_draw_current(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-    (void)data;
-    mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_CURRENT);
-    return FALSE;
+  (void)data;
+  mon_draw_plot(cr, gtk_widget_get_allocated_width(widget), gtk_widget_get_allocated_height(widget), MON_PLOT_CURRENT);
+  return FALSE;
 }
 
 // ------------------------------------------------------- power + statistics
@@ -790,19 +814,19 @@ static uint8_t mon_button_channel(GtkWidget *button)
 {
   const char *name = gtk_buildable_get_name(GTK_BUILDABLE(button));
 
-  if(g_strcmp0(name, "asclepius_mon_power_molex") == 0)
+  if (g_strcmp0(name, "asclepius_mon_power_molex") == 0)
   {
     return ASCLEPIUS_MOLEX;
   }
-  if(g_strcmp0(name, "asclepius_mon_power_12v") == 0)
+  if (g_strcmp0(name, "asclepius_mon_power_12v") == 0)
   {
     return ASCLEPIUS_MAIN12V;
   }
-  if(g_strcmp0(name, "asclepius_mon_power_5v") == 0)
+  if (g_strcmp0(name, "asclepius_mon_power_5v") == 0)
   {
     return ASCLEPIUS_MAIN5V;
   }
-  if(g_strcmp0(name, "asclepius_mon_power_usb") == 0)
+  if (g_strcmp0(name, "asclepius_mon_power_usb") == 0)
   {
     return ASCLEPIUS_USB5V;
   }
@@ -813,52 +837,52 @@ static uint8_t mon_button_channel(GtkWidget *button)
 // MOLEX is the 12V and 5V relays together; All is every rail.
 static bool mon_channel_enabled(uint8_t channel, const struct asclepius_status_t *st)
 {
-  switch(channel)
+  switch (channel)
   {
-    case ASCLEPIUS_MAIN12V:
-      return st->main12v_enabled;
-    case ASCLEPIUS_MAIN5V:
-      return st->main5v_enabled;
-    case ASCLEPIUS_USB5V:
-      return st->usb5v_enabled;
-    case ASCLEPIUS_MOLEX:
-      return st->main12v_enabled && st->main5v_enabled;
-    case ASCLEPIUS_ALL:
-      return st->main12v_enabled && st->main5v_enabled && st->usb5v_enabled;
-    default:
-      return false;
+  case ASCLEPIUS_MAIN12V:
+    return st->main12v_enabled;
+  case ASCLEPIUS_MAIN5V:
+    return st->main5v_enabled;
+  case ASCLEPIUS_USB5V:
+    return st->usb5v_enabled;
+  case ASCLEPIUS_MOLEX:
+    return st->main12v_enabled && st->main5v_enabled;
+  case ASCLEPIUS_ALL:
+    return st->main12v_enabled && st->main5v_enabled && st->usb5v_enabled;
+  default:
+    return false;
   }
 }
 
 // Rails a button command should clear a latched software OCP trip for.
 static void mon_clear_ocp_for_channel(uint8_t channel)
 {
-  switch(channel)
+  switch (channel)
   {
-    case ASCLEPIUS_MAIN12V:
-      asclepius_ocp_clear_channel(ASCLEPIUS_MAIN12V);
-      break;
-    case ASCLEPIUS_MAIN5V:
-      asclepius_ocp_clear_channel(ASCLEPIUS_MAIN5V);
-      break;
-    case ASCLEPIUS_USB5V:
-      asclepius_ocp_clear_channel(ASCLEPIUS_USB5V);
-      break;
-    case ASCLEPIUS_MOLEX:
-      asclepius_ocp_clear_channel(ASCLEPIUS_MAIN12V);
-      asclepius_ocp_clear_channel(ASCLEPIUS_MAIN5V);
-      break;
-    case ASCLEPIUS_ALL:
-      asclepius_ocp_reset();
-      break;
-    default:
-      break;
+  case ASCLEPIUS_MAIN12V:
+    asclepius_ocp_clear_channel(ASCLEPIUS_MAIN12V);
+    break;
+  case ASCLEPIUS_MAIN5V:
+    asclepius_ocp_clear_channel(ASCLEPIUS_MAIN5V);
+    break;
+  case ASCLEPIUS_USB5V:
+    asclepius_ocp_clear_channel(ASCLEPIUS_USB5V);
+    break;
+  case ASCLEPIUS_MOLEX:
+    asclepius_ocp_clear_channel(ASCLEPIUS_MAIN12V);
+    asclepius_ocp_clear_channel(ASCLEPIUS_MAIN5V);
+    break;
+  case ASCLEPIUS_ALL:
+    asclepius_ocp_reset();
+    break;
+  default:
+    break;
   }
 }
 
 void asclepius_mon_power_clicked_ccc(GtkWidget *button)
 {
-  if(!asclepius_get_connection_status())
+  if (!asclepius_get_connection_status())
   {
     printf("Asclepius: not connected, ignoring power command\n");
     return;
@@ -876,15 +900,24 @@ void asclepius_mon_power_clicked_ccc(GtkWidget *button)
   bool turn_on = !mon_channel_enabled(channel, &st);
   int result = turn_on ? asclepius_enable_channel(channel) : asclepius_disable_channel(channel);
 
-  if(result != 0)
+  if (result != 0)
   {
-    printf("Asclepius: power command failed for %s\n", channel == ASCLEPIUS_MAIN12V ? "12V" : channel == ASCLEPIUS_MAIN5V ? "5V" : channel == ASCLEPIUS_USB5V ? "USB" : channel == ASCLEPIUS_MOLEX ? "MOLEX" : "ALL");
+    printf("Asclepius: power command failed for %s\n", channel == ASCLEPIUS_MAIN12V  ? "12V"
+                                                       : channel == ASCLEPIUS_MAIN5V ? "5V"
+                                                       : channel == ASCLEPIUS_USB5V  ? "USB"
+                                                       : channel == ASCLEPIUS_MOLEX  ? "MOLEX"
+                                                                                     : "ALL");
   }
   else
   {
     // A manual power command takes the rail out of any latched soft OCP trip
     mon_clear_ocp_for_channel(channel);
-    printf("Asclepius: power %s %s\n", turn_on ? "on" : "off", channel == ASCLEPIUS_MAIN12V ? "12V" : channel == ASCLEPIUS_MAIN5V ? "5V" : channel == ASCLEPIUS_USB5V ? "USB" : channel == ASCLEPIUS_MOLEX ? "MOLEX" : "ALL");
+    printf("Asclepius: power %s %s\n", turn_on ? "on" : "off",
+           channel == ASCLEPIUS_MAIN12V  ? "12V"
+           : channel == ASCLEPIUS_MAIN5V ? "5V"
+           : channel == ASCLEPIUS_USB5V  ? "USB"
+           : channel == ASCLEPIUS_MOLEX  ? "MOLEX"
+                                         : "ALL");
   }
 
   update_asclepius_monitor_ccc();
@@ -898,7 +931,7 @@ void asclepius_mon_power_clicked_ccc(GtkWidget *button)
 // number is spanned, so the name, unit and flags keep the label colour.
 static void mon_format_value(char *out, size_t out_size, double value, const double *rgb)
 {
-  if(rgb == NULL)
+  if (rgb == NULL)
   {
     snprintf(out, out_size, "%.3f", value);
     return;
@@ -914,9 +947,10 @@ static void mon_format_value(char *out, size_t out_size, double value, const dou
 // One statistics row: live value plus rolling min/avg/max and fault flags.
 // The row contains Pango markup when rgb is given, so it must be published with
 // gtk_label_set_markup() rather than gtk_label_set_text().
-static void mon_format_stats(char *out, size_t out_size, const char *name, double value, const mon_stats_t *st, bool show_volts, bool overcurrent, bool out_of_spec, bool soft_trip, bool enabled, const double *rgb)
+static void mon_format_stats(char *out, size_t out_size, const char *name, double value, const mon_stats_t *st, bool show_volts, bool overcurrent,
+                             bool out_of_spec, bool soft_trip, bool enabled, const double *rgb)
 {
-  if(st == NULL || st->acount == 0)
+  if (st == NULL || st->acount == 0)
   {
     snprintf(out, out_size, "%s: no samples", name);
     return;
@@ -925,16 +959,16 @@ static void mon_format_stats(char *out, size_t out_size, const char *name, doubl
   char flags[128];
   flags[0] = '\0';
 
-  if(soft_trip)
+  if (soft_trip)
   {
     strncat(flags, "  OVER-CURRENT (SOFT)", sizeof(flags) - strlen(flags) - 1);
   }
-  else if(overcurrent)
+  else if (overcurrent)
   {
     strncat(flags, "  OVER-CURRENT", sizeof(flags) - strlen(flags) - 1);
   }
 
-  if(!enabled)
+  if (!enabled)
   {
     strncat(flags, "  (off)", sizeof(flags) - strlen(flags) - 1);
   }
@@ -945,7 +979,7 @@ static void mon_format_stats(char *out, size_t out_size, const char *name, doubl
   char vmax[64];
   mon_format_value(current, sizeof(current), value, rgb);
 
-  if(show_volts)
+  if (show_volts)
   {
     mon_format_value(vmin, sizeof(vmin), st->vmin, rgb);
     mon_format_value(vavg, sizeof(vavg), st->vsum / st->vcount, rgb);
@@ -966,7 +1000,7 @@ static void mon_format_stats(char *out, size_t out_size, const char *name, doubl
 
 void update_asclepius_monitor_ccc(void)
 {
-  if(!asclepius_monitor_open || asclepius_monitor_dialog_ccc == NULL)
+  if (!asclepius_monitor_open || asclepius_monitor_dialog_ccc == NULL)
   {
     return;
   }
@@ -990,27 +1024,31 @@ void update_asclepius_monitor_ccc(void)
   mon_copy_stats_range(&asclepius_monitor, range_min, range_max, &s12, &s5, &susb);
 
   // Power buttons reflect the board's actual enabled flags.
-  static const uint8_t channels[5] = { ASCLEPIUS_MOLEX, ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V, ASCLEPIUS_ALL };
-  for(int i = 0; i < 5; i++)
+  static const uint8_t channels[5] = {ASCLEPIUS_MOLEX, ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V, ASCLEPIUS_ALL};
+  for (int i = 0; i < 5; i++)
   {
     GtkWidget *button = asclepius_mon_power_buttons_ccc[i];
-    if(button == NULL)
+    if (button == NULL)
     {
       continue;
     }
 
     bool on = connected && mon_channel_enabled(channels[i], &st);
     const char *style = on ? "asclepius-rail-on" : "asclepius-rail-off";
-    const char *name = channels[i] == ASCLEPIUS_MOLEX ? "MOLEX" : channels[i] == ASCLEPIUS_MAIN12V ? "12V" : channels[i] == ASCLEPIUS_MAIN5V ? "5V" : channels[i] == ASCLEPIUS_USB5V ? "USB" : "ALL";
+    const char *name = channels[i] == ASCLEPIUS_MOLEX     ? "MOLEX"
+                       : channels[i] == ASCLEPIUS_MAIN12V ? "12V"
+                       : channels[i] == ASCLEPIUS_MAIN5V  ? "5V"
+                       : channels[i] == ASCLEPIUS_USB5V   ? "USB"
+                                                          : "ALL";
     char button_label[32];
 
-    if(gtk_widget_get_sensitive(button) != connected)
+    if (gtk_widget_get_sensitive(button) != connected)
     {
       gtk_widget_set_sensitive(button, connected);
     }
 
     GtkStyleContext *context = gtk_widget_get_style_context(button);
-    if(!gtk_style_context_has_class(context, style))
+    if (!gtk_style_context_has_class(context, style))
     {
       gtk_style_context_remove_class(context, "asclepius-rail-on");
       gtk_style_context_remove_class(context, "asclepius-rail-off");
@@ -1021,53 +1059,60 @@ void update_asclepius_monitor_ccc(void)
     gtk_button_set_label(GTK_BUTTON(button), button_label);
   }
 
-  if(asclepius_mon_voltage_stats_label_ccc != NULL)
+  if (asclepius_mon_voltage_stats_label_ccc != NULL)
   {
     // Values are drawn in the same colours as their traces, units stay normal.
-    static const double col12v[3] = { MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B };
-    static const double col5v[3] = { MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B };
+    static const double col12v[3] = {MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B};
+    static const double col5v[3] = {MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B};
 
     char row12[MON_STATS_ROW_SIZE];
     char row5[MON_STATS_ROW_SIZE];
     char text[MON_STATS_ROW_SIZE * 2 + 2];
 
-    mon_format_stats(row12, sizeof(row12), "12V", st.main12v_voltage / 1000.0, &s12, true, st.main12v_ocp, s12.vcount > 0 && (s12.vmin < ASCLEPIUS_V12_MIN_MV / 1000.0 || s12.vmax > ASCLEPIUS_V12_MAX_MV / 1000.0), ocp12v.tripped, st.main12v_enabled, col12v);
-    mon_format_stats(row5, sizeof(row5), "5V ", st.main5v_voltage / 1000.0, &s5, true, st.main5v_ocp, s5.vcount > 0 && (s5.vmin < ASCLEPIUS_V5_MIN_MV / 1000.0 || s5.vmax > ASCLEPIUS_V5_MAX_MV / 1000.0), ocp5v.tripped, st.main5v_enabled, col5v);
+    mon_format_stats(row12, sizeof(row12), "12V", st.main12v_voltage / 1000.0, &s12, true, st.main12v_ocp,
+                     s12.vcount > 0 && (s12.vmin < ASCLEPIUS_V12_MIN_MV / 1000.0 || s12.vmax > ASCLEPIUS_V12_MAX_MV / 1000.0), ocp12v.tripped,
+                     st.main12v_enabled, col12v);
+    mon_format_stats(row5, sizeof(row5), "5V ", st.main5v_voltage / 1000.0, &s5, true, st.main5v_ocp,
+                     s5.vcount > 0 && (s5.vmin < ASCLEPIUS_V5_MIN_MV / 1000.0 || s5.vmax > ASCLEPIUS_V5_MAX_MV / 1000.0), ocp5v.tripped,
+                     st.main5v_enabled, col5v);
 
     snprintf(text, sizeof(text), "%s\n%s", row12, row5);
     gtk_label_set_markup(GTK_LABEL(asclepius_mon_voltage_stats_label_ccc), text);
   }
 
-  if(asclepius_mon_current_stats_label_ccc != NULL)
+  if (asclepius_mon_current_stats_label_ccc != NULL)
   {
     // Values are drawn in the same colours as their traces, units stay normal.
-    static const double col12v[3] = { MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B };
-    static const double col5v[3] = { MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B };
-    static const double colusb[3] = { MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B };
+    static const double col12v[3] = {MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B};
+    static const double col5v[3] = {MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B};
+    static const double colusb[3] = {MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B};
 
     char row12[MON_STATS_ROW_SIZE];
     char row5[MON_STATS_ROW_SIZE];
     char rowusb[MON_STATS_ROW_SIZE];
     char text[MON_STATS_ROW_SIZE * 3 + 3];
 
-    mon_format_stats(row12, sizeof(row12), "12V", st.main12v_current / 1000.0, &s12, false, st.main12v_ocp, false, ocp12v.tripped, st.main12v_enabled, col12v);
-    mon_format_stats(row5, sizeof(row5), "5V ", st.main5v_current / 1000.0, &s5, false, st.main5v_ocp, false, ocp5v.tripped, st.main5v_enabled, col5v);
-    mon_format_stats(rowusb, sizeof(rowusb), "USB", st.usb5v_current / 1000.0, &susb, false, st.usb5v_ocp, false, ocpusb.tripped, st.usb5v_enabled, colusb);
+    mon_format_stats(row12, sizeof(row12), "12V", st.main12v_current / 1000.0, &s12, false, st.main12v_ocp, false, ocp12v.tripped, st.main12v_enabled,
+                     col12v);
+    mon_format_stats(row5, sizeof(row5), "5V ", st.main5v_current / 1000.0, &s5, false, st.main5v_ocp, false, ocp5v.tripped, st.main5v_enabled,
+                     col5v);
+    mon_format_stats(rowusb, sizeof(rowusb), "USB", st.usb5v_current / 1000.0, &susb, false, st.usb5v_ocp, false, ocpusb.tripped, st.usb5v_enabled,
+                     colusb);
 
     snprintf(text, sizeof(text), "%s\n%s\n%s", row12, row5, rowusb);
     gtk_label_set_markup(GTK_LABEL(asclepius_mon_current_stats_label_ccc), text);
   }
 
   // Status line: connection state, sample count, and any latched soft trip.
-  if(asclepius_mon_status_label_ccc != NULL)
+  if (asclepius_mon_status_label_ccc != NULL)
   {
     char text[400];
 
-    if(!connected)
+    if (!connected)
     {
       snprintf(text, sizeof(text), "%s", _("Disconnected"));
     }
-    else if(asclepius_soft_ocp_status[0] != '\0')
+    else if (asclepius_soft_ocp_status[0] != '\0')
     {
       snprintf(text, sizeof(text), "%s", _("Connected - soft OCP"));
     }
@@ -1076,7 +1121,7 @@ void update_asclepius_monitor_ccc(void)
       snprintf(text, sizeof(text), _("Connected - %u samples"), mon_sample_count(&asclepius_monitor));
     }
 
-    if(asclepius_soft_ocp_status[0] != '\0')
+    if (asclepius_soft_ocp_status[0] != '\0')
     {
       // The trip detail is assembled by the poller and is not a catalog entry.
       size_t used = strlen(text);
@@ -1088,28 +1133,29 @@ void update_asclepius_monitor_ccc(void)
     GtkStyleContext *status_context = gtk_widget_get_style_context(asclepius_mon_status_label_ccc);
     gtk_style_context_remove_class(status_context, "asclepius-status-ok");
     gtk_style_context_remove_class(status_context, "asclepius-status-fault");
-    gtk_style_context_add_class(status_context, asclepius_soft_ocp_status[0] != '\0' || !connected ? "asclepius-status-fault" : "asclepius-status-ok");
+    gtk_style_context_add_class(status_context,
+                                asclepius_soft_ocp_status[0] != '\0' || !connected ? "asclepius-status-fault" : "asclepius-status-ok");
   }
 
-  if(asclepius_mon_reset_ocp_button_ccc != NULL)
+  if (asclepius_mon_reset_ocp_button_ccc != NULL)
   {
     gtk_widget_set_sensitive(asclepius_mon_reset_ocp_button_ccc, connected && asclepius_soft_ocp_status[0] != '\0');
   }
 
-  if(asclepius_mon_pause_button_ccc != NULL)
+  if (asclepius_mon_pause_button_ccc != NULL)
   {
     gtk_button_set_label(GTK_BUTTON(asclepius_mon_pause_button_ccc), asclepius_mon_paused_ccc ? _("Resume") : _("Pause"));
   }
 
-  if(asclepius_mon_v12_drawing_ccc != NULL)
+  if (asclepius_mon_v12_drawing_ccc != NULL)
   {
     gtk_widget_queue_draw(asclepius_mon_v12_drawing_ccc);
   }
-  if(asclepius_mon_v5_drawing_ccc != NULL)
+  if (asclepius_mon_v5_drawing_ccc != NULL)
   {
     gtk_widget_queue_draw(asclepius_mon_v5_drawing_ccc);
   }
-  if(asclepius_mon_current_drawing_ccc != NULL)
+  if (asclepius_mon_current_drawing_ccc != NULL)
   {
     gtk_widget_queue_draw(asclepius_mon_current_drawing_ccc);
   }
@@ -1118,7 +1164,7 @@ void update_asclepius_monitor_ccc(void)
 static gboolean mon_refresh_timer(gpointer data)
 {
   (void)data;
-  if(asclepius_mon_paused_ccc)
+  if (asclepius_mon_paused_ccc)
   {
     return G_SOURCE_CONTINUE;
   }
@@ -1132,7 +1178,7 @@ void asclepius_mon_pause_clicked_ccc(GtkButton *button, gpointer data)
   (void)button;
   (void)data;
 
-  if(!asclepius_mon_paused_ccc)
+  if (!asclepius_mon_paused_ccc)
   {
     mon_resolve_window(&asclepius_mon_paused_t_min_ccc, &asclepius_mon_paused_t_max_ccc);
   }
@@ -1154,14 +1200,14 @@ static gboolean on_plot_motion(GtkWidget *widget, GdkEventMotion *event, gpointe
 {
   (void)data;
 
-  if(mon_points_ccc == NULL)
+  if (mon_points_ccc == NULL)
   {
     return FALSE;
   }
 
   int width = gtk_widget_get_allocated_width(widget);
   int height = gtk_widget_get_allocated_height(widget);
-  if(width <= MON_PLOT_LEFT + MON_PLOT_RIGHT || height <= MON_PLOT_TOP + MON_PLOT_BOTTOM)
+  if (width <= MON_PLOT_LEFT + MON_PLOT_RIGHT || height <= MON_PLOT_TOP + MON_PLOT_BOTTOM)
   {
     return FALSE;
   }
@@ -1170,27 +1216,27 @@ static gboolean on_plot_motion(GtkWidget *widget, GdkEventMotion *event, gpointe
   mon_resolve_window(&t_min, &t_max);
 
   double plot_w = width - MON_PLOT_LEFT - MON_PLOT_RIGHT;
-  if(plot_w <= 0 || t_max <= t_min)
+  if (plot_w <= 0 || t_max <= t_min)
   {
     return FALSE;
   }
 
   double frac = (event->x - MON_PLOT_LEFT) / plot_w;
-  if(frac < 0)
+  if (frac < 0)
   {
     frac = 0;
   }
-  if(frac > 1)
+  if (frac > 1)
   {
     frac = 1;
   }
 
   const char *name = gtk_buildable_get_name(GTK_BUILDABLE(widget));
-  if(g_strcmp0(name, "asclepius_mon_v12_drawing") == 0)
+  if (g_strcmp0(name, "asclepius_mon_v12_drawing") == 0)
   {
     mon_hover_kind_ccc = MON_HOVER_V12;
   }
-  else if(g_strcmp0(name, "asclepius_mon_v5_drawing") == 0)
+  else if (g_strcmp0(name, "asclepius_mon_v5_drawing") == 0)
   {
     mon_hover_kind_ccc = MON_HOVER_V5;
   }
@@ -1225,7 +1271,7 @@ void on_asclepius_monitor_window_changed_ccc(GtkComboBox *combo, gpointer data)
   (void)data;
 
   int active = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
-  if(active >= 0 && active < (int)MON_NUM_WINDOWS)
+  if (active >= 0 && active < (int)MON_NUM_WINDOWS)
   {
     asclepius_monitor_window_index_ccc = (unsigned int)active;
   }
@@ -1257,7 +1303,7 @@ static gboolean on_asclepius_monitor_delete_ccc(GtkWidget *widget, GdkEvent *eve
 // close.
 void asclepius_monitor_stop_refresh_ccc(void)
 {
-  if(asclepius_monitor_timer_id != 0)
+  if (asclepius_monitor_timer_id != 0)
   {
     g_source_remove(asclepius_monitor_timer_id);
     asclepius_monitor_timer_id = 0;
@@ -1276,7 +1322,7 @@ void asclepius_monitor_stop_refresh_ccc(void)
   asclepius_mon_v5_drawing_ccc = NULL;
   asclepius_mon_current_drawing_ccc = NULL;
 
-  for(int i = 0; i < 5; i++)
+  for (int i = 0; i < 5; i++)
   {
     asclepius_mon_power_buttons_ccc[i] = NULL;
   }
@@ -1287,7 +1333,7 @@ void asclepius_monitor_stop_refresh_ccc(void)
 
 void open_asclepius_monitor_dialog_ccc(void)
 {
-  if(asclepius_monitor_open && asclepius_monitor_dialog_ccc != NULL)
+  if (asclepius_monitor_open && asclepius_monitor_dialog_ccc != NULL)
   {
     gtk_window_present(GTK_WINDOW(asclepius_monitor_dialog_ccc));
     return;
@@ -1298,7 +1344,7 @@ void open_asclepius_monitor_dialog_ccc(void)
   gtk_builder_connect_signals(builder, NULL);
 
   GtkWidget *dialog = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_monitor_dialog"));
-  if(dialog == NULL)
+  if (dialog == NULL)
   {
     g_object_unref(builder);
     return;
@@ -1336,50 +1382,50 @@ void open_asclepius_monitor_dialog_ccc(void)
   GtkWidget *voltage_label = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_mon_voltage_label"));
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Asclepius Monitor"));
-  if(power_label != NULL)
+  if (power_label != NULL)
   {
     gtk_label_set_text(GTK_LABEL(power_label), _("Power"));
   }
-  if(voltage_label != NULL)
+  if (voltage_label != NULL)
   {
     gtk_label_set_text(GTK_LABEL(voltage_label), _("Voltage"));
   }
   // Shown until the first refresh delivers real statistics.
-  if(voltage_stats != NULL)
+  if (voltage_stats != NULL)
   {
     gtk_label_set_text(GTK_LABEL(voltage_stats), _("No samples"));
   }
-  if(current_stats != NULL)
+  if (current_stats != NULL)
   {
     gtk_label_set_text(GTK_LABEL(current_stats), _("No samples"));
   }
 
   asclepius_mon_reset_ocp_button_ccc = reset_ocp_button;
   asclepius_mon_pause_button_ccc = pause_button;
-  if(reset_ocp_button != NULL)
+  if (reset_ocp_button != NULL)
   {
     g_signal_connect(reset_ocp_button, "clicked", G_CALLBACK(asclepius_mon_reset_ocp_clicked_ccc), NULL);
   }
-  if(pause_button != NULL)
+  if (pause_button != NULL)
   {
     g_signal_connect(pause_button, "clicked", G_CALLBACK(asclepius_mon_pause_clicked_ccc), NULL);
   }
 
-  if(v12 != NULL)
+  if (v12 != NULL)
   {
     g_signal_connect(v12, "draw", G_CALLBACK(on_draw_v12), NULL);
     g_signal_connect(v12, "motion-notify-event", G_CALLBACK(on_plot_motion), NULL);
     g_signal_connect(v12, "leave-notify-event", G_CALLBACK(on_plot_leave), NULL);
     gtk_widget_add_events(v12, GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK);
   }
-  if(v5 != NULL)
+  if (v5 != NULL)
   {
     g_signal_connect(v5, "draw", G_CALLBACK(on_draw_v5), NULL);
     g_signal_connect(v5, "motion-notify-event", G_CALLBACK(on_plot_motion), NULL);
     g_signal_connect(v5, "leave-notify-event", G_CALLBACK(on_plot_leave), NULL);
     gtk_widget_add_events(v5, GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK);
   }
-  if(current != NULL)
+  if (current != NULL)
   {
     g_signal_connect(current, "draw", G_CALLBACK(on_draw_current), NULL);
     g_signal_connect(current, "motion-notify-event", G_CALLBACK(on_plot_motion), NULL);
@@ -1387,16 +1433,16 @@ void open_asclepius_monitor_dialog_ccc(void)
     gtk_widget_add_events(current, GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK);
   }
 
-  if(window_label != NULL)
+  if (window_label != NULL)
   {
     gtk_label_set_text(GTK_LABEL(window_label), _("Window"));
   }
-  if(window_combo != NULL)
+  if (window_combo != NULL)
   {
     char names[MON_NUM_WINDOWS][32];
     mon_window_names(names);
 
-    for(size_t i = 0; i < MON_NUM_WINDOWS; i++)
+    for (size_t i = 0; i < MON_NUM_WINDOWS; i++)
     {
       gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(window_combo), names[i]);
     }
@@ -1405,10 +1451,10 @@ void open_asclepius_monitor_dialog_ccc(void)
   }
 
   // Allocate the sample scratch buffer once for the life of the dialog.
-  if(mon_points_ccc == NULL)
+  if (mon_points_ccc == NULL)
   {
     mon_points_ccc = calloc(MON_MAX_POINTS, sizeof(mon_sample_t));
-    if(mon_points_ccc == NULL)
+    if (mon_points_ccc == NULL)
     {
       printf("Asclepius monitor: out of memory for the plot sample buffer\n");
       g_object_unref(builder);
@@ -1433,8 +1479,7 @@ void open_asclepius_monitor_dialog_ccc(void)
                                   "button.asclepius-rail-on:disabled, button.asclepius-rail-off:disabled { color: #888888; }\n"
                                   "label.asclepius-status-ok { color: #2e7d32; }\n"
                                   "label.asclepius-status-fault { color: #b71c1c; font-weight: bold; }\n",
-                                  -1,
-                                  NULL);
+                                  -1, NULL);
   gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
   g_object_unref(provider);
 
@@ -1453,13 +1498,13 @@ void open_asclepius_monitor_dialog_ccc(void)
 }
 
 // The in-window Close button. close_asclepius_monitor_ccc() destroys the
-  // dialog, which runs the "destroy" handler for the shared cleanup.
+// dialog, which runs the "destroy" handler for the shared cleanup.
 static void on_asclepius_monitor_response_ccc(GtkDialog *dialog, int response, gpointer data)
 {
   (void)dialog;
   (void)data;
 
-  if(response != GTK_RESPONSE_CLOSE)
+  if (response != GTK_RESPONSE_CLOSE)
   {
     return;
   }
@@ -1475,7 +1520,7 @@ void close_asclepius_monitor_ccc(void)
 
   asclepius_monitor_stop_refresh_ccc();
 
-  if(dialog != NULL)
+  if (dialog != NULL)
   {
     gtk_widget_destroy(dialog);
   }

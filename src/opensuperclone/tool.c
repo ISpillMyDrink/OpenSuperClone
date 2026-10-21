@@ -677,7 +677,8 @@ int increase_number_variable_memory_ccc(void)
   unsigned int cols = MAX_VARIABLE_LENGTH;
   unsigned int i;
 
-  number_variable_name_buffer_ccc = realloc(number_variable_name_buffer_ccc, number_variable_rows_ccc * cols * sizeof(*number_variable_name_buffer_ccc));
+  number_variable_name_buffer_ccc =
+    realloc(number_variable_name_buffer_ccc, number_variable_rows_ccc * cols * sizeof(*number_variable_name_buffer_ccc));
   if (number_variable_name_buffer_ccc == NULL)
   {
     fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
@@ -711,7 +712,8 @@ int increase_string_variable_memory_ccc(void)
   unsigned int cols = MAX_VARIABLE_LENGTH;
   unsigned int i;
 
-  string_variable_name_buffer_ccc = realloc(string_variable_name_buffer_ccc, string_variable_rows_ccc * cols * sizeof(*string_variable_name_buffer_ccc));
+  string_variable_name_buffer_ccc =
+    realloc(string_variable_name_buffer_ccc, string_variable_rows_ccc * cols * sizeof(*string_variable_name_buffer_ccc));
   if (string_variable_name_buffer_ccc == NULL)
   {
     fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));

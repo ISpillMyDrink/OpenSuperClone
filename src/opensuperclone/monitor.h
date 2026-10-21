@@ -17,44 +17,44 @@
 
 typedef struct
 {
-    float v12;     // 12V rail voltage (V)
-    float v5;      // 5V rail voltage (V)
-    float a12;     // 12V rail current (A)
-    float a5;      // 5V rail current (A)
-    float ausb;    // USB 5V current (A)
-    uint8_t oos12; // 1 when the 12V rail is out of spec
-    uint8_t oos5;  // 1 when the 5V rail is out of spec
-    uint8_t ocp12;
-    uint8_t ocp5;
-    uint8_t ocpusb;
-    uint8_t enabled12;
-    uint8_t enabled5;
-    uint8_t enabledusb;
-    uint32_t t_ms; // monotonic time at sample time (ms)
+  float v12;     // 12V rail voltage (V)
+  float v5;      // 5V rail voltage (V)
+  float a12;     // 12V rail current (A)
+  float a5;      // 5V rail current (A)
+  float ausb;    // USB 5V current (A)
+  uint8_t oos12; // 1 when the 12V rail is out of spec
+  uint8_t oos5;  // 1 when the 5V rail is out of spec
+  uint8_t ocp12;
+  uint8_t ocp5;
+  uint8_t ocpusb;
+  uint8_t enabled12;
+  uint8_t enabled5;
+  uint8_t enabledusb;
+  uint32_t t_ms; // monotonic time at sample time (ms)
 } mon_sample_t;
 
 typedef struct
 {
-    mon_sample_t buf[MON_HISTORY_MAX];
-    int head; // next write index
-    int len;  // number of valid samples (0..MON_HISTORY_MAX)
+  mon_sample_t buf[MON_HISTORY_MAX];
+  int head; // next write index
+  int len;  // number of valid samples (0..MON_HISTORY_MAX)
 } mon_history_t;
 
 typedef struct
 {
-    float vmin, vmax;
-    double vsum;
-    int vcount;
-    float amin, amax;
-    double asum;
-    int acount;
+  float vmin, vmax;
+  double vsum;
+  int vcount;
+  float amin, amax;
+  double asum;
+  int acount;
 } mon_stats_t;
 
 typedef struct
 {
-    mon_history_t hist;
-    mon_stats_t st12, st5, stusb;
-    uint32_t sample_count;
+  mon_history_t hist;
+  mon_stats_t st12, st5, stusb;
+  uint32_t sample_count;
 } mon_t;
 
 // Live sample history, fed by the Asclepius status poller thread
@@ -83,8 +83,7 @@ int mon_history_len(const mon_t *m);
 void mon_copy_stats(const mon_t *m, mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
 
 // Statistics for samples in the inclusive time range.
-void mon_copy_stats_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms,
-                          mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
+void mon_copy_stats_range(const mon_t *m, uint32_t t_min_ms, uint32_t t_max_ms, mon_stats_t *st12, mon_stats_t *st5, mon_stats_t *stusb);
 
 // Copies samples spanning [t_min_ms, t_max_ms] into out, oldest first.
 // When the range holds more than max_out samples, the range is decimated

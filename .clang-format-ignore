@@ -1,0 +1,2 @@
+# Vendored Linux UAPI header: keep it byte-for-byte compatible with the kernel.
+src/opensuperclone/usbheaders.h
