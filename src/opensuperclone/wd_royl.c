@@ -1,4 +1,4 @@
-// Copyright (C) Scott Dwyer and OpenSuperClone contributors.
+// Copyright (C) OpenSuperClone contributors.
 // You may use/distribute/modify this freely, under the terms of
 // the GNU General Public License version 2 or later version.
 // This software is distributed WITHOUT ANY WARRANTY.
