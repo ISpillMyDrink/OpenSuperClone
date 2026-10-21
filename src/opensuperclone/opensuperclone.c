@@ -8,6 +8,7 @@
 #include "clone_gui_common.h"
 #include "asclepius.h"
 #include "opensuperclone.h"
+#include "speed_monitor.h"
 
 // Definitions for opensuperclone.h globals
 bool forced_exit_ccc = false;
@@ -5421,6 +5422,10 @@ int update_display_ccc(int time_ms)
       }
       last_finished_value_ccc = finished_size_ccc;
       last_filled_value_ccc = total_filled_ccc;
+      if (difference > 0)
+      {
+        speed_monitor_push((uint32_t)new_time, (uint32_t)difference, (double)rate, current_status_ccc, current_status_string_ccc);
+      }
       if (rate > 10000000)
       {
         rate = rate / 1000000;

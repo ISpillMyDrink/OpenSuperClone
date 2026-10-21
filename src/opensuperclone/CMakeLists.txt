@@ -9,6 +9,7 @@ set(SOURCES
     asclepius.c
     monitor.c
     asclepius_monitor.c
+    speed_monitor.c
     wd_royl.c
 )
 

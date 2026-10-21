@@ -9,6 +9,7 @@
 #include "common.h"
 #include "opensuperclone_glade.h"
 #include "asclepius.h"
+#include "speed_monitor.h"
 #include "wd_royl.h"
 #include <ctype.h>
 #include <glib/gstdio.h>
@@ -274,6 +275,7 @@ GtkWidget *primaryrelaymi_ccc = NULL;
 GtkWidget *chooseprimaryrelaymi_ccc = NULL;
 GtkWidget *asclepiusextmi_ccc = NULL;
 GtkWidget *asclepiusmonitormi_ccc = NULL;
+GtkWidget *speedgraphmi_ccc = NULL;
 GtkWidget *disableusbmassmi_ccc = NULL;
 GtkWidget *restoreusbmassmi_ccc = NULL;
 GtkWidget *loadconfigmi_ccc = NULL;
@@ -824,6 +826,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   chooseprimaryrelaymi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "chooseprimaryrelaymi"));
   asclepiusextmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepiusextmi"));
   asclepiusmonitormi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepiusmonitormi"));
+  speedgraphmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "speedgraphmi"));
   disableusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "disableusbmassmi"));
   restoreusbmassmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "restoreusbmassmi"));
   loadconfigmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "loadconfigmi"));
@@ -888,6 +891,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(chooseprimaryrelaymi_ccc), _("Choose Primary Relay Board"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(asclepiusextmi_ccc), _("Open Terminal (UART)"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(asclepiusmonitormi_ccc), _("Open Monitor (Asclepius)"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(speedgraphmi_ccc), _("Open Speed Graph"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(disableusbmassmi_ccc), _("Disable USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(restoreusbmassmi_ccc), _("Restore USB Mass Storage Driver"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(loadconfigmi_ccc), _("Open Settings File"));
@@ -919,6 +923,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
 
   gtk_widget_add_accelerator(asclepiusextmi_ccc, "activate", accel_group, GDK_KEY_T, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(asclepiusmonitormi_ccc, "activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(speedgraphmi_ccc, "activate", accel_group, GDK_KEY_G, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));
@@ -3067,6 +3072,8 @@ void start_cloning_ccc(void)
     return;
   }
 
+  speed_monitor_clear();
+
   int ret = 0;
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
@@ -3149,6 +3156,8 @@ void analyze_long_ccc(void)
 
 void start_analyzing_ccc(void)
 {
+  speed_monitor_clear();
+
   int ret = 0;
   stop_display_status_update_timer_ccc();
   stop_signal_ccc = false;
