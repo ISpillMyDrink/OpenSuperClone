@@ -8,6 +8,8 @@
 
 #include <stdbool.h>
 
+#include "asclepius.h"
+
 #define MAX_CALL_LENGTH 200
 #define MAX_DEVICE_NAME_LENGTH 32
 #define MAX_ANALYZE_TEXT_LENGTH 4096
@@ -302,6 +304,9 @@ struct primary_relay_settings_t
   unsigned int asclepius_ocp_limit_12v;
   unsigned int asclepius_ocp_limit_5v;
   unsigned int asclepius_ocp_limit_usb;
+  bool asclepius_clone_event_enabled[ASCLEPIUS_CLONE_FAULT_COUNT];
+  int asclepius_clone_event_action[ASCLEPIUS_CLONE_FAULT_COUNT];
+  unsigned int asclepius_clone_voltage_debounce_ms;
   char primary_relay_name[MAX_RELAY_NAME_LENGTH];
 };
 extern struct primary_relay_settings_t primary_relay_settings_ccc;

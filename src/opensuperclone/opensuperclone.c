@@ -417,9 +417,12 @@ int main(int argc, char **argv)
   asclepius_ext_baud_rate_ccc = 38400;
   primary_relay_settings_ccc.primary_relay_board_type = PRIMARY_RELAY_BOARD_GENERIC;
   primary_relay_settings_ccc.asclepius_poll_interval_ms = ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS;
-  primary_relay_settings_ccc.asclepius_ocp_action_12v = ASCLEPIUS_OCP_CUT;
-  primary_relay_settings_ccc.asclepius_ocp_action_5v = ASCLEPIUS_OCP_CUT;
-  primary_relay_settings_ccc.asclepius_ocp_action_usb = ASCLEPIUS_OCP_CUT;
+  // Software OCP is opt-in. New installations start with no software action:
+  // automatic cuts are a slow supervisory safeguard, not a substitute for
+  // hardware OCP.
+  primary_relay_settings_ccc.asclepius_ocp_action_12v = ASCLEPIUS_OCP_OFF;
+  primary_relay_settings_ccc.asclepius_ocp_action_5v = ASCLEPIUS_OCP_OFF;
+  primary_relay_settings_ccc.asclepius_ocp_action_usb = ASCLEPIUS_OCP_OFF;
   primary_relay_settings_ccc.asclepius_ocp_limit_12v = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
   primary_relay_settings_ccc.asclepius_ocp_limit_5v = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
   primary_relay_settings_ccc.asclepius_ocp_limit_usb = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA;
@@ -930,21 +933,40 @@ void cleanup_ccc(void)
 
 int begin_cloning_ccc(void)
 {
+  bool clone_guard_started = false;
+
   first_read_time_ccc = FIRST_READ_TIMER;
   if (fill_mode_ccc)
   {
     return_value_ccc = do_fill_ccc(FINISHED, STATUS_MASK & BAD_HEAD_MASK);
   }
-  else if (reverse_ccc)
-  {
-    return_value_ccc = clone_reverse_ccc();
-  }
   else
   {
-    return_value_ccc = clone_forward_ccc();
+    // The fault guard covers normal clone runs only. Starting a run takes a
+    // baseline of any fault that is active now; a Stop event refuses the run
+    // before the first chunk is read.
+    asclepius_clone_run_begin();
+    clone_guard_started = true;
+
+    if (asclepius_clone_fault_check(current_position_ccc) == ASCLEPIUS_CLONE_STOP)
+    {
+      return_value_ccc = ASCLEPIUS_CLONE_FAULT_RETURN_CODE;
+    }
+    else if (reverse_ccc)
+    {
+      return_value_ccc = clone_reverse_ccc();
+    }
+    else
+    {
+      return_value_ccc = clone_forward_ccc();
+    }
   }
 
-  if (return_value_ccc < 0 && !exitcode_ccc)
+  if (return_value_ccc == ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
+  {
+    exitcode_ccc = ASCLEPIUS_FAULT_EXIT_CODE;
+  }
+  else if (return_value_ccc < 0 && !exitcode_ccc)
   {
     exitcode_ccc = return_value_ccc * -1;
   }
@@ -952,6 +974,14 @@ int begin_cloning_ccc(void)
   {
     exitcode_ccc = return_value_ccc;
   }
+
+  if (clone_guard_started)
+  {
+    // Log-only events are written now, as the single combined block for the
+    // run. A Stop event has already written its block.
+    asclepius_clone_run_end(return_value_ccc);
+  }
+
   write_logfile_ccc(log_file_ccc, 0);
   return (return_value_ccc);
 }
@@ -6735,15 +6765,24 @@ int clone_forward_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
-    update_display_ccc(0);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
-    clear_error_message_ccc();
-    ret = 0;
+    if (asclepius_clone_fault_check(current_position_ccc) == ASCLEPIUS_CLONE_STOP)
+    {
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Stopped"));
+      update_display_ccc(0);
+      ret = ASCLEPIUS_CLONE_FAULT_RETURN_CODE;
+    }
+    else
+    {
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
+      update_display_ccc(0);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
+      clear_error_message_ccc();
+      ret = 0;
+    }
   }
-  else if (ret)
+  else if (ret && ret != ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
   {
     update_display_ccc(0);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue has stopped before completion.\nStop code = "));
@@ -6753,7 +6792,7 @@ int clone_forward_ccc(void)
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
-  else
+  else if (ret != ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
   {
     update_display_ccc(0);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue failed to finish"));
@@ -7112,15 +7151,24 @@ int clone_reverse_ccc(void)
   }
   if (current_status_ccc == FINISHED)
   {
-    snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
-    update_display_ccc(0);
-    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
-    message_error_ccc(tempmessage_ccc);
-    print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
-    clear_error_message_ccc();
-    ret = 0;
+    if (asclepius_clone_fault_check(current_position_ccc) == ASCLEPIUS_CLONE_STOP)
+    {
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Stopped"));
+      update_display_ccc(0);
+      ret = ASCLEPIUS_CLONE_FAULT_RETURN_CODE;
+    }
+    else
+    {
+      snprintf(current_status_string_ccc, sizeof(current_status_string_ccc), _("Finished"));
+      update_display_ccc(0);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue is finished using the current settings"));
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
+      clear_error_message_ccc();
+      ret = 0;
+    }
   }
-  else if (ret)
+  else if (ret && ret != ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
   {
     update_display_ccc(0);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue has stopped before completion.\nStop code = "));
@@ -7130,7 +7178,7 @@ int clone_reverse_ccc(void)
     print_gui_error_message_ccc(error_message_ccc, _("Information"), 0);
     clear_error_message_ccc();
   }
-  else
+  else if (ret != ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
   {
     update_display_ccc(0);
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The rescue failed to finish"));
@@ -7511,6 +7559,19 @@ int driver_clone_forward_ccc(long long start, long long small_end, long long big
   return ret;
 }
 
+// Ask the Asclepius clone guard whether an enabled Stop event is pending. Safe
+// to call at any chunk boundary: it only reads latched monitor state and the
+// current position, and never touches the rails.
+static int clone_fault_guard_ccc(void)
+{
+  if (asclepius_clone_fault_check(current_position_ccc) == ASCLEPIUS_CLONE_STOP)
+  {
+    return ASCLEPIUS_CLONE_FAULT_RETURN_CODE;
+  }
+
+  return 0;
+}
+
 int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
 {
   if (drive_locked_ccc)
@@ -7536,6 +7597,13 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
   {
     return STOP_SIGNAL_RETURN_CODE;
   }
+  {
+    int guard = clone_fault_guard_ccc();
+    if (guard)
+    {
+      return guard;
+    }
+  }
   return_value_ccc = update_logfile_ccc(driver_mode_ccc ? LOG_UPDATE_TIME : 0);
   if (return_value_ccc)
   {
@@ -7552,6 +7620,13 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
     if (stop_signal_ccc)
     {
       return STOP_SIGNAL_RETURN_CODE;
+    }
+    {
+      int guard = clone_fault_guard_ccc();
+      if (guard)
+      {
+        return guard;
+      }
     }
     return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
     if (return_value_ccc)
@@ -7695,6 +7770,7 @@ int copy_forward_ccc(int status_type, int status_mask, int new_status_type)
         {
           retried_lba_count_ccc += rsize;
         }
+        asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
         int retstat = read_chunk_ccc(current_position_ccc, rsize);
         if (stop_signal_ccc)
         {
@@ -7968,6 +8044,13 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
   {
     return STOP_SIGNAL_RETURN_CODE;
   }
+  {
+    int guard = clone_fault_guard_ccc();
+    if (guard)
+    {
+      return guard;
+    }
+  }
   return_value_ccc = update_logfile_ccc(0);
   if (return_value_ccc)
   {
@@ -7984,6 +8067,13 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
     if (stop_signal_ccc)
     {
       return STOP_SIGNAL_RETURN_CODE;
+    }
+    {
+      int guard = clone_fault_guard_ccc();
+      if (guard)
+      {
+        return guard;
+      }
     }
     return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
     if (return_value_ccc)
@@ -8141,6 +8231,7 @@ int copy_reverse_ccc(int status_type, int status_mask, int new_status_type)
         {
           retried_lba_count_ccc += rsize;
         }
+        asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
         int retstat = read_chunk_ccc(current_position_ccc, rsize);
         if (stop_signal_ccc)
         {
@@ -8353,6 +8444,13 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
   {
     return STOP_SIGNAL_RETURN_CODE;
   }
+  {
+    int guard = clone_fault_guard_ccc();
+    if (guard)
+    {
+      return guard;
+    }
+  }
   return_value_ccc = update_logfile_ccc(driver_mode_ccc ? LOG_UPDATE_TIME : 0);
   if (return_value_ccc)
   {
@@ -8365,6 +8463,13 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
     if (stop_signal_ccc)
     {
       return STOP_SIGNAL_RETURN_CODE;
+    }
+    {
+      int guard = clone_fault_guard_ccc();
+      if (guard)
+      {
+        return guard;
+      }
     }
     return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
     if (return_value_ccc)
@@ -8416,6 +8521,13 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
       if (stop_signal_ccc)
       {
         return STOP_SIGNAL_RETURN_CODE;
+      }
+      {
+        int guard = clone_fault_guard_ccc();
+        if (guard)
+        {
+          return guard;
+        }
       }
       return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
       if (return_value_ccc)
@@ -8472,6 +8584,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 
       if (rsize > 0)
       {
+        asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
         int retstat = read_chunk_ccc(current_position_ccc, rsize);
         if (stop_signal_ccc)
         {
@@ -8627,6 +8740,13 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
         {
           return STOP_SIGNAL_RETURN_CODE;
         }
+        {
+          int guard = clone_fault_guard_ccc();
+          if (guard)
+          {
+            return guard;
+          }
+        }
         return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
         if (return_value_ccc)
         {
@@ -8696,6 +8816,7 @@ int trim_forward_ccc(int status_type, int status_mask, int new_status_type)
 
         if (rsize > 0)
         {
+          asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
           int retstat = read_chunk_ccc(current_position_ccc, rsize);
           if (stop_signal_ccc)
           {
@@ -8864,6 +8985,13 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
   {
     return STOP_SIGNAL_RETURN_CODE;
   }
+  {
+    int guard = clone_fault_guard_ccc();
+    if (guard)
+    {
+      return guard;
+    }
+  }
   return_value_ccc = update_logfile_ccc(0);
   if (return_value_ccc)
   {
@@ -8876,6 +9004,13 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
     if (stop_signal_ccc)
     {
       return STOP_SIGNAL_RETURN_CODE;
+    }
+    {
+      int guard = clone_fault_guard_ccc();
+      if (guard)
+      {
+        return guard;
+      }
     }
     return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
     if (return_value_ccc)
@@ -8954,6 +9089,13 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
       {
         return STOP_SIGNAL_RETURN_CODE;
       }
+      {
+        int guard = clone_fault_guard_ccc();
+        if (guard)
+        {
+          return guard;
+        }
+      }
       return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
       if (return_value_ccc)
       {
@@ -9010,6 +9152,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 
       if (rsize > 0)
       {
+        asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
         int retstat = read_chunk_ccc(current_position_ccc, rsize);
         if (stop_signal_ccc)
         {
@@ -9161,6 +9304,13 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
         {
           return STOP_SIGNAL_RETURN_CODE;
         }
+        {
+          int guard = clone_fault_guard_ccc();
+          if (guard)
+          {
+            return guard;
+          }
+        }
         return_value_ccc = update_logfile_ccc(LOG_UPDATE_TIME);
         if (return_value_ccc)
         {
@@ -9229,6 +9379,7 @@ int trim_reverse_ccc(int status_type, int status_mask, int new_status_type)
 
         if (rsize > 0)
         {
+          asclepius_clone_note_chunk(current_position_ccc, rsize, direction_ccc, current_status_string_ccc);
           int retstat = read_chunk_ccc(current_position_ccc, rsize);
           if (stop_signal_ccc)
           {

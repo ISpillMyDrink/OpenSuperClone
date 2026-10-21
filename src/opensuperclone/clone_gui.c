@@ -157,7 +157,10 @@ struct identify_device_data_t identify_device_data_ccc;
 struct clone_settings_t clone_settings_ccc;
 struct advanced_settings_t advanced_settings_ccc;
 struct timer_settings_t timer_settings_ccc;
-struct primary_relay_settings_t primary_relay_settings_ccc;
+struct primary_relay_settings_t primary_relay_settings_ccc = {
+  .asclepius_clone_event_action = {ASCLEPIUS_CLONE_ACTION_STOP, ASCLEPIUS_CLONE_ACTION_STOP, ASCLEPIUS_CLONE_ACTION_LOG, ASCLEPIUS_CLONE_ACTION_STOP},
+  .asclepius_clone_voltage_debounce_ms = ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_DEFAULT_MS,
+};
 struct display_output_t display_output_ccc;
 
 // Definitions for clone_gui.h globals
@@ -456,6 +459,38 @@ GtkWidget *asclepius_ocp_action_usb_combobox_ccc = NULL;
 GtkWidget *asclepius_ocp_limit_12v_combobox_ccc = NULL;
 GtkWidget *asclepius_ocp_limit_5v_combobox_ccc = NULL;
 GtkWidget *asclepius_ocp_limit_usb_combobox_ccc = NULL;
+GtkWidget *asclepius_clone_guard_frame_ccc = NULL;
+GtkWidget *asclepius_clone_guard_label_ccc = NULL;
+GtkWidget *asclepius_clone_guard_event_heading_ccc = NULL;
+GtkWidget *asclepius_clone_guard_enabled_heading_ccc = NULL;
+GtkWidget *asclepius_clone_guard_action_heading_ccc = NULL;
+GtkWidget *asclepius_clone_event_label_ccc[ASCLEPIUS_CLONE_FAULT_COUNT] = {NULL, NULL, NULL, NULL};
+GtkWidget *asclepius_clone_event_enabled_checkbutton_ccc[ASCLEPIUS_CLONE_FAULT_COUNT] = {NULL, NULL, NULL, NULL};
+GtkWidget *asclepius_clone_event_action_combobox_ccc[ASCLEPIUS_CLONE_FAULT_COUNT] = {NULL, NULL, NULL, NULL};
+GtkWidget *asclepius_clone_voltage_debounce_label_ccc = NULL;
+GtkWidget *asclepius_clone_voltage_debounce_spinbutton_ccc = NULL;
+
+static const char *asclepius_clone_event_label_names[ASCLEPIUS_CLONE_FAULT_COUNT] = {
+  "asclepius_clone_hardware_ocp_label",
+  "asclepius_clone_soft_ocp_cut_label",
+  "asclepius_clone_soft_ocp_warn_label",
+  "asclepius_clone_voltage_label",
+};
+
+static const char *asclepius_clone_event_enabled_names[ASCLEPIUS_CLONE_FAULT_COUNT] = {
+  "asclepius_clone_hardware_ocp_enabled_checkbutton",
+  "asclepius_clone_soft_ocp_cut_enabled_checkbutton",
+  "asclepius_clone_soft_ocp_warn_enabled_checkbutton",
+  "asclepius_clone_voltage_enabled_checkbutton",
+};
+
+static const char *asclepius_clone_event_action_names[ASCLEPIUS_CLONE_FAULT_COUNT] = {
+  "asclepius_clone_hardware_ocp_action_combobox",
+  "asclepius_clone_soft_ocp_cut_action_combobox",
+  "asclepius_clone_soft_ocp_warn_action_combobox",
+  "asclepius_clone_voltage_action_combobox",
+};
+
 GtkWidget *asclepius_tty_device_text_ccc = NULL;
 GtkWidget *asclepius_connect_button_ccc = NULL;
 GtkWidget *asclepius_disconnect_button_ccc = NULL;
@@ -470,8 +505,8 @@ GtkWidget *primary_relay_board_asclepius_radio_ccc = NULL;
 // mixes the generic USB relay's Energize 1..8 sequencing with the Asclepius
 // device settings, so the two groups are shown according to the selection
 // instead of both appearing at once.
-static GtkWidget *primary_relay_generic_frames_ccc[4] = {NULL, NULL, NULL, NULL};
-static GtkWidget *primary_relay_asclepius_frames_ccc[4] = {NULL, NULL, NULL, NULL};
+static GtkWidget *primary_relay_generic_frames_ccc[5] = {NULL, NULL, NULL, NULL, NULL};
+static GtkWidget *primary_relay_asclepius_frames_ccc[5] = {NULL, NULL, NULL, NULL, NULL};
 GtkWidget *primary_relay_activation_label_ccc = NULL;
 GtkWidget *activate_primary_relay1_checkbutton_ccc = NULL;
 GtkWidget *activate_primary_relay2_checkbutton_ccc = NULL;
@@ -590,6 +625,21 @@ char *template_directory = OSC_RESOURCE_PATH "/templates/";
 char *default_config_filename = "default.cfg";
 char *default_ssd_config_filename = "default_ssd.cfg";
 char *default_asclepius_config_filename = "asclepius.cfg";
+
+static const char *asclepius_clone_enabled_config_keys[ASCLEPIUS_CLONE_FAULT_COUNT] = {
+  "asclepius_clone_hardware_ocp_enabled",
+  "asclepius_clone_soft_ocp_cut_enabled",
+  "asclepius_clone_soft_ocp_warn_enabled",
+  "asclepius_clone_voltage_enabled",
+};
+
+static const char *asclepius_clone_action_config_keys[ASCLEPIUS_CLONE_FAULT_COUNT] = {
+  "asclepius_clone_hardware_ocp_action",
+  "asclepius_clone_soft_ocp_cut_action",
+  "asclepius_clone_soft_ocp_warn_action",
+  "asclepius_clone_voltage_action",
+};
+
 int default_window_width = 1350;
 int default_window_height = 670;
 
@@ -3073,6 +3123,15 @@ void start_cloning_ccc(void)
   {
     disconnect_devices_ccc();
   }
+
+  if (ret == ASCLEPIUS_CLONE_FAULT_RETURN_CODE)
+  {
+    // The fault summary must be visible even if an earlier error left the
+    // command/relay message-suppression flag set.
+    check_message_ccc = false;
+    print_gui_error_message_ccc(asclepius_clone_get_message(), _("Asclepius clone fault"), 1);
+  }
+
   start_display_status_update_timer_ccc();
 }
 
@@ -4620,7 +4679,7 @@ void update_primary_relay_board_type_visibility_ccc(void)
 {
   bool asclepius = primary_relay_board_type_ccc == PRIMARY_RELAY_BOARD_ASCLEPIUS;
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < (int)(sizeof(primary_relay_generic_frames_ccc) / sizeof(primary_relay_generic_frames_ccc[0])); i++)
   {
     if (primary_relay_generic_frames_ccc[i] != NULL)
     {
@@ -4730,6 +4789,24 @@ void open_primary_relay_dialog_ccc(void)
   asclepius_ocp_limit_12v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_12v_combobox"));
   asclepius_ocp_limit_5v_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_5v_combobox"));
   asclepius_ocp_limit_usb_combobox_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ocp_limit_usb_combobox"));
+  asclepius_clone_guard_frame_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_clone_guard"));
+  asclepius_clone_guard_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_guard_label"));
+  asclepius_clone_guard_event_heading_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_guard_event_heading"));
+  asclepius_clone_guard_enabled_heading_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_guard_enabled_heading"));
+  asclepius_clone_guard_action_heading_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_guard_action_heading"));
+  asclepius_clone_voltage_debounce_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_voltage_debounce_label"));
+  asclepius_clone_voltage_debounce_spinbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_clone_voltage_debounce_spinbutton"));
+  {
+    size_t clone_event;
+    for (clone_event = 0; clone_event < ASCLEPIUS_CLONE_FAULT_COUNT; clone_event++)
+    {
+      asclepius_clone_event_label_ccc[clone_event] = GTK_WIDGET(gtk_builder_get_object(builder, asclepius_clone_event_label_names[clone_event]));
+      asclepius_clone_event_enabled_checkbutton_ccc[clone_event] =
+        GTK_WIDGET(gtk_builder_get_object(builder, asclepius_clone_event_enabled_names[clone_event]));
+      asclepius_clone_event_action_combobox_ccc[clone_event] =
+        GTK_WIDGET(gtk_builder_get_object(builder, asclepius_clone_event_action_names[clone_event]));
+    }
+  }
   asclepius_tty_device_text_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_tty_device_text"));
   asclepius_connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_connect_button"));
   asclepius_disconnect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_disconnect_button"));
@@ -4758,6 +4835,7 @@ void open_primary_relay_dialog_ccc(void)
   primary_relay_asclepius_frames_ccc[1] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_tty_device"));
   primary_relay_asclepius_frames_ccc[2] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_soft_ocp"));
   primary_relay_asclepius_frames_ccc[3] = GTK_WIDGET(gtk_builder_get_object(builder, "hbox_asclepius_buttons"));
+  primary_relay_asclepius_frames_ccc[4] = GTK_WIDGET(gtk_builder_get_object(builder, "frame_asclepius_clone_guard"));
 
   primary_relay_activation_label_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "primary_relay_activation_label"));
   activate_primary_relay1_checkbutton_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "activate_primary_relay1_checkbutton"));
@@ -4793,6 +4871,9 @@ void open_primary_relay_dialog_ccc(void)
     GtkWidget *ports_btn = GTK_WIDGET(gtk_builder_get_object(builder, "asclepius_ports_button"));
     if (ports_btn)
     {
+      // The handler resolves the target on the dialog, so the entry must be
+      // registered there as well as the key being set on the button.
+      g_object_set_data(G_OBJECT(dialog), "asclepius_tty_device_text", asclepius_tty_device_text_ccc);
       g_object_set_data(G_OBJECT(ports_btn), "asclepius_ports_target_key", (gpointer) "asclepius_tty_device_text");
       g_signal_connect(ports_btn, "clicked", G_CALLBACK(on_asclepius_ports_clicked_ccc), NULL);
     }
@@ -4812,6 +4893,15 @@ void open_primary_relay_dialog_ccc(void)
   gtk_label_set_text(GTK_LABEL(asclepius_ocp_12v_label_ccc), _("12V software OCP"));
   gtk_label_set_text(GTK_LABEL(asclepius_ocp_5v_label_ccc), _("5V software OCP"));
   gtk_label_set_text(GTK_LABEL(asclepius_ocp_usb_label_ccc), _("USB 5V software OCP"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_guard_label_ccc), _("Clone fault guard"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_guard_event_heading_ccc), _("Event"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_guard_enabled_heading_ccc), _("Enabled"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_guard_action_heading_ccc), _("Action"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_event_label_ccc[ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP]), _("Hardware OCP"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_event_label_ccc[ASCLEPIUS_CLONE_FAULT_SOFT_OCP_CUT]), _("Software OCP cut"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_event_label_ccc[ASCLEPIUS_CLONE_FAULT_SOFT_OCP_WARN]), _("Software OCP warn"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_event_label_ccc[ASCLEPIUS_CLONE_FAULT_VOLTAGE]), _("Voltage out of spec"));
+  gtk_label_set_text(GTK_LABEL(asclepius_clone_voltage_debounce_label_ccc), _("Voltage debounce (ms)"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("12V"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("5V"));
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_relay_source_combobox_ccc), _("USB"));
@@ -4887,6 +4977,15 @@ void open_primary_relay_dialog_ccc(void)
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Off"));
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Warn only"));
     gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(action_combos[i]), _("Cut power"));
+  }
+
+  for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+  {
+    if (asclepius_clone_event_action_combobox_ccc[i] != NULL)
+    {
+      gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_clone_event_action_combobox_ccc[i]), _("Log"));
+      gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(asclepius_clone_event_action_combobox_ccc[i]), _("Stop clone"));
+    }
   }
 
   // gtk_entry_set_max_length (GTK_ENTRY (power_command_to_call_text_ccc), MAX_CALL_LENGTH);
@@ -5037,6 +5136,29 @@ void update_primary_relay_settings_from_buttons_ccc(void)
         }
       }
     }
+  }
+
+  for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+  {
+    if (asclepius_clone_event_enabled_checkbutton_ccc[i] != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_clone_event_enabled[i] =
+        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(asclepius_clone_event_enabled_checkbutton_ccc[i]));
+    }
+    if (asclepius_clone_event_action_combobox_ccc[i] != NULL)
+    {
+      int action_index = gtk_combo_box_get_active(GTK_COMBO_BOX(asclepius_clone_event_action_combobox_ccc[i]));
+      if (action_index >= ASCLEPIUS_CLONE_ACTION_LOG && action_index <= ASCLEPIUS_CLONE_ACTION_STOP)
+      {
+        primary_relay_settings_ccc.asclepius_clone_event_action[i] = action_index;
+      }
+    }
+  }
+
+  if (asclepius_clone_voltage_debounce_spinbutton_ccc != NULL)
+  {
+    primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms = asclepius_clone_clamp_voltage_debounce(
+      (unsigned int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(asclepius_clone_voltage_debounce_spinbutton_ccc)));
   }
 
   // = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON());
@@ -5981,6 +6103,30 @@ void update_primary_relay_button_settings_ccc(void)
       gtk_combo_box_set_active(GTK_COMBO_BOX(limit_combos[i]),
                                asclepius_preset_index_ccc(asclepius_ocp_limits_ccc, ASCLEPIUS_NUM_OCP_LIMITS, limits[i]));
     }
+  }
+
+  for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+  {
+    if (asclepius_clone_event_enabled_checkbutton_ccc[i] != NULL)
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(asclepius_clone_event_enabled_checkbutton_ccc[i]),
+                                   primary_relay_settings_ccc.asclepius_clone_event_enabled[i]);
+    }
+    if (asclepius_clone_event_action_combobox_ccc[i] != NULL)
+    {
+      gtk_combo_box_set_active(GTK_COMBO_BOX(asclepius_clone_event_action_combobox_ccc[i]),
+                               asclepius_clone_clamp_action(primary_relay_settings_ccc.asclepius_clone_event_action[i]));
+    }
+  }
+
+  if (asclepius_clone_voltage_debounce_spinbutton_ccc != NULL)
+  {
+    unsigned int clone_debounce = asclepius_clone_clamp_voltage_debounce(primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms);
+    gtk_adjustment_ccc =
+      (GtkAdjustment *)gtk_adjustment_new(clone_debounce, ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MIN_MS, ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS,
+                                          ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS, ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS * 10, 0);
+    gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(asclepius_clone_voltage_debounce_spinbutton_ccc), gtk_adjustment_ccc);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(asclepius_clone_voltage_debounce_spinbutton_ccc), clone_debounce);
   }
 
   // gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON (), primary_relay_settings_ccc. );
@@ -7623,6 +7769,32 @@ void read_config_file_with_name_ccc(char *filename)
       primary_relay_settings_ccc.asclepius_ocp_limit_usb = asclepius_ocp_clamp_limit_mA((unsigned int)config_setting_get_int(setting));
     }
 
+    {
+      size_t clone_event;
+
+      for (clone_event = 0; clone_event < ASCLEPIUS_CLONE_FAULT_COUNT; clone_event++)
+      {
+        setting = config_setting_get_member(group, asclepius_clone_enabled_config_keys[clone_event]);
+        if (setting != NULL)
+        {
+          primary_relay_settings_ccc.asclepius_clone_event_enabled[clone_event] = config_setting_get_bool(setting);
+        }
+
+        setting = config_setting_get_member(group, asclepius_clone_action_config_keys[clone_event]);
+        if (setting != NULL)
+        {
+          primary_relay_settings_ccc.asclepius_clone_event_action[clone_event] = asclepius_clone_clamp_action(config_setting_get_int(setting));
+        }
+      }
+    }
+
+    setting = config_setting_get_member(group, "asclepius_clone_voltage_debounce_ms");
+    if (setting != NULL)
+    {
+      primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms =
+        asclepius_clone_clamp_voltage_debounce((unsigned int)config_setting_get_int(setting));
+    }
+
     // setting = config_setting_get_member(group, "primary_relay_name");;
     // if (setting != NULL)
     // {
@@ -8048,6 +8220,22 @@ void write_config_file_with_name_ccc(char *filename)
 
   setting = config_setting_add(group, "asclepius_ocp_limit_usb", CONFIG_TYPE_INT);
   config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_ocp_limit_usb);
+
+  {
+    size_t clone_event;
+
+    for (clone_event = 0; clone_event < ASCLEPIUS_CLONE_FAULT_COUNT; clone_event++)
+    {
+      setting = config_setting_add(group, asclepius_clone_enabled_config_keys[clone_event], CONFIG_TYPE_BOOL);
+      config_setting_set_bool(setting, primary_relay_settings_ccc.asclepius_clone_event_enabled[clone_event]);
+
+      setting = config_setting_add(group, asclepius_clone_action_config_keys[clone_event], CONFIG_TYPE_INT);
+      config_setting_set_int(setting, primary_relay_settings_ccc.asclepius_clone_event_action[clone_event]);
+    }
+  }
+
+  setting = config_setting_add(group, "asclepius_clone_voltage_debounce_ms", CONFIG_TYPE_INT);
+  config_setting_set_int(setting, (int)primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms);
 
   // setting = config_setting_add(group, "primary_relay_name", CONFIG_TYPE_STRING);
   // config_setting_set_string(setting, primary_relay_settings_ccc.primary_relay_name);

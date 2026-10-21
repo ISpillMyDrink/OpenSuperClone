@@ -715,7 +715,7 @@
                                               <object class="GtkMenuItem" id="wdroylslowfixmi">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">Slow Fix</property>
+                                                <property name="label" translatable="yes">Slow Fix...</property>
                                                 <property name="use-underline">True</property>
                                                 <signal name="activate" handler="open_wd_royl_slow_fix_dialog_ccc" swapped="no"/>
                                               </object>
@@ -730,7 +730,7 @@
                                               <object class="GtkMenuItem" id="wdroylreadrommi">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">Read ROM</property>
+                                                <property name="label" translatable="yes">Read ROM...</property>
                                                 <property name="use-underline">True</property>
                                                 <signal name="activate" handler="run_wd_royl_read_rom_ccc" swapped="no"/>
                                               </object>
@@ -739,7 +739,7 @@
                                               <object class="GtkMenuItem" id="wdroylwriterommi">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="label" translatable="yes">Write ROM</property>
+                                                <property name="label" translatable="yes">Write ROM...</property>
                                                 <property name="use-underline">True</property>
                                                 <signal name="activate" handler="run_wd_royl_write_rom_ccc" swapped="no"/>
                                               </object>
@@ -8891,6 +8891,247 @@ no data</property>
                                       </packing>
                                     </child>
 <child>
+                                      <object class="GtkFrame" id="frame_asclepius_clone_guard">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label-xalign">0</property>
+                                        <property name="shadow-type">in</property>
+                                        <child>
+                                          <object class="GtkGrid" id="grid_asclepius_clone_guard">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="row-spacing">4</property>
+                                            <property name="column-spacing">8</property>
+                                            <property name="margin-start">12</property>
+                                            <property name="margin-bottom">4</property>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_guard_event_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Event</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_guard_enabled_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Enabled</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_guard_action_heading">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Action</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_hardware_ocp_label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Hardware OCP</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="asclepius_clone_hardware_ocp_enabled_checkbutton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="draw-indicator">True</property>
+                                                <property name="tooltip-text" translatable="yes">Watch for the board's hardware over-current flag during a clone run</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="asclepius_clone_hardware_ocp_action_combobox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Log the hardware OCP event, or stop the clone run after the current chunk</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_soft_ocp_cut_label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Software OCP cut</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="asclepius_clone_soft_ocp_cut_enabled_checkbutton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="draw-indicator">True</property>
+                                                <property name="tooltip-text" translatable="yes">Watch for a software OCP trip whose action is to cut power</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="asclepius_clone_soft_ocp_cut_action_combobox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Log the software OCP cut event, or stop the clone run after the current chunk</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_soft_ocp_warn_label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Software OCP warn</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="asclepius_clone_soft_ocp_warn_enabled_checkbutton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="draw-indicator">True</property>
+                                                <property name="tooltip-text" translatable="yes">Watch for a software OCP trip whose action is warn only</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="asclepius_clone_soft_ocp_warn_action_combobox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Log the software OCP warn event, or stop the clone run after the current chunk</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_voltage_label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Voltage out of spec</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="asclepius_clone_voltage_enabled_checkbutton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="draw-indicator">True</property>
+                                                <property name="tooltip-text" translatable="yes">Watch the 12V and 5V rails for a debounced out-of-spec voltage during a clone run</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="asclepius_clone_voltage_action_combobox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">Log the voltage event, or stop the clone run after the current chunk</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">2</property>
+                                                <property name="top-attach">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="asclepius_clone_voltage_debounce_label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="label" translatable="yes">Voltage debounce (ms)</property>
+                                                <property name="xalign">0</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">0</property>
+                                                <property name="top-attach">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkSpinButton" id="asclepius_clone_voltage_debounce_spinbutton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="halign">start</property>
+                                                <property name="tooltip-text" translatable="yes">How long a voltage reading must stay out of spec before it counts as a fault. Also controls the Asclepius voltage event log.</property>
+                                              </object>
+                                              <packing>
+                                                <property name="left-attach">1</property>
+                                                <property name="top-attach">5</property>
+                                                <property name="width">2</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel" id="asclepius_clone_guard_label">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Clone fault guard</property>
+                                            <property name="use-markup">True</property>
+                                            <property name="tooltip-text" translatable="yes">Stop a clone run when an enabled electrical fault is detected. The guard does not change rail power itself.</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">7</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <object class="GtkHBox" id="hbox_asclepius_buttons">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
@@ -8973,7 +9214,7 @@ no data</property>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">True</property>
-                                        <property name="position">7</property>
+                                        <property name="position">8</property>
                                       </packing>
                                     </child>
                                     <child>

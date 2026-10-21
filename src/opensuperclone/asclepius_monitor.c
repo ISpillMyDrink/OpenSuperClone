@@ -446,8 +446,16 @@ static double mon_mark_value_a12(const mon_sample_t *s)
 {
   return s->a12;
 }
+static double mon_mark_value_a5(const mon_sample_t *s)
+{
+  return s->a5;
+}
+static double mon_mark_value_ausb(const mon_sample_t *s)
+{
+  return s->ausb;
+}
 
-static void mon_draw_markers(cairo_t *cr, const mon_plot_t *p, bool (*bad)(const mon_sample_t *s), mon_value_fn value)
+static void mon_draw_markers(cairo_t *cr, const mon_plot_t *p, bool (*bad)(const mon_sample_t *s), mon_value_fn value, double r, double g, double b)
 {
   if (p->count <= 0)
   {
@@ -457,7 +465,7 @@ static void mon_draw_markers(cairo_t *cr, const mon_plot_t *p, bool (*bad)(const
   cairo_save(cr);
   cairo_rectangle(cr, p->x0, p->y0, p->w, p->h);
   cairo_clip(cr);
-  mon_set_source(cr, MON_COL_MARKER_R, MON_COL_MARKER_G, MON_COL_MARKER_B);
+  mon_set_source(cr, r, g, b);
 
   // Dedupe to one marker per pixel column so a long excursion stays legible.
   double last_x = -1000;
@@ -491,9 +499,17 @@ static bool mon_bad_v5(const mon_sample_t *s)
 {
   return s->oos5 != 0;
 }
-static bool mon_bad_any_current(const mon_sample_t *s)
+static bool mon_bad_current_12v(const mon_sample_t *s)
 {
-  return s->ocp12 || s->ocp5 || s->ocpusb;
+  return s->ocp12 != 0;
+}
+static bool mon_bad_current_5v(const mon_sample_t *s)
+{
+  return s->ocp5 != 0;
+}
+static bool mon_bad_current_usb(const mon_sample_t *s)
+{
+  return s->ocpusb != 0;
 }
 
 static void mon_draw_border(cairo_t *cr, const mon_plot_t *p)
@@ -695,7 +711,7 @@ static bool mon_draw_plot(cairo_t *cr, int width, int height, mon_plot_kind_t ki
     mon_draw_grid(cr, &plot, "V");
     mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MIN_MV / 1000.0);
     mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V12_MAX_MV / 1000.0);
-    mon_draw_markers(cr, &plot, mon_bad_v12, mon_mark_value_v12);
+    mon_draw_markers(cr, &plot, mon_bad_v12, mon_mark_value_v12, MON_COL_MARKER_R, MON_COL_MARKER_G, MON_COL_MARKER_B);
     mon_draw_series(cr, &plot, mon_series_v12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
     if (mon_hover_kind_ccc == MON_HOVER_V12)
     {
@@ -720,7 +736,7 @@ static bool mon_draw_plot(cairo_t *cr, int width, int height, mon_plot_kind_t ki
     mon_draw_grid(cr, &plot, "V");
     mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MIN_MV / 1000.0);
     mon_draw_dashed_limit(cr, &plot, ASCLEPIUS_V5_MAX_MV / 1000.0);
-    mon_draw_markers(cr, &plot, mon_bad_v5, mon_mark_value_v5);
+    mon_draw_markers(cr, &plot, mon_bad_v5, mon_mark_value_v5, MON_COL_MARKER_R, MON_COL_MARKER_G, MON_COL_MARKER_B);
     mon_draw_series(cr, &plot, mon_series_v5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
     if (mon_hover_kind_ccc == MON_HOVER_V5)
     {
@@ -765,7 +781,9 @@ static bool mon_draw_plot(cairo_t *cr, int width, int height, mon_plot_kind_t ki
     mon_setup_plot(&plot, width, height, 0.0, ymax, t_min, t_max);
 
     mon_draw_grid(cr, &plot, "A");
-    mon_draw_markers(cr, &plot, mon_bad_any_current, mon_mark_value_a12);
+    mon_draw_markers(cr, &plot, mon_bad_current_12v, mon_mark_value_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
+    mon_draw_markers(cr, &plot, mon_bad_current_5v, mon_mark_value_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
+    mon_draw_markers(cr, &plot, mon_bad_current_usb, mon_mark_value_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B);
     mon_draw_series(cr, &plot, mon_series_a12, MON_COL_12V_R, MON_COL_12V_G, MON_COL_12V_B);
     mon_draw_series(cr, &plot, mon_series_a5, MON_COL_5V_R, MON_COL_5V_G, MON_COL_5V_B);
     mon_draw_series(cr, &plot, mon_series_ausb, MON_COL_USB_R, MON_COL_USB_G, MON_COL_USB_B);
@@ -973,6 +991,14 @@ static void mon_format_stats(char *out, size_t out_size, const char *name, doubl
     strncat(flags, "  (off)", sizeof(flags) - strlen(flags) - 1);
   }
 
+  // Disabled rails contribute no voltage samples (and an offline rail may
+  // report zero); dividing by vcount would print "nan".
+  if (show_volts && st->vcount == 0)
+  {
+    snprintf(out, out_size, "%s: no voltage samples%s", name, flags);
+    return;
+  }
+
   char current[64];
   char vmin[64];
   char vavg[64];
@@ -1006,8 +1032,10 @@ void update_asclepius_monitor_ccc(void)
   }
 
   struct asclepius_status_t st;
+  char soft_ocp_status[sizeof(asclepius_soft_ocp_status)];
   asclepius_lock();
   st = asclepius_status;
+  snprintf(soft_ocp_status, sizeof(soft_ocp_status), "%s", asclepius_soft_ocp_status);
   asclepius_unlock();
 
   bool connected = asclepius_get_connection_status();
@@ -1112,7 +1140,7 @@ void update_asclepius_monitor_ccc(void)
     {
       snprintf(text, sizeof(text), "%s", _("Disconnected"));
     }
-    else if (asclepius_soft_ocp_status[0] != '\0')
+    else if (soft_ocp_status[0] != '\0')
     {
       snprintf(text, sizeof(text), "%s", _("Connected - soft OCP"));
     }
@@ -1121,11 +1149,11 @@ void update_asclepius_monitor_ccc(void)
       snprintf(text, sizeof(text), _("Connected - %u samples"), mon_sample_count(&asclepius_monitor));
     }
 
-    if (asclepius_soft_ocp_status[0] != '\0')
+    if (soft_ocp_status[0] != '\0')
     {
       // The trip detail is assembled by the poller and is not a catalog entry.
       size_t used = strlen(text);
-      snprintf(text + used, sizeof(text) - used, " - %s", asclepius_soft_ocp_status);
+      snprintf(text + used, sizeof(text) - used, " - %s", soft_ocp_status);
     }
 
     gtk_label_set_text(GTK_LABEL(asclepius_mon_status_label_ccc), text);
@@ -1133,13 +1161,12 @@ void update_asclepius_monitor_ccc(void)
     GtkStyleContext *status_context = gtk_widget_get_style_context(asclepius_mon_status_label_ccc);
     gtk_style_context_remove_class(status_context, "asclepius-status-ok");
     gtk_style_context_remove_class(status_context, "asclepius-status-fault");
-    gtk_style_context_add_class(status_context,
-                                asclepius_soft_ocp_status[0] != '\0' || !connected ? "asclepius-status-fault" : "asclepius-status-ok");
+    gtk_style_context_add_class(status_context, soft_ocp_status[0] != '\0' || !connected ? "asclepius-status-fault" : "asclepius-status-ok");
   }
 
   if (asclepius_mon_reset_ocp_button_ccc != NULL)
   {
-    gtk_widget_set_sensitive(asclepius_mon_reset_ocp_button_ccc, connected && asclepius_soft_ocp_status[0] != '\0');
+    gtk_widget_set_sensitive(asclepius_mon_reset_ocp_button_ccc, connected && soft_ocp_status[0] != '\0');
   }
 
   if (asclepius_mon_pause_button_ccc != NULL)

@@ -32,6 +32,11 @@
 #define ASCLEPIUS_STATUS_PACKET_SIZE 28
 #define ASCLEPIUS_STATUS_TIMEOUT_MS 300
 
+// A control-port write may wait for room in the transmit buffer, but not
+// forever: the poller holds the serial lock while writing, so an unresponsive
+// USB-serial adapter must fail cleanly instead of freezing the GUI.
+#define ASCLEPIUS_CONTROL_WRITE_TIMEOUT_MS 5000
+
 // ATX spec voltage limits (in millivolts), +/-5%
 #define ASCLEPIUS_V12_MIN_MV 11400
 #define ASCLEPIUS_V12_MAX_MV 12600
@@ -45,6 +50,7 @@ extern char asclepius_ext_tty_device_ccc[256];
 extern int asclepius_ext_baud_rate_ccc;
 extern bool asclepius_ext_connected;
 extern int asclepius_ext_serial_port;
+extern _Atomic bool asclepius_connected;
 
 struct asclepius_command_t
 {
@@ -69,6 +75,79 @@ struct asclepius_status_t
 };
 extern struct asclepius_status_t asclepius_status;
 
+// Clone fault guard. The clone engine asks the monitor whether an enabled
+// electrical fault has been latched since the run started. An event that is
+// set to Stop ends the run after the chunk in progress has been processed.
+#define ASCLEPIUS_CLONE_FAULT_RETURN_CODE (-17)
+#define ASCLEPIUS_CLONE_CONTINUE 0
+#define ASCLEPIUS_CLONE_STOP 1
+
+#define ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP 0
+#define ASCLEPIUS_CLONE_FAULT_SOFT_OCP_CUT 1
+#define ASCLEPIUS_CLONE_FAULT_SOFT_OCP_WARN 2
+#define ASCLEPIUS_CLONE_FAULT_VOLTAGE 3
+#define ASCLEPIUS_CLONE_FAULT_COUNT 4
+
+// How long an out-of-spec voltage reading must hold before the poller reports
+// it. A rail sitting on a limit jitters across it every poll; without this the
+// event log gets two lines per poll instead of one per excursion. The same
+// shared value gates the clone guard's voltage event.
+#define ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MIN_MS 0
+#define ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS 5000
+#define ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS 50
+#define ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_DEFAULT_MS 250
+
+typedef enum
+{
+  ASCLEPIUS_CLONE_ACTION_LOG = 0,
+  ASCLEPIUS_CLONE_ACTION_STOP = 1
+} asclepius_clone_action_t;
+
+struct asclepius_clone_event_setting_t
+{
+  bool enabled;
+  asclepius_clone_action_t action;
+};
+
+struct asclepius_clone_settings_t
+{
+  struct asclepius_clone_event_setting_t events[ASCLEPIUS_CLONE_FAULT_COUNT];
+  unsigned int voltage_debounce_ms;
+};
+extern struct asclepius_clone_settings_t asclepius_clone_settings_ccc;
+
+// Clamp a clone action / voltage debounce to the supported range
+asclepius_clone_action_t asclepius_clone_clamp_action(int action);
+
+unsigned int asclepius_clone_clamp_voltage_debounce(unsigned int debounce_ms);
+
+// Copy the GUI settings into the monitor. The monitor clamps every value.
+void asclepius_clone_set_settings(const struct asclepius_clone_settings_t *settings);
+
+void asclepius_clone_get_settings(struct asclepius_clone_settings_t *settings);
+
+// Start/stop one clone run. Starting resets the per-run latch and takes a
+// baseline of any fault that is already active, so a pre-existing trip can
+// refuse the run while a recovered transient from an earlier run is ignored.
+void asclepius_clone_run_begin(void);
+
+// Finish one clone run. Log events that did not stop the run are written here
+// as the single combined console block for the run. result is the clone
+// return code, used to describe the outcome.
+void asclepius_clone_run_end(int result);
+
+// Check the latched monitor events. Returns ASCLEPIUS_CLONE_STOP when an
+// enabled Stop event is pending, otherwise ASCLEPIUS_CLONE_CONTINUE. The first
+// Stop check writes the combined console block and stores the modal text.
+int asclepius_clone_fault_check(long long current_position);
+
+// Record the chunk currently being read, so a fault that is latched during the
+// read can report the completed chunk and the position after it.
+void asclepius_clone_note_chunk(long long position, long long size, int direction, const char *phase);
+
+// Text for the GUI modal after an Asclepius fault stop.
+char *asclepius_clone_get_message(void);
+
 int asclepius_connect(void);
 
 void asclepius_disconnect(void);
@@ -80,11 +159,6 @@ int asclepius_enable_channel(uint8_t channel);
 int asclepius_disable_channel(uint8_t channel);
 
 int asclepius_get_status(void);
-
-// How long an out-of-spec reading must hold before the event log reports it.
-// A rail sitting on a limit jitters across it every poll; without this the log
-// gets two lines per poll instead of one per excursion.
-#define ASCLEPIUS_EVENT_DEBOUNCE_MS 250
 
 // Status poll interval for the background poller thread, in milliseconds
 #define ASCLEPIUS_POLL_INTERVAL_MIN_MS 25
@@ -111,10 +185,18 @@ void asclepius_unlock(void);
 // Action taken when a rail trips its software OCP limit
 typedef enum
 {
-  ASCLEPIUS_OCP_OFF = 0,  // no software monitoring on this rail
+  ASCLEPIUS_OCP_OFF = 0,  // no software monitoring on this rail (default)
   ASCLEPIUS_OCP_WARN = 1, // latch and report, leave the rail powered
   ASCLEPIUS_OCP_CUT = 2   // latch and command the rail off
 } asclepius_ocp_action_t;
+
+// Software OCP is a slow supervisory limit. A rail must stay over its limit
+// for the full trip delay before it latches, and readings during the startup
+// grace window after a rail is switched on are ignored. This keeps a single
+// noisy sample or a normal drive spin-up from cutting power.
+#define ASCLEPIUS_OCP_TRIP_DELAY_DEFAULT_MS 1000
+#define ASCLEPIUS_OCP_STARTUP_GRACE_DEFAULT_MS 2000
+#define ASCLEPIUS_OCP_CLEAR_DELAY_DEFAULT_MS 1000
 
 struct asclepius_ocp_rail_t
 {
@@ -122,6 +204,17 @@ struct asclepius_ocp_rail_t
   uint32_t trip_ma; // current at the moment of the trip
   unsigned int limit_ma;
   asclepius_ocp_action_t action;
+
+  // Timing state, owned by the poller and protected by asclepius_lock().
+  unsigned int trip_delay_ms;
+  unsigned int startup_grace_ms;
+  unsigned int clear_delay_ms;
+  bool over_pending;
+  uint32_t over_since_ms;
+  bool enabled_was_on;
+  uint32_t enabled_since_ms;
+  bool clear_pending;
+  uint32_t clear_since_ms;
 };
 extern struct asclepius_ocp_rail_t asclepius_ocp_12v_ccc;
 extern struct asclepius_ocp_rail_t asclepius_ocp_5v_ccc;

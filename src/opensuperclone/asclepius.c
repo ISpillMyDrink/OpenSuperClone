@@ -10,24 +10,57 @@
 #include <dirent.h>
 #include <poll.h>
 #include <pthread.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <time.h>
 
-bool asclepius_connected = false;
+_Atomic bool asclepius_connected = false;
 int asclepius_serial_port = -1;
 
 _Atomic unsigned int asclepius_poll_interval_ms = ASCLEPIUS_POLL_INTERVAL_DEFAULT_MS;
 
-struct asclepius_ocp_rail_t asclepius_ocp_12v_ccc = {false, 0, ASCLEPIUS_OCP_LIMIT_DEFAULT_MA, ASCLEPIUS_OCP_CUT};
-struct asclepius_ocp_rail_t asclepius_ocp_5v_ccc = {false, 0, ASCLEPIUS_OCP_LIMIT_DEFAULT_MA, ASCLEPIUS_OCP_CUT};
-struct asclepius_ocp_rail_t asclepius_ocp_usb_ccc = {false, 0, ASCLEPIUS_OCP_LIMIT_DEFAULT_MA, ASCLEPIUS_OCP_CUT};
+struct asclepius_ocp_rail_t asclepius_ocp_12v_ccc = {
+  .limit_ma = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA,
+  .action = ASCLEPIUS_OCP_OFF,
+  .trip_delay_ms = ASCLEPIUS_OCP_TRIP_DELAY_DEFAULT_MS,
+  .startup_grace_ms = ASCLEPIUS_OCP_STARTUP_GRACE_DEFAULT_MS,
+  .clear_delay_ms = ASCLEPIUS_OCP_CLEAR_DELAY_DEFAULT_MS,
+};
+struct asclepius_ocp_rail_t asclepius_ocp_5v_ccc = {
+  .limit_ma = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA,
+  .action = ASCLEPIUS_OCP_OFF,
+  .trip_delay_ms = ASCLEPIUS_OCP_TRIP_DELAY_DEFAULT_MS,
+  .startup_grace_ms = ASCLEPIUS_OCP_STARTUP_GRACE_DEFAULT_MS,
+  .clear_delay_ms = ASCLEPIUS_OCP_CLEAR_DELAY_DEFAULT_MS,
+};
+struct asclepius_ocp_rail_t asclepius_ocp_usb_ccc = {
+  .limit_ma = ASCLEPIUS_OCP_LIMIT_DEFAULT_MA,
+  .action = ASCLEPIUS_OCP_OFF,
+  .trip_delay_ms = ASCLEPIUS_OCP_TRIP_DELAY_DEFAULT_MS,
+  .startup_grace_ms = ASCLEPIUS_OCP_STARTUP_GRACE_DEFAULT_MS,
+  .clear_delay_ms = ASCLEPIUS_OCP_CLEAR_DELAY_DEFAULT_MS,
+};
 char asclepius_soft_ocp_status[256] = "";
 
 static pthread_mutex_t asclepius_serial_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t asclepius_port_claim_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t asclepius_poller_thread;
 static bool asclepius_poller_running = false;
 static volatile bool asclepius_stop_poller = false;
+
+// One physical tty may only be opened by one role. The control port and the
+// terminal passthrough are separate interfaces on the same board, but their
+// paths can be swapped or aliased; tracking the resolved device prevents both
+// from reading the same byte stream.
+typedef enum
+{
+  ASCLEPIUS_PORT_CONTROL = 0,
+  ASCLEPIUS_PORT_TERMINAL
+} asclepius_port_role_t;
+
+static bool asclepius_port_claimed[2] = {false, false};
+static dev_t asclepius_port_rdev[2];
 
 char asclepius_tty_device_ccc[256] = "";
 char asclepius_ext_tty_device_ccc[256] = "";
@@ -40,10 +73,89 @@ void (*asclepius_ext_output_ccc)(const char *text, int byte_count) = NULL;
 struct asclepius_command_t asclepius_command;
 struct asclepius_status_t asclepius_status;
 
+static bool asclepius_resolve_device(const char *path, dev_t *rdev)
+{
+  struct stat st;
+
+  if (path == NULL || path[0] == '\0')
+  {
+    return false;
+  }
+
+  if (stat(path, &st) != 0)
+  {
+    return false;
+  }
+
+  *rdev = st.st_rdev;
+  return true;
+}
+
+// Claim a tty for one role before opening it. The terminal may never claim the
+// configured control port, even while the control side is disconnected: opening
+// it would consume protocol bytes as soon as the poller reconnects.
+static bool asclepius_serial_claim(asclepius_port_role_t role, const char *path)
+{
+  asclepius_port_role_t other = role == ASCLEPIUS_PORT_CONTROL ? ASCLEPIUS_PORT_TERMINAL : ASCLEPIUS_PORT_CONTROL;
+  dev_t rdev;
+  dev_t control_rdev;
+  bool allowed = true;
+
+  if (!asclepius_resolve_device(path, &rdev))
+  {
+    return false;
+  }
+
+  pthread_mutex_lock(&asclepius_port_claim_mutex);
+
+  asclepius_port_claimed[role] = false;
+
+  if (asclepius_port_claimed[other] && asclepius_port_rdev[other] == rdev)
+  {
+    allowed = false;
+  }
+
+  if (allowed && role == ASCLEPIUS_PORT_TERMINAL && asclepius_resolve_device(asclepius_tty_device_ccc, &control_rdev) && control_rdev == rdev)
+  {
+    allowed = false;
+  }
+
+  if (allowed)
+  {
+    asclepius_port_claimed[role] = true;
+    asclepius_port_rdev[role] = rdev;
+  }
+  else
+  {
+    errno = EBUSY;
+  }
+
+  pthread_mutex_unlock(&asclepius_port_claim_mutex);
+
+  return allowed;
+}
+
+static void asclepius_serial_release(asclepius_port_role_t role)
+{
+  pthread_mutex_lock(&asclepius_port_claim_mutex);
+  asclepius_port_claimed[role] = false;
+  pthread_mutex_unlock(&asclepius_port_claim_mutex);
+}
+
 static bool asclepius_write_all(const void *buffer, size_t length)
 {
   const uint8_t *data = buffer;
   size_t offset = 0;
+  struct timespec deadline;
+
+  clock_gettime(CLOCK_MONOTONIC, &deadline);
+  deadline.tv_sec += ASCLEPIUS_CONTROL_WRITE_TIMEOUT_MS / 1000;
+  deadline.tv_nsec += (long)(ASCLEPIUS_CONTROL_WRITE_TIMEOUT_MS % 1000) * 1000000L;
+  if (deadline.tv_nsec >= 1000000000L)
+  {
+    deadline.tv_sec += deadline.tv_nsec / 1000000000L;
+    deadline.tv_nsec %= 1000000000L;
+  }
 
   while (offset < length)
   {
@@ -53,6 +165,54 @@ static bool asclepius_write_all(const void *buffer, size_t length)
     {
       if (errno == EINTR)
       {
+        continue;
+      }
+
+      if (errno == EAGAIN || errno == EWOULDBLOCK)
+      {
+        struct timespec now;
+        struct pollfd poll_fd;
+        long remaining_ms;
+        int poll_result;
+
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        remaining_ms = (long)(deadline.tv_sec - now.tv_sec) * 1000L + (deadline.tv_nsec - now.tv_nsec) / 1000000L;
+
+        if (remaining_ms <= 0)
+        {
+          printf("Error writing: timed out after %zu of %zu bytes\n", offset, length);
+          return false;
+        }
+
+        poll_fd.fd = asclepius_serial_port;
+        poll_fd.events = POLLOUT;
+        poll_fd.revents = 0;
+
+        poll_result = poll(&poll_fd, 1, (int)remaining_ms);
+
+        if (poll_result < 0)
+        {
+          if (errno == EINTR)
+          {
+            continue;
+          }
+
+          printf("Error writing: %s\n", strerror(errno));
+          return false;
+        }
+
+        if (poll_result == 0)
+        {
+          printf("Error writing: timed out after %zu of %zu bytes\n", offset, length);
+          return false;
+        }
+
+        if ((poll_fd.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0)
+        {
+          printf("Error writing: port hung up\n");
+          return false;
+        }
+
         continue;
       }
 
@@ -245,7 +405,26 @@ static bool asclepius_reconnect(void)
     asclepius_serial_port = -1;
   }
 
-  asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY);
+  asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
+
+  if (!asclepius_serial_claim(ASCLEPIUS_PORT_CONTROL, asclepius_tty_device_ccc))
+  {
+    if (errno != last_errno)
+    {
+      if (errno == EBUSY)
+      {
+        printf("Error: Asclepius control port %s is already in use by the UART terminal\n", asclepius_tty_device_ccc);
+      }
+      else
+      {
+        printf("Error claiming Asclepius control port %s: %s\n", asclepius_tty_device_ccc, strerror(errno));
+      }
+      last_errno = errno;
+    }
+    return false;
+  }
+
+  asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
   if (asclepius_serial_port < 0)
   {
@@ -257,6 +436,7 @@ static bool asclepius_reconnect(void)
       printf("Error %i opening Asclepius port %s: %s\n", errno, asclepius_tty_device_ccc, strerror(errno));
       last_errno = errno;
     }
+    asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
     return false;
   }
 
@@ -264,6 +444,7 @@ static bool asclepius_reconnect(void)
   {
     close(asclepius_serial_port);
     asclepius_serial_port = -1;
+    asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
     return false;
   }
 
@@ -341,6 +522,628 @@ static const char *asclepius_ocp_rail_name(uint8_t channel)
   default:
     return "unknown";
   }
+}
+
+// ---------------------------------------------------------------------------
+// Clone fault guard
+//
+// The monitor already detects hardware OCP, software OCP trips, and debounced
+// voltage excursions. This layer records the rail state at the moment each
+// enabled event is seen, and lets the clone engine stop at a chunk boundary.
+// It deliberately does not take any power action: the rails are left exactly
+// as the fault found them.
+// ---------------------------------------------------------------------------
+
+#define ASCLEPIUS_CLONE_RAIL_COUNT 3
+#define ASCLEPIUS_CLONE_EVENT_BIT(event) (1u << (event))
+
+static const uint8_t asclepius_clone_channels[ASCLEPIUS_CLONE_RAIL_COUNT] = {ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V};
+
+struct asclepius_clone_settings_t asclepius_clone_settings_ccc = {
+  .events =
+    {
+      {false, ASCLEPIUS_CLONE_ACTION_STOP},
+      {false, ASCLEPIUS_CLONE_ACTION_STOP},
+      {false, ASCLEPIUS_CLONE_ACTION_LOG},
+      {false, ASCLEPIUS_CLONE_ACTION_STOP},
+    },
+  .voltage_debounce_ms = ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_DEFAULT_MS,
+};
+
+struct asclepius_clone_rail_snapshot_t
+{
+  uint32_t events;
+  uint32_t voltage_mv;
+  uint32_t current_ma;
+  bool enabled;
+  struct asclepius_ocp_rail_t ocp;
+};
+
+struct asclepius_clone_snapshot_t
+{
+  struct asclepius_clone_rail_snapshot_t rails[ASCLEPIUS_CLONE_RAIL_COUNT];
+};
+
+static struct asclepius_clone_snapshot_t asclepius_clone_latch;
+static struct asclepius_clone_snapshot_t asclepius_clone_observed;
+static bool asclepius_clone_run_active = false;
+static bool asclepius_clone_stop_requested = false;
+static bool asclepius_clone_block_written = false;
+static bool asclepius_clone_observed_any = false;
+static bool asclepius_clone_have_last_chunk = false;
+static long long asclepius_clone_last_lba = 0;
+static long long asclepius_clone_last_size = 0;
+static long long asclepius_clone_last_check_position = 0;
+static int asclepius_clone_last_direction = 0;
+static char asclepius_clone_last_phase[128] = "";
+static char asclepius_clone_message[4096] = "";
+
+asclepius_clone_action_t asclepius_clone_clamp_action(int action)
+{
+  return action == ASCLEPIUS_CLONE_ACTION_STOP ? ASCLEPIUS_CLONE_ACTION_STOP : ASCLEPIUS_CLONE_ACTION_LOG;
+}
+
+unsigned int asclepius_clone_clamp_voltage_debounce(unsigned int debounce_ms)
+{
+  // The minimum is zero, so an unsigned value is already at or above it.
+  if (debounce_ms > ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS)
+  {
+    debounce_ms = ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS;
+  }
+
+  debounce_ms = ((debounce_ms + (ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS / 2)) / ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS) *
+                ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_STEP_MS;
+
+  if (debounce_ms > ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS)
+  {
+    debounce_ms = ASCLEPIUS_CLONE_VOLTAGE_DEBOUNCE_MAX_MS;
+  }
+
+  return debounce_ms;
+}
+
+void asclepius_clone_set_settings(const struct asclepius_clone_settings_t *settings)
+{
+  struct asclepius_clone_settings_t copy;
+  size_t i;
+
+  if (settings == NULL)
+  {
+    return;
+  }
+
+  copy = *settings;
+  for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+  {
+    copy.events[i].action = asclepius_clone_clamp_action(copy.events[i].action);
+  }
+  copy.voltage_debounce_ms = asclepius_clone_clamp_voltage_debounce(copy.voltage_debounce_ms);
+
+  asclepius_lock();
+  asclepius_clone_settings_ccc = copy;
+  asclepius_unlock();
+}
+
+void asclepius_clone_get_settings(struct asclepius_clone_settings_t *settings)
+{
+  if (settings == NULL)
+  {
+    return;
+  }
+
+  asclepius_lock();
+  *settings = asclepius_clone_settings_ccc;
+  asclepius_unlock();
+}
+
+static int asclepius_clone_rail_index(uint8_t channel)
+{
+  size_t i;
+
+  for (i = 0; i < ASCLEPIUS_CLONE_RAIL_COUNT; i++)
+  {
+    if (asclepius_clone_channels[i] == channel)
+    {
+      return (int)i;
+    }
+  }
+
+  return -1;
+}
+
+static const char *asclepius_clone_event_name(int event)
+{
+  switch (event)
+  {
+  case ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP:
+    return "hardware OCP";
+  case ASCLEPIUS_CLONE_FAULT_SOFT_OCP_CUT:
+    return "software OCP cut";
+  case ASCLEPIUS_CLONE_FAULT_SOFT_OCP_WARN:
+    return "software OCP warn";
+  case ASCLEPIUS_CLONE_FAULT_VOLTAGE:
+    return "voltage out of spec";
+  default:
+    return "unknown event";
+  }
+}
+
+// Capture the rail state for one event. Must be called with the lock held.
+static void asclepius_clone_rail_snapshot_locked(int rail_index, int event)
+{
+  struct asclepius_clone_rail_snapshot_t *snapshot;
+  const struct asclepius_ocp_rail_t *rail;
+
+  if (rail_index < 0 || rail_index >= ASCLEPIUS_CLONE_RAIL_COUNT)
+  {
+    return;
+  }
+
+  snapshot = &asclepius_clone_latch.rails[rail_index];
+  snapshot->events |= ASCLEPIUS_CLONE_EVENT_BIT(event);
+
+  switch (asclepius_clone_channels[rail_index])
+  {
+  case ASCLEPIUS_MAIN12V:
+    snapshot->enabled = asclepius_status.main12v_enabled;
+    snapshot->voltage_mv = asclepius_status.main12v_voltage;
+    snapshot->current_ma = asclepius_status.main12v_current;
+    break;
+  case ASCLEPIUS_MAIN5V:
+    snapshot->enabled = asclepius_status.main5v_enabled;
+    snapshot->voltage_mv = asclepius_status.main5v_voltage;
+    snapshot->current_ma = asclepius_status.main5v_current;
+    break;
+  case ASCLEPIUS_USB5V:
+    snapshot->enabled = asclepius_status.usb5v_enabled;
+    snapshot->voltage_mv = 0;
+    snapshot->current_ma = asclepius_status.usb5v_current;
+    break;
+  default:
+    snapshot->enabled = false;
+    snapshot->voltage_mv = 0;
+    snapshot->current_ma = 0;
+    break;
+  }
+
+  rail = asclepius_ocp_rail(asclepius_clone_channels[rail_index]);
+  if (rail != NULL)
+  {
+    snapshot->ocp = *rail;
+  }
+  else
+  {
+    memset(&snapshot->ocp, 0, sizeof(snapshot->ocp));
+  }
+}
+
+// Must be called with the lock held.
+static void asclepius_clone_latch_hardware_ocp_locked(void)
+{
+  if (!asclepius_clone_run_active || !asclepius_connected)
+  {
+    return;
+  }
+
+  if (asclepius_status.main12v_ocp)
+  {
+    asclepius_clone_rail_snapshot_locked(0, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+  }
+  if (asclepius_status.main5v_ocp)
+  {
+    asclepius_clone_rail_snapshot_locked(1, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+  }
+  if (asclepius_status.usb5v_ocp)
+  {
+    asclepius_clone_rail_snapshot_locked(2, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+  }
+}
+
+// Must be called with the lock held.
+static void asclepius_clone_latch_soft_ocp_locked(int rail_index, asclepius_ocp_action_t action)
+{
+  if (!asclepius_clone_run_active)
+  {
+    return;
+  }
+
+  if (action == ASCLEPIUS_OCP_CUT)
+  {
+    asclepius_clone_rail_snapshot_locked(rail_index, ASCLEPIUS_CLONE_FAULT_SOFT_OCP_CUT);
+  }
+  else if (action == ASCLEPIUS_OCP_WARN)
+  {
+    asclepius_clone_rail_snapshot_locked(rail_index, ASCLEPIUS_CLONE_FAULT_SOFT_OCP_WARN);
+  }
+}
+
+// Voltage events are found by the poller after its debounce interval. This
+// helper takes the lock itself because asclepius_event_check() has already
+// released it when it reports an excursion.
+static void asclepius_clone_latch_voltage(uint8_t channel, uint32_t voltage_mv)
+{
+  int rail_index = asclepius_clone_rail_index(channel);
+
+  if (rail_index < 0)
+  {
+    return;
+  }
+
+  asclepius_lock();
+  if (asclepius_clone_run_active)
+  {
+    asclepius_clone_rail_snapshot_locked(rail_index, ASCLEPIUS_CLONE_FAULT_VOLTAGE);
+    asclepius_clone_latch.rails[rail_index].voltage_mv = voltage_mv;
+  }
+  asclepius_unlock();
+}
+
+// Must be called with the lock held. Startup includes voltage so a rail that is
+// already outside its limits refuses the run; normal checks do not rescan
+// voltage, because the poller's debounce is the authority for excursions.
+static void asclepius_clone_scan_locked(bool include_voltage)
+{
+  size_t i;
+
+  if (!asclepius_connected)
+  {
+    return;
+  }
+
+  for (i = 0; i < ASCLEPIUS_CLONE_RAIL_COUNT; i++)
+  {
+    struct asclepius_ocp_rail_t *rail = asclepius_ocp_rail(asclepius_clone_channels[i]);
+    bool out_of_spec = false;
+
+    if (asclepius_clone_channels[i] == ASCLEPIUS_MAIN12V && asclepius_status.main12v_ocp)
+    {
+      asclepius_clone_rail_snapshot_locked((int)i, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+    }
+    else if (asclepius_clone_channels[i] == ASCLEPIUS_MAIN5V && asclepius_status.main5v_ocp)
+    {
+      asclepius_clone_rail_snapshot_locked((int)i, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+    }
+    else if (asclepius_clone_channels[i] == ASCLEPIUS_USB5V && asclepius_status.usb5v_ocp)
+    {
+      asclepius_clone_rail_snapshot_locked((int)i, ASCLEPIUS_CLONE_FAULT_HARDWARE_OCP);
+    }
+
+    if (rail == NULL || !rail->tripped)
+    {
+      if (!include_voltage)
+      {
+        continue;
+      }
+    }
+    else
+    {
+      asclepius_clone_latch_soft_ocp_locked((int)i, rail->action);
+    }
+
+    if (!include_voltage)
+    {
+      continue;
+    }
+
+    if (asclepius_clone_channels[i] == ASCLEPIUS_MAIN12V)
+    {
+      out_of_spec = asclepius_status.main12v_enabled &&
+                    (asclepius_status.main12v_voltage < ASCLEPIUS_V12_MIN_MV || asclepius_status.main12v_voltage > ASCLEPIUS_V12_MAX_MV);
+    }
+    else if (asclepius_clone_channels[i] == ASCLEPIUS_MAIN5V)
+    {
+      out_of_spec = asclepius_status.main5v_enabled &&
+                    (asclepius_status.main5v_voltage < ASCLEPIUS_V5_MIN_MV || asclepius_status.main5v_voltage > ASCLEPIUS_V5_MAX_MV);
+    }
+
+    if (out_of_spec)
+    {
+      uint32_t voltage_mv = asclepius_clone_channels[i] == ASCLEPIUS_MAIN12V ? asclepius_status.main12v_voltage : asclepius_status.main5v_voltage;
+      asclepius_clone_rail_snapshot_locked((int)i, ASCLEPIUS_CLONE_FAULT_VOLTAGE);
+      asclepius_clone_latch.rails[i].voltage_mv = voltage_mv;
+    }
+  }
+}
+
+// Must be called with the lock held. Only enabled events are copied into the
+// run's observed snapshot; disabled event types are ignored entirely.
+static void asclepius_clone_merge_locked(void)
+{
+  int rail_index;
+  int event;
+
+  for (rail_index = 0; rail_index < ASCLEPIUS_CLONE_RAIL_COUNT; rail_index++)
+  {
+    for (event = 0; event < ASCLEPIUS_CLONE_FAULT_COUNT; event++)
+    {
+      uint32_t bit = ASCLEPIUS_CLONE_EVENT_BIT(event);
+
+      if (!(asclepius_clone_latch.rails[rail_index].events & bit) || !asclepius_clone_settings_ccc.events[event].enabled)
+      {
+        continue;
+      }
+
+      asclepius_clone_observed.rails[rail_index].events |= bit;
+      asclepius_clone_observed.rails[rail_index].voltage_mv = asclepius_clone_latch.rails[rail_index].voltage_mv;
+      asclepius_clone_observed.rails[rail_index].current_ma = asclepius_clone_latch.rails[rail_index].current_ma;
+      asclepius_clone_observed.rails[rail_index].enabled = asclepius_clone_latch.rails[rail_index].enabled;
+      asclepius_clone_observed.rails[rail_index].ocp = asclepius_clone_latch.rails[rail_index].ocp;
+      asclepius_clone_observed_any = true;
+
+      if (asclepius_clone_settings_ccc.events[event].action == ASCLEPIUS_CLONE_ACTION_STOP)
+      {
+        asclepius_clone_stop_requested = true;
+      }
+    }
+  }
+}
+
+static void asclepius_clone_appendf(char *buffer, size_t size, size_t *used, const char *format, ...)
+{
+  va_list args;
+  int written;
+
+  if (*used >= size)
+  {
+    return;
+  }
+
+  va_start(args, format);
+  written = vsnprintf(buffer + *used, size - *used, format, args);
+  va_end(args);
+
+  if (written < 0)
+  {
+    return;
+  }
+
+  *used += (size_t)written;
+  if (*used >= size)
+  {
+    *used = size - 1;
+  }
+}
+
+// Must be called with the lock held. The same text is used for the console
+// block and the GUI modal.
+static void asclepius_clone_format_locked(long long current_position, int result)
+{
+  char timestamp[64] = "";
+  const char *phase = asclepius_clone_last_phase[0] != '\0' ? asclepius_clone_last_phase : "startup";
+  const char *direction = asclepius_clone_last_direction == 0 ? "forward" : (asclepius_clone_last_direction == 1 ? "reverse" : "unknown");
+  time_t now = time(NULL);
+  struct tm local_time;
+  size_t used = 0;
+  int rail_index;
+  int event;
+
+  if (localtime_r(&now, &local_time) != NULL)
+  {
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", &local_time);
+  }
+
+  asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Asclepius clone fault guard%s%s\n",
+                          timestamp[0] != '\0' ? " - " : "", timestamp);
+
+  if (asclepius_clone_stop_requested)
+  {
+    if (asclepius_clone_have_last_chunk)
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                              "Outcome: clone stopped after the current chunk; no additional power action was taken.\n");
+    }
+    else
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                              "Outcome: clone refused before the first chunk; no additional power action was taken.\n");
+    }
+  }
+  else if (result == 0)
+  {
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                            "Outcome: clone completed; log-only faults were recorded.\n");
+  }
+  else
+  {
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                            "Outcome: clone ended with return code %d; log-only faults were recorded.\n", result);
+  }
+
+  asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Phase: %s, direction: %s\n", phase, direction);
+
+  if (asclepius_clone_have_last_chunk)
+  {
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Completed/attempted chunk: LBA 0x%llx, %lld sectors\n",
+                            (unsigned long long)asclepius_clone_last_lba, asclepius_clone_last_size);
+  }
+  else
+  {
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Completed/attempted chunk: none\n");
+  }
+
+  asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Current position: LBA 0x%llx\n",
+                          (unsigned long long)current_position);
+
+  asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Latched events:\n");
+
+  for (rail_index = 0; rail_index < ASCLEPIUS_CLONE_RAIL_COUNT; rail_index++)
+  {
+    bool first = true;
+
+    if (asclepius_clone_observed.rails[rail_index].events == 0)
+    {
+      continue;
+    }
+
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                            "  %s: ", asclepius_ocp_rail_name(asclepius_clone_channels[rail_index]));
+
+    for (event = 0; event < ASCLEPIUS_CLONE_FAULT_COUNT; event++)
+    {
+      if (asclepius_clone_observed.rails[rail_index].events & ASCLEPIUS_CLONE_EVENT_BIT(event))
+      {
+        asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "%s%s", first ? "" : ", ",
+                                asclepius_clone_event_name(event));
+        first = false;
+      }
+    }
+
+    asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "\n");
+  }
+
+  asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "Rail snapshot at event time:\n");
+
+  for (rail_index = 0; rail_index < ASCLEPIUS_CLONE_RAIL_COUNT; rail_index++)
+  {
+    const struct asclepius_clone_rail_snapshot_t *snapshot = &asclepius_clone_observed.rails[rail_index];
+
+    if (snapshot->events == 0)
+    {
+      continue;
+    }
+
+    if (asclepius_clone_channels[rail_index] == ASCLEPIUS_USB5V)
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "  USB 5V: no voltage reading, %u mA, %s\n",
+                              snapshot->current_ma, snapshot->enabled ? "on" : "off");
+    }
+    else
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "  %s: %.3f V, %u mA, %s\n",
+                              asclepius_ocp_rail_name(asclepius_clone_channels[rail_index]), snapshot->voltage_mv / 1000.0, snapshot->current_ma,
+                              snapshot->enabled ? "on" : "off");
+    }
+
+    if (snapshot->ocp.tripped)
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used,
+                              "    software OCP: tripped at %u mA (limit %u mA, %s)\n", snapshot->ocp.trip_ma, snapshot->ocp.limit_ma,
+                              snapshot->ocp.action == ASCLEPIUS_OCP_CUT ? "cut" : "warn");
+    }
+    else if (snapshot->ocp.action != ASCLEPIUS_OCP_OFF)
+    {
+      asclepius_clone_appendf(asclepius_clone_message, sizeof(asclepius_clone_message), &used, "    software OCP: armed at %u mA (%s), not tripped\n",
+                              snapshot->ocp.limit_ma, snapshot->ocp.action == ASCLEPIUS_OCP_CUT ? "cut" : "warn");
+    }
+  }
+}
+
+void asclepius_clone_run_begin(void)
+{
+  asclepius_lock();
+
+  asclepius_clone_run_active = true;
+  asclepius_clone_stop_requested = false;
+  asclepius_clone_block_written = false;
+  asclepius_clone_observed_any = false;
+  asclepius_clone_have_last_chunk = false;
+  asclepius_clone_last_lba = 0;
+  asclepius_clone_last_size = 0;
+  asclepius_clone_last_check_position = 0;
+  asclepius_clone_last_direction = -1;
+  asclepius_clone_last_phase[0] = '\0';
+  asclepius_clone_message[0] = '\0';
+  memset(&asclepius_clone_latch, 0, sizeof(asclepius_clone_latch));
+  memset(&asclepius_clone_observed, 0, sizeof(asclepius_clone_observed));
+
+  asclepius_clone_scan_locked(true);
+
+  asclepius_unlock();
+}
+
+void asclepius_clone_run_end(int result)
+{
+  bool write_block = false;
+  long long current_position;
+
+  asclepius_lock();
+
+  if (!asclepius_clone_run_active)
+  {
+    asclepius_unlock();
+    return;
+  }
+
+  current_position = asclepius_clone_have_last_chunk ? asclepius_clone_last_lba + asclepius_clone_last_size : asclepius_clone_last_check_position;
+
+  if (asclepius_clone_observed_any && !asclepius_clone_block_written)
+  {
+    asclepius_clone_format_locked(current_position, result);
+    asclepius_clone_block_written = true;
+    write_block = true;
+  }
+
+  asclepius_clone_run_active = false;
+  asclepius_clone_stop_requested = false;
+  asclepius_clone_observed_any = false;
+  memset(&asclepius_clone_latch, 0, sizeof(asclepius_clone_latch));
+  memset(&asclepius_clone_observed, 0, sizeof(asclepius_clone_observed));
+
+  asclepius_unlock();
+
+  if (write_block)
+  {
+    printf("%s", asclepius_clone_message);
+    fflush(stdout);
+  }
+}
+
+int asclepius_clone_fault_check(long long current_position)
+{
+  bool write_block = false;
+  int result;
+
+  asclepius_lock();
+
+  if (!asclepius_clone_run_active)
+  {
+    asclepius_unlock();
+    return ASCLEPIUS_CLONE_CONTINUE;
+  }
+
+  asclepius_clone_scan_locked(false);
+  asclepius_clone_merge_locked();
+  asclepius_clone_last_check_position = current_position;
+
+  if (asclepius_clone_stop_requested && !asclepius_clone_block_written)
+  {
+    asclepius_clone_format_locked(current_position, ASCLEPIUS_CLONE_FAULT_RETURN_CODE);
+    asclepius_clone_block_written = true;
+    write_block = true;
+  }
+
+  result = asclepius_clone_stop_requested ? ASCLEPIUS_CLONE_STOP : ASCLEPIUS_CLONE_CONTINUE;
+
+  asclepius_unlock();
+
+  if (write_block)
+  {
+    printf("%s", asclepius_clone_message);
+    fflush(stdout);
+  }
+
+  return result;
+}
+
+void asclepius_clone_note_chunk(long long position, long long size, int direction, const char *phase)
+{
+  asclepius_lock();
+
+  if (asclepius_clone_run_active)
+  {
+    asclepius_clone_last_lba = position;
+    asclepius_clone_last_size = size;
+    asclepius_clone_last_direction = direction;
+    asclepius_clone_have_last_chunk = true;
+    snprintf(asclepius_clone_last_phase, sizeof(asclepius_clone_last_phase), "%s", phase != NULL ? phase : "");
+  }
+
+  asclepius_unlock();
+}
+
+char *asclepius_clone_get_message(void)
+{
+  return asclepius_clone_message;
 }
 
 unsigned int asclepius_poll_clamp_interval_ms(unsigned int interval_ms)
@@ -447,6 +1250,7 @@ static void asclepius_ocp_build_status(void)
 void asclepius_ocp_reset(void)
 {
   static const uint8_t channels[] = {ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V};
+  uint32_t now_ms = asclepius_monotonic_ms();
   size_t i;
 
   asclepius_lock();
@@ -459,6 +1263,14 @@ void asclepius_ocp_reset(void)
     {
       rail->tripped = false;
       rail->trip_ma = 0;
+      rail->over_pending = false;
+      rail->clear_pending = false;
+      // A manual reset is also a fresh start for the debounce and grace
+      // timers, so the same fault does not re-latch on the next poll.
+      if (rail->enabled_was_on)
+      {
+        rail->enabled_since_ms = now_ms;
+      }
     }
   }
 
@@ -470,6 +1282,7 @@ void asclepius_ocp_reset(void)
 void asclepius_ocp_clear_channel(uint8_t channel)
 {
   struct asclepius_ocp_rail_t *rail;
+  uint32_t now_ms = asclepius_monotonic_ms();
 
   asclepius_lock();
 
@@ -478,6 +1291,12 @@ void asclepius_ocp_clear_channel(uint8_t channel)
   {
     rail->tripped = false;
     rail->trip_ma = 0;
+    rail->over_pending = false;
+    rail->clear_pending = false;
+    if (rail->enabled_was_on)
+    {
+      rail->enabled_since_ms = now_ms;
+    }
   }
 
   asclepius_ocp_build_status();
@@ -486,7 +1305,8 @@ void asclepius_ocp_clear_channel(uint8_t channel)
 }
 
 // Software OCP override. NOT fast-acting hardware protection: this runs on the
-// poll cadence, so a trip is seen on the sample after the overcurrent.
+// poll cadence, so a trip is seen only after the over-current condition has
+// held for the configured debounce interval.
 static void asclepius_ocp_check(void)
 {
   static const uint8_t channels[] = {ASCLEPIUS_MAIN12V, ASCLEPIUS_MAIN5V, ASCLEPIUS_USB5V};
@@ -499,7 +1319,10 @@ static void asclepius_ocp_check(void)
   bool cleared[3] = {false, false, false};
   int cut_count = 0;
   bool have_status;
+  uint32_t now_ms;
   size_t i;
+
+  now_ms = asclepius_monotonic_ms();
 
   asclepius_lock();
 
@@ -517,6 +1340,7 @@ static void asclepius_ocp_check(void)
   for (i = 0; i < sizeof(channels) / sizeof(channels[0]); i++)
   {
     struct asclepius_ocp_rail_t *rail = asclepius_ocp_rail(channels[i]);
+    bool in_grace;
     bool over;
 
     if (rail == NULL)
@@ -526,41 +1350,118 @@ static void asclepius_ocp_check(void)
 
     if (!have_status)
     {
-      // The board went away: a latched trip no longer describes anything
+      // The board went away: a latched trip no longer describes anything.
       rail->tripped = false;
       rail->trip_ma = 0;
+      rail->over_pending = false;
+      rail->clear_pending = false;
+      rail->enabled_was_on = false;
       continue;
     }
 
-    over = rail->action != ASCLEPIUS_OCP_OFF && enabled[i] && currents[i] > rail->limit_ma;
-
-    if (over)
+    if (enabled[i] != rail->enabled_was_on)
     {
-      // The rail is on and drawing more than its limit. Latch the trip and
-      // queue a cut. If it was already latched, the user must have
-      // re-enabled it while the fault was still present: cut it again and
-      // refresh the reason.
-      new_trip[i] = !rail->tripped;
-      rail->tripped = true;
-      rail->trip_ma = currents[i];
-      trip_ma[i] = currents[i];
-      limit_ma[i] = rail->limit_ma;
+      rail->enabled_was_on = enabled[i];
+      rail->enabled_since_ms = now_ms;
+      rail->over_pending = false;
+      rail->clear_pending = false;
+    }
 
-      if (rail->action == ASCLEPIUS_OCP_CUT)
-      {
-        cut_channels[cut_count++] = channels[i];
-      }
-    }
-    else if (rail->tripped && !enabled[i] && rail->action == ASCLEPIUS_OCP_CUT)
-    {
-      // The rail is still off because software OCP shut it down: keep the
-      // latch until the user re-enables the rail or changes the action.
-    }
-    else
+    // Switching monitoring off is an explicit request to do nothing: drop any
+    // latch and stop carrying timing state for this rail.
+    if (rail->action == ASCLEPIUS_OCP_OFF)
     {
       cleared[i] = rail->tripped;
       rail->tripped = false;
       rail->trip_ma = 0;
+      rail->over_pending = false;
+      rail->clear_pending = false;
+      continue;
+    }
+
+    if (!enabled[i])
+    {
+      // A CUT trip leaves the rail off, so keep its latch until the user
+      // re-enables the rail or changes the action. WARN trips follow the load
+      // and can clear normally.
+      if (rail->tripped && rail->action != ASCLEPIUS_OCP_CUT)
+      {
+        cleared[i] = true;
+        rail->tripped = false;
+        rail->trip_ma = 0;
+      }
+
+      rail->over_pending = false;
+      rail->clear_pending = false;
+      continue;
+    }
+
+    over = currents[i] > rail->limit_ma;
+
+    if (!over)
+    {
+      rail->over_pending = false;
+
+      if (rail->tripped)
+      {
+        // Require the load to stay back in range before clearing, so crossing
+        // the limit repeatedly does not produce a stream of trip/clear events.
+        if (!rail->clear_pending)
+        {
+          rail->clear_pending = true;
+          rail->clear_since_ms = now_ms;
+        }
+
+        if ((uint32_t)(now_ms - rail->clear_since_ms) >= rail->clear_delay_ms)
+        {
+          cleared[i] = true;
+          rail->tripped = false;
+          rail->trip_ma = 0;
+          rail->clear_pending = false;
+        }
+      }
+      else
+      {
+        rail->clear_pending = false;
+      }
+
+      continue;
+    }
+
+    rail->clear_pending = false;
+
+    // Ignore everything during the post-enable grace window. A drive spinning
+    // up legitimately draws far more than its idle current.
+    in_grace = (uint32_t)(now_ms - rail->enabled_since_ms) < rail->startup_grace_ms;
+    if (in_grace)
+    {
+      rail->over_pending = false;
+      continue;
+    }
+
+    if (!rail->over_pending)
+    {
+      rail->over_pending = true;
+      rail->over_since_ms = now_ms;
+    }
+
+    if (!rail->tripped && (uint32_t)(now_ms - rail->over_since_ms) >= rail->trip_delay_ms)
+    {
+      // The condition held for the whole debounce interval. Latch the trip and
+      // remember the reading that caused it.
+      rail->tripped = true;
+      rail->trip_ma = currents[i];
+      new_trip[i] = true;
+      trip_ma[i] = currents[i];
+      limit_ma[i] = rail->limit_ma;
+      asclepius_clone_latch_soft_ocp_locked((int)i, rail->action);
+    }
+
+    // Keep issuing the cut if the rail is somehow still enabled after a CUT
+    // trip (a failed or ignored command), rather than assuming it worked.
+    if (rail->tripped && rail->action == ASCLEPIUS_OCP_CUT)
+    {
+      cut_channels[cut_count++] = channels[i];
     }
   }
 
@@ -609,7 +1510,7 @@ static void asclepius_event_check(void);
 // reading that can sit right on a limit: a 5V rail measuring 5232-5253 mV
 // against a 5250 mV ceiling would otherwise emit two lines per poll, tens of
 // thousands a minute. An excursion therefore has to hold for
-// ASCLEPIUS_EVENT_DEBOUNCE_MS before it is announced, which reports a genuine
+// the configured voltage debounce before it is announced, which reports a genuine
 // standing violation once while ignoring jitter. Excursions shorter than that
 // remain visible in the monitor's per-sample markers and statistics; this only
 // thins out the log.
@@ -626,6 +1527,7 @@ static void asclepius_event_check(void)
   bool out_of_spec[3];
   uint32_t volts[3];
   uint32_t now_ms;
+  unsigned int debounce_ms;
   bool connected;
   size_t i;
 
@@ -634,6 +1536,7 @@ static void asclepius_event_check(void)
   asclepius_lock();
 
   connected = asclepius_connected;
+  debounce_ms = asclepius_clone_settings_ccc.voltage_debounce_ms;
   if (connected)
   {
     enabled[0] = asclepius_status.main12v_enabled;
@@ -705,11 +1608,12 @@ static void asclepius_event_check(void)
       was_enabled[i] = enabled[i];
     }
 
-    if (candidate_out_of_spec[i] != reported_out_of_spec[i] && (uint32_t)(now_ms - candidate_since_ms[i]) >= ASCLEPIUS_EVENT_DEBOUNCE_MS)
+    if (candidate_out_of_spec[i] != reported_out_of_spec[i] && (uint32_t)(now_ms - candidate_since_ms[i]) >= debounce_ms)
     {
       if (candidate_out_of_spec[i])
       {
         printf("Asclepius: %s out of spec at %u mV\n", rail, volts[i]);
+        asclepius_clone_latch_voltage(channels[i], volts[i]);
       }
       else
       {
@@ -794,11 +1698,27 @@ int asclepius_connect(void)
 
   pthread_mutex_lock(&asclepius_serial_mutex);
 
-  asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY);
+  if (!asclepius_serial_claim(ASCLEPIUS_PORT_CONTROL, asclepius_tty_device_ccc))
+  {
+    if (errno == EBUSY)
+    {
+      printf("Error: Asclepius control port %s is already in use by the UART terminal\n", asclepius_tty_device_ccc);
+    }
+    else
+    {
+      printf("Error claiming Asclepius control port %s: %s\n", asclepius_tty_device_ccc, strerror(errno));
+    }
+    asclepius_connected = false;
+    pthread_mutex_unlock(&asclepius_serial_mutex);
+    return -1;
+  }
+
+  asclepius_serial_port = open(asclepius_tty_device_ccc, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
   if (asclepius_serial_port < 0)
   {
     printf("Error %i from open: %s\n", errno, strerror(errno));
+    asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
     asclepius_connected = false;
     pthread_mutex_unlock(&asclepius_serial_mutex);
     return -1;
@@ -810,6 +1730,7 @@ int asclepius_connect(void)
     asclepius_connected = false;
     close(asclepius_serial_port);
     asclepius_serial_port = -1;
+    asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
     pthread_mutex_unlock(&asclepius_serial_mutex);
     return -1;
   }
@@ -831,6 +1752,7 @@ int asclepius_connect(void)
     close(asclepius_serial_port);
     asclepius_serial_port = -1;
     asclepius_connected = false;
+    asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
     return -1;
   }
 
@@ -859,20 +1781,30 @@ void asclepius_disconnect(void)
 
   pthread_mutex_lock(&asclepius_serial_mutex);
 
-  if (asclepius_connected)
+  if (asclepius_serial_port >= 0)
   {
     close(asclepius_serial_port);
     asclepius_serial_port = -1;
-    asclepius_connected = false;
   }
+  asclepius_connected = false;
+  asclepius_serial_release(ASCLEPIUS_PORT_CONTROL);
 
   // The board is gone: any latched software OCP trip no longer applies
   asclepius_ocp_12v_ccc.tripped = false;
   asclepius_ocp_12v_ccc.trip_ma = 0;
+  asclepius_ocp_12v_ccc.over_pending = false;
+  asclepius_ocp_12v_ccc.clear_pending = false;
+  asclepius_ocp_12v_ccc.enabled_was_on = false;
   asclepius_ocp_5v_ccc.tripped = false;
   asclepius_ocp_5v_ccc.trip_ma = 0;
+  asclepius_ocp_5v_ccc.over_pending = false;
+  asclepius_ocp_5v_ccc.clear_pending = false;
+  asclepius_ocp_5v_ccc.enabled_was_on = false;
   asclepius_ocp_usb_ccc.tripped = false;
   asclepius_ocp_usb_ccc.trip_ma = 0;
+  asclepius_ocp_usb_ccc.over_pending = false;
+  asclepius_ocp_usb_ccc.clear_pending = false;
+  asclepius_ocp_usb_ccc.enabled_was_on = false;
   asclepius_soft_ocp_status[0] = '\0';
 
   pthread_mutex_unlock(&asclepius_serial_mutex);
@@ -980,6 +1912,7 @@ int asclepius_get_status(void)
   }
   else
   {
+    asclepius_clone_latch_hardware_ocp_locked();
     result = 0;
   }
 
@@ -1134,19 +2067,21 @@ int asclepius_ext_open(void)
   // descriptors on one device would have the terminal stealing bytes out of
   // STATUS replies (killing the poller) and serialsend injecting bytes into
   // the protocol stream. The shipped defaults are udev aliases on the same
-  // board, so this is easy to set up by accident. Compare the resolved
-  // device rather than the path, so /dev/ttyascl and /dev/ttyUSB1 are caught.
-  if (asclepius_connected && asclepius_serial_port >= 0)
+  // board, so this is easy to set up by accident. The claim compares the
+  // resolved device, so /dev/ttyascl and /dev/ttyUSB1 are caught, and it also
+  // rejects the configured control path while the control side is disconnected.
+  if (!asclepius_serial_claim(ASCLEPIUS_PORT_TERMINAL, asclepius_ext_tty_device_ccc))
   {
-    struct stat control_st;
-    struct stat ext_st;
-
-    if (fstat(asclepius_serial_port, &control_st) == 0 && stat(asclepius_ext_tty_device_ccc, &ext_st) == 0 && control_st.st_rdev == ext_st.st_rdev)
+    if (errno == EBUSY)
     {
-      printf("Error: the UART passthrough port %s is the Asclepius control port; choose a different port\n", asclepius_ext_tty_device_ccc);
-      asclepius_ext_connected = false;
-      return -1;
+      printf("Error: UART passthrough port %s conflicts with the Asclepius control port\n", asclepius_ext_tty_device_ccc);
     }
+    else
+    {
+      printf("Error claiming UART passthrough port %s: %s\n", asclepius_ext_tty_device_ccc, strerror(errno));
+    }
+    asclepius_ext_connected = false;
+    return -1;
   }
 
   asclepius_ext_serial_port = open(asclepius_ext_tty_device_ccc, O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -1155,6 +2090,7 @@ int asclepius_ext_open(void)
   {
     printf("Error %i from open: %s\n", errno, strerror(errno));
     asclepius_ext_connected = false;
+    asclepius_serial_release(ASCLEPIUS_PORT_TERMINAL);
     return -1;
   }
 
@@ -1164,6 +2100,7 @@ int asclepius_ext_open(void)
     asclepius_ext_connected = false;
     close(asclepius_ext_serial_port);
     asclepius_ext_serial_port = -1;
+    asclepius_serial_release(ASCLEPIUS_PORT_TERMINAL);
     return -1;
   }
 
@@ -1173,14 +2110,14 @@ int asclepius_ext_open(void)
 
 void asclepius_ext_close(void)
 {
-  if (!asclepius_ext_connected)
+  if (asclepius_ext_serial_port >= 0)
   {
-    return;
+    close(asclepius_ext_serial_port);
+    asclepius_ext_serial_port = -1;
   }
 
-  close(asclepius_ext_serial_port);
   asclepius_ext_connected = false;
-  asclepius_ext_serial_port = -1;
+  asclepius_serial_release(ASCLEPIUS_PORT_TERMINAL);
 }
 
 int asclepius_ext_send(const char *data, size_t len)

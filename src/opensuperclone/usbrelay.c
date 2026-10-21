@@ -1288,6 +1288,19 @@ void load_primary_relay_settings_ccc(void)
   primary_relay_settings_ccc.asclepius_ocp_limit_12v = asclepius_ocp_12v_ccc.limit_ma;
   primary_relay_settings_ccc.asclepius_ocp_limit_5v = asclepius_ocp_5v_ccc.limit_ma;
   primary_relay_settings_ccc.asclepius_ocp_limit_usb = asclepius_ocp_usb_ccc.limit_ma;
+
+  {
+    struct asclepius_clone_settings_t clone_settings;
+    size_t i;
+
+    asclepius_clone_get_settings(&clone_settings);
+    for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+    {
+      primary_relay_settings_ccc.asclepius_clone_event_enabled[i] = clone_settings.events[i].enabled;
+      primary_relay_settings_ccc.asclepius_clone_event_action[i] = clone_settings.events[i].action;
+    }
+    primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms = clone_settings.voltage_debounce_ms;
+  }
 }
 
 void update_primary_relay_settings_ccc(void)
@@ -1330,6 +1343,20 @@ void update_primary_relay_settings_ccc(void)
   asclepius_ocp_12v_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_12v);
   asclepius_ocp_5v_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_5v);
   asclepius_ocp_usb_ccc.limit_ma = asclepius_ocp_clamp_limit_mA(primary_relay_settings_ccc.asclepius_ocp_limit_usb);
+
+  {
+    struct asclepius_clone_settings_t clone_settings;
+    size_t i;
+
+    memset(&clone_settings, 0, sizeof(clone_settings));
+    for (i = 0; i < ASCLEPIUS_CLONE_FAULT_COUNT; i++)
+    {
+      clone_settings.events[i].enabled = primary_relay_settings_ccc.asclepius_clone_event_enabled[i];
+      clone_settings.events[i].action = asclepius_clone_clamp_action(primary_relay_settings_ccc.asclepius_clone_event_action[i]);
+    }
+    clone_settings.voltage_debounce_ms = asclepius_clone_clamp_voltage_debounce(primary_relay_settings_ccc.asclepius_clone_voltage_debounce_ms);
+    asclepius_clone_set_settings(&clone_settings);
+  }
 }
 
 int get_primary_relay_settings_ccc(void)
