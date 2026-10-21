@@ -868,6 +868,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_add_accelerator(savedomainmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   gtk_widget_add_accelerator(asclepiusextmi_ccc,"activate", accel_group, GDK_KEY_T, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(asclepiusmonitormi_ccc,"activate", accel_group, GDK_KEY_M, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
 
   connect_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "connect_button"));
   start_button_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "start_button"));

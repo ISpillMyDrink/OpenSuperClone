@@ -128,7 +128,7 @@ static void mon_window_names(char out[MON_NUM_WINDOWS][32])
 }
 
 bool asclepius_monitor_open = false;
-unsigned int asclepius_monitor_window_index_ccc = 2; // last 1 minute
+unsigned int asclepius_monitor_window_index_ccc = 0; // last 10 seconds
 
 static GtkWidget *asclepius_monitor_dialog_ccc = NULL;
 static GtkWidget *asclepius_mon_window_combobox_ccc = NULL;
