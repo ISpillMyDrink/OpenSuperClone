@@ -8831,18 +8831,43 @@ static void ext_terminal_output_callback(const char *text, int byte_count)
   }
 }
 
-static bool ext_terminal_open = false;
+// The dialog is kept alive when it is closed and only hidden, so the log text,
+// command history, RX/TX counters, selector choices and an open serial session
+// all survive a close/reopen. This mirrors the monitor window, whose samples
+// live outside the dialog and keep accumulating while it is closed.
+static GtkWidget *ext_terminal_dialog_ccc = NULL;
 
 void on_ext_terminal_dialog_response_ccc(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
-  guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(dialog), "ext_terminal_timer"));
+  (void)response_id;
+  (void)user_data;
+
+  gtk_widget_hide(GTK_WIDGET(dialog));
+}
+
+// Window-manager close. Returning TRUE keeps the dialog alive for the next
+// open instead of letting GtkDialog destroy it.
+static gboolean on_ext_terminal_delete_ccc(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+  (void)event;
+  (void)data;
+
+  gtk_widget_hide(widget);
+  return TRUE;
+}
+
+// Only reached when the dialog is really destroyed (application teardown).
+static void on_ext_terminal_destroy_ccc(GtkWidget *widget, gpointer data)
+{
+  (void)data;
+
+  guint tid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(widget), "ext_terminal_timer"));
   if (tid) g_source_remove(tid);
-  g_object_set_data(G_OBJECT(dialog), "ext_terminal_timer", GUINT_TO_POINTER(0));
+
+  ext_terminal_dialog_ccc = NULL;
   asclepius_ext_output_ccc = NULL;
   ext_terminal_output_textview = NULL;
-  ext_terminal_open = false;
   asclepius_ext_close();
-  gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 // The Asclepius Monitor window lives in its own translation unit; GTK finds
@@ -8997,7 +9022,14 @@ void on_asclepius_ports_clicked_ccc(GtkWidget *button)
 
 void open_asclepius_ext_terminal_ccc(void)
 {
-  if (ext_terminal_open) return;
+  // A hidden dialog still owns its log, history and serial session: just bring
+  // it back instead of rebuilding it from the glade.
+  if (ext_terminal_dialog_ccc != NULL)
+  {
+    gtk_widget_show_all(ext_terminal_dialog_ccc);
+    gtk_window_present(GTK_WINDOW(ext_terminal_dialog_ccc));
+    return;
+  }
 
   GtkBuilder *builder = gtk_builder_new();
   gtk_builder_add_from_string(builder, (const gchar *)opensuperclone_glade, opensuperclone_glade_len, NULL);
@@ -9178,8 +9210,10 @@ void open_asclepius_ext_terminal_ccc(void)
 
   gtk_window_set_title(GTK_WINDOW(dialog), _("Terminal (UART)"));
 
-  ext_terminal_open = true;
+  ext_terminal_dialog_ccc = dialog;
   g_signal_connect(dialog, "response", G_CALLBACK(on_ext_terminal_dialog_response_ccc), NULL);
+  g_signal_connect(dialog, "delete-event", G_CALLBACK(on_ext_terminal_delete_ccc), NULL);
+  g_signal_connect(dialog, "destroy", G_CALLBACK(on_ext_terminal_destroy_ccc), NULL);
   gtk_widget_show_all(dialog);
   g_object_unref(builder);
 }

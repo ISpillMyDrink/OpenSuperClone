@@ -705,7 +705,7 @@
                                       <object class="GtkMenuItem" id="wdroylmi">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">ROYL / Marvel</property>
+                                        <property name="label" translatable="yes">Marvell (ROYL)</property>
                                         <property name="use-underline">True</property>
                                         <child type="submenu">
                                           <object class="GtkMenu" id="wdroylmenu">
@@ -5061,14 +5061,15 @@ no data</property>
       <action-widget response="5">results_ok_button</action-widget>
     </action-widgets>
   </object>
+  <!-- Independent tool window: NORMAL (not DIALOG) and no transient-for, so
+       window managers such as Muffin do not keep it above the main window. -->
   <object class="GtkDialog" id="asclepius_ext_terminal_dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
     <property name="title" translatable="yes">Terminal (UART)</property>
     <property name="default-width">700</property>
     <property name="default-height">500</property>
-    <property name="type-hint">dialog</property>
-    <property name="transient-for">window_main</property>
+    <property name="type-hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox-ext">
         <property name="visible">True</property>
@@ -10755,14 +10756,15 @@ no data</property>
       <action-widget response="0">settings_cancel_button2</action-widget>
     </action-widgets>
   </object>
+<!-- Independent tool window: NORMAL (not DIALOG) and no transient-for, so
+     window managers such as Muffin do not keep it above the main window. -->
 <object class="GtkDialog" id="asclepius_monitor_dialog">
     <property name="can-focus">False</property>
     <property name="border-width">5</property>
     <property name="title" translatable="yes">Asclepius Monitor</property>
     <property name="default-width">900</property>
     <property name="default-height">700</property>
-    <property name="type-hint">dialog</property>
-    <property name="transient-for">window_main</property>
+    <property name="type-hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox-mon">
         <property name="visible">True</property>
