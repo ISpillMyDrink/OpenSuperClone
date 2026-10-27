@@ -64,6 +64,8 @@ Note that the Wiki is currently a work-in-progress and incomplete.
 * OSCViewer: performance improvements and improved UI
 * Add UART terminal and script support for Seagate F3 drives (experimental)
 * Add support for Asclepius relay and current sensing board
+* Add a visual speed graph for cloning
+* Add simple WD ROYL firmware tools to UI (experimental) 
 
 #### OpenSuperClone 2.5.0
 
