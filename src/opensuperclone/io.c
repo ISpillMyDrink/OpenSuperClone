@@ -9271,11 +9271,7 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   strcpy(device_reference_ccc[current_device_count], "---");
   strcpy(device_name_ccc[current_device_count], "---");
   char command[255];
-  strcpy(command, "ls -p /sys/bus/pci/drivers/");
-  strcat(command, driver);
-  strcat(command, "/");
-  strcat(command, bus);
-  strcat(command, " |grep '/' | grep ata | sort -n -k1.4");
+  snprintf(command, sizeof command, "ls -p /sys/bus/pci/drivers/%s/%s |grep '/' | grep ata | sort -n -k1.4", driver, bus);
 
   char check_location[255];
   int found_location = 0;
@@ -9331,13 +9327,7 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   if (found_location)
   {
     char command[255];
-    strcpy(command, "ls -p /sys/bus/pci/drivers/");
-    strcat(command, driver);
-    strcat(command, "/");
-    strcat(command, bus);
-    strcat(command, "/");
-    strcat(command, check_location);
-    strcat(command, " | grep host");
+    snprintf(command, sizeof command, "ls -p /sys/bus/pci/drivers/%s/%s/%s | grep host", driver, bus, check_location);
 
     FILE *fp = popen(command, "r");
     if (popen_succeeded_ccc(fp, command) != 0)
@@ -9374,14 +9364,7 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   if (host_found)
   {
     char command[255];
-    strcpy(command, "ls -p /sys/bus/pci/drivers/");
-    strcat(command, driver);
-    strcat(command, "/");
-    strcat(command, bus);
-    strcat(command, "/");
-    strcat(command, check_location);
-    strcat(command, check_host);
-    strcat(command, " | grep target");
+    snprintf(command, sizeof command, "ls -p /sys/bus/pci/drivers/%s/%s/%s%s | grep target", driver, bus, check_location, check_host);
 
     FILE *fp = popen(command, "r");
     if (popen_succeeded_ccc(fp, command) != 0)
@@ -9444,15 +9427,7 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   if (target_found)
   {
     char command[255];
-    strcpy(command, "ls -p /sys/bus/pci/drivers/");
-    strcat(command, driver);
-    strcat(command, "/");
-    strcat(command, bus);
-    strcat(command, "/");
-    strcat(command, check_location);
-    strcat(command, check_host);
-    strcat(command, check_target);
-    strcat(command, " | grep :");
+    snprintf(command, sizeof command, "ls -p /sys/bus/pci/drivers/%s/%s/%s%s%s | grep :", driver, bus, check_location, check_host, check_target);
 
     FILE *fp = popen(command, "r");
     if (popen_succeeded_ccc(fp, command) != 0)
@@ -9487,16 +9462,8 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   if (zeros_found)
   {
     char command[255];
-    strcpy(command, "ls /sys/bus/pci/drivers/");
-    strcat(command, driver);
-    strcat(command, "/");
-    strcat(command, bus);
-    strcat(command, "/");
-    strcat(command, check_location);
-    strcat(command, check_host);
-    strcat(command, check_target);
-    strcat(command, check_zeros);
-    strcat(command, "block");
+    snprintf(command, sizeof command, "ls /sys/bus/pci/drivers/%s/%s/%s%s%s%sblock", driver, bus, check_location, check_host, check_target,
+             check_zeros);
 
     FILE *fp = popen(command, "r");
     if (popen_succeeded_ccc(fp, command) != 0)
