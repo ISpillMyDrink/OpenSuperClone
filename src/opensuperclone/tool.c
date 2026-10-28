@@ -915,6 +915,42 @@ int process_arguments_ccc(void)
   return (0);
 }
 
+// Grow the script line storage by another allocation block.
+static int grow_script_lines_ccc(unsigned int cols)
+{
+  unsigned int new_rows = script_rows_ccc + 1000;
+  if (new_rows < script_rows_ccc || new_rows > SIZE_MAX / cols)
+  {
+    return (-1);
+  }
+
+  char *new_buffer = realloc(script_line_buffer_ccc, new_rows * cols * sizeof(*script_line_buffer_ccc));
+  if (new_buffer == NULL)
+  {
+    return (-1);
+  }
+  script_line_buffer_ccc = new_buffer;
+
+  char **new_pointers = realloc(script_line_pointer_ccc, new_rows * sizeof(*script_line_pointer_ccc));
+  if (new_pointers == NULL)
+  {
+    // Keep the existing pointer table consistent with the reallocated buffer.
+    for (unsigned int n = 0; n < script_rows_ccc; ++n)
+    {
+      script_line_pointer_ccc[n] = &script_line_buffer_ccc[n * cols];
+    }
+    return (-1);
+  }
+
+  script_line_pointer_ccc = new_pointers;
+  script_rows_ccc = new_rows;
+  for (unsigned int n = 0; n < script_rows_ccc; ++n)
+  {
+    script_line_pointer_ccc[n] = &script_line_buffer_ccc[n * cols];
+  }
+  return (0);
+}
+
 // function to read the script file into memory
 int read_script_file_ccc(char *script_file_ccc)
 {
@@ -950,19 +986,19 @@ int read_script_file_ccc(char *script_file_ccc)
       if (access(menufile1_ccc, F_OK) != -1)
       {
         script_file_ccc = menufile1_ccc;
-        strcpy(current_script_ccc, script_file_ccc);
+        snprintf(current_script_ccc, sizeof current_script_ccc, "%s", script_file_ccc);
         current_script_directory_ccc = script_directory1_ccc;
       }
       else if (access(menufile2_ccc, F_OK) != -1)
       {
-        script_file_ccc = menufile1_ccc;
-        strcpy(current_script_ccc, script_file_ccc);
+        script_file_ccc = menufile2_ccc;
+        snprintf(current_script_ccc, sizeof current_script_ccc, "%s", script_file_ccc);
         current_script_directory_ccc = script_directory2_ccc;
       }
       else if (access(menufile3_ccc, F_OK) != -1)
       {
-        script_file_ccc = menufile1_ccc;
-        strcpy(current_script_ccc, script_file_ccc);
+        script_file_ccc = menufile3_ccc;
+        snprintf(current_script_ccc, sizeof current_script_ccc, "%s", script_file_ccc);
         current_script_directory_ccc = script_directory3_ccc;
       }
       else
@@ -983,7 +1019,7 @@ int read_script_file_ccc(char *script_file_ccc)
     {
       if (full_script_path_ccc[n] == '/')
       {
-        strncpy(script_directory4_ccc, full_script_path_ccc, n + 1);
+        snprintf(script_directory4_ccc, sizeof script_directory4_ccc, "%.*s", n + 1, full_script_path_ccc);
         current_script_directory_ccc = script_directory4_ccc;
         break;
       }
@@ -1001,17 +1037,26 @@ int read_script_file_ccc(char *script_file_ccc)
     {
       if (script_file_ccc[n] == '/')
       {
-        strncpy(script_directory4_ccc, script_file_ccc, n + 1);
+        snprintf(script_directory4_ccc, sizeof script_directory4_ccc, "%.*s", n + 1, script_file_ccc);
         current_script_directory_ccc = script_directory4_ccc;
         break;
       }
     }
-    strcpy(full_script_path_ccc, script_file_ccc);
+    int path_length = snprintf(full_script_path_ccc, sizeof full_script_path_ccc, "%s", script_file_ccc);
+    if (path_length < 0 || (size_t)path_length >= sizeof full_script_path_ccc)
+    {
+      fprintf(stderr, "Error: Script path is too long.\n");
+      return (1);
+    }
   }
   else
   {
-    strcpy(full_script_path_ccc, current_script_directory_ccc);
-    strcat(full_script_path_ccc, script_file_ccc);
+    int path_length = snprintf(full_script_path_ccc, sizeof full_script_path_ccc, "%s%s", current_script_directory_ccc, script_file_ccc);
+    if (path_length < 0 || (size_t)path_length >= sizeof full_script_path_ccc)
+    {
+      fprintf(stderr, "Error: Script path is too long.\n");
+      return (1);
+    }
   }
 
   if (verbose_ccc & DEBUG1)
@@ -1031,8 +1076,17 @@ int read_script_file_ccc(char *script_file_ccc)
 
   // offest the script 2 lines to allow for while statement at top
   // make sure the first 2 lines are empty
-  strcpy(script_line_pointer_ccc[i], "\n");
-  strcpy(script_line_pointer_ccc[i + 1], "\n");
+  while (i + 2 > script_rows_ccc)
+  {
+    if (grow_script_lines_ccc(cols) != 0)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      fclose(readfile);
+      return (3);
+    }
+  }
+  snprintf(script_line_pointer_ccc[i], cols, "%s", "\n");
+  snprintf(script_line_pointer_ccc[i + 1], cols, "%s", "\n");
   i += 2;
   while (fgets(line, sizeof line, readfile))
   {
@@ -1064,34 +1118,17 @@ int read_script_file_ccc(char *script_file_ccc)
       exit(1);
     }
 
-    strcpy(script_line_pointer_ccc[i], line);
-
-    i++;
-
-    // if used up allocated memory then increase it
-    if (i >= script_rows_ccc)
+    while (i >= script_rows_ccc)
     {
-      script_rows_ccc += 1000;
-      unsigned int i;
-      script_line_buffer_ccc = realloc(script_line_buffer_ccc, script_rows_ccc * cols * sizeof(*script_line_buffer_ccc));
-      if (script_line_buffer_ccc == NULL)
+      if (grow_script_lines_ccc(cols) != 0)
       {
         fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+        fclose(readfile);
         return (3);
-      }
-
-      script_line_pointer_ccc = realloc(script_line_pointer_ccc, script_rows_ccc * sizeof(*script_line_pointer_ccc));
-      if (script_line_pointer_ccc == NULL)
-      {
-        fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
-        return (3);
-      }
-
-      for (i = 0; i < script_rows_ccc; ++i)
-      {
-        script_line_pointer_ccc[i] = &script_line_buffer_ccc[i * cols];
       }
     }
+    snprintf(script_line_pointer_ccc[i], cols, "%s", line);
+    i++;
   }
   total_script_lines_ccc = i;
 
