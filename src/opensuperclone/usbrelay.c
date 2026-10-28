@@ -57,6 +57,7 @@ int find_all_usb_devices_ccc(void)
 
   usb_device_count_ccc = 0;
   int busnum = 0;
+  bool device_limit_warned = false;
   // look through all busses
   for (; bus; bus = bus->next)
   {
@@ -64,6 +65,16 @@ int find_all_usb_devices_ccc(void)
     // look at every device
     for (dev = bus->devices; dev; dev = dev->next)
     {
+      if (usb_device_count_ccc >= MAX_USB_DEVICES)
+      {
+        if (!device_limit_warned)
+        {
+          fprintf(stdout, "Warning: maximum of %d USB devices reached, ignoring the rest.\n", MAX_USB_DEVICES);
+          device_limit_warned = true;
+        }
+        continue;
+      }
+
       usb_bus_number_ccc[usb_device_count_ccc] = busnum;
       usb_device_number_ccc[usb_device_count_ccc] = dev->devnum;
 
