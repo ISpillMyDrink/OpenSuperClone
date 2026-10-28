@@ -13204,9 +13204,12 @@ char *host_error_code_ccc(int code)
     break;
 
   default:
-    message = "Unknown code                  ";
-    sprintf(message, "Unknown code %d", code);
+  {
+    static char unknown_message[32];
+    snprintf(unknown_message, sizeof unknown_message, "Unknown code %d", code);
+    message = unknown_message;
     break;
+  }
   }
 
   return message;
