@@ -813,7 +813,13 @@ int process_arguments_ccc(void)
     char current_argument[MAX_VARIABLE_LENGTH];
     char var_name[MAX_VARIABLE_NAME_LENGTH];
     char variable[MAX_VARIABLE_LENGTH];
-    strcpy(current_argument, argument_ccc[c]);
+    if (strlen(argument_ccc[c]) >= sizeof current_argument)
+    {
+      fprintf(stderr, "Error! Argument is too long.\n");
+      supertool_cleanup_ccc();
+      exit(1);
+    }
+    snprintf(current_argument, sizeof current_argument, "%s", argument_ccc[c]);
     int length = strlen(current_argument);
     int var_num;
     int i;
@@ -833,15 +839,20 @@ int process_arguments_ccc(void)
           var_type = 'i';
         }
 
-        strncpy(var_name, current_argument, n);
-        var_name[n] = '\0';
+        if (n >= (int)sizeof var_name)
+        {
+          fprintf(stderr, "Error! Variable name in argument is too long.\n");
+          supertool_cleanup_ccc();
+          exit(1);
+        }
+        snprintf(var_name, sizeof var_name, "%.*s", n, current_argument);
         if (var_type == 's')
         {
-          strcpy(variable, current_argument + n + 2);
+          snprintf(variable, sizeof variable, "%s", current_argument + n + 2);
         }
         else
         {
-          strcpy(variable, current_argument + n + 1);
+          snprintf(variable, sizeof variable, "%s", current_argument + n + 1);
         }
         // fprintf (stdout, "var_name= %s\n", var_name);
         // fprintf (stdout, "variable= %s\n", variable);
@@ -1621,15 +1632,22 @@ int check_arguments_ccc(char *var_name)
       }
       char current_argument[MAX_VARIABLE_LENGTH];
       char name[MAX_VARIABLE_NAME_LENGTH];
-      strcpy(current_argument, argument_ccc[c]);
+      if (strlen(argument_ccc[c]) >= sizeof current_argument)
+      {
+        continue;
+      }
+      snprintf(current_argument, sizeof current_argument, "%s", argument_ccc[c]);
       int length = strlen(current_argument);
       int i;
       for (i = 0; i < length; i++)
       {
         if (current_argument[i] == '=')
         {
-          strncpy(name, current_argument, i);
-          name[i] = '\0';
+          if (i >= (int)sizeof name)
+          {
+            break;
+          }
+          snprintf(name, sizeof name, "%.*s", i, current_argument);
           // fprintf (stdout, "var_name= %s\n", var_name);
           if (strcmp(var_name, name) == 0)
           {

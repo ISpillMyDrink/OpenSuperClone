@@ -717,14 +717,13 @@ int main(int argc, char **argv)
     // get remaining arguments that are not options
     while ((argc - optind) > 0)
     {
+      if (argument_count_ccc >= MAX_ARGUMENTS)
+      {
+        fprintf(stderr, "ERROR! Number of arguments exceeded the maximum of %d.\n", MAX_ARGUMENTS);
+        exit(1);
+      }
       argument_ccc[argument_count_ccc] = argv[optind++];
       argument_count_ccc++;
-    }
-
-    if (argument_count_ccc > MAX_ARGUMENTS)
-    {
-      fprintf(stderr, "ERROR! Number of arguments exceeded the maximum of %d.\n", MAX_ARGUMENTS);
-      exit(1);
     }
 
     if (verbose_ccc & DEBUG1)
@@ -763,14 +762,13 @@ int main(int argc, char **argv)
     // get remaining arguments that are not options
     while ((argc - optind) > 0)
     {
+      if (argument_count_ccc >= MAX_ARGUMENTS)
+      {
+        fprintf(stderr, "ERROR! Number of arguments exceeded the maximum of %d.\n", MAX_ARGUMENTS);
+        exit(1);
+      }
       argument_ccc[argument_count_ccc] = argv[optind++];
       argument_count_ccc++;
-    }
-
-    if (argument_count_ccc > MAX_ARGUMENTS)
-    {
-      fprintf(stderr, "ERROR! Number of arguments exceeded the maximum of %d.\n", MAX_ARGUMENTS);
-      exit(1);
     }
 
     if (verbose_ccc & DEBUG1)
