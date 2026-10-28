@@ -11,6 +11,8 @@
 
 #include <limits.h>
 
+static int parse_unsigned_int_ccc(const char *text, unsigned int *value);
+
 unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
 unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
 unsigned int subroutine_endif_stack_ccc[MAX_SUB_LEVEL];
@@ -802,27 +804,13 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       }
     }
 
-    if (raw_offset[0] == '$')
+    if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
     {
-      offset = get_number_variable_value_ccc(raw_offset);
-      if (return_value_ccc < 0)
-      {
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
+      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
     }
-    else
-    {
-      char *endptr;
-      offset = strtoll(raw_offset, &endptr, 0);
-      if (*endptr)
-      {
-        fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
-    }
-    if (!perform_check && offset + value_type - 1 >= ccc_main_buffer_size_ccc)
+    if (offset > ccc_main_buffer_size_ccc || (unsigned long long)value_type > ccc_main_buffer_size_ccc - offset)
     {
       fprintf(stderr, "\nError: Buffer offset %s higher than current buffer size,\n", value);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -909,27 +897,13 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       }
     }
 
-    if (raw_offset[0] == '$')
+    if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
     {
-      offset = get_number_variable_value_ccc(raw_offset);
-      if (return_value_ccc < 0)
-      {
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
+      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
     }
-    else
-    {
-      char *endptr;
-      offset = strtoll(raw_offset, &endptr, 0);
-      if (*endptr)
-      {
-        fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
-    }
-    if (!perform_check && offset + value_type - 1 >= ccc_main_scratchpad_size_ccc)
+    if (offset > ccc_main_usbbuffer_size_ccc || (unsigned long long)value_type > ccc_main_usbbuffer_size_ccc - offset)
     {
       fprintf(stderr, "\nError: USBbuffer offset %s higher than current usbbuffer size,\n", value);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1016,27 +990,13 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       }
     }
 
-    if (raw_offset[0] == '$')
+    if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
     {
-      offset = get_number_variable_value_ccc(raw_offset);
-      if (return_value_ccc < 0)
-      {
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
+      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
     }
-    else
-    {
-      char *endptr;
-      offset = strtoll(raw_offset, &endptr, 0);
-      if (*endptr)
-      {
-        fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
-    }
-    if (!perform_check && offset + value_type - 1 >= ccc_main_scratchpad_size_ccc)
+    if (offset > ccc_main_scratchpad_size_ccc || (unsigned long long)value_type > ccc_main_scratchpad_size_ccc - offset)
     {
       fprintf(stderr, "\nError: Scratchpad offset %s higher than current scratchpad size,\n", value);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1094,27 +1054,13 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
       return (-1);
     }
 
-    if (raw_offset[0] == '$')
+    if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
     {
-      offset = get_number_variable_value_ccc(raw_offset);
-      if (return_value_ccc < 0)
-      {
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
+      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
     }
-    else
-    {
-      char *endptr;
-      offset = strtoll(raw_offset, &endptr, 0);
-      if (*endptr)
-      {
-        fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-        return (-1);
-      }
-    }
-    if (!perform_check && offset >= sensebuffer_size_ccc)
+    if (offset >= sensebuffer_size_ccc)
     {
       fprintf(stderr, "\nError: Sensebuffer offset %s higher than current sensebuffer size,\n", value);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
