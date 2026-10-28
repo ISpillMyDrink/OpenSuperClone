@@ -15,6 +15,12 @@ char wd_royl_error_ccc[WD_ROYL_ERROR_SIZE] = "";
 #define WD_ROYL_ATA_CMD_D5 0xd5
 #define WD_ROYL_ATA_CMD_D6 0xd6
 
+// DRAM is mapped at different base addresses on different ROYL families. The
+// base is detected from the drive and cached per disk handle.
+static uint64_t wd_royl_ram_base_ccc = WD_ROYL_RAM_BASE;
+static bool wd_royl_ram_base_known_ccc = false;
+static int wd_royl_ram_base_fd_ccc = -1;
+
 static void wd_royl_set_error_ccc(const char *format, ...)
 {
   va_list args;
@@ -1397,6 +1403,7 @@ static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data, size_t si
 {
   uint8_t request[16];
   uint8_t regs[7] = {WD_ROYL_ATA_CMD_D5, 0, 0xbf, 0x4f, 0xc2, 0xa0, 0xb0};
+  char detail[WD_ROYL_ERROR_SIZE];
   size_t sectors;
 
   if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
@@ -1417,8 +1424,12 @@ static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data, size_t si
   request[3] = 0x00;
   wd_royl_put_le32_ccc(request + 4, (uint32_t)address);
   wd_royl_put_le32_ccc(request + 8, (uint32_t)size);
-  if (wd_royl_prepare_ccc(request, false) != 0)
+  // Some firmware only accepts a RAM read after the key sector was sent twice.
+  if (wd_royl_prepare_ccc(request, true) != 0)
   {
+    snprintf(detail, sizeof(detail), "%s", wd_royl_error_ccc);
+    wd_royl_set_error_ccc("Could not send the RAM read key for address 0x%08llx: %s",
+                          (unsigned long long)address, detail);
     return -1;
   }
 
@@ -1431,6 +1442,10 @@ static int wd_royl_read_ram_internal_ccc(uint64_t address, void *data, size_t si
   regs[1] = (uint8_t)sectors;
   if (wd_royl_send_ata28_ccc(regs, data, size, WD_ROYL_DIR_IN) != 0)
   {
+    snprintf(detail, sizeof(detail), "%s", wd_royl_error_ccc);
+    wd_royl_set_error_ccc("The RAM read key for address 0x%08llx was accepted, but the %zu byte "
+                          "RAM read failed: %s",
+                          (unsigned long long)address, size, detail);
     return -1;
   }
 
@@ -1442,6 +1457,7 @@ static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data, si
 {
   uint8_t request[16];
   uint8_t regs[7] = {WD_ROYL_ATA_CMD_D6, 0, 0xbf, 0x4f, 0xc2, 0xa0, 0xb0};
+  char detail[WD_ROYL_ERROR_SIZE];
   size_t sectors;
 
   if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
@@ -1464,6 +1480,9 @@ static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data, si
   wd_royl_put_le32_ccc(request + 8, (uint32_t)size);
   if (wd_royl_prepare_ccc(request, false) != 0)
   {
+    snprintf(detail, sizeof(detail), "%s", wd_royl_error_ccc);
+    wd_royl_set_error_ccc("Could not send the RAM write key for address 0x%08llx: %s",
+                          (unsigned long long)address, detail);
     return -1;
   }
 
@@ -1476,6 +1495,10 @@ static int wd_royl_write_ram_internal_ccc(uint64_t address, const void *data, si
   regs[1] = (uint8_t)sectors;
   if (wd_royl_send_ata28_ccc(regs, (void *)data, size, WD_ROYL_DIR_OUT) != 0)
   {
+    snprintf(detail, sizeof(detail), "%s", wd_royl_error_ccc);
+    wd_royl_set_error_ccc("The RAM write key for address 0x%08llx was accepted, but the %zu byte "
+                          "RAM write failed: %s",
+                          (unsigned long long)address, size, detail);
     return -1;
   }
 
@@ -1515,6 +1538,187 @@ static int wd_royl_read_ram_chunked_ccc(uint64_t address, void *data, size_t siz
   return 0;
 }
 
+// Describes how much of the reported RAM window could actually be read.
+typedef struct
+{
+  uint64_t readable_end;            // address just past the last readable byte
+  uint64_t first_gap;               // first unreadable address, 0 when fully readable
+  char gap_error[WD_ROYL_ERROR_SIZE];
+} wd_royl_ram_scan_info_ccc;
+
+static size_t wd_royl_scanned_ram_size_ccc(const wd_royl_ram_scan_info_ccc *scan, uint64_t ram_size);
+
+static int wd_royl_load_ram_image_ccc(uint8_t **ram, uint64_t *ram_size, wd_royl_ram_scan_info_ccc *info,
+                                      wd_royl_progress_callback_ccc progress);
+
+// Some firmware reports a DRAM size in the data table that is larger than the
+// address range the memory command can actually reach. A read that far out
+// hangs until the drive is soft reset. The scan below therefore treats a read
+// failure in the middle of the window as an unreadable gap: the chunk is
+// zeroed, reading resumes with the next chunk, and two consecutive failures end
+// the scan. One jump over a larger gap is allowed, because a reserved block in
+// the middle of DRAM looks the same as the end of the window from the host.
+// Zeroed gaps cannot be mistaken for a ROYL module.
+#define WD_ROYL_RAM_SCAN_MAX_GAP_CHUNKS 2
+#define WD_ROYL_RAM_SCAN_RESYNC_JUMP 0x00100000ULL
+#define WD_ROYL_RAM_SCAN_MAX_RESYNCS 1
+
+static int wd_royl_scan_ram_ccc(uint64_t address, uint8_t *data, size_t size, size_t *readable,
+                                uint64_t *first_gap, char *gap_error, size_t gap_error_size,
+                                wd_royl_progress_callback_ccc progress)
+{
+  size_t offset = 0;
+  size_t failures = 0;
+  size_t resyncs = 0;
+
+  *readable = 0;
+  if (first_gap != NULL)
+  {
+    *first_gap = 0;
+  }
+  if (gap_error != NULL && gap_error_size > 0)
+  {
+    gap_error[0] = '\0';
+  }
+  if (data == NULL || size == 0 || (size % WD_ROYL_SECTOR_SIZE) != 0)
+  {
+    wd_royl_set_error_ccc("Internal error: invalid RAM scan size %zu.\n", size);
+    return -1;
+  }
+
+  while (offset < size)
+  {
+    size_t current = WD_ROYL_RAM_CHUNK_SIZE;
+
+    if (current > size - offset)
+    {
+      current = size - offset;
+    }
+    if (wd_royl_read_ram_internal_ccc(address + offset, data + offset, current, NULL) != 0)
+    {
+      if (first_gap != NULL && *first_gap == 0)
+      {
+        *first_gap = address + offset;
+        if (gap_error != NULL && gap_error_size > 0)
+        {
+          size_t length;
+
+          snprintf(gap_error, gap_error_size, "%s", wd_royl_error_ccc);
+          // The stored error ends with a newline; keep the message inside one
+          // sentence when it is embedded in a larger report.
+          length = strlen(gap_error);
+          while (length > 0 && (gap_error[length - 1] == '\n' || gap_error[length - 1] == '\r' ||
+                                gap_error[length - 1] == ' '))
+          {
+            gap_error[--length] = '\0';
+          }
+        }
+      }
+      memset(data + offset, 0, current);
+      // A failed read leaves the drive soft reset, so restore VSC mode before
+      // the next chunk is attempted.
+      wd_royl_enable_vsc_ccc();
+      failures++;
+      if (failures >= WD_ROYL_RAM_SCAN_MAX_GAP_CHUNKS)
+      {
+        uint64_t next;
+
+        if (resyncs >= WD_ROYL_RAM_SCAN_MAX_RESYNCS)
+        {
+          break;
+        }
+        resyncs++;
+        failures = 0;
+        next = (address + offset + WD_ROYL_RAM_SCAN_RESYNC_JUMP) &
+               ~(WD_ROYL_RAM_SCAN_RESYNC_JUMP - 1);
+        if (next <= address + offset)
+        {
+          next += WD_ROYL_RAM_SCAN_RESYNC_JUMP;
+        }
+        if (next >= address + size)
+        {
+          break;
+        }
+        offset = (size_t)(next - address);
+        continue;
+      }
+      offset += current;
+      continue;
+    }
+    failures = 0;
+    *readable = offset + current;
+    wd_royl_progress_ccc(progress, "Reading RAM", offset + current, size);
+    offset += current;
+  }
+
+  if (*readable == 0)
+  {
+    wd_royl_set_error_ccc("Reading the drive RAM at 0x%08llx failed: %s",
+                          (unsigned long long)address,
+                          (gap_error != NULL && gap_error[0] != '\0') ? gap_error : "unknown error");
+    return -1;
+  }
+  wd_royl_progress_ccc(progress, "Reading RAM", *readable, size);
+  return 0;
+}
+
+// Build a short, human readable list of the module IDs present in a RAM image.
+// It is only used to explain a head map search that found nothing.
+static void wd_royl_describe_ram_modules_ccc(const uint8_t *data, size_t size, char *text, size_t text_size)
+{
+  uint16_t seen[8];
+  size_t seen_count = 0;
+  size_t used = 0;
+  size_t offset = 0;
+
+  if (text_size == 0)
+  {
+    return;
+  }
+  text[0] = '\0';
+
+  while (offset + 12 <= size && seen_count < sizeof(seen) / sizeof(seen[0]))
+  {
+    uint16_t id;
+    size_t i;
+    bool duplicate = false;
+
+    if (memcmp(data + offset, "ROYL", 4) != 0)
+    {
+      offset++;
+      continue;
+    }
+    id = wd_royl_get_module_id_ccc(data + offset);
+    for (i = 0; i < seen_count; i++)
+    {
+      if (seen[i] == id)
+      {
+        duplicate = true;
+        break;
+      }
+    }
+    if (!duplicate)
+    {
+      int written;
+
+      seen[seen_count++] = id;
+      written = snprintf(text + used, text_size - used, "%s0x%04x@0x%08llx", used ? ", " : "", id,
+                         (unsigned long long)(wd_royl_ram_base_ccc + offset));
+      if (written < 0 || (size_t)written >= text_size - used)
+      {
+        text[text_size - 1] = '\0';
+        return;
+      }
+      used += (size_t)written;
+    }
+    offset++;
+  }
+  if (seen_count == 0)
+  {
+    snprintf(text, text_size, "no ROYL module headers");
+  }
+}
+
 static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data, size_t size, wd_royl_progress_callback_ccc progress)
 {
   size_t offset;
@@ -1542,35 +1746,196 @@ static int wd_royl_write_ram_chunked_ccc(uint64_t address, const void *data, siz
   return 0;
 }
 
+// Read the DRAM size from the drive data table. This is the preferred way to
+// find the RAM window because it avoids probing addresses that may not be
+// mapped, which can make the drive hang until it is soft reset.
+static bool wd_royl_get_data_table_dram_size_ccc(uint64_t *ram_size)
+{
+  uint8_t table[WD_ROYL_SECTOR_SIZE];
+  uint64_t size;
+  uint16_t megabytes;
+
+  if (wd_royl_read_data_table_internal_ccc(table) != 0)
+  {
+    return false;
+  }
+  megabytes = wd_royl_le16_ccc(table + WD_ROYL_DATA_TABLE_DRAM_SIZE_OFFSET);
+  size = (uint64_t)megabytes * 1024ULL * 1024ULL;
+  if (size < WD_ROYL_RAM_MIN_SIZE || size > WD_ROYL_RAM_MAX_SIZE)
+  {
+    wd_royl_set_error_ccc("The drive data table reported an unusable DRAM size of %u MB.\n",
+                          (unsigned int)megabytes);
+    return false;
+  }
+  *ram_size = size;
+  return true;
+}
+
+// A RAM window is accepted when both its base and the top of a 1 MiB probe
+// range are readable. Small boot-ROM or register windows fail the second read.
+#define WD_ROYL_RAM_WINDOW_CHECK_SIZE 0x00100000ULL
+
+static const uint64_t wd_royl_ram_base_candidates[] = {
+  0x00000000ULL, 0x08000000ULL, 0x04000000ULL, 0x0c000000ULL, 0x10000000ULL,
+  0x20000000ULL, 0x40000000ULL, 0x80000000ULL, 0xc0000000ULL,
+};
+
+// Returns 0 when the window is readable, -1 when the base read failed, and -2
+// when the base was readable but the upper probe failed.
+static int wd_royl_check_ram_window_ccc(uint64_t base, uint64_t size_hint, uint8_t first[WD_ROYL_SECTOR_SIZE],
+                                        char *error, size_t error_size)
+{
+  uint8_t high[WD_ROYL_SECTOR_SIZE];
+  uint64_t check_size = WD_ROYL_RAM_WINDOW_CHECK_SIZE;
+  uint64_t high_address;
+
+  if (size_hint != 0 && size_hint < check_size)
+  {
+    check_size = size_hint;
+  }
+  if (check_size <= WD_ROYL_SECTOR_SIZE)
+  {
+    check_size = WD_ROYL_SECTOR_SIZE;
+  }
+  high_address = base + check_size - WD_ROYL_SECTOR_SIZE;
+
+  if (wd_royl_read_ram_internal_ccc(base, first, WD_ROYL_SECTOR_SIZE, NULL) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_error_ccc);
+    // The failed read may have ended in an automatic soft reset, so restore
+    // VSC mode before the next attempt.
+    wd_royl_enable_vsc_ccc();
+    return -1;
+  }
+  if (wd_royl_read_ram_internal_ccc(high_address, high, sizeof(high), NULL) != 0)
+  {
+    snprintf(error, error_size, "%s", wd_royl_error_ccc);
+    wd_royl_enable_vsc_ccc();
+    return -2;
+  }
+  return 0;
+}
+
+// Find the RAM window base. `table_detail` describes the data table attempt
+// for the error message. On success first[] holds the first sector at the base
+// and wd_royl_ram_base_ccc is updated.
+static int wd_royl_find_ram_base_ccc(uint64_t size_hint, uint8_t first[WD_ROYL_SECTOR_SIZE], const char *table_detail)
+{
+  size_t i;
+  int fd = wd_royl_get_disk_fd_ccc();
+  char error[WD_ROYL_ERROR_SIZE];
+  char last_error[WD_ROYL_ERROR_SIZE];
+  bool any_base_readable = false;
+  size_t candidate_count = sizeof(wd_royl_ram_base_candidates) / sizeof(wd_royl_ram_base_candidates[0]);
+
+  last_error[0] = '\0';
+
+  if (wd_royl_ram_base_known_ccc && wd_royl_ram_base_fd_ccc == fd)
+  {
+    int result = wd_royl_check_ram_window_ccc(wd_royl_ram_base_ccc, size_hint, first, error, sizeof(error));
+
+    if (result == 0)
+    {
+      return 0;
+    }
+    if (result == -2)
+    {
+      any_base_readable = true;
+    }
+    snprintf(last_error, sizeof(last_error), "%s", error);
+    wd_royl_ram_base_known_ccc = false;
+  }
+
+  for (i = 0; i < candidate_count; i++)
+  {
+    int result = wd_royl_check_ram_window_ccc(wd_royl_ram_base_candidates[i], size_hint, first, error, sizeof(error));
+
+    if (result == 0)
+    {
+      wd_royl_ram_base_ccc = wd_royl_ram_base_candidates[i];
+      wd_royl_ram_base_known_ccc = true;
+      wd_royl_ram_base_fd_ccc = fd;
+      return 0;
+    }
+    if (result == -2)
+    {
+      any_base_readable = true;
+    }
+    snprintf(last_error, sizeof(last_error), "%s", error);
+  }
+
+  wd_royl_set_error_ccc("Could not find a usable RAM window. The data table request %s. None of the known "
+                        "RAM base addresses gave a readable window; the last error was: %s%s\n",
+                        table_detail, last_error,
+                        any_base_readable
+                          ? ""
+                          : " The memory command may need a loader (module 0x0011) before RAM access "
+                            "works.");
+  return -1;
+}
+
 static int wd_royl_detect_ram_size_internal_ccc(uint64_t *ram_size, wd_royl_progress_callback_ccc progress)
 {
   uint8_t base_data[WD_ROYL_SECTOR_SIZE];
   uint8_t probe_data[WD_ROYL_SECTOR_SIZE];
   uint64_t size;
+  uint64_t base;
+  bool have_size;
+  char table_detail[WD_ROYL_ERROR_SIZE + 16];
 
   *ram_size = 0;
+  table_detail[0] = '\0';
+
   wd_royl_progress_ccc(progress, "Detecting drive RAM", 0, 1);
-  if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE, base_data, sizeof(base_data), progress) != 0)
+  have_size = wd_royl_get_data_table_dram_size_ccc(ram_size);
+  if (have_size)
+  {
+    snprintf(table_detail, sizeof(table_detail), "succeeded");
+  }
+  else
+  {
+    snprintf(table_detail, sizeof(table_detail), "failed (%s)", wd_royl_error_ccc);
+    // A failed data table request may have ended in an automatic soft reset,
+    // so make sure VSC mode is enabled again before the next request.
+    wd_royl_enable_vsc_ccc();
+  }
+
+  if (wd_royl_find_ram_base_ccc(have_size ? *ram_size : 0, base_data, table_detail) != 0)
   {
     return -1;
   }
+  base = wd_royl_ram_base_ccc;
 
-  size = WD_ROYL_RAM_MIN_SIZE;
-  while (size <= WD_ROYL_RAM_MAX_SIZE)
+  if (!have_size)
   {
-    if (wd_royl_read_ram_internal_ccc(WD_ROYL_RAM_BASE + size, probe_data, sizeof(probe_data), progress) != 0)
+    // Probe the RAM window in power of two steps. A failed probe is treated
+    // as the end of the readable RAM instead of aborting, because reading an
+    // unmapped address is a normal way for this probe to end. The last known
+    // good offset is used as a conservative size.
+    size = WD_ROYL_RAM_MIN_SIZE;
+    while (size <= WD_ROYL_RAM_MAX_SIZE)
     {
-      return -1;
+      if (wd_royl_read_ram_internal_ccc(base + size, probe_data, sizeof(probe_data), progress) != 0)
+      {
+        // The failed read leaves the drive soft reset, so restore VSC mode
+        // before the caller continues to read the RAM it just detected.
+        wd_royl_enable_vsc_ccc();
+        *ram_size = (size > WD_ROYL_RAM_MIN_SIZE) ? (size / 2) : size;
+        wd_royl_progress_ccc(progress, "Detecting drive RAM", 1, 1);
+        return 0;
+      }
+      if (memcmp(base_data, probe_data, sizeof(base_data)) == 0)
+      {
+        *ram_size = size;
+        wd_royl_progress_ccc(progress, "Detecting drive RAM", 1, 1);
+        return 0;
+      }
+      size *= 2;
     }
-    if (memcmp(base_data, probe_data, sizeof(base_data)) == 0)
-    {
-      *ram_size = size;
-      return 0;
-    }
-    size *= 2;
+    *ram_size = WD_ROYL_RAM_MAX_SIZE;
   }
 
-  *ram_size = WD_ROYL_RAM_MAX_SIZE;
+  wd_royl_progress_ccc(progress, "Detecting drive RAM", 1, 1);
   return 0;
 }
 
@@ -1651,13 +2016,17 @@ int wd_royl_write_ram_ccc(uint64_t address, const void *data, size_t size, wd_ro
   return result;
 }
 
-int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module_02_count, unsigned int *module_32_count,
+int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module_02_count,
+                                  unsigned int *module_32_count, uint64_t *scanned_end, uint64_t *first_gap,
                                   wd_royl_progress_callback_ccc progress)
 {
   uint8_t *ram = NULL;
   uint8_t *verify = NULL;
   uint64_t ram_size = 0;
   uint64_t address;
+  wd_royl_ram_scan_info_ccc scan;
+  char gap_note[96];
+  size_t scanned_size;
   size_t offset;
   unsigned int count_02 = 0;
   unsigned int count_32 = 0;
@@ -1677,6 +2046,14 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
   {
     *module_32_count = 0;
   }
+  if (scanned_end != NULL)
+  {
+    *scanned_end = 0;
+  }
+  if (first_gap != NULL)
+  {
+    *first_gap = 0;
+  }
 
   if (wd_royl_enable_vsc_ccc() != 0)
   {
@@ -1684,22 +2061,29 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
   }
   enabled = true;
 
-  if (wd_royl_detect_ram_size_internal_ccc(&ram_size, progress) != 0)
+  // Use the same gap tolerant scan as the head map reader. Some firmware
+  // reports more DRAM than the memory command can reach.
+  if (wd_royl_load_ram_image_ccc(&ram, &ram_size, &scan, progress) != 0)
   {
     goto finish;
   }
-
-  ram = (uint8_t *)malloc((size_t)ram_size);
-  if (ram == NULL)
+  if (scanned_end != NULL)
   {
-    wd_royl_set_error_ccc("Unable to allocate %llu bytes for the RAM dump.\n", (unsigned long long)ram_size);
-    goto finish;
+    *scanned_end = scan.readable_end;
   }
-
-  wd_royl_progress_ccc(progress, "Reading RAM", 0, ram_size);
-  if (wd_royl_read_ram_chunked_ccc(WD_ROYL_RAM_BASE, ram, (size_t)ram_size, progress) != 0)
+  if (first_gap != NULL)
   {
-    goto finish;
+    *first_gap = scan.first_gap;
+  }
+  scanned_size = wd_royl_scanned_ram_size_ccc(&scan, ram_size);
+  if (scan.first_gap != 0)
+  {
+    snprintf(gap_note, sizeof(gap_note), "; the first unreadable address was 0x%08llx",
+             (unsigned long long)scan.first_gap);
+  }
+  else
+  {
+    gap_note[0] = '\0';
   }
 
   verify = (uint8_t *)malloc(WD_ROYL_MAX_FILE_SIZE);
@@ -1710,7 +2094,7 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
   }
 
   offset = 0;
-  while (offset + WD_ROYL_SECTOR_SIZE <= ram_size)
+  while (offset + WD_ROYL_SECTOR_SIZE <= scanned_size)
   {
     uint8_t *module = ram + offset;
     uint16_t module_id;
@@ -1734,7 +2118,7 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
 
     sectors = wd_royl_get_module_sector_count_ccc(module);
     module_size = (size_t)sectors * WD_ROYL_SECTOR_SIZE;
-    if (sectors == 0 || module_size > WD_ROYL_MAX_FILE_SIZE || offset + module_size > ram_size)
+    if (sectors == 0 || module_size > WD_ROYL_MAX_FILE_SIZE || offset + module_size > scanned_size)
     {
       offset += WD_ROYL_SECTOR_SIZE;
       continue;
@@ -1759,7 +2143,7 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
       goto finish;
     }
 
-    address = WD_ROYL_RAM_BASE + offset;
+    address = wd_royl_ram_base_ccc + offset;
     if (wd_royl_write_ram_chunked_ccc(address, module, module_size, progress) != 0)
     {
       goto finish;
@@ -1787,19 +2171,34 @@ int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module
     offset += module_size;
   }
 
-  if (count_02 == 0 && count_32 == 0)
+  if (((module_mask & WD_ROYL_MODULE_MASK_02) && count_02 == 0) ||
+      ((module_mask & WD_ROYL_MODULE_MASK_32) && count_32 == 0))
   {
-    if ((module_mask & WD_ROYL_MODULE_MASK_02) && (module_mask & WD_ROYL_MODULE_MASK_32))
+    bool missing_02 = (module_mask & WD_ROYL_MODULE_MASK_02) && count_02 == 0;
+    bool missing_32 = (module_mask & WD_ROYL_MODULE_MASK_32) && count_32 == 0;
+    const char *written = (count_02 != 0 || count_32 != 0) ? "The other module was patched and verified"
+                                                           : "Nothing was written";
+
+    if (missing_02 && missing_32)
     {
-      wd_royl_set_error_ccc("Neither module 02 nor module 32 was found in the drive RAM.\n");
+      wd_royl_set_error_ccc("Neither module 02 nor module 32 was found in the drive RAM "
+                            "(scanned 0x%08llx to 0x%08llx%s). %s.\n",
+                            (unsigned long long)wd_royl_ram_base_ccc,
+                            (unsigned long long)scan.readable_end, gap_note, written);
     }
-    else if (module_mask & WD_ROYL_MODULE_MASK_02)
+    else if (missing_02)
     {
-      wd_royl_set_error_ccc("Module 02 was not found in the drive RAM.\n");
+      wd_royl_set_error_ccc("Module 02 was not found in the drive RAM (scanned 0x%08llx to "
+                            "0x%08llx%s). %s.\n",
+                            (unsigned long long)wd_royl_ram_base_ccc,
+                            (unsigned long long)scan.readable_end, gap_note, written);
     }
     else
     {
-      wd_royl_set_error_ccc("Module 32 was not found in the drive RAM.\n");
+      wd_royl_set_error_ccc("Module 32 was not found in the drive RAM (scanned 0x%08llx to "
+                            "0x%08llx%s). %s.\n",
+                            (unsigned long long)wd_royl_ram_base_ccc,
+                            (unsigned long long)scan.readable_end, gap_note, written);
     }
     goto finish;
   }
@@ -1820,6 +2219,941 @@ finish:
   if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
   {
     wd_royl_set_error_ccc("The RAM patch completed, but vendor specific commands could not be "
+                          "disabled.\n");
+    result = -1;
+  }
+  return result;
+}
+
+static unsigned int wd_royl_head_map_popcount_ccc(uint16_t value)
+{
+  unsigned int count = 0;
+
+  while (value != 0)
+  {
+    count += value & 1u;
+    value >>= 1;
+  }
+  return count;
+}
+
+// Validate a requested head map before it is written. Only the physical map,
+// the active map, and the maximum head count are constrained here; the in-use
+// count is always recomputed from the active map.
+static bool wd_royl_head_map_request_valid_ccc(const wd_royl_head_map_ccc *map)
+{
+  if (map->physical_count < 1 || map->physical_count > WD_ROYL_HEAD_MAP_MAX_HEADS ||
+      map->physical_map == 0)
+  {
+    wd_royl_set_error_ccc("The requested physical head map is not valid.\n");
+    return false;
+  }
+  if (map->active_map == 0)
+  {
+    wd_royl_set_error_ccc("At least one head must remain enabled.\n");
+    return false;
+  }
+  if ((map->active_map & ~map->physical_map) != 0)
+  {
+    wd_royl_set_error_ccc("The requested active head map contains a head that is not present.\n");
+    return false;
+  }
+  return true;
+}
+
+// Build the active map for a live copy. Heads that differ between the base and
+// the requested map are taken from the request; every other head keeps the
+// state the live copy already has.
+static uint16_t wd_royl_head_map_merge_active_ccc(uint16_t base_active, uint16_t requested_active,
+                                                  uint16_t live_active)
+{
+  uint16_t changed = base_active ^ requested_active;
+
+  return (uint16_t)((live_active & ~changed) | (requested_active & changed));
+}
+
+static bool wd_royl_head_map_header_valid_ccc(const uint8_t *module, size_t size, uint16_t expected_module)
+{
+  uint16_t sectors;
+
+  if (module == NULL || size < WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET + 2)
+  {
+    return false;
+  }
+  if (memcmp(module, "ROYL", 4) != 0)
+  {
+    return false;
+  }
+  if (expected_module != 0 && wd_royl_get_module_id_ccc(module) != expected_module)
+  {
+    return false;
+  }
+  sectors = wd_royl_get_module_sector_count_ccc(module);
+  // Some ROM images store a module compactly and end it at the next ROYL
+  // header instead of padding it to sectors * 512 bytes. Accept any length
+  // up to the declared size; the caller determines the actual stored length.
+  if (sectors == 0 || size > (size_t)sectors * WD_ROYL_SECTOR_SIZE)
+  {
+    return false;
+  }
+  return true;
+}
+
+static bool wd_royl_head_map_parse_internal_ccc(const uint8_t *module, size_t size, uint16_t expected_module,
+                                                wd_royl_head_map_ccc *map)
+{
+  unsigned int physical_bits;
+  unsigned int active_bits;
+
+  if (map == NULL)
+  {
+    return false;
+  }
+
+  memset(map, 0, sizeof(*map));
+  map->header_valid = wd_royl_head_map_header_valid_ccc(module, size, expected_module);
+  if (!map->header_valid)
+  {
+    return false;
+  }
+
+  map->physical_count = module[WD_ROYL_HEAD_MAP_PHYSICAL_COUNT_OFFSET];
+  map->in_use_count = module[WD_ROYL_HEAD_MAP_IN_USE_COUNT_OFFSET];
+  map->active_map = wd_royl_le16_ccc(module + WD_ROYL_HEAD_MAP_ACTIVE_MAP_OFFSET);
+  map->physical_map = wd_royl_le16_ccc(module + WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET);
+  map->vendor_field_3c = wd_royl_le16_ccc(module + WD_ROYL_HEAD_MAP_VENDOR_FIELD_OFFSET);
+  map->module_checksum_valid =
+    (wd_royl_get_module_checksum_ccc(module) == wd_royl_calculate_checksum_ccc(module, size));
+
+  physical_bits = wd_royl_head_map_popcount_ccc(map->physical_map);
+  active_bits = wd_royl_head_map_popcount_ccc(map->active_map);
+  map->counts_match_maps = (physical_bits == map->physical_count && active_bits == map->in_use_count);
+
+  map->valid = (map->physical_count >= 1 && map->physical_count <= WD_ROYL_HEAD_MAP_MAX_HEADS &&
+                map->in_use_count >= 1 && map->in_use_count <= map->physical_count &&
+                map->physical_map != 0 && map->active_map != 0 &&
+                (map->active_map & ~map->physical_map) == 0);
+  return map->valid;
+}
+
+int wd_royl_head_map_parse_ccc(const uint8_t *module, size_t size, uint16_t expected_module, wd_royl_head_map_ccc *map)
+{
+  if (!wd_royl_head_map_parse_internal_ccc(module, size, expected_module, map))
+  {
+    wd_royl_set_error_ccc("The module does not contain a valid WD ROYL head map.\n");
+    return -1;
+  }
+  return 0;
+}
+
+int wd_royl_head_map_build_ccc(uint8_t *module, size_t size, uint16_t expected_module,
+                               const wd_royl_head_map_ccc *map)
+{
+  unsigned int active_bits;
+
+  if (module == NULL || map == NULL)
+  {
+    wd_royl_set_error_ccc("Internal error: no head map data to build.\n");
+    return -1;
+  }
+  if (!wd_royl_head_map_header_valid_ccc(module, size, expected_module))
+  {
+    wd_royl_set_error_ccc("The module does not have a valid WD ROYL head map header.\n");
+    return -1;
+  }
+  if (!wd_royl_head_map_request_valid_ccc(map))
+  {
+    return -1;
+  }
+  if (module[WD_ROYL_HEAD_MAP_PHYSICAL_COUNT_OFFSET] != map->physical_count ||
+      wd_royl_le16_ccc(module + WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET) != map->physical_map)
+  {
+    wd_royl_set_error_ccc("The requested head map does not match the module's physical head map.\n");
+    return -1;
+  }
+
+  module[WD_ROYL_HEAD_MAP_ACTIVE_MAP_OFFSET] = (uint8_t)(map->active_map & 0xff);
+  module[WD_ROYL_HEAD_MAP_ACTIVE_MAP_OFFSET + 1] = (uint8_t)(map->active_map >> 8);
+  active_bits = wd_royl_head_map_popcount_ccc(map->active_map);
+  module[WD_ROYL_HEAD_MAP_IN_USE_COUNT_OFFSET] = (uint8_t)active_bits;
+
+  // The field at 0x3C is opaque vendor data and is left untouched.
+  wd_royl_update_checksum_ccc(module, size);
+  return 0;
+}
+
+// Determine the stored length of the module at buffer+offset. Most modules
+// occupy sectors * 512 bytes, but some ROM images store a module compactly and
+// place the next ROYL header directly after its last byte. Try the declared
+// length first, then any plausible ROYL boundary inside it. *checksum_valid is
+// set to whether the module checksum matches over the chosen length.
+static bool wd_royl_module_stored_size_ccc(const uint8_t *buffer, size_t size, size_t offset,
+                                           size_t *module_size, bool *checksum_valid)
+{
+  uint16_t sectors;
+  size_t available;
+  size_t declared;
+  size_t limit;
+  size_t boundary;
+  size_t compact_size = 0;
+
+  if (buffer == NULL || module_size == NULL || offset + 0x0c > size)
+  {
+    return false;
+  }
+  sectors = wd_royl_get_module_sector_count_ccc(buffer + offset);
+  if (sectors == 0)
+  {
+    return false;
+  }
+  available = size - offset;
+  declared = (size_t)sectors * WD_ROYL_SECTOR_SIZE;
+
+  if (declared <= available &&
+      wd_royl_get_module_checksum_ccc(buffer + offset) ==
+        wd_royl_calculate_checksum_ccc(buffer + offset, declared))
+  {
+    *module_size = declared;
+    if (checksum_valid != NULL)
+    {
+      *checksum_valid = true;
+    }
+    return true;
+  }
+
+  limit = declared < available ? declared : available;
+
+  // A caller may supply exactly the stored bytes of a compact module, with no
+  // following header to mark its end.
+  if (declared > available && available >= WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET + 2 &&
+      wd_royl_get_module_checksum_ccc(buffer + offset) ==
+        wd_royl_calculate_checksum_ccc(buffer + offset, available))
+  {
+    *module_size = available;
+    if (checksum_valid != NULL)
+    {
+      *checksum_valid = true;
+    }
+    return true;
+  }
+
+  for (boundary = WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET + 2; boundary + 0x0c <= limit; boundary++)
+  {
+    if (memcmp(buffer + offset + boundary, "ROYL", 4) != 0)
+    {
+      continue;
+    }
+    if (wd_royl_get_module_sector_count_ccc(buffer + offset + boundary) == 0)
+    {
+      continue;
+    }
+    if (compact_size == 0)
+    {
+      compact_size = boundary;
+    }
+    if (wd_royl_get_module_checksum_ccc(buffer + offset) ==
+        wd_royl_calculate_checksum_ccc(buffer + offset, boundary))
+    {
+      *module_size = boundary;
+      if (checksum_valid != NULL)
+      {
+        *checksum_valid = true;
+      }
+      return true;
+    }
+  }
+
+  if (declared <= available)
+  {
+    *module_size = declared;
+    if (checksum_valid != NULL)
+    {
+      *checksum_valid = false;
+    }
+    return true;
+  }
+  if (compact_size != 0)
+  {
+    *module_size = compact_size;
+    if (checksum_valid != NULL)
+    {
+      *checksum_valid = false;
+    }
+    return true;
+  }
+  return false;
+}
+
+static bool wd_royl_find_module_in_buffer_internal_ccc(const uint8_t *buffer, size_t size, uint16_t module_id,
+                                                       size_t *module_offset, size_t *module_size,
+                                                       bool require_checksum)
+{
+  size_t offset = 0;
+
+  while (offset + 0x0c <= size)
+  {
+    size_t current_size = 0;
+    bool checksum_valid = false;
+
+    if (memcmp(buffer + offset, "ROYL", 4) != 0)
+    {
+      offset++;
+      continue;
+    }
+    if (wd_royl_get_module_id_ccc(buffer + offset) != module_id)
+    {
+      offset++;
+      continue;
+    }
+    if (size - offset < WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET + 2)
+    {
+      break;
+    }
+    if (!wd_royl_module_stored_size_ccc(buffer, size, offset, &current_size, &checksum_valid))
+    {
+      offset++;
+      continue;
+    }
+    if ((!require_checksum || checksum_valid) &&
+        wd_royl_head_map_header_valid_ccc(buffer + offset, current_size, module_id))
+    {
+      *module_offset = offset;
+      *module_size = current_size;
+      return true;
+    }
+    offset += current_size;
+  }
+  return false;
+}
+
+int wd_royl_find_module_in_buffer_ccc(const uint8_t *buffer, size_t size, uint16_t module_id, size_t *module_offset,
+                                      size_t *module_size)
+{
+  if (buffer == NULL || size == 0 || module_offset == NULL || module_size == NULL)
+  {
+    wd_royl_set_error_ccc("Internal error: invalid module search request.\n");
+    return -1;
+  }
+  if (!wd_royl_find_module_in_buffer_internal_ccc(buffer, size, module_id, module_offset, module_size, false))
+  {
+    wd_royl_set_error_ccc("Module 0x%04x was not found in the buffer.\n", module_id);
+    return -1;
+  }
+  return 0;
+}
+
+typedef struct
+{
+  size_t offset;
+  size_t size;
+  wd_royl_head_map_ccc map;
+} wd_royl_head_map_candidate_ccc;
+
+// Collect every module copy that parses as a sane head map. A ROM can contain
+// more than one copy of module 0x0A, including an erased factory template with
+// zero maps, so callers must not stop at the first matching header.
+static size_t wd_royl_collect_head_map_candidates_ccc(const uint8_t *buffer, size_t size, uint16_t module_id,
+                                                      wd_royl_head_map_candidate_ccc *candidates,
+                                                      size_t max_candidates)
+{
+  size_t offset = 0;
+  size_t count = 0;
+
+  while (count < max_candidates && offset + 0x0c <= size)
+  {
+    size_t module_size = 0;
+
+    if (memcmp(buffer + offset, "ROYL", 4) != 0)
+    {
+      offset++;
+      continue;
+    }
+    if (wd_royl_get_module_id_ccc(buffer + offset) != module_id)
+    {
+      offset++;
+      continue;
+    }
+    if (!wd_royl_module_stored_size_ccc(buffer, size, offset, &module_size, NULL))
+    {
+      offset++;
+      continue;
+    }
+    {
+      wd_royl_head_map_ccc map;
+
+      if (wd_royl_head_map_parse_internal_ccc(buffer + offset, module_size, module_id, &map))
+      {
+        candidates[count].offset = offset;
+        candidates[count].size = module_size;
+        candidates[count].map = map;
+        count++;
+        offset += module_size;
+        continue;
+      }
+    }
+    // A rejected header may sit inside a larger valid module, so only skip the
+    // header itself instead of its declared size.
+    offset++;
+  }
+  return count;
+}
+
+// Prefer a copy with a valid module checksum and self-consistent counts. Later
+// copies win ties, which matches the usual layout where the active copy follows
+// the erased template.
+static size_t wd_royl_select_head_map_candidate_ccc(const wd_royl_head_map_candidate_ccc *candidates, size_t count)
+{
+  size_t selected = 0;
+  size_t i;
+  int best_score = -1;
+
+  for (i = 0; i < count; i++)
+  {
+    int score = 0;
+
+    if (candidates[i].map.module_checksum_valid)
+    {
+      score += 4;
+    }
+    if (candidates[i].map.counts_match_maps)
+    {
+      score += 2;
+    }
+    if (score >= best_score)
+    {
+      best_score = score;
+      selected = i;
+    }
+  }
+  return selected;
+}
+
+int wd_royl_find_rom_head_map_ccc(const uint8_t *rom, size_t rom_size, size_t *module_offset, size_t *module_size)
+{
+  wd_royl_head_map_candidate_ccc candidates[16];
+  size_t count;
+  size_t selected;
+
+  if (rom == NULL || rom_size == 0 || module_offset == NULL || module_size == NULL)
+  {
+    wd_royl_set_error_ccc("Internal error: invalid head map search request.\n");
+    return -1;
+  }
+  count = wd_royl_collect_head_map_candidates_ccc(rom, rom_size, WD_ROYL_MODULE_0A, candidates,
+                                                  sizeof(candidates) / sizeof(candidates[0]));
+  if (count == 0)
+  {
+    wd_royl_set_error_ccc("No usable head map module 0x000A was found in the buffer.\n");
+    return -1;
+  }
+  selected = wd_royl_select_head_map_candidate_ccc(candidates, count);
+  *module_offset = candidates[selected].offset;
+  *module_size = candidates[selected].size;
+  return 0;
+}
+
+static int wd_royl_read_rom_head_map_ccc(uint8_t **module, size_t *module_size, uint64_t *address,
+                                         wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *rom = NULL;
+  size_t rom_size = 0;
+  wd_royl_head_map_candidate_ccc candidates[16];
+  size_t count;
+  size_t selected;
+  int result = -1;
+
+  *module = NULL;
+  *module_size = 0;
+  if (address != NULL)
+  {
+    *address = 0;
+  }
+
+  if (wd_royl_read_rom_ccc(&rom, &rom_size, progress) != 0)
+  {
+    free(rom);
+    return -1;
+  }
+  count = wd_royl_collect_head_map_candidates_ccc(rom, rom_size, WD_ROYL_MODULE_0A, candidates,
+                                                  sizeof(candidates) / sizeof(candidates[0]));
+  if (count == 0)
+  {
+    wd_royl_set_error_ccc("No usable head map module 0x000A was found in the drive ROM.\n");
+    goto finish;
+  }
+  selected = wd_royl_select_head_map_candidate_ccc(candidates, count);
+
+  *module = (uint8_t *)malloc(candidates[selected].size);
+  if (*module == NULL)
+  {
+    wd_royl_set_error_ccc("Unable to allocate %zu bytes for the ROM head map.\n", candidates[selected].size);
+    goto finish;
+  }
+  memcpy(*module, rom + candidates[selected].offset, candidates[selected].size);
+  *module_size = candidates[selected].size;
+  if (address != NULL)
+  {
+    *address = candidates[selected].offset;
+  }
+  result = 0;
+
+finish:
+  free(rom);
+  return result;
+}
+
+static int wd_royl_read_sa_head_map_ccc(uint8_t **module, size_t *module_size, uint64_t *address,
+                                        wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *data = NULL;
+  size_t size = 0;
+  wd_royl_head_map_ccc map;
+
+  *module = NULL;
+  *module_size = 0;
+  if (address != NULL)
+  {
+    *address = 0;
+  }
+
+  if (wd_royl_read_module_ccc(WD_ROYL_MODULE_0A_SA, &data, &size, progress) != 0)
+  {
+    free(data);
+    return -1;
+  }
+  if (size >= 0x18 && memcmp(data + 0x10, "NOT_INIT", 8) == 0)
+  {
+    free(data);
+    wd_royl_set_error_ccc("Service area module 0x0102 is a NOT_INIT placeholder. This drive does "
+                          "not store a usable head map there; read the ROM module 0x000A instead.\n");
+    return -1;
+  }
+  if (!wd_royl_head_map_parse_internal_ccc(data, size, WD_ROYL_MODULE_0A_SA, &map))
+  {
+    free(data);
+    wd_royl_set_error_ccc("The service area head map module 0x0102 does not contain a valid head "
+                          "map.\n");
+    return -1;
+  }
+
+  *module = data;
+  *module_size = size;
+  return 0;
+}
+
+// Load the RAM window into memory. The caller must have VSC enabled. The image
+// always has the size reported by the drive so that offsets inside it map
+// directly to addresses; unreadable gaps are left zeroed.
+static int wd_royl_load_ram_image_ccc(uint8_t **ram, uint64_t *ram_size, wd_royl_ram_scan_info_ccc *info,
+                                      wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *buffer = NULL;
+  uint64_t size = 0;
+  size_t readable = 0;
+
+  *ram = NULL;
+  *ram_size = 0;
+  if (info != NULL)
+  {
+    info->readable_end = 0;
+    info->first_gap = 0;
+    info->gap_error[0] = '\0';
+  }
+
+  if (wd_royl_detect_ram_size_internal_ccc(&size, progress) != 0)
+  {
+    return -1;
+  }
+  buffer = (uint8_t *)malloc((size_t)size);
+  if (buffer == NULL)
+  {
+    wd_royl_set_error_ccc("Unable to allocate %llu bytes for the RAM dump.\n", (unsigned long long)size);
+    return -1;
+  }
+  memset(buffer, 0, (size_t)size);
+
+  wd_royl_progress_ccc(progress, "Reading RAM", 0, size);
+  if (wd_royl_scan_ram_ccc(wd_royl_ram_base_ccc, buffer, (size_t)size, &readable,
+                           info != NULL ? &info->first_gap : NULL,
+                           info != NULL ? info->gap_error : NULL,
+                           info != NULL ? sizeof(info->gap_error) : 0, progress) != 0)
+  {
+    free(buffer);
+    return -1;
+  }
+
+  if (info != NULL)
+  {
+    info->readable_end = wd_royl_ram_base_ccc + readable;
+  }
+  *ram = buffer;
+  *ram_size = size;
+  return 0;
+}
+
+static int wd_royl_read_ram_image_ccc(uint8_t **ram, uint64_t *ram_size, wd_royl_ram_scan_info_ccc *info,
+                                      wd_royl_progress_callback_ccc progress)
+{
+  int result;
+
+  if (wd_royl_enable_vsc_ccc() != 0)
+  {
+    return -1;
+  }
+  result = wd_royl_load_ram_image_ccc(ram, ram_size, info, progress);
+  if (wd_royl_disable_vsc_ccc() != 0 && result == 0)
+  {
+    wd_royl_set_error_ccc("The RAM was read, but vendor specific commands could not be disabled.\n");
+    result = -1;
+  }
+  if (result != 0)
+  {
+    free(*ram);
+    *ram = NULL;
+    *ram_size = 0;
+  }
+  return result;
+}
+
+// The RAM image is always allocated at the full reported size so that offsets
+// map directly to addresses. Only the part up to the last readable address can
+// contain data, so searches must not run over the zero filled remainder.
+static size_t wd_royl_scanned_ram_size_ccc(const wd_royl_ram_scan_info_ccc *scan, uint64_t ram_size)
+{
+  uint64_t readable;
+
+  if (scan == NULL || scan->readable_end <= wd_royl_ram_base_ccc)
+  {
+    return 0;
+  }
+  readable = scan->readable_end - wd_royl_ram_base_ccc;
+  return (size_t)(readable < ram_size ? readable : ram_size);
+}
+
+static void wd_royl_set_ram_head_map_missing_error_ccc(const uint8_t *ram, size_t ram_size,
+                                                       const wd_royl_ram_scan_info_ccc *scan)
+{
+  char modules[256];
+
+  wd_royl_describe_ram_modules_ccc(ram, ram_size, modules, sizeof(modules));
+  if (scan != NULL && scan->first_gap != 0)
+  {
+    wd_royl_set_error_ccc("No usable head map module 0x000A was found in the drive RAM. "
+                          "The scan read 0x%08llx to 0x%08llx; the first unreadable address was "
+                          "0x%08llx (%s). ROYL modules found: %s. Nothing was written.\n",
+                          (unsigned long long)wd_royl_ram_base_ccc,
+                          (unsigned long long)(wd_royl_ram_base_ccc + ram_size),
+                          (unsigned long long)scan->first_gap,
+                          scan->gap_error[0] != '\0' ? scan->gap_error : "unknown error", modules);
+  }
+  else
+  {
+    wd_royl_set_error_ccc("No usable head map module 0x000A was found in the drive RAM. "
+                          "The scan read 0x%08llx to 0x%08llx without read errors. "
+                          "ROYL modules found: %s. Nothing was written.\n",
+                          (unsigned long long)wd_royl_ram_base_ccc,
+                          (unsigned long long)(wd_royl_ram_base_ccc + ram_size), modules);
+  }
+}
+
+static int wd_royl_read_ram_head_map_ccc(uint8_t **module, size_t *module_size, uint64_t *address,
+                                         wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *ram = NULL;
+  uint64_t ram_size = 0;
+  wd_royl_head_map_candidate_ccc candidates[64];
+  wd_royl_ram_scan_info_ccc scan;
+  size_t scanned_size;
+  size_t count;
+  size_t selected;
+  int result = -1;
+
+  *module = NULL;
+  *module_size = 0;
+  if (address != NULL)
+  {
+    *address = 0;
+  }
+
+  if (wd_royl_read_ram_image_ccc(&ram, &ram_size, &scan, progress) != 0)
+  {
+    return -1;
+  }
+  scanned_size = wd_royl_scanned_ram_size_ccc(&scan, ram_size);
+  count = wd_royl_collect_head_map_candidates_ccc(ram, scanned_size, WD_ROYL_MODULE_0A, candidates,
+                                                  sizeof(candidates) / sizeof(candidates[0]));
+  if (count == 0)
+  {
+    wd_royl_set_ram_head_map_missing_error_ccc(ram, scanned_size, &scan);
+    goto finish;
+  }
+  selected = wd_royl_select_head_map_candidate_ccc(candidates, count);
+
+  *module = (uint8_t *)malloc(candidates[selected].size);
+  if (*module == NULL)
+  {
+    wd_royl_set_error_ccc("Unable to allocate %zu bytes for the RAM head map.\n", candidates[selected].size);
+    goto finish;
+  }
+  memcpy(*module, ram + candidates[selected].offset, candidates[selected].size);
+  *module_size = candidates[selected].size;
+  if (address != NULL)
+  {
+    *address = wd_royl_ram_base_ccc + candidates[selected].offset;
+  }
+  result = 0;
+
+finish:
+  free(ram);
+  return result;
+}
+
+int wd_royl_read_head_map_ccc(wd_royl_head_map_source_ccc source, uint8_t **module, size_t *module_size,
+                              uint64_t *address, wd_royl_head_map_source_ccc *actual_source,
+                              wd_royl_progress_callback_ccc progress)
+{
+  if (module == NULL || module_size == NULL)
+  {
+    wd_royl_set_error_ccc("Internal error: no head map destination.\n");
+    return -1;
+  }
+  *module = NULL;
+  *module_size = 0;
+  if (address != NULL)
+  {
+    *address = 0;
+  }
+  if (actual_source != NULL)
+  {
+    *actual_source = source;
+  }
+
+  if (source == WD_ROYL_HEAD_MAP_SOURCE_AUTO)
+  {
+    uint8_t *fast_module = NULL;
+    size_t fast_size = 0;
+    wd_royl_head_map_ccc map;
+
+    // Some firmware exposes ROM module 0x0A through the normal module read
+    // command. This is much faster than reading the whole ROM.
+    if (wd_royl_read_module_ccc(WD_ROYL_MODULE_0A, &fast_module, &fast_size, progress) == 0 &&
+        wd_royl_head_map_parse_internal_ccc(fast_module, fast_size, WD_ROYL_MODULE_0A, &map))
+    {
+      *module = fast_module;
+      *module_size = fast_size;
+      if (actual_source != NULL)
+      {
+        *actual_source = WD_ROYL_HEAD_MAP_SOURCE_ROM;
+      }
+      return 0;
+    }
+    free(fast_module);
+
+    if (wd_royl_read_rom_head_map_ccc(module, module_size, address, progress) == 0)
+    {
+      if (actual_source != NULL)
+      {
+        *actual_source = WD_ROYL_HEAD_MAP_SOURCE_ROM;
+      }
+      return 0;
+    }
+    if (wd_royl_read_sa_head_map_ccc(module, module_size, address, progress) == 0)
+    {
+      if (actual_source != NULL)
+      {
+        *actual_source = WD_ROYL_HEAD_MAP_SOURCE_SA;
+      }
+      return 0;
+    }
+
+    wd_royl_set_error_ccc("No WD ROYL head map was found in ROM module 0x000A or service area "
+                          "module 0x0102.\n");
+    return -1;
+  }
+
+  switch (source)
+  {
+    case WD_ROYL_HEAD_MAP_SOURCE_ROM:
+      return wd_royl_read_rom_head_map_ccc(module, module_size, address, progress);
+    case WD_ROYL_HEAD_MAP_SOURCE_SA:
+      return wd_royl_read_sa_head_map_ccc(module, module_size, address, progress);
+    case WD_ROYL_HEAD_MAP_SOURCE_RAM:
+      return wd_royl_read_ram_head_map_ccc(module, module_size, address, progress);
+    default:
+      wd_royl_set_error_ccc("Internal error: unknown head map source.\n");
+      return -1;
+  }
+}
+
+int wd_royl_apply_head_map_ram_ccc(const wd_royl_head_map_ccc *base_map, const wd_royl_head_map_ccc *map,
+                                   unsigned int *copy_count, uint16_t *applied_active,
+                                   wd_royl_progress_callback_ccc progress)
+{
+  uint8_t *ram = NULL;
+  uint64_t ram_size = 0;
+  wd_royl_head_map_candidate_ccc candidates[64];
+  wd_royl_ram_scan_info_ccc scan;
+  size_t scanned_size;
+  size_t count;
+  size_t selected;
+  size_t i;
+  unsigned int patched = 0;
+  int result = -1;
+  bool enabled = false;
+
+  if (copy_count != NULL)
+  {
+    *copy_count = 0;
+  }
+  if (applied_active != NULL)
+  {
+    *applied_active = 0;
+  }
+  if (base_map == NULL || map == NULL)
+  {
+    wd_royl_set_error_ccc("There is no head map to apply.\n");
+    return -1;
+  }
+  if (!wd_royl_head_map_request_valid_ccc(map))
+  {
+    return -1;
+  }
+  if (base_map->physical_count != map->physical_count || base_map->physical_map != map->physical_map)
+  {
+    wd_royl_set_error_ccc("The requested head map does not match the loaded physical head map.\n");
+    return -1;
+  }
+
+  if (wd_royl_enable_vsc_ccc() != 0)
+  {
+    return -1;
+  }
+  enabled = true;
+
+  if (wd_royl_load_ram_image_ccc(&ram, &ram_size, &scan, progress) != 0)
+  {
+    goto finish;
+  }
+
+  scanned_size = wd_royl_scanned_ram_size_ccc(&scan, ram_size);
+  count = wd_royl_collect_head_map_candidates_ccc(ram, scanned_size, WD_ROYL_MODULE_0A, candidates,
+                                                  sizeof(candidates) / sizeof(candidates[0]));
+  if (count == 0)
+  {
+    wd_royl_set_ram_head_map_missing_error_ccc(ram, scanned_size, &scan);
+    goto finish;
+  }
+  selected = wd_royl_select_head_map_candidate_ccc(candidates, count);
+
+  // Every candidate must describe the same physical head stack. Otherwise
+  // the map belongs to a different firmware copy and must not be patched.
+  // Merge the requested changes into each live copy before anything is
+  // written, so an invalid result aborts without touching the drive.
+  for (i = 0; i < count; i++)
+  {
+    uint16_t merged;
+
+    if (candidates[i].map.physical_count != map->physical_count ||
+        candidates[i].map.physical_map != map->physical_map)
+    {
+      wd_royl_set_error_ccc("The RAM head map does not match the loaded physical head map.\n");
+      goto finish;
+    }
+    merged = wd_royl_head_map_merge_active_ccc(base_map->active_map, map->active_map,
+                                               candidates[i].map.active_map);
+    if (merged == 0)
+    {
+      wd_royl_set_error_ccc("The requested head map would leave a RAM copy with no enabled heads.\n");
+      goto finish;
+    }
+    if ((merged & ~map->physical_map) != 0)
+    {
+      wd_royl_set_error_ccc("The RAM head map contains a head that is not present.\n");
+      goto finish;
+    }
+    candidates[i].map.active_map = merged;
+  }
+
+  for (i = 0; i < count; i++)
+  {
+    size_t aligned_start = candidates[i].offset & ~((size_t)WD_ROYL_SECTOR_SIZE - 1);
+    size_t aligned_end = (candidates[i].offset + candidates[i].size + WD_ROYL_SECTOR_SIZE - 1) &
+                         ~((size_t)WD_ROYL_SECTOR_SIZE - 1);
+    size_t aligned_size = aligned_end - aligned_start;
+    size_t module_offset = candidates[i].offset - aligned_start;
+    uint8_t *sector = NULL;
+    uint8_t *verify = NULL;
+
+    if (aligned_end > scanned_size)
+    {
+      wd_royl_set_error_ccc("The RAM head map at 0x%08llx reaches outside the readable RAM.\n",
+                            (unsigned long long)(wd_royl_ram_base_ccc + candidates[i].offset));
+      goto finish;
+    }
+
+    sector = (uint8_t *)malloc(aligned_size);
+    verify = (uint8_t *)malloc(aligned_size);
+    if (sector == NULL || verify == NULL)
+    {
+      free(sector);
+      free(verify);
+      wd_royl_set_error_ccc("Unable to allocate the RAM head map patch buffer.\n");
+      goto finish;
+    }
+
+    memcpy(sector, ram + aligned_start, aligned_size);
+    if (wd_royl_head_map_build_ccc(sector + module_offset, candidates[i].size, WD_ROYL_MODULE_0A,
+                                   &candidates[i].map) != 0)
+    {
+      free(sector);
+      free(verify);
+      goto finish;
+    }
+
+    wd_royl_progress_ccc(progress, "Patching RAM head map", i, count);
+    if (wd_royl_write_ram_chunked_ccc(wd_royl_ram_base_ccc + aligned_start, sector, aligned_size, progress) != 0)
+    {
+      free(sector);
+      free(verify);
+      goto finish;
+    }
+    if (wd_royl_read_ram_chunked_ccc(wd_royl_ram_base_ccc + aligned_start, verify, aligned_size, progress) != 0)
+    {
+      free(sector);
+      free(verify);
+      goto finish;
+    }
+    if (memcmp(verify, sector, aligned_size) != 0)
+    {
+      free(sector);
+      free(verify);
+      wd_royl_set_error_ccc("RAM verification failed for the head map at 0x%08llx.\n",
+                            (unsigned long long)(wd_royl_ram_base_ccc + candidates[i].offset));
+      goto finish;
+    }
+
+    // Keep the in-memory image current in case two candidates share a sector.
+    memcpy(ram + aligned_start, sector, aligned_size);
+    free(sector);
+    free(verify);
+    patched++;
+  }
+
+  if (copy_count != NULL)
+  {
+    *copy_count = patched;
+  }
+  if (applied_active != NULL)
+  {
+    *applied_active = candidates[selected].map.active_map;
+  }
+  result = 0;
+
+finish:
+  free(ram);
+  if (enabled && wd_royl_disable_vsc_ccc() != 0 && result == 0)
+  {
+    wd_royl_set_error_ccc("The RAM head map was patched, but vendor specific commands could not be "
                           "disabled.\n");
     result = -1;
   }

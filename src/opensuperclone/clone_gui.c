@@ -13408,6 +13408,669 @@ finish:
   return result;
 }
 
+typedef struct
+{
+  GtkWidget *dialog;
+  GtkWidget *rom_radio;
+  GtkWidget *sa_radio;
+  GtkWidget *ram_radio;
+  GtkWidget *status_label;
+  GtkWidget *summary_label;
+  GtkWidget *checksum_label;
+  GtkWidget *apply_button;
+  GtkWidget *head_physical[WD_ROYL_HEAD_MAP_MAX_HEADS];
+  GtkWidget *head_checks[WD_ROYL_HEAD_MAP_MAX_HEADS];
+  GtkWidget *head_status[WD_ROYL_HEAD_MAP_MAX_HEADS];
+  wd_royl_head_map_ccc source_map;
+  wd_royl_head_map_ccc pending_map;
+  uint8_t *source_module;
+  size_t source_size;
+  wd_royl_head_map_source_ccc source;
+  uint64_t source_address;
+  bool loaded;
+  bool updating;
+} wd_royl_head_map_dialog_ccc_t;
+
+static unsigned int wd_royl_head_map_dialog_popcount_ccc(uint16_t value)
+{
+  unsigned int count = 0;
+
+  while (value != 0)
+  {
+    count += value & 1u;
+    value >>= 1;
+  }
+  return count;
+}
+
+static void wd_royl_head_map_dialog_update_summary_ccc(wd_royl_head_map_dialog_ccc_t *dialog)
+{
+  char text[256];
+  unsigned int physical;
+  unsigned int enabled;
+
+  if (!dialog->loaded)
+  {
+    gtk_label_set_text(GTK_LABEL(dialog->summary_label), "");
+    return;
+  }
+  physical = wd_royl_head_map_dialog_popcount_ccc(dialog->source_map.physical_map);
+  enabled = wd_royl_head_map_dialog_popcount_ccc(dialog->pending_map.active_map);
+  snprintf(text, sizeof(text),
+           _("Physical heads: %u   Enabled: %u   Masked: %u\nActive map: 0x%04x   "
+             "Physical map: 0x%04x"),
+           physical, enabled, physical >= enabled ? physical - enabled : 0,
+           dialog->pending_map.active_map, dialog->source_map.physical_map);
+  gtk_label_set_text(GTK_LABEL(dialog->summary_label), text);
+}
+
+static void wd_royl_head_map_dialog_sync_pending_ccc(wd_royl_head_map_dialog_ccc_t *dialog)
+{
+  uint16_t active = 0;
+  int i;
+
+  for (i = 0; i < WD_ROYL_HEAD_MAP_MAX_HEADS; i++)
+  {
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->head_checks[i])))
+    {
+      active |= (uint16_t)(1u << i);
+    }
+  }
+  dialog->pending_map = dialog->source_map;
+  dialog->pending_map.active_map = active;
+  dialog->pending_map.in_use_count = (uint8_t)wd_royl_head_map_dialog_popcount_ccc(active);
+}
+
+static void wd_royl_head_map_dialog_refresh_ccc(wd_royl_head_map_dialog_ccc_t *dialog)
+{
+  char text[512];
+  char status[256];
+  int i;
+
+  dialog->updating = true;
+  for (i = 0; i < WD_ROYL_HEAD_MAP_MAX_HEADS; i++)
+  {
+    bool present = dialog->loaded && (dialog->source_map.physical_map & (1u << i)) != 0;
+    bool active = dialog->loaded && (dialog->source_map.active_map & (1u << i)) != 0;
+
+    gtk_label_set_text(GTK_LABEL(dialog->head_physical[i]), present ? _("yes") : _("no"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->head_checks[i]), present && active);
+    gtk_widget_set_sensitive(dialog->head_checks[i], present);
+    if (!dialog->loaded)
+    {
+      gtk_label_set_text(GTK_LABEL(dialog->head_status[i]), _("no data"));
+    }
+    else if (!present)
+    {
+      gtk_label_set_text(GTK_LABEL(dialog->head_status[i]), _("not present"));
+    }
+    else
+    {
+      gtk_label_set_text(GTK_LABEL(dialog->head_status[i]), active ? _("enabled") : _("masked"));
+    }
+  }
+  dialog->updating = false;
+
+  if (!dialog->loaded)
+  {
+    gtk_label_set_text(GTK_LABEL(dialog->status_label), _("No head map is loaded."));
+    gtk_label_set_text(GTK_LABEL(dialog->checksum_label), "");
+    if (dialog->apply_button != NULL)
+    {
+      gtk_widget_set_sensitive(dialog->apply_button, FALSE);
+    }
+    wd_royl_head_map_dialog_update_summary_ccc(dialog);
+    return;
+  }
+
+  if (dialog->source == WD_ROYL_HEAD_MAP_SOURCE_ROM)
+  {
+    if (dialog->source_address != 0)
+    {
+      snprintf(text, sizeof(text), _("Source: ROM module 0x0A at offset 0x%llx."),
+               (unsigned long long)dialog->source_address);
+    }
+    else
+    {
+      g_strlcpy(text, _("Source: ROM module 0x0A (direct module read)."), sizeof(text));
+    }
+  }
+  else if (dialog->source == WD_ROYL_HEAD_MAP_SOURCE_SA)
+  {
+    g_strlcpy(text, _("Source: service area module 0x0102."), sizeof(text));
+  }
+  else if (dialog->source == WD_ROYL_HEAD_MAP_SOURCE_RAM)
+  {
+    if (dialog->source_address != 0)
+    {
+      snprintf(text, sizeof(text), _("Source: RAM module 0x0A at address 0x%llx."),
+               (unsigned long long)dialog->source_address);
+    }
+    else
+    {
+      g_strlcpy(text, _("Source: RAM module 0x0A (patched copies)."), sizeof(text));
+    }
+  }
+  else
+  {
+    g_strlcpy(text, _("Source: head map."), sizeof(text));
+  }
+  {
+    char size_text[64];
+    snprintf(size_text, sizeof(size_text), _(" Size: %zu bytes."), dialog->source_size);
+    g_strlcat(text, size_text, sizeof(text));
+  }
+  gtk_label_set_text(GTK_LABEL(dialog->status_label), text);
+
+  snprintf(status, sizeof(status),
+           _("Module checksum: %s   Counts: %s   0x3C: 0x%04x (vendor field, preserved)"),
+           dialog->source_map.module_checksum_valid ? _("OK") : _("INVALID"),
+           dialog->source_map.counts_match_maps ? _("OK") : _("MISMATCH"),
+           dialog->source_map.vendor_field_3c);
+  gtk_label_set_text(GTK_LABEL(dialog->checksum_label), status);
+
+  dialog->pending_map = dialog->source_map;
+  wd_royl_head_map_dialog_update_summary_ccc(dialog);
+  if (dialog->apply_button != NULL)
+  {
+    gtk_widget_set_sensitive(dialog->apply_button, TRUE);
+  }
+}
+
+static void wd_royl_head_map_dialog_toggled_ccc(GtkToggleButton *button, gpointer user_data)
+{
+  wd_royl_head_map_dialog_ccc_t *dialog = (wd_royl_head_map_dialog_ccc_t *)user_data;
+  int head = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "head"));
+
+  if (dialog->updating || !dialog->loaded)
+  {
+    return;
+  }
+  gtk_label_set_text(GTK_LABEL(dialog->head_status[head]),
+                     gtk_toggle_button_get_active(button) ? _("enabled") : _("masked"));
+  wd_royl_head_map_dialog_sync_pending_ccc(dialog);
+  wd_royl_head_map_dialog_update_summary_ccc(dialog);
+}
+
+static bool wd_royl_head_map_dialog_set_loaded_ccc(wd_royl_head_map_dialog_ccc_t *dialog, uint8_t *module,
+                                                   size_t size, wd_royl_head_map_source_ccc source,
+                                                   uint64_t address)
+{
+  wd_royl_head_map_ccc map;
+  uint16_t expected_module =
+    (source == WD_ROYL_HEAD_MAP_SOURCE_SA) ? WD_ROYL_MODULE_0A_SA : WD_ROYL_MODULE_0A;
+
+  if (wd_royl_head_map_parse_ccc(module, size, expected_module, &map) != 0)
+  {
+    free(module);
+    wd_royl_show_message_ccc(GTK_MESSAGE_ERROR, _("WD ROYL Head Map"),
+                             _("The head map data is not valid.\n\n%s"), wd_royl_last_error_ccc());
+    return false;
+  }
+
+  free(dialog->source_module);
+  dialog->source_module = module;
+  dialog->source_size = size;
+  dialog->source = source;
+  dialog->source_address = address;
+  dialog->source_map = map;
+  dialog->loaded = true;
+  wd_royl_head_map_dialog_refresh_ccc(dialog);
+  return true;
+}
+
+static bool wd_royl_head_map_dialog_read_ccc(wd_royl_head_map_dialog_ccc_t *dialog,
+                                             wd_royl_head_map_source_ccc source)
+{
+  uint8_t *module = NULL;
+  size_t size = 0;
+  uint64_t address = 0;
+  wd_royl_head_map_source_ccc actual_source = source;
+  bool temporary_source_access = false;
+  bool result;
+  int read_result;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return false;
+  }
+
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    return false;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Head Map"), _("Reading head map"));
+  read_result = wd_royl_read_head_map_ccc(source, &module, &size, &address, &actual_source,
+                                          wd_royl_progress_update_ccc);
+  wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
+
+  if (read_result != 0)
+  {
+    free(module);
+    wd_royl_report_error_ccc(_("WD ROYL Head Map"), _("Unable to read the head map."));
+    return false;
+  }
+
+  if (actual_source == WD_ROYL_HEAD_MAP_SOURCE_SA)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->sa_radio), TRUE);
+  }
+  else if (actual_source == WD_ROYL_HEAD_MAP_SOURCE_RAM)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->ram_radio), TRUE);
+  }
+  else
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->rom_radio), TRUE);
+  }
+
+  result = wd_royl_head_map_dialog_set_loaded_ccc(dialog, module, size, actual_source, address);
+  return result;
+}
+
+static bool wd_royl_head_map_dialog_try_fast_ccc(wd_royl_head_map_dialog_ccc_t *dialog)
+{
+  uint8_t *module = NULL;
+  size_t size = 0;
+  wd_royl_head_map_ccc map;
+  bool temporary_source_access = false;
+  bool result = false;
+  int read_result;
+
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    return false;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Head Map"), _("Checking ROM module 0x0A"));
+  read_result = wd_royl_read_module_ccc(WD_ROYL_MODULE_0A, &module, &size, wd_royl_progress_update_ccc);
+  wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
+
+  if (read_result == 0 &&
+      wd_royl_head_map_parse_ccc(module, size, WD_ROYL_MODULE_0A, &map) == 0)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->rom_radio), TRUE);
+    result = wd_royl_head_map_dialog_set_loaded_ccc(dialog, module, size,
+                                                    WD_ROYL_HEAD_MAP_SOURCE_ROM, 0);
+  }
+  else
+  {
+    free(module);
+  }
+
+  return result;
+}
+
+static void wd_royl_head_map_dialog_read_clicked_ccc(GtkWidget *widget, gpointer user_data)
+{
+  wd_royl_head_map_dialog_ccc_t *dialog = (wd_royl_head_map_dialog_ccc_t *)user_data;
+  wd_royl_head_map_source_ccc source;
+
+  (void)widget;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->rom_radio)))
+  {
+    source = WD_ROYL_HEAD_MAP_SOURCE_ROM;
+  }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->sa_radio)))
+  {
+    source = WD_ROYL_HEAD_MAP_SOURCE_SA;
+  }
+  else
+  {
+    source = WD_ROYL_HEAD_MAP_SOURCE_RAM;
+  }
+  wd_royl_head_map_dialog_read_ccc(dialog, source);
+}
+
+static void wd_royl_head_map_dialog_apply_clicked_ccc(GtkWidget *widget, gpointer user_data)
+{
+  wd_royl_head_map_dialog_ccc_t *dialog = (wd_royl_head_map_dialog_ccc_t *)user_data;
+  GString *changes;
+  GString *message;
+  unsigned int copies = 0;
+  uint16_t applied_active = 0;
+  unsigned int enabled;
+  unsigned int physical;
+  bool temporary_source_access = false;
+  bool disable_head_zero = false;
+  bool enable_masked_head = false;
+  int i;
+
+  (void)widget;
+  if (!dialog->loaded)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Head Map"),
+                             _("Read a head map before applying changes."));
+    return;
+  }
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+
+  wd_royl_head_map_dialog_sync_pending_ccc(dialog);
+  if (dialog->pending_map.active_map == dialog->source_map.active_map)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Head Map"),
+                             _("The selected heads already match the loaded head map. Nothing "
+                               "was written."));
+    return;
+  }
+  if (dialog->pending_map.active_map == 0)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Head Map"),
+                             _("At least one head must remain enabled."));
+    return;
+  }
+  if ((dialog->pending_map.active_map & ~dialog->pending_map.physical_map) != 0)
+  {
+    wd_royl_show_message_ccc(GTK_MESSAGE_WARNING, _("WD ROYL Head Map"),
+                             _("The selected head map contains a head that is not present."));
+    return;
+  }
+
+  changes = g_string_new(NULL);
+  for (i = 0; i < WD_ROYL_HEAD_MAP_MAX_HEADS; i++)
+  {
+    bool was = (dialog->source_map.active_map & (1u << i)) != 0;
+    bool now = (dialog->pending_map.active_map & (1u << i)) != 0;
+
+    if (was && !now)
+    {
+      g_string_append_printf(changes, _("Mask head %d\n"), i);
+      if (i == 0)
+      {
+        disable_head_zero = true;
+      }
+    }
+    else if (!was && now)
+    {
+      g_string_append_printf(changes, _("Enable head %d\n"), i);
+      enable_masked_head = true;
+    }
+  }
+  if (changes->len == 0)
+  {
+    g_string_free(changes, TRUE);
+    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Head Map"),
+                             _("There are no head changes to apply."));
+    return;
+  }
+
+  message = g_string_new(NULL);
+  g_string_append_printf(message,
+                         _("You are about to change the running head map of the selected drive.\n\n%s"),
+                         changes->str);
+  g_string_append(message,
+                  _("\nOnly heads listed above are changed. Every other head keeps the state it "
+                    "already has in the drive RAM.\n"));
+  enabled = wd_royl_head_map_dialog_popcount_ccc(dialog->pending_map.active_map);
+  physical = wd_royl_head_map_dialog_popcount_ccc(dialog->source_map.physical_map);
+  if (enabled * 2 < physical)
+  {
+    g_string_append(message,
+                    _("\nWarning: more than half of the physical heads will be masked.\n"));
+  }
+  if (enable_masked_head)
+  {
+    g_string_append(message,
+                    _("\nWarning: enabling a head that is currently masked can expose a faulty "
+                      "surface and may make reads fail or the drive hang.\n"));
+  }
+  g_string_append(message,
+                  _("\nThis change is temporary and will be lost when the drive is power "
+                    "cycled.\n\nContinue?"));
+  g_string_free(changes, TRUE);
+
+  if (disable_head_zero &&
+      !wd_royl_confirm_ccc(_("Confirm head 0 mask"), _("Continue"),
+                           _("Head 0 is being masked. On many drives head 0 is used during "
+                             "initialisation and service area access. The drive may stop "
+                             "responding until it is power cycled.\n\nContinue?")))
+  {
+    g_string_free(message, TRUE);
+    return;
+  }
+  if (!wd_royl_confirm_ccc(_("Confirm RAM head map change"), _("Apply to RAM"), "%s", message->str))
+  {
+    g_string_free(message, TRUE);
+    return;
+  }
+  g_string_free(message, TRUE);
+
+  if (!wd_royl_begin_source_access_ccc(&temporary_source_access))
+  {
+    return;
+  }
+
+  wd_royl_progress_begin_ccc(_("WD ROYL Head Map"), _("Applying RAM head map"));
+  if (wd_royl_apply_head_map_ram_ccc(&dialog->source_map, &dialog->pending_map, &copies,
+                                     &applied_active, wd_royl_progress_update_ccc) != 0)
+  {
+    wd_royl_progress_end_ccc();
+    wd_royl_end_source_access_ccc(temporary_source_access);
+    wd_royl_report_error_ccc(_("WD ROYL Head Map"),
+                             _("The RAM head map change failed. Power cycle the drive before using it."));
+    return;
+  }
+  wd_royl_progress_end_ccc();
+  wd_royl_end_source_access_ccc(temporary_source_access);
+
+  dialog->source_map = dialog->pending_map;
+  dialog->source_map.active_map = applied_active;
+  dialog->source_map.in_use_count = (uint8_t)wd_royl_head_map_dialog_popcount_ccc(applied_active);
+  dialog->source_map.valid = true;
+  dialog->source_map.header_valid = true;
+  dialog->source_map.module_checksum_valid = true;
+  dialog->source_map.counts_match_maps = true;
+  dialog->source = WD_ROYL_HEAD_MAP_SOURCE_RAM;
+  dialog->source_address = 0;
+  dialog->loaded = true;
+  free(dialog->source_module);
+  dialog->source_module = NULL;
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog->ram_radio), TRUE);
+  wd_royl_head_map_dialog_refresh_ccc(dialog);
+
+  wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Head Map"),
+                           _("The RAM head map was patched and verified.\n\nCopies patched: "
+                             "%u\n\nPower cycle the drive to restore the original head map."),
+                           copies);
+}
+
+void open_wd_royl_head_map_dialog_ccc(void)
+{
+  wd_royl_head_map_dialog_ccc_t dialog;
+  GtkWidget *content;
+  GtkWidget *vbox;
+  GtkWidget *description;
+  GtkWidget *source_frame;
+  GtkWidget *source_box;
+  GtkWidget *status_frame;
+  GtkWidget *status_box;
+  GtkWidget *heads_frame;
+  GtkWidget *grid;
+  GtkWidget *button_box;
+  GtkWidget *read_button;
+  GtkWidget *apply_button;
+  GtkWidget *warning_label;
+  int i;
+  int response;
+
+  memset(&dialog, 0, sizeof(dialog));
+  dialog.source = WD_ROYL_HEAD_MAP_SOURCE_ROM;
+
+  if (!wd_royl_operation_ready_ccc())
+  {
+    return;
+  }
+
+  dialog.dialog = gtk_dialog_new_with_buttons(_("WD ROYL Head Map"), GTK_WINDOW(main_window_ccc),
+                                              GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                              GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog.dialog), GTK_RESPONSE_CLOSE);
+  gtk_window_set_default_size(GTK_WINDOW(dialog.dialog), 640, 720);
+
+  content = gtk_dialog_get_content_area(GTK_DIALOG(dialog.dialog));
+  gtk_container_set_border_width(GTK_CONTAINER(content), 12);
+
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+  gtk_box_pack_start(GTK_BOX(content), vbox, TRUE, TRUE, 0);
+
+  description = gtk_label_new(_("The head map controls which physical heads the drive uses. "
+                                "Masking a head clears its bit in the active map. The RAM change "
+                                "is temporary and is lost when the drive is power cycled."));
+  gtk_label_set_line_wrap(GTK_LABEL(description), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(description), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), description, FALSE, FALSE, 0);
+
+  source_frame = gtk_frame_new(_("Source"));
+  gtk_box_pack_start(GTK_BOX(vbox), source_frame, FALSE, FALSE, 0);
+  source_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  gtk_container_set_border_width(GTK_CONTAINER(source_box), 8);
+  gtk_container_add(GTK_CONTAINER(source_frame), source_box);
+
+  dialog.rom_radio = gtk_radio_button_new_with_label(NULL, _("ROM module 0x0A"));
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dialog.rom_radio), TRUE);
+  gtk_box_pack_start(GTK_BOX(source_box), dialog.rom_radio, FALSE, FALSE, 0);
+  dialog.sa_radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(dialog.rom_radio),
+                                                                _("Service area module 0x0102"));
+  gtk_box_pack_start(GTK_BOX(source_box), dialog.sa_radio, FALSE, FALSE, 0);
+  dialog.ram_radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(dialog.rom_radio),
+                                                                 _("RAM (running head map)"));
+  gtk_box_pack_start(GTK_BOX(source_box), dialog.ram_radio, FALSE, FALSE, 0);
+
+  status_frame = gtk_frame_new(_("Status"));
+  gtk_box_pack_start(GTK_BOX(vbox), status_frame, FALSE, FALSE, 0);
+  status_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  gtk_container_set_border_width(GTK_CONTAINER(status_box), 8);
+  gtk_container_add(GTK_CONTAINER(status_frame), status_box);
+
+  dialog.status_label = gtk_label_new(_("No head map is loaded."));
+  gtk_label_set_line_wrap(GTK_LABEL(dialog.status_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(dialog.status_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(status_box), dialog.status_label, FALSE, FALSE, 0);
+
+  dialog.summary_label = gtk_label_new("");
+  gtk_label_set_xalign(GTK_LABEL(dialog.summary_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(status_box), dialog.summary_label, FALSE, FALSE, 0);
+
+  dialog.checksum_label = gtk_label_new("");
+  gtk_label_set_line_wrap(GTK_LABEL(dialog.checksum_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(dialog.checksum_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(status_box), dialog.checksum_label, FALSE, FALSE, 0);
+
+  heads_frame = gtk_frame_new(_("Heads"));
+  gtk_box_pack_start(GTK_BOX(vbox), heads_frame, TRUE, TRUE, 0);
+  grid = gtk_grid_new();
+  gtk_grid_set_row_spacing(GTK_GRID(grid), 4);
+  gtk_grid_set_column_spacing(GTK_GRID(grid), 18);
+  gtk_container_set_border_width(GTK_CONTAINER(grid), 8);
+  gtk_container_add(GTK_CONTAINER(heads_frame), grid);
+
+  {
+    GtkWidget *head_header = gtk_label_new(_("Head"));
+    GtkWidget *physical_header = gtk_label_new(_("Physical"));
+    GtkWidget *enabled_header = gtk_label_new(_("Enabled"));
+    GtkWidget *status_header = gtk_label_new(_("Status"));
+
+    gtk_widget_set_halign(head_header, GTK_ALIGN_START);
+    gtk_widget_set_halign(physical_header, GTK_ALIGN_START);
+    gtk_widget_set_halign(enabled_header, GTK_ALIGN_START);
+    gtk_widget_set_halign(status_header, GTK_ALIGN_START);
+    gtk_grid_attach(GTK_GRID(grid), head_header, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), physical_header, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), enabled_header, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), status_header, 3, 0, 1, 1);
+  }
+
+  for (i = 0; i < WD_ROYL_HEAD_MAP_MAX_HEADS; i++)
+  {
+    char text[32];
+    GtkWidget *head_label;
+    GtkWidget *check;
+    GtkWidget *status;
+
+    snprintf(text, sizeof(text), _("Head %d"), i);
+    head_label = gtk_label_new(text);
+    gtk_widget_set_halign(head_label, GTK_ALIGN_START);
+    dialog.head_physical[i] = gtk_label_new(_("no"));
+    gtk_widget_set_halign(dialog.head_physical[i], GTK_ALIGN_START);
+    check = gtk_check_button_new();
+    status = gtk_label_new(_("no data"));
+    gtk_widget_set_halign(status, GTK_ALIGN_START);
+    g_object_set_data(G_OBJECT(check), "head", GINT_TO_POINTER(i));
+    g_signal_connect(check, "toggled", G_CALLBACK(wd_royl_head_map_dialog_toggled_ccc), &dialog);
+
+    gtk_grid_attach(GTK_GRID(grid), head_label, 0, i + 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dialog.head_physical[i], 1, i + 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), check, 2, i + 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), status, 3, i + 1, 1, 1);
+
+    dialog.head_checks[i] = check;
+    dialog.head_status[i] = status;
+  }
+
+  warning_label = gtk_label_new(_("Only heads whose state differs from the loaded map are changed. "
+                                  "The other heads keep the state already present in RAM. The "
+                                  "active head map at 0x3E and the heads-in-use count at 0x22 are "
+                                  "updated; the physical map at 0x40 and the vendor field at 0x3C "
+                                  "are preserved. This implementation does not write ROM or service "
+                                  "area modules."));
+  gtk_label_set_line_wrap(GTK_LABEL(warning_label), TRUE);
+  gtk_label_set_xalign(GTK_LABEL(warning_label), 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), warning_label, FALSE, FALSE, 0);
+
+  button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+  gtk_button_box_set_layout(GTK_BUTTON_BOX(button_box), GTK_BUTTONBOX_END);
+  gtk_box_set_spacing(GTK_BOX(button_box), 8);
+  read_button = gtk_button_new_with_label(_("Read"));
+  g_signal_connect(read_button, "clicked", G_CALLBACK(wd_royl_head_map_dialog_read_clicked_ccc),
+                   &dialog);
+  apply_button = gtk_button_new_with_label(_("Apply to RAM"));
+  gtk_widget_set_sensitive(apply_button, FALSE);
+  g_signal_connect(apply_button, "clicked", G_CALLBACK(wd_royl_head_map_dialog_apply_clicked_ccc),
+                   &dialog);
+  gtk_container_add(GTK_CONTAINER(button_box), read_button);
+  gtk_container_add(GTK_CONTAINER(button_box), apply_button);
+  gtk_box_pack_start(GTK_BOX(vbox), button_box, FALSE, FALSE, 0);
+  dialog.apply_button = apply_button;
+
+  // Route progress and message dialogs to this dialog for its whole lifetime.
+  // It stays open while reads and the temporary RAM patch run.
+  wd_royl_dialog_parent_override_ccc = GTK_WINDOW(dialog.dialog);
+  gtk_widget_show_all(dialog.dialog);
+  if (!wd_royl_head_map_dialog_try_fast_ccc(&dialog))
+  {
+    gtk_label_set_text(GTK_LABEL(dialog.status_label),
+                       _("The fast module 0x000A read failed."));
+    if (wd_royl_confirm_ccc(_("Read full ROM?"), _("Read Full ROM"),
+                            _("Module 0x000A is not directly readable on this drive. Read the "
+                              "full ROM and scan it for the head map?\n\nThis is slower than the "
+                              "fast probe but works on most ROM code versions.")))
+    {
+      if (!wd_royl_head_map_dialog_read_ccc(&dialog, WD_ROYL_HEAD_MAP_SOURCE_ROM))
+      {
+        gtk_label_set_text(GTK_LABEL(dialog.status_label),
+                           _("The full ROM read failed. Select another source and press Read."));
+      }
+    }
+    else
+    {
+      gtk_label_set_text(GTK_LABEL(dialog.status_label),
+                         _("Select a source and press Read."));
+    }
+  }
+
+  response = gtk_dialog_run(GTK_DIALOG(dialog.dialog));
+  (void)response;
+  gtk_widget_destroy(dialog.dialog);
+  wd_royl_dialog_parent_override_ccc = NULL;
+  free(dialog.source_module);
+}
+
 void open_wd_royl_slow_fix_dialog_ccc(void)
 {
   GtkWidget *dialog;
@@ -13562,6 +14225,8 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
   {
     unsigned int count_02 = 0;
     unsigned int count_32 = 0;
+    uint64_t scanned_end = 0;
+    uint64_t first_gap = 0;
 
     if (!wd_royl_confirm_ccc(_("Confirm RAM patch"), _("Patch RAM"),
                              _("This patches module(s) in the selected drive RAM.\n\nThe "
@@ -13577,7 +14242,8 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
     }
 
     wd_royl_progress_begin_ccc(_("WD ROYL Slow Fix"), _("Starting RAM patch"));
-    if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32, wd_royl_progress_update_ccc) != 0)
+    if (wd_royl_patch_ram_modules_ccc(module_mask, &count_02, &count_32, &scanned_end, &first_gap,
+                                      wd_royl_progress_update_ccc) != 0)
     {
       wd_royl_progress_end_ccc();
       wd_royl_end_source_access_ccc(temporary_source_access);
@@ -13587,11 +14253,25 @@ void open_wd_royl_slow_fix_dialog_ccc(void)
     wd_royl_progress_end_ccc();
     wd_royl_end_source_access_ccc(temporary_source_access);
 
-    wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
-                             _("The RAM patch completed and was verified.\n\nModule 02 copies "
-                               "patched: %u\nModule 32 copies patched: %u\n\nPower cycle the drive "
-                               "to undo the change."),
-                             count_02, count_32);
+    if (first_gap != 0)
+    {
+      wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+                               _("The RAM patch completed and was verified.\n\nModule 02 copies "
+                                 "patched: %u\nModule 32 copies patched: %u\n\nThe first address "
+                                 "that could not be read was 0x%08llx, so the scan ended at "
+                                 "0x%08llx. Module copies above that address were not patched.\n\n"
+                                 "Power cycle the drive to undo the change."),
+                               count_02, count_32, (unsigned long long)first_gap,
+                               (unsigned long long)scanned_end);
+    }
+    else
+    {
+      wd_royl_show_message_ccc(GTK_MESSAGE_INFO, _("WD ROYL Slow Fix"),
+                               _("The RAM patch completed and was verified.\n\nModule 02 copies "
+                                 "patched: %u\nModule 32 copies patched: %u\n\nPower cycle the drive "
+                                 "to undo the change."),
+                               count_02, count_32);
+    }
   }
 }
 

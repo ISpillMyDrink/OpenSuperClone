@@ -17,15 +17,34 @@
 
 #define WD_ROYL_RAM_BASE 0x08000000ULL
 #define WD_ROYL_RAM_MIN_SIZE 0x00040000ULL
-#define WD_ROYL_RAM_MAX_SIZE 0x02000000ULL
+#define WD_ROYL_RAM_MAX_SIZE 0x04000000ULL
 #define WD_ROYL_RAM_BLOCK_SIZE 0x00010000ULL
+
+// The drive data table (VSC action 0x0D) reports the DRAM size in megabytes as
+// a little endian 16 bit value at this offset. Using it avoids probing RAM
+// addresses that may not be mapped, which can hang the drive on some families.
+#define WD_ROYL_DATA_TABLE_DRAM_SIZE_OFFSET 182
 
 #define WD_ROYL_MODULE_01 0x0001
 #define WD_ROYL_MODULE_02 0x0002
+#define WD_ROYL_MODULE_0A 0x000a
 #define WD_ROYL_MODULE_32 0x0032
+#define WD_ROYL_MODULE_0A_SA 0x0102
 
 #define WD_ROYL_MODULE_MASK_02 0x0001
 #define WD_ROYL_MODULE_MASK_32 0x0002
+
+// Head map module 0x0A. The ROM copy and the SA shadow 0x0102 use the same
+// payload offsets, but their module headers carry different module IDs.
+#define WD_ROYL_HEAD_MAP_PHYSICAL_COUNT_OFFSET 0x21
+#define WD_ROYL_HEAD_MAP_IN_USE_COUNT_OFFSET 0x22
+// The 16-bit field at 0x3C is opaque vendor data. It does not match a standard
+// checksum over the module on known dumps, so it is preserved byte for byte
+// and reported rather than validated.
+#define WD_ROYL_HEAD_MAP_VENDOR_FIELD_OFFSET 0x3c
+#define WD_ROYL_HEAD_MAP_ACTIVE_MAP_OFFSET 0x3e
+#define WD_ROYL_HEAD_MAP_PHYSICAL_MAP_OFFSET 0x40
+#define WD_ROYL_HEAD_MAP_MAX_HEADS 16
 
 #define WD_ROYL_DIR_NONE 0
 #define WD_ROYL_DIR_OUT 1
@@ -44,6 +63,32 @@ typedef struct
   uint32_t location1;
   uint32_t location2;
 } wd_royl_module_entry_ccc;
+
+// Where a parsed head map came from. AUTO tries the direct ROM module read
+// first, then a full ROM scan, then the service area shadow.
+typedef enum
+{
+  WD_ROYL_HEAD_MAP_SOURCE_AUTO = 0,
+  WD_ROYL_HEAD_MAP_SOURCE_ROM,
+  WD_ROYL_HEAD_MAP_SOURCE_SA,
+  WD_ROYL_HEAD_MAP_SOURCE_RAM
+} wd_royl_head_map_source_ccc;
+
+// Decoded module 0x0A head map. The module checksum is reported separately so
+// a RAM copy that firmware has modified can still be displayed and repaired.
+// vendor_field_3c is informational only and is never changed by build.
+typedef struct
+{
+  bool valid;
+  bool header_valid;
+  bool module_checksum_valid;
+  bool counts_match_maps;
+  uint8_t physical_count;
+  uint8_t in_use_count;
+  uint16_t active_map;
+  uint16_t physical_map;
+  uint16_t vendor_field_3c;
+} wd_royl_head_map_ccc;
 
 // Called from the vendor operations so the GUI can update its progress
 // display. done and total are in bytes (or another operation specific unit).
@@ -80,6 +125,9 @@ int wd_royl_verify_module_ccc(uint16_t module, const uint8_t *data, size_t size,
 // ROYL header helpers.
 uint16_t wd_royl_get_module_id_ccc(const uint8_t *module);
 uint16_t wd_royl_get_module_sector_count_ccc(const uint8_t *module);
+// The header word at 0x30 is module specific: module 0x0001 stores a record
+// count there, while module 0x0032 stores the offset of its relo table. The
+// accessors are not interchangeable even though both read the same word.
 uint16_t wd_royl_get_module_record_count_ccc(const uint8_t *module);
 uint16_t wd_royl_get_module_table_offset_ccc(const uint8_t *module);
 uint32_t wd_royl_get_module_checksum_ccc(const uint8_t *module);
@@ -94,6 +142,34 @@ int wd_royl_parse_module_directory_ccc(const uint8_t *data, size_t size, wd_royl
 int wd_royl_patch_module_02_ccc(uint8_t *data, size_t size);
 int wd_royl_patch_module_32_ccc(uint8_t *data, size_t size);
 
+// Head map access. The parse and build helpers are pure and do not touch the
+// drive. parse succeeds when the header and bitmaps are sane; checksum
+// validity is reported in the struct and is not fatal. build updates 0x22 to
+// the number of set bits in the active map, leaves the vendor field at 0x3C
+// unchanged, and recomputes the module checksum.
+int wd_royl_head_map_parse_ccc(const uint8_t *module, size_t size, uint16_t expected_module, wd_royl_head_map_ccc *map);
+int wd_royl_head_map_build_ccc(uint8_t *module, size_t size, uint16_t expected_module, const wd_royl_head_map_ccc *map);
+int wd_royl_find_module_in_buffer_ccc(const uint8_t *buffer, size_t size, uint16_t module_id, size_t *module_offset, size_t *module_size);
+int wd_royl_find_rom_head_map_ccc(const uint8_t *rom, size_t rom_size, size_t *module_offset, size_t *module_size);
+
+// Read a head map module. The returned buffer is allocated and must be freed
+// by the caller. address is the ROM byte offset, the RAM address, or 0 for
+// the service area shadow. actual_source may be NULL.
+int wd_royl_read_head_map_ccc(wd_royl_head_map_source_ccc source, uint8_t **module, size_t *module_size, uint64_t *address,
+                              wd_royl_head_map_source_ccc *actual_source, wd_royl_progress_callback_ccc progress);
+
+// Apply a head map to every matching module 0x0A copy in drive RAM. Only the
+// heads whose state differs between base_map and map are changed; every other
+// head keeps the state already present in that live copy. This prevents a map
+// read from ROM or the service area from re-enabling a head that was masked in
+// RAM earlier. The change is temporary and is lost when the drive is power
+// cycled. copy_count receives the number of copies patched. applied_active may
+// be NULL; when given it receives the resulting active map of the preferred
+// RAM copy after a successful patch.
+int wd_royl_apply_head_map_ram_ccc(const wd_royl_head_map_ccc *base_map, const wd_royl_head_map_ccc *map,
+                                   unsigned int *copy_count, uint16_t *applied_active,
+                                   wd_royl_progress_callback_ccc progress);
+
 // RAM access.
 int wd_royl_find_ram_size_ccc(uint64_t *ram_size, wd_royl_progress_callback_ccc progress);
 int wd_royl_read_ram_ccc(uint64_t address, void *data, size_t size, wd_royl_progress_callback_ccc progress);
@@ -101,7 +177,10 @@ int wd_royl_write_ram_ccc(uint64_t address, const void *data, size_t size, wd_ro
 
 // Apply the selected slow fix patches to every matching module in drive RAM.
 // The patch is temporary and is lost when the drive is power cycled.
-int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module_02_count, unsigned int *module_32_count,
+// `scanned_end` and `first_gap` may be NULL; when given they report how much of
+// the RAM window was actually readable.
+int wd_royl_patch_ram_modules_ccc(unsigned int module_mask, unsigned int *module_02_count,
+                                  unsigned int *module_32_count, uint64_t *scanned_end, uint64_t *first_gap,
                                   wd_royl_progress_callback_ccc progress);
 
 // Small file helpers used by the GUI and useful for future module editors.
