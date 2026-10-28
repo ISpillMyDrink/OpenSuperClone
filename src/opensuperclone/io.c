@@ -6050,6 +6050,17 @@ int refresh_status_ccc(int disk_fd)
   return (0);
 }
 
+// Check that popen() succeeded, reporting the command that could not be run.
+static int popen_succeeded_ccc(FILE *fp, const char *command)
+{
+  if (fp != NULL)
+  {
+    return (0);
+  }
+  fprintf(stderr, "Error running command '%s' (%s)\n", command, strerror(errno));
+  return (-1);
+}
+
 int find_all_devices_ccc(void)
 {
   if (usb_mode_ccc)
@@ -6100,6 +6111,10 @@ int find_all_devices_ccc(void)
       strcpy(command, "ls /sys/bus/pci/drivers | grep ata_");
     }
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int rows = MAX_DRIVERS;
     int cols = 255;
     char list[rows][cols];
@@ -6156,6 +6171,10 @@ int find_all_devices_ccc(void)
       strcpy(command, "ls /dev | grep -w sd.");
     }
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     int i;
     char line[cols];
@@ -6213,6 +6232,10 @@ int find_all_devices_ccc(void)
     char command[255];
     strcpy(command, "lsblk -d -n -b -o NAME,SIZE,LOG-SEC,MODEL");
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     int i;
     char line[cols];
@@ -6268,6 +6291,10 @@ int find_bus_devices_ccc(char *driver)
   snprintf(command, sizeof command, "ls /sys/bus/pci/drivers/%s | grep 0000:", driver);
   // fprintf (stdout, "%s\n", command);  //debug
   FILE *fp = popen(command, "r");
+  if (popen_succeeded_ccc(fp, command) != 0)
+  {
+    return (-1);
+  }
   int rows = MAX_BUSES;
   int cols = 255;
   char list[rows][cols];
@@ -6309,6 +6336,10 @@ int get_device_resources_ccc(char *bus, char *driver)
   // fprintf (stdout, "%s\n", command);  //debug
 
   FILE *fp = popen(command, "r");
+  if (popen_succeeded_ccc(fp, command) != 0)
+  {
+    return (-1);
+  }
   int rows = MAX_RESOURCES;
   int cols = 255;
   char line[cols];
@@ -9249,6 +9280,10 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
   char check_location[255];
   int found_location = 0;
   FILE *fp = popen(command, "r");
+  if (popen_succeeded_ccc(fp, command) != 0)
+  {
+    return (-1);
+  }
   int cols = 255;
   int i;
   char line[cols];
@@ -9305,6 +9340,10 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
     strcat(command, " | grep host");
 
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     char line[cols];
     while (fgets(line, sizeof line, fp))
@@ -9345,6 +9384,10 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
     strcat(command, " | grep target");
 
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     char line[cols];
     while (fgets(line, sizeof line, fp))
@@ -9370,14 +9413,19 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
             break;
           }
         }
-        char temp = line[n - 2];
-        int device_compare = strtol(&temp, NULL, 0);
+        if (n < 2)
+        {
+          break;
+        }
+        char temp[2] = {line[n - 2], '\0'};
+        int device_compare = strtol(temp, NULL, 0);
         if (device == device_compare)
         {
-          // fprintf (stdout, "found target %s %s %c %d %d \n", check_location, line, temp, device, device_compare);  //debug
+          // fprintf (stdout, "found target %s %s %c %d %d \n", check_location, line, temp[0], device, device_compare);  //debug
           strcpy(check_target, line);
-          strcat(device_reference_ccc[current_device_count], ".0");
-          strncat(device_reference_ccc[current_device_count], &temp, 1);
+          size_t reference_length = strlen(device_reference_ccc[current_device_count]);
+          snprintf(device_reference_ccc[current_device_count] + reference_length,
+                   sizeof(device_reference_ccc[current_device_count]) - reference_length, ".0%c", temp[0]);
           device_visable_ccc[current_device_count] = true;
           target_found = 1;
           break;
@@ -9407,6 +9455,10 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
     strcat(command, " | grep :");
 
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     char line[cols];
     while (fgets(line, sizeof line, fp))
@@ -9447,6 +9499,10 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
     strcat(command, "block");
 
     FILE *fp = popen(command, "r");
+    if (popen_succeeded_ccc(fp, command) != 0)
+    {
+      return (-1);
+    }
     int cols = 255;
     char line[cols];
     while (fgets(line, sizeof line, fp))
