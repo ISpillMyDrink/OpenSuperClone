@@ -1701,6 +1701,11 @@ static void load_log_file_ccc(char *log_file)
 {
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   log_file_ccc = malloc(1024);
+  if (log_file_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    return;
+  }
   memset(log_file_ccc, 0, 1024);
   snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
@@ -1762,6 +1767,11 @@ static void load_ddrescue_log_file_ccc(char *log_file)
 {
   // g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
   ddilog_file_ccc = malloc(1024);
+  if (ddilog_file_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    return;
+  }
   memset(ddilog_file_ccc, 0, 1024);
   snprintf(ddilog_file_ccc, 1024, "%s", log_file);
   printf("%s\n", ddilog_file_ccc);
@@ -1882,11 +1892,17 @@ void clear_domain_ccc(void)
   else
   {
     initialize_domainfile_memory_ccc();
+    char *new_domain_file = malloc(1024);
+    if (new_domain_file == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return;
+    }
     if (domain_file_ccc != NULL)
     {
       free(domain_file_ccc);
     }
-    domain_file_ccc = malloc(1024);
+    domain_file_ccc = new_domain_file;
     memset(domain_file_ccc, 0, 1024);
     do_domain_ccc = false;
   }
@@ -1897,11 +1913,20 @@ void clear_domain_ccc(void)
 static void new_log_file_ccc(char *log_file)
 {
   log_file_ccc = malloc(1024);
+  if (log_file_ccc == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    return;
+  }
   memset(log_file_ccc, 0, 1024);
   snprintf(log_file_ccc, 1024, "%s", log_file);
   printf("%s\n", log_file_ccc);
 
   clear_domain_ccc();
+  if (domain_file_ccc == NULL)
+  {
+    return;
+  }
   strncpy(domain_file_ccc, log_file_ccc, 1016);
   strcat(domain_file_ccc, ".domain");
   remove(domain_file_ccc);
@@ -1989,8 +2014,16 @@ void choose_source_ccc(void)
       char *filename;
       filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       fprintf(stdout, "%s\n", filename);
+      char *new_disk_name = malloc(strlen(filename) + 2);
+      if (new_disk_name == NULL)
+      {
+        fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+        g_free(filename);
+        gtk_widget_destroy(dialog);
+        return;
+      }
       free(disk_1_ccc);
-      disk_1_ccc = malloc(strlen(filename) + 2);
+      disk_1_ccc = new_disk_name;
       strcpy(disk_1_ccc, filename);
       g_free(filename);
       current_source_model_ccc[0] = '\0';
@@ -2501,8 +2534,16 @@ void choose_image_ccc(void)
       if (confirmed)
       {
         fprintf(stdout, "%s\n", filename);
+        char *new_disk_name = malloc(strlen(filename) + 2);
+        if (new_disk_name == NULL)
+        {
+          fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+          g_free(filename);
+          gtk_widget_destroy(dialog);
+          return;
+        }
         free(disk_2_ccc);
-        disk_2_ccc = malloc(strlen(filename) + 2);
+        disk_2_ccc = new_disk_name;
         strcpy(disk_2_ccc, filename);
         destination_chosen_ccc = 1;
         destination_size_valid_ccc = 0;
@@ -2564,8 +2605,14 @@ void choose_null_ccc(void)
   else
   {
     fprintf(stdout, "/dev/null\n");
+    char *new_disk_name = malloc(16);
+    if (new_disk_name == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return;
+    }
     free(disk_2_ccc);
-    disk_2_ccc = malloc(16);
+    disk_2_ccc = new_disk_name;
     strcpy(disk_2_ccc, "/dev/null");
     strcpy(current_destination_model_ccc, _("NULL (No destination)"));
     strcpy(current_destination_serial_ccc, "");
