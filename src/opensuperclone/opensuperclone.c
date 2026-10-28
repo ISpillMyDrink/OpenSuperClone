@@ -10,6 +10,18 @@
 #include "opensuperclone.h"
 #include "speed_monitor.h"
 
+// Append source to a fixed-size text buffer, keeping it NUL-terminated even
+// when the text has to be truncated.
+static void append_text_ccc(char *destination, size_t destination_size, const char *source)
+{
+  size_t used = strlen(destination);
+  if (used >= destination_size)
+  {
+    return;
+  }
+  snprintf(destination + used, destination_size - used, "%s", source);
+}
+
 // Definitions for opensuperclone.h globals
 bool forced_exit_ccc = false;
 char *debugfile_ccc = "opensuperclone_debug.log";
@@ -2617,14 +2629,14 @@ int read_log_file_ccc(char *log_file)
             analyze_line = 2;
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
-            strcat(analyze_text_ccc, raw_data);
+            append_text_ccc(analyze_text_ccc, sizeof analyze_text_ccc, raw_data);
           }
           else
           {
-            strcat(analyze_text_ccc, "\n");
+            append_text_ccc(analyze_text_ccc, sizeof analyze_text_ccc, "\n");
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
-            strcat(analyze_text_ccc, raw_data);
+            append_text_ccc(analyze_text_ccc, sizeof analyze_text_ccc, raw_data);
           }
 
           // parse the read statistics
@@ -2808,7 +2820,7 @@ int read_log_file_ccc(char *log_file)
             smart_line = 2;
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
-            strcat(smart_data_text_ccc, raw_data);
+            append_text_ccc(smart_data_text_ccc, sizeof smart_data_text_ccc, raw_data);
 
             // read the smart version number
             char raw_version[MAX_LINE_LENGTH] = "";
@@ -2818,10 +2830,10 @@ int read_log_file_ccc(char *log_file)
           }
           else
           {
-            strcat(smart_data_text_ccc, "\n");
+            append_text_ccc(smart_data_text_ccc, sizeof smart_data_text_ccc, "\n");
             char raw_data[MAX_LINE_LENGTH] = "";
             sscanf(line, "%[^\n]", raw_data);
-            strcat(smart_data_text_ccc, raw_data);
+            append_text_ccc(smart_data_text_ccc, sizeof smart_data_text_ccc, raw_data);
 
             // read the smart data
             char raw_id[MAX_LINE_LENGTH] = "";
@@ -2834,15 +2846,19 @@ int read_log_file_ccc(char *log_file)
 
             sscanf(line, "# %s %s %s %s %s %s %[^\n]", raw_id, raw_flags, raw_current, raw_worst, raw_threshold, raw_raw, raw_name);
 
-            smart_data_ccc.id[smart_data_ccc.value_count] = strtoll(raw_id, NULL, 10);
-            smart_data_ccc.flags[smart_data_ccc.value_count] = strtoll(raw_flags, NULL, 16);
-            smart_data_ccc.current[smart_data_ccc.value_count] = strtoll(raw_current, NULL, 10);
-            smart_data_ccc.worst[smart_data_ccc.value_count] = strtoll(raw_worst, NULL, 10);
-            smart_data_ccc.threshold[smart_data_ccc.value_count] = strtoll(raw_threshold, NULL, 10);
-            smart_data_ccc.raw[smart_data_ccc.value_count] = strtoll(raw_raw, NULL, 16);
-            strncpy(smart_data_ccc.name[smart_data_ccc.value_count], raw_name, 256);
+            if (smart_data_ccc.value_count >= 0 &&
+                smart_data_ccc.value_count < (int)(sizeof smart_data_ccc.id / sizeof smart_data_ccc.id[0]))
+            {
+              smart_data_ccc.id[smart_data_ccc.value_count] = strtoll(raw_id, NULL, 10);
+              smart_data_ccc.flags[smart_data_ccc.value_count] = strtoll(raw_flags, NULL, 16);
+              smart_data_ccc.current[smart_data_ccc.value_count] = strtoll(raw_current, NULL, 10);
+              smart_data_ccc.worst[smart_data_ccc.value_count] = strtoll(raw_worst, NULL, 10);
+              smart_data_ccc.threshold[smart_data_ccc.value_count] = strtoll(raw_threshold, NULL, 10);
+              smart_data_ccc.raw[smart_data_ccc.value_count] = strtoll(raw_raw, NULL, 16);
+              snprintf(smart_data_ccc.name[smart_data_ccc.value_count], sizeof(smart_data_ccc.name[smart_data_ccc.value_count]), "%s", raw_name);
 
-            smart_data_ccc.value_count++;
+              smart_data_ccc.value_count++;
+            }
           }
         }
       }
@@ -14665,13 +14681,14 @@ int extract_smart_data_ccc(void)
   uint16_t version;
   memcpy(&version, smart_data, 2);
   snprintf(temp, sizeof(temp), "# %s %d\n", "SMART data structure version", version);
-  strcpy(smart_data_text_ccc, temp);
+  snprintf(smart_data_text_ccc, sizeof smart_data_text_ccc, "%s", temp);
 
   smart_data_ccc.smart_version = version;
+  smart_data_ccc.value_count = 0;
 
   snprintf(temp, sizeof(temp), "# %s    \t%s  \t%s  \t%s  \t%s  \t%s      \t%s", "ID", "Flags", "Current", "Worst", "Threshold", "Raw data",
            "Attribute name");
-  strcat(smart_data_text_ccc, temp);
+  append_text_ccc(smart_data_text_ccc, sizeof smart_data_text_ccc, temp);
   uint8_t threshold = 0;
   int offset = 2;
   int count = 0;
@@ -14712,17 +14729,21 @@ int extract_smart_data_ccc(void)
     {
       snprintf(temp, sizeof(temp), "\n# %03d  \t0x%04x   \t%03d  \t%03d  \t%03d  \t0x%014llx    \t%s", id, flags, current, worst, threshold,
                (unsigned long long)raw, name);
-      strcat(smart_data_text_ccc, temp);
+      append_text_ccc(smart_data_text_ccc, sizeof smart_data_text_ccc, temp);
 
       // add the smart data to the smart data array
-      smart_data_ccc.id[smart_data_ccc.value_count] = id;
-      smart_data_ccc.flags[smart_data_ccc.value_count] = flags;
-      smart_data_ccc.current[smart_data_ccc.value_count] = current;
-      smart_data_ccc.worst[smart_data_ccc.value_count] = worst;
-      smart_data_ccc.threshold[smart_data_ccc.value_count] = threshold;
-      smart_data_ccc.raw[smart_data_ccc.value_count] = (unsigned long long)raw;
-      snprintf(smart_data_ccc.name[smart_data_ccc.value_count], sizeof(smart_data_ccc.name[smart_data_ccc.value_count]), "%s", name);
-      smart_data_ccc.value_count++;
+      if (smart_data_ccc.value_count >= 0 &&
+          smart_data_ccc.value_count < (int)(sizeof smart_data_ccc.id / sizeof smart_data_ccc.id[0]))
+      {
+        smart_data_ccc.id[smart_data_ccc.value_count] = id;
+        smart_data_ccc.flags[smart_data_ccc.value_count] = flags;
+        smart_data_ccc.current[smart_data_ccc.value_count] = current;
+        smart_data_ccc.worst[smart_data_ccc.value_count] = worst;
+        smart_data_ccc.threshold[smart_data_ccc.value_count] = threshold;
+        smart_data_ccc.raw[smart_data_ccc.value_count] = (unsigned long long)raw;
+        snprintf(smart_data_ccc.name[smart_data_ccc.value_count], sizeof(smart_data_ccc.name[smart_data_ccc.value_count]), "%s", name);
+        smart_data_ccc.value_count++;
+      }
     }
 
     offset += 12;
