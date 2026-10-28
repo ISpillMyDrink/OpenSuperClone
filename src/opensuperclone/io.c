@@ -6330,9 +6330,7 @@ int find_bus_devices_ccc(char *driver)
 int get_device_resources_ccc(char *bus, char *driver)
 {
   char command[255];
-  strcpy(command, "cat /sys/bus/pci/devices/");
-  strcat(command, bus);
-  strcat(command, "/resource");
+  snprintf(command, sizeof command, "cat /sys/bus/pci/devices/%s/resource", bus);
   // fprintf (stdout, "%s\n", command);  //debug
 
   FILE *fp = popen(command, "r");

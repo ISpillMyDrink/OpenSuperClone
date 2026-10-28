@@ -2508,7 +2508,7 @@ int read_log_file_ccc(char *log_file)
             else if (strcmp(raw_command, "commandtocall") == 0)
             {
               // fprintf (stdout, "command= %s\n", raw_data);    //debug
-              strcpy(command_to_call_ccc, raw_data);
+              snprintf(command_to_call_ccc, sizeof command_to_call_ccc, "%s", raw_data);
             }
             else if (strcmp(raw_command, "primaryrelayonerror") == 0)
             {
@@ -2521,7 +2521,7 @@ int read_log_file_ccc(char *log_file)
             else if (strcmp(raw_command, "powercommandtocall") == 0)
             {
               // fprintf (stdout, "powercommand= %s\n", raw_data);    //debug
-              strcpy(power_command_to_call_ccc, raw_data);
+              snprintf(power_command_to_call_ccc, sizeof power_command_to_call_ccc, "%s", raw_data);
             }
             else if (strcmp(raw_command, "primaryrelaypowercycle") == 0)
             {
@@ -2549,7 +2549,7 @@ int read_log_file_ccc(char *log_file)
             }
             else if (strcmp(raw_command, "driverdiskname") == 0)
             {
-              strcpy(virtual_driver_name_ccc, raw_data);
+              snprintf(virtual_driver_name_ccc, sizeof virtual_driver_name_ccc, "%s", raw_data);
             }
             else if (strcmp(raw_command, "driverminclustersize") == 0)
             {
