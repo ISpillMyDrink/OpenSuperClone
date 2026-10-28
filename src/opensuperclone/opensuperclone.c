@@ -16825,6 +16825,16 @@ int rebuild_assist_map_heads_ccc(void)
   }
 
   FILE *headmap_debug_file = fopen("headmap_debug.log", "w");
+  if (headmap_debug_file == NULL)
+  {
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error creating headmap debug log\n");
+    message_error_ccc(tempmessage_ccc);
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "error mapping heads");
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+    clear_error_message_ccc();
+    return -1;
+  }
   fprintf(headmap_debug_file, "%s %s headmap debug file created at ", title_ccc, version_number_ccc);
   time_t mytime;
   mytime = time(NULL);

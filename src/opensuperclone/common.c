@@ -1157,6 +1157,11 @@ int get_buffer_physical_memory_locations_ccc(void)
 void dump_data_to_filename_binary_ccc(char *filename, unsigned char *data, int size, char *description)
 {
   FILE *file = fopen(filename, "a");
+  if (file == NULL)
+  {
+    fprintf(stderr, "Error opening %s for writing (%s)\n", filename, strerror(errno));
+    return;
+  }
   time_t mytime;
   mytime = time(NULL);
   fprintf(file, "******dump data ****** %d %s %s", size, description, ctime(&mytime));
@@ -1192,6 +1197,11 @@ void dump_data_to_filename_binary_ccc(char *filename, unsigned char *data, int s
 void dump_data_to_filename_ccc(char *filename, unsigned char *data, int size, char *description)
 {
   FILE *file = fopen(filename, "a");
+  if (file == NULL)
+  {
+    fprintf(stderr, "Error opening %s for writing (%s)\n", filename, strerror(errno));
+    return;
+  }
   time_t mytime;
   mytime = time(NULL);
   fprintf(file, "****** dump data ****** %d %s %s", size, description, ctime(&mytime));
@@ -1226,6 +1236,11 @@ void dump_data_to_filename_ccc(char *filename, unsigned char *data, int size, ch
 void dump_info_to_filename_ccc(char *filename, char *info)
 {
   FILE *file = fopen(filename, "a");
+  if (file == NULL)
+  {
+    fprintf(stderr, "Error opening %s for writing (%s)\n", filename, strerror(errno));
+    return;
+  }
   time_t mytime;
   mytime = time(NULL);
   fprintf(file, "****** dump info ****** %s", ctime(&mytime));
