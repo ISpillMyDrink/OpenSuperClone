@@ -184,28 +184,29 @@ int post_ioctl_ccc(void)
   if (descriptor && io_hdr.sb_len_wr > 21 && io_hdr.sbp[8] == 0x9 && io_hdr.sbp[9] == 0xc)
   {
     int additional_sense_length = io_hdr.sbp[7];
-    unsigned char ata_return_descriptor[additional_sense_length];
-    int i;
-    for (i = 0; i < additional_sense_length; i++)
+    // The ATA return descriptor needs at least 14 bytes of payload; ignore
+    // shorter descriptors instead of reading past the end of the sense data.
+    if (additional_sense_length >= 14)
     {
-      memcpy(&ata_return_descriptor[i], &io_hdr.sbp[i + 8], 1);
-    }
+      unsigned char ata_return_descriptor[14];
+      memcpy(ata_return_descriptor, &io_hdr.sbp[8], sizeof ata_return_descriptor);
 
-    set_number_variable_value_ccc("$ata_return_error", ata_return_descriptor[3]);
-    int count = (ata_return_descriptor[4] << 8) + ata_return_descriptor[5];
-    set_number_variable_value_ccc("$ata_return_count", count);
-    long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) +
-                    ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) +
-                    ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
-    set_number_variable_value_ccc("$ata_return_lba", lba);
-    set_number_variable_value_ccc("$ata_return_device", ata_return_descriptor[12]);
-    set_number_variable_value_ccc("$ata_return_status", ata_return_descriptor[13]);
-    memcpy(&ata_error_ccc, &ata_return_descriptor[3], 1);
-    memcpy(&ata_status_ccc, &ata_return_descriptor[13], 1);
-    memcpy(&ata_device_ccc, &ata_return_descriptor[12], 1);
-    ata_lba_ccc = lba;
-    ata_count_ccc = count;
-    ata_return_valid_ccc = 1;
+      set_number_variable_value_ccc("$ata_return_error", ata_return_descriptor[3]);
+      int count = (ata_return_descriptor[4] << 8) + ata_return_descriptor[5];
+      set_number_variable_value_ccc("$ata_return_count", count);
+      long long lba = ((unsigned long long)ata_return_descriptor[10] << 48) + ((unsigned long long)ata_return_descriptor[8] << 32) +
+                      ((unsigned long long)ata_return_descriptor[6] << 24) + ((unsigned long long)ata_return_descriptor[11] << 16) +
+                      ((unsigned long long)ata_return_descriptor[9] << 8) + ata_return_descriptor[7];
+      set_number_variable_value_ccc("$ata_return_lba", lba);
+      set_number_variable_value_ccc("$ata_return_device", ata_return_descriptor[12]);
+      set_number_variable_value_ccc("$ata_return_status", ata_return_descriptor[13]);
+      memcpy(&ata_error_ccc, &ata_return_descriptor[3], 1);
+      memcpy(&ata_status_ccc, &ata_return_descriptor[13], 1);
+      memcpy(&ata_device_ccc, &ata_return_descriptor[12], 1);
+      ata_lba_ccc = lba;
+      ata_count_ccc = count;
+      ata_return_valid_ccc = 1;
+    }
   }
   else if (fixed && io_hdr.sb_len_wr > 17)
   {
@@ -971,7 +972,7 @@ int usb_get_sense_ccc(void)
   unsigned int n;
   for (n = 0; n < sensebuffer_size_ccc; n++)
   {
-    memcpy(&raw_sense, sensebuffer_ccc, 1);
+    memcpy(&raw_sense[n], sensebuffer_ccc + n, 1);
   }
 
   if (0 && descriptor && sensebuffer_size_ccc > 21 && raw_sense[8] == 0x9 && raw_sense[9] == 0xc)
