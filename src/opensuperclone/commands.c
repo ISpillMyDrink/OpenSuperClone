@@ -12,6 +12,9 @@
 #include <limits.h>
 
 static int parse_unsigned_int_ccc(const char *text, unsigned int *value);
+static int parse_hex_offset_ccc(const char *text, unsigned int *value);
+static int read_setbuffer_line_ccc(bool command_line, unsigned int current_line, const char *prompt, char *line, int line_size,
+                                   const char *error_string, unsigned int line_number);
 
 unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
 unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
@@ -1568,24 +1571,27 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
+  long long parsed_offset;
   if (raw_offset[0] == '$')
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
+    parsed_offset = get_number_variable_value_ccc(raw_offset);
+    if (return_value_ccc < 0 || parsed_offset < 0)
     {
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   else
   {
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
+    parsed_offset = strtoll(raw_offset, &endptr, 0);
+    if (*endptr || parsed_offset < 0)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   if (perform_check)
   {
@@ -1607,21 +1613,11 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
   }
 
   int current_line = line_number + 1;
-  char *full_line;
-  if (command_line_ccc)
-  {
-    fprintf(stdout, "setbuffer> ");
-    char input_text[MAX_LINE_LENGTH];
-    fflush(stdout);
-    fgets(input_text, sizeof input_text, stdin);
-    full_line = input_text;
-  }
-  else
-  {
-    full_line = get_full_line_ccc(current_line);
-  }
   char line[MAX_LINE_LENGTH];
-  strcpy(line, full_line);
+  if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setbuffer> ", line, sizeof line, error_string, line_number) != 0)
+  {
+    return (-1);
+  }
   char raw_byte[MAX_LINE_LENGTH];
   unsigned int byte_count = 0;
   unsigned int byte_offset = 0;
@@ -1640,31 +1636,27 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (length == 0)
     {
       current_line++;
-      char *full_line;
-      if (command_line_ccc)
+      if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setbuffer> ", line, sizeof line, error_string, line_number) != 0)
       {
-        fprintf(stdout, "setbuffer> ");
-        char input_text[MAX_LINE_LENGTH];
-        fflush(stdout);
-        if (!fgets(input_text, sizeof input_text, stdin))
-          input_text[0] = '\0';
-        full_line = input_text;
+        return (-1);
       }
-      else
-      {
-        full_line = get_full_line_ccc(current_line);
-      }
-      strcpy(line, full_line);
     }
     else if (raw_byte[length - 1] == ':')
     {
-      byte_offset = strtoll(raw_byte, NULL, 16);
-      strcpy(line, leftover);
+      if (parse_hex_offset_ccc(raw_byte, &byte_offset) != 0)
+      {
+        fprintf(stderr, "Error! Offset \'%s\' on line %d was unable to be completely processed.\n", raw_byte, current_line + 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+        return (-1);
+      }
+      snprintf(line, sizeof line, "%s", leftover);
       byte_count = 0;
     }
     else
     {
-      if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_buffer_size_ccc)
+      if (!perform_check &&
+          (offset > ccc_main_buffer_size_ccc ||
+           (unsigned long long)byte_offset + byte_count + 1 > ccc_main_buffer_size_ccc - offset))
       {
         fprintf(stderr, "Error! End of buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
         fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1700,7 +1692,7 @@ int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
       if (!perform_check)
       {
         unsigned char c = value;
-        memcpy(ccc_buffer_ccc + byte_offset + offset + byte_count, &c, 1);
+        memcpy(ccc_buffer_ccc + offset + byte_offset + byte_count, &c, 1);
       }
       strcpy(line, leftover);
       byte_count++;
@@ -3948,6 +3940,50 @@ static int parse_unsigned_int_ccc(const char *text, unsigned int *value)
   return (0);
 }
 
+// Parse a hexadecimal byte offset such as "1a2b:" and reject the value if it
+// does not fit in an unsigned int.
+static int parse_hex_offset_ccc(const char *text, unsigned int *value)
+{
+  char *endptr;
+  errno = 0;
+  long long parsed = strtoll(text, &endptr, 16);
+  if (endptr == text || *endptr != ':' || endptr[1] != '\0' || errno == ERANGE || parsed < 0 ||
+      (unsigned long long)parsed > UINT_MAX)
+  {
+    return (-1);
+  }
+  *value = (unsigned int)parsed;
+  return (0);
+}
+
+// Read one line of a SETBUFFER-style block from the script or stdin.
+static int read_setbuffer_line_ccc(bool command_line, unsigned int current_line, const char *prompt, char *line, int line_size,
+                                   const char *error_string, unsigned int line_number)
+{
+  if (command_line)
+  {
+    fprintf(stdout, "%s", prompt);
+    fflush(stdout);
+    if (fgets(line, line_size, stdin) == NULL)
+    {
+      fprintf(stderr, "\nError: Unexpected end of input,\n");
+      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+      return (-1);
+    }
+    return (0);
+  }
+
+  char *full_line = get_full_line_ccc(current_line);
+  if (full_line == NULL)
+  {
+    fprintf(stderr, "\nError: Unexpected end of script,\n");
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
+  }
+  snprintf(line, line_size, "%s", full_line);
+  return (0);
+}
+
 int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
@@ -4652,24 +4688,27 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
+  long long parsed_offset;
   if (raw_offset[0] == '$')
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
+    parsed_offset = get_number_variable_value_ccc(raw_offset);
+    if (return_value_ccc < 0 || parsed_offset < 0)
     {
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   else
   {
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
+    parsed_offset = strtoll(raw_offset, &endptr, 0);
+    if (*endptr || parsed_offset < 0)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   if (perform_check)
   {
@@ -4691,21 +4730,11 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
   }
 
   int current_line = line_number + 1;
-  char *full_line;
-  if (command_line_ccc)
-  {
-    fprintf(stdout, "setscratchpad> ");
-    char input_text[MAX_LINE_LENGTH];
-    fflush(stdout);
-    fgets(input_text, sizeof input_text, stdin);
-    full_line = input_text;
-  }
-  else
-  {
-    full_line = get_full_line_ccc(current_line);
-  }
   char line[MAX_LINE_LENGTH];
-  strcpy(line, full_line);
+  if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setscratchpad> ", line, sizeof line, error_string, line_number) != 0)
+  {
+    return (-1);
+  }
   char raw_byte[MAX_LINE_LENGTH];
   unsigned int byte_count = 0;
   unsigned int byte_offset = 0;
@@ -4724,31 +4753,27 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
     if (length == 0)
     {
       current_line++;
-      char *full_line;
-      if (command_line_ccc)
+      if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setscratchpad> ", line, sizeof line, error_string, line_number) != 0)
       {
-        fprintf(stdout, "setscratchpad> ");
-        char input_text[MAX_LINE_LENGTH];
-        fflush(stdout);
-        if (!fgets(input_text, sizeof input_text, stdin))
-          input_text[0] = '\0';
-        full_line = input_text;
+        return (-1);
       }
-      else
-      {
-        full_line = get_full_line_ccc(current_line);
-      }
-      strcpy(line, full_line);
     }
     else if (raw_byte[length - 1] == ':')
     {
-      byte_offset = strtoll(raw_byte, NULL, 16);
-      strcpy(line, leftover);
+      if (parse_hex_offset_ccc(raw_byte, &byte_offset) != 0)
+      {
+        fprintf(stderr, "Error! Offset \'%s\' on line %d was unable to be completely processed.\n", raw_byte, current_line + 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+        return (-1);
+      }
+      snprintf(line, sizeof line, "%s", leftover);
       byte_count = 0;
     }
     else
     {
-      if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_scratchpad_size_ccc)
+      if (!perform_check &&
+          (offset > ccc_main_scratchpad_size_ccc ||
+           (unsigned long long)byte_offset + byte_count + 1 > ccc_main_scratchpad_size_ccc - offset))
       {
         fprintf(stderr, "Error! End of scratchpad reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
         fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4778,7 +4803,8 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
       int high_value = 0;
       if (value > 255)
       {
-        if (byte_count + 8 + byte_offset + offset > ccc_main_scratchpad_size_ccc)
+        if (offset > ccc_main_scratchpad_size_ccc ||
+            (unsigned long long)byte_offset + byte_count + 8 > ccc_main_scratchpad_size_ccc - offset)
         {
           fprintf(stderr, "Error! End of scratchpad reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
           fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4791,12 +4817,12 @@ int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
         if (high_value)
         {
           unsigned long long c = value;
-          memcpy(ccc_scratchpad_ccc + byte_offset + offset + byte_count, &c, 8);
+          memcpy(ccc_scratchpad_ccc + offset + byte_offset + byte_count, &c, 8);
         }
         else
         {
           unsigned char c = value;
-          memcpy(ccc_scratchpad_ccc + byte_offset + offset + byte_count, &c, 1);
+          memcpy(ccc_scratchpad_ccc + offset + byte_offset + byte_count, &c, 1);
         }
       }
       strcpy(line, leftover);
@@ -6522,24 +6548,27 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
+  long long parsed_offset;
   if (raw_offset[0] == '$')
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
+    parsed_offset = get_number_variable_value_ccc(raw_offset);
+    if (return_value_ccc < 0 || parsed_offset < 0)
     {
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   else
   {
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
+    parsed_offset = strtoll(raw_offset, &endptr, 0);
+    if (*endptr || parsed_offset < 0)
     {
       fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    offset = (unsigned long long)parsed_offset;
   }
   if (perform_check)
   {
@@ -6561,21 +6590,11 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
   }
 
   int current_line = line_number + 1;
-  char *full_line;
-  if (command_line_ccc)
-  {
-    fprintf(stdout, "setusbbuffer> ");
-    char input_text[MAX_LINE_LENGTH];
-    fflush(stdout);
-    fgets(input_text, sizeof input_text, stdin);
-    full_line = input_text;
-  }
-  else
-  {
-    full_line = get_full_line_ccc(current_line);
-  }
   char line[MAX_LINE_LENGTH];
-  strcpy(line, full_line);
+  if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setusbbuffer> ", line, sizeof line, error_string, line_number) != 0)
+  {
+    return (-1);
+  }
   char raw_byte[MAX_LINE_LENGTH];
   unsigned int byte_count = 0;
   unsigned int byte_offset = 0;
@@ -6594,31 +6613,27 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
     if (length == 0)
     {
       current_line++;
-      char *full_line;
-      if (command_line_ccc)
+      if (read_setbuffer_line_ccc(command_line_ccc, current_line, "setusbbuffer> ", line, sizeof line, error_string, line_number) != 0)
       {
-        fprintf(stdout, "setusbbuffer> ");
-        char input_text[MAX_LINE_LENGTH];
-        fflush(stdout);
-        if (!fgets(input_text, sizeof input_text, stdin))
-          input_text[0] = '\0';
-        full_line = input_text;
+        return (-1);
       }
-      else
-      {
-        full_line = get_full_line_ccc(current_line);
-      }
-      strcpy(line, full_line);
     }
     else if (raw_byte[length - 1] == ':')
     {
-      byte_offset = strtoll(raw_byte, NULL, 16);
-      strcpy(line, leftover);
+      if (parse_hex_offset_ccc(raw_byte, &byte_offset) != 0)
+      {
+        fprintf(stderr, "Error! Offset \'%s\' on line %d was unable to be completely processed.\n", raw_byte, current_line + 1);
+        fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+        return (-1);
+      }
+      snprintf(line, sizeof line, "%s", leftover);
       byte_count = 0;
     }
     else
     {
-      if (!perform_check && byte_count + 1 + byte_offset + offset > ccc_main_usbbuffer_size_ccc)
+      if (!perform_check &&
+          (offset > ccc_main_usbbuffer_size_ccc ||
+           (unsigned long long)byte_offset + byte_count + 1 > ccc_main_usbbuffer_size_ccc - offset))
       {
         fprintf(stderr, "Error! End of usb buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
         fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6648,7 +6663,8 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
       int high_value = 0;
       if (value > 255)
       {
-        if (byte_count + 8 + byte_offset + offset > ccc_main_usbbuffer_size_ccc)
+        if (offset > ccc_main_usbbuffer_size_ccc ||
+            (unsigned long long)byte_offset + byte_count + 8 > ccc_main_usbbuffer_size_ccc - offset)
         {
           fprintf(stderr, "Error! End of usb buffer reached at \'%s\' on line %d.\n", raw_byte, current_line + 1);
           fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6661,12 +6677,12 @@ int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
         if (high_value)
         {
           unsigned long long c = value;
-          memcpy(ccc_usbbuffer_ccc + byte_offset + offset + byte_count, &c, 8);
+          memcpy(ccc_usbbuffer_ccc + offset + byte_offset + byte_count, &c, 8);
         }
         else
         {
           unsigned char c = value;
-          memcpy(ccc_usbbuffer_ccc + byte_offset + offset + byte_count, &c, 1);
+          memcpy(ccc_usbbuffer_ccc + offset + byte_offset + byte_count, &c, 1);
         }
       }
       strcpy(line, leftover);

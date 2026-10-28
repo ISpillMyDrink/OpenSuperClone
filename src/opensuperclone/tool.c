@@ -1785,6 +1785,10 @@ char *get_full_line_ccc(unsigned int line_number)
 {
   // char full_line[MAX_LINE_LENGTH] = "";
   full_line[0] = '\0';
+  if (script_line_pointer_ccc == NULL || line_number >= total_script_lines_ccc)
+  {
+    return (NULL);
+  }
   sscanf(script_line_pointer_ccc[line_number], "%[^\n]", full_line);
   char *return_data = full_line;
   return (return_data);
@@ -1796,6 +1800,10 @@ char *get_rest_of_line(unsigned int line_number)
   char command[MAX_COMMAND_LENGTH] = "";
   // char rest_of_line[MAX_LINE_LENGTH] = "";
   rest_of_line[0] = '\0';
+  if (script_line_pointer_ccc == NULL || line_number >= total_script_lines_ccc)
+  {
+    return (NULL);
+  }
   sscanf(script_line_pointer_ccc[line_number], "%s %[^\n]", command, rest_of_line);
   char *return_data = rest_of_line;
   return (return_data);
