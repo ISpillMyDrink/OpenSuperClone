@@ -6101,7 +6101,7 @@ int find_all_devices_ccc(void)
     FILE *fp = popen(command, "r");
     int rows = MAX_DRIVERS;
     int cols = 255;
-    char list[cols][rows];
+    char list[rows][cols];
     int i;
     char line[cols];
     i = 0;
@@ -6237,9 +6237,8 @@ int find_all_devices_ccc(void)
       strcpy(raw_size, "");
       strcpy(raw_bytes_per_sec, "");
       sscanf(line, "%s %s %s %[^\n]", name, raw_size, raw_bytes_per_sec, model);
-      strcpy(drive_list_ccc[device_count_ccc], "/dev/");
-      strcat(drive_list_ccc[device_count_ccc], name);
-      strncpy(model_ccc[device_count_ccc], model, sizeof(model_ccc[device_count_ccc]) - 1);
+      snprintf(drive_list_ccc[device_count_ccc], sizeof(drive_list_ccc[device_count_ccc]), "/dev/%s", name);
+      snprintf(model_ccc[device_count_ccc], sizeof(model_ccc[device_count_ccc]), "%s", model);
       // get device info
       long long size = strtoull(raw_size, NULL, 0);
       long long bytes_per_sec = strtoull(raw_bytes_per_sec, NULL, 0);
@@ -6265,14 +6264,12 @@ int find_bus_devices_ccc(char *driver)
 {
   // list possible bus devices
   char command[255];
-  strcpy(command, "ls /sys/bus/pci/drivers/");
-  strcat(command, driver);
-  strcat(command, " | grep 0000:");
+  snprintf(command, sizeof command, "ls /sys/bus/pci/drivers/%s | grep 0000:", driver);
   // fprintf (stdout, "%s\n", command);  //debug
   FILE *fp = popen(command, "r");
   int rows = MAX_BUSES;
   int cols = 255;
-  char list[cols][rows];
+  char list[rows][cols];
   int i;
   char line[cols];
   i = 0;
@@ -9466,7 +9463,7 @@ int get_device_information_ccc(char *driver, char *bus, int bus_count, int devic
       if (strcmp(line, "") != 0)
       {
         // fprintf (stdout, "found bkock\n");  //debug
-        strcpy(device_name_ccc[current_device_count], line);
+        snprintf(device_name_ccc[current_device_count], sizeof(device_name_ccc[current_device_count]), "%s", line);
       }
       break;
     }
