@@ -9,6 +9,8 @@
 #include "commands.h"
 #include "asclepius.h"
 
+#include <limits.h>
+
 unsigned int ccc_subroutine_stack_ccc[MAX_SUB_LEVEL];
 unsigned int subroutine_while_stack_ccc[MAX_SUB_LEVEL];
 unsigned int subroutine_endif_stack_ccc[MAX_SUB_LEVEL];
@@ -3974,6 +3976,32 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
   return (0);
 }
 
+// Parse a non-negative integer that must fit in an unsigned int.
+// Returns 0 on success, or -1 if the value is malformed, negative, or out of range.
+static int parse_unsigned_int_ccc(const char *text, unsigned int *value)
+{
+  if (text[0] == '$')
+  {
+    long long variable_value = get_number_variable_value_ccc((char *)text);
+    if (return_value_ccc < 0 || variable_value < 0 || (unsigned long long)variable_value > UINT_MAX)
+    {
+      return (-1);
+    }
+    *value = (unsigned int)variable_value;
+    return (0);
+  }
+
+  char *endptr;
+  errno = 0;
+  long long parsed = strtoll(text, &endptr, 0);
+  if (endptr == text || *endptr || errno == ERANGE || parsed < 0 || (unsigned long long)parsed > UINT_MAX)
+  {
+    return (-1);
+  }
+  *value = (unsigned int)parsed;
+  return (0);
+}
+
 int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
@@ -3997,47 +4025,25 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (raw_offset[0] == '$')
+  if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
+  if (parse_unsigned_int_ccc(raw_size, &size) != 0)
   {
-    char *endptr;
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  if (raw_size[0] == '$')
+  if (size == 0)
   {
-    size = get_number_variable_value_ccc(raw_size);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size must be greater than zero,\n");
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
-  {
-    char *endptr;
-    size = strtoll(raw_size, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
-  }
-  if (size + offset > ccc_main_buffer_size_ccc)
+  if (offset > ccc_main_buffer_size_ccc || size > ccc_main_buffer_size_ccc - offset)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4047,7 +4053,7 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check)
   {
     unsigned int i;
-    for (i = 0; i < size - 1; i += 2)
+    for (i = 0; i + 1 < size; i += 2)
     {
       unsigned char a;
       unsigned char b;
@@ -4084,47 +4090,25 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (raw_offset[0] == '$')
+  if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
+  if (parse_unsigned_int_ccc(raw_size, &size) != 0)
   {
-    char *endptr;
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  if (raw_size[0] == '$')
+  if (size == 0)
   {
-    size = get_number_variable_value_ccc(raw_size);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size must be greater than zero,\n");
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
-  {
-    char *endptr;
-    size = strtoll(raw_size, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
-  }
-  if (size + offset > ccc_main_scratchpad_size_ccc)
+  if (offset > ccc_main_scratchpad_size_ccc || size > ccc_main_scratchpad_size_ccc - offset)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4134,7 +4118,7 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
   if (!perform_check)
   {
     unsigned int i;
-    for (i = 0; i < size - 1; i += 2)
+    for (i = 0; i + 1 < size; i += 2)
     {
       unsigned char a;
       unsigned char b;
@@ -6144,47 +6128,25 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (raw_offset[0] == '$')
+  if (parse_unsigned_int_ccc(raw_offset, &offset) != 0)
   {
-    offset = get_number_variable_value_ccc(raw_offset);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
+  if (parse_unsigned_int_ccc(raw_size, &size) != 0)
   {
-    char *endptr;
-    offset = strtoll(raw_offset, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Offset \'%s\' was unable to be completely processed.\n", raw_offset);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  if (raw_size[0] == '$')
+  if (size == 0)
   {
-    size = get_number_variable_value_ccc(raw_size);
-    if (return_value_ccc < 0)
-    {
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
+    fprintf(stderr, "Error! Size must be greater than zero,\n");
+    fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
+    return (-1);
   }
-  else
-  {
-    char *endptr;
-    size = strtoll(raw_size, &endptr, 0);
-    if (*endptr)
-    {
-      fprintf(stderr, "Error! Size \'%s\' was unable to be completely processed.\n", raw_size);
-      fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
-      return (-1);
-    }
-  }
-  if (size + offset > ccc_main_usbbuffer_size_ccc)
+  if (offset > ccc_main_usbbuffer_size_ccc || size > ccc_main_usbbuffer_size_ccc - offset)
   {
     fprintf(stderr, "ERROR: Attempt to flip past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6194,7 +6156,7 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
   if (!perform_check)
   {
     unsigned int i;
-    for (i = 0; i < size - 1; i += 2)
+    for (i = 0; i + 1 < size; i += 2)
     {
       unsigned char a;
       unsigned char b;
