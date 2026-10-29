@@ -2312,68 +2312,68 @@ int initialize_memory(void)
 
 int increase_log_memory(int new_lines)
 {
-  int found_error = 0;
-  log_rows += new_lines;
-  temp_lposition = realloc(lposition, log_rows * sizeof(*lposition));
+  int new_rows = log_rows + new_lines;
+  temp_lposition = realloc(lposition, new_rows * sizeof(*lposition));
   if (temp_lposition == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating log memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   lposition = temp_lposition;
 
-  temp_lsize = realloc(lsize, log_rows * sizeof(*lsize));
+  temp_lsize = realloc(lsize, new_rows * sizeof(*lsize));
   if (temp_lsize == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating log memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   lsize = temp_lsize;
 
-  temp_lstatus = realloc(lstatus, log_rows * sizeof(*lstatus));
+  temp_lstatus = realloc(lstatus, new_rows * sizeof(*lstatus));
   if (temp_lstatus == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating log memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   lstatus = temp_lstatus;
-  return found_error;
+  log_rows = new_rows;
+  return 0;
 }
 
 int increase_domain_memory(int new_lines)
 {
-  int found_error = 0;
-  domain_rows += new_lines;
-  temp_dposition = realloc(dposition, domain_rows * sizeof(*dposition));
+  int new_rows = domain_rows + new_lines;
+  temp_dposition = realloc(dposition, new_rows * sizeof(*dposition));
   if (temp_dposition == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating domain memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   dposition = temp_dposition;
 
-  temp_dsize = realloc(dsize, domain_rows * sizeof(*dsize));
+  temp_dsize = realloc(dsize, new_rows * sizeof(*dsize));
   if (temp_dsize == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating domain memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   dsize = temp_dsize;
 
-  temp_dstatus = realloc(dstatus, domain_rows * sizeof(*dstatus));
+  temp_dstatus = realloc(dstatus, new_rows * sizeof(*dstatus));
   if (temp_dstatus == NULL)
   {
     snprintf(tempmessage, TEMP_MESSAGE_SIZE, "Error allocating domain memory (%s)\n", strerror(errno));
     message_now(tempmessage);
-    found_error = -2;
+    return -2;
   }
   dstatus = temp_dstatus;
-  return found_error;
+  domain_rows = new_rows;
+  return 0;
 }
 
 // function to read the log file into memory
@@ -2646,7 +2646,11 @@ int read_log_file(char *log_file)
     // if used up allocated memory then increase it
     if (i >= log_rows)
     {
-      increase_log_memory(1000);
+      int increase_result = increase_log_memory(1000);
+      if (increase_result != 0)
+      {
+        found_error = increase_result;
+      }
     }
 
     if (found_error)
@@ -2867,7 +2871,11 @@ int read_domain_file(char *domain_file)
     // if used up allocated memory then increase it
     if (i >= domain_rows)
     {
-      increase_domain_memory(1000);
+      int increase_result = increase_domain_memory(1000);
+      if (increase_result != 0)
+      {
+        found_error = increase_result;
+      }
     }
 
     if (found_error < 0)
