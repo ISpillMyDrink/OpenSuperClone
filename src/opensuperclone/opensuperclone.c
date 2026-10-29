@@ -708,8 +708,8 @@ int main(int argc, char **argv)
     time_t mytime;
     mytime = time(NULL);
     fprintf(debug_file_ccc, "%s", ctime(&mytime));
-    fprintf(debug_file_ccc, "disk_1 = %s\n", disk_1_ccc);
-    fprintf(debug_file_ccc, "script_file = %s\n", log_file_ccc);
+    fprintf(debug_file_ccc, "disk_1 = %s\n", disk_1_ccc != NULL ? disk_1_ccc : "");
+    fprintf(debug_file_ccc, "script_file = %s\n", log_file_ccc != NULL ? log_file_ccc : "");
   }
 
   if (do_indentation_ccc)
