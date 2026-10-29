@@ -1140,11 +1140,24 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     }
 
     // printk(KERN_INFO "osc_block_device ioctl SG_IO request\n");    //debug
+    memset(cdb, 0, sizeof(cdb));
     sgio_obj = kmalloc(sizeof(struct sg_io_hdr), GFP_KERNEL);
     sgio4_obj = kmalloc(sizeof(struct sg_io_v4), GFP_KERNEL);
+    if (sgio_obj == NULL || sgio4_obj == NULL)
+    {
+      printk(KERN_WARNING "oscdriver: failed to allocate ioctl buffers\n");
+      kfree(sgio_obj);
+      kfree(sgio4_obj);
+      next_queue();
+      return -ENOMEM;
+    }
     if (copy_from_user(sgio_obj, (void *)arg, sizeof(struct sg_io_hdr)))
     {
       printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+      kfree(sgio_obj);
+      kfree(sgio4_obj);
+      next_queue();
+      return -EFAULT;
     }
     // SG_IO v4
     if (sgio_obj->interface_id == 'Q')
@@ -1152,12 +1165,28 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       if (copy_from_user(sgio4_obj, (void *)arg, sizeof(struct sg_io_v4)))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        kfree(sgio_obj);
+        kfree(sgio4_obj);
+        next_queue();
+        return -EFAULT;
+      }
+      if (sgio4_obj->request_len < 6 || sgio4_obj->request_len > sizeof(cdb))
+      {
+        printk(KERN_WARNING "oscdriver: invalid cdb length %u\n", (unsigned int)sgio4_obj->request_len);
+        kfree(sgio_obj);
+        kfree(sgio4_obj);
+        next_queue();
+        return -EINVAL;
       }
       // printk(KERN_INFO "osc_block_device interface_id %c\n", sgio4_obj->guard);    //debug
       // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio4_obj->request_len);    //debug
       if (copy_from_user(cdb, (const void *)(uintptr_t)sgio4_obj->request, sgio4_obj->request_len))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        kfree(sgio_obj);
+        kfree(sgio4_obj);
+        next_queue();
+        return -EFAULT;
       }
       if (0)
       {
@@ -1232,6 +1261,7 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       if (copy_to_user((void *)arg, sgio4_obj, sizeof(struct sg_io_v4)))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        return_value = -EFAULT;
       }
     }
     // SG_IO v3
@@ -1239,9 +1269,21 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
     {
       // printk(KERN_INFO "osc_block_device interface_id %c\n", sgio_obj->interface_id);    //debug
       // printk(KERN_INFO "osc_block_device cmd_len %d\n", sgio_obj->cmd_len);    //debug
+      if (sgio_obj->cmd_len < 6 || sgio_obj->cmd_len > sizeof(cdb))
+      {
+        printk(KERN_WARNING "oscdriver: invalid cdb length %u\n", (unsigned int)sgio_obj->cmd_len);
+        kfree(sgio_obj);
+        kfree(sgio4_obj);
+        next_queue();
+        return -EINVAL;
+      }
       if (copy_from_user(cdb, sgio_obj->cmdp, sgio_obj->cmd_len))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        kfree(sgio_obj);
+        kfree(sgio4_obj);
+        next_queue();
+        return -EFAULT;
       }
       if (0)
       {
@@ -1315,6 +1357,7 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       if (copy_to_user((void *)arg, sgio_obj, sizeof(struct sg_io_hdr)))
       {
         printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+        return_value = -EFAULT;
       }
     }
     // SG_IO bad version
@@ -1327,6 +1370,8 @@ static int block_device_ioctl(struct block_device *block_device, fmode_t mode, u
       return -EINVAL;
     }
 
+    kfree(sgio_obj);
+    kfree(sgio4_obj);
     next_queue();
     return return_value;
   }
@@ -1413,7 +1458,7 @@ static loff_t device_seek(struct file *file, loff_t offset, int type)
 
 static ssize_t device_read(struct file *file, char __user *buffer, size_t size, loff_t *offset)
 {
-  int blockio = 0;
+  int blockio = 1;
   int write = 0;
   int ret = 0;
   long long sectors = 0;
@@ -1423,8 +1468,17 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t size, 
     printk(KERN_INFO "oscdriver: attempted operation while in use\n");
     return -EBUSY;
   }
+  if (size > DRIVER_MAIN_DATA_BUFFER_SIZE)
+  {
+    printk(KERN_WARNING "oscdriver: read size %zu is too large\n", size);
+    return -EINVAL;
+  }
+  if (*offset < 0)
+  {
+    return -EINVAL;
+  }
   sectors = size / KERNEL_SECTOR_SIZE;
-  position = current_offset / KERNEL_SECTOR_SIZE;
+  position = *offset / KERNEL_SECTOR_SIZE;
   // printk(KERN_INFO "hddsc_device_read size=%d offset=%lld\n", (int) size, *offset);    //debug
   operation_in_progress = 1;
   ret = data_transfer(&data_device, position, sectors, sectors, buffer, write, blockio);
@@ -1433,12 +1487,13 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t size, 
   {
     return ret;
   }
+  *offset += size;
   return size;
 }
 
 static ssize_t device_write(struct file *file, const char __user *buffer, size_t size, loff_t *offset)
 {
-  int blockio = 0;
+  int blockio = 1;
   int write = 1;
   int ret = 0;
   long long sectors = 0;
@@ -1448,8 +1503,17 @@ static ssize_t device_write(struct file *file, const char __user *buffer, size_t
     printk(KERN_INFO "oscdriver: attempted operation while in use\n");
     return -EBUSY;
   }
+  if (size > DRIVER_MAIN_DATA_BUFFER_SIZE)
+  {
+    printk(KERN_WARNING "oscdriver: write size %zu is too large\n", size);
+    return -EINVAL;
+  }
+  if (*offset < 0)
+  {
+    return -EINVAL;
+  }
   sectors = size / KERNEL_SECTOR_SIZE;
-  position = current_offset / KERNEL_SECTOR_SIZE;
+  position = *offset / KERNEL_SECTOR_SIZE;
   // printk(KERN_INFO "hddsc_device_write size=%d offset=%lld\n", (int) size, *offset);    //debug
   operation_in_progress = 1;
   ret = data_transfer(&data_device, position, sectors, sectors, (char *)buffer, write, blockio);
@@ -1458,6 +1522,7 @@ static ssize_t device_write(struct file *file, const char __user *buffer, size_t
   {
     return ret;
   }
+  *offset += size;
   return size;
 }
 
@@ -1481,9 +1546,17 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
   {
     struct control_data *control_obj = kmalloc(sizeof(struct control_data), GFP_KERNEL);
 
+    if (control_obj == NULL)
+    {
+      printk(KERN_WARNING "oscdriver: failed to allocate control data\n");
+      return -ENOMEM;
+    }
+
     if (copy_from_user(control_obj, (void *)arg, sizeof(struct control_data)))
     {
       printk(KERN_WARNING "oscdriver: failed to copy user data\n");
+      kfree(control_obj);
+      return -EFAULT;
     }
 
     if (control_obj->command == START_DRIVE_COMMAND)
@@ -1511,6 +1584,7 @@ static long process_ioctl(struct file *f, const unsigned cmd, const unsigned lon
       data_device.chs_cylinders = control_obj->chs_cylinders;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(7, 2, 0)
       strncpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name) - 1);
+      data_device.device_name[sizeof(data_device.device_name) - 1] = '\0';
 #else
       strscpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name));
 #endif
@@ -1673,6 +1747,7 @@ out:
       data_device.chs_cylinders = control_obj->chs_cylinders;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(7, 2, 0)
       strncpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name) - 1);
+      data_device.device_name[sizeof(data_device.device_name) - 1] = '\0';
 #else
       strscpy(data_device.device_name, control_obj->name, sizeof(data_device.device_name));
 #endif
@@ -1686,6 +1761,7 @@ out:
       if (data_major_num < 0)
       {
         printk(KERN_ALERT "oscdriver: Registering char device failed with %d\n", data_major_num);
+        kfree(control_obj);
         return data_major_num;
       }
 
@@ -1734,6 +1810,12 @@ out:
       // printk(KERN_INFO "oscdriver: memory location %llx size %llx\n", control_obj->read_timeout, control_obj->request_timeout); // debug
       // printk(KERN_INFO "oscdriver: physmap %llx\n", physmap);    //debug
       // printk(KERN_INFO "oscdriver: busmap %llx\n", busmap);    //debug
+      if (control_obj->request_timeout > USER_DATA_BUFFER_SIZE)
+      {
+        printk(KERN_WARNING "oscdriver: memory read size %llu exceeds buffer size %d\n", control_obj->request_timeout, USER_DATA_BUFFER_SIZE);
+        kfree(control_obj);
+        return -EINVAL;
+      }
       mapbuffer = phys_to_virt(control_obj->read_timeout);
       // mapbuffer = bus_to_virt(control_obj->read_timeout);
       memcpy(control_obj->buffer, mapbuffer, control_obj->request_timeout);
@@ -1829,7 +1911,7 @@ static int mmapfop_close_m(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   main_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 5);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
@@ -1838,11 +1920,17 @@ static int mmapfop_close_m(struct inode *inode, struct file *filp)
 static int mmapfop_open_m(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-  info->data = (char *)__get_free_pages(GFP_DMA32, 5); // make sure to match with buffer size
-  if (!info->data)
+  if (info == NULL)
   {
     return -ENOMEM;
   }
+  info->data = (char *)__get_free_pages(GFP_DMA32, 5); // make sure to match with buffer size
+  if (!info->data)
+  {
+    kfree(info);
+    return -ENOMEM;
+  }
+  info->reference = 0;
   memset(info->data, 0, DRIVER_CONTROL_BUFFER_SIZE);
   main_buffer = info->data;
   filp->private_data = info;
@@ -1911,7 +1999,7 @@ static int mmapfop_close_tb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   transfer_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 10);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
@@ -1920,11 +2008,17 @@ static int mmapfop_close_tb(struct inode *inode, struct file *filp)
 static int mmapfop_open_tb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-  info->data = (char *)__get_free_pages(GFP_DMA32, 10); // make sure to match with buffer size
-  if (!info->data)
+  if (info == NULL)
   {
     return -ENOMEM;
   }
+  info->data = (char *)__get_free_pages(GFP_DMA32, 10); // make sure to match with buffer size
+  if (!info->data)
+  {
+    kfree(info);
+    return -ENOMEM;
+  }
+  info->reference = 0;
   memset(info->data, 0, DRIVER_TRANSFER_BUFFER_SIZE);
   transfer_buffer = info->data;
   filp->private_data = info;
@@ -1993,7 +2087,7 @@ static int mmapfop_close_mdb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = filp->private_data;
   main_data_buffer = NULL;
-  free_page((unsigned long)info->data);
+  free_pages((unsigned long)info->data, 10);
   kfree(info);
   filp->private_data = NULL;
   // printk("mmapfop_close\n");
@@ -2002,11 +2096,17 @@ static int mmapfop_close_mdb(struct inode *inode, struct file *filp)
 static int mmapfop_open_mdb(struct inode *inode, struct file *filp)
 {
   struct mmap_info *info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-  info->data = (char *)__get_free_pages(GFP_DMA32, 10); // make sure to match with buffer size
-  if (!info->data)
+  if (info == NULL)
   {
     return -ENOMEM;
   }
+  info->data = (char *)__get_free_pages(GFP_DMA32, 10); // make sure to match with buffer size
+  if (!info->data)
+  {
+    kfree(info);
+    return -ENOMEM;
+  }
+  info->reference = 0;
   memset(info->data, 0, DRIVER_MAIN_DATA_BUFFER_SIZE);
   main_data_buffer = info->data;
   filp->private_data = info;
@@ -2046,10 +2146,23 @@ static int __init initialize_driver(void)
   transfer_buffer = NULL;
   main_data_buffer = NULL;
   block_io_buffer = vmalloc(DRIVER_MAIN_DATA_BUFFER_SIZE);
-  proc_create(filename_mmap_m, 0, NULL, &mmap_fops_m);
-  proc_create(filename_mmap_tb, 0, NULL, &mmap_fops_tb);
-  proc_create(filename_mmap_mdb, 0, NULL, &mmap_fops_mdb);
-  proc_create(filename_ioctl, 0, NULL, &ioctl_fops);
+  if (block_io_buffer == NULL)
+  {
+    printk(KERN_WARNING "oscdriver: unable to allocate io buffer\n");
+    return -ENOMEM;
+  }
+  if (proc_create(filename_mmap_m, 0, NULL, &mmap_fops_m) == NULL || proc_create(filename_mmap_tb, 0, NULL, &mmap_fops_tb) == NULL ||
+      proc_create(filename_mmap_mdb, 0, NULL, &mmap_fops_mdb) == NULL || proc_create(filename_ioctl, 0, NULL, &ioctl_fops) == NULL)
+  {
+    printk(KERN_WARNING "oscdriver: unable to create proc entries\n");
+    remove_proc_entry(filename_ioctl, NULL);
+    remove_proc_entry(filename_mmap_m, NULL);
+    remove_proc_entry(filename_mmap_tb, NULL);
+    remove_proc_entry(filename_mmap_mdb, NULL);
+    vfree(block_io_buffer);
+    block_io_buffer = NULL;
+    return -ENOMEM;
+  }
 
   return 0;
 }
