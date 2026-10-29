@@ -2195,9 +2195,9 @@ long long math_ccc(char *raw_value)
       {
         int var_num = find_string_variable_ccc(var_name);
         char temp_var[MAX_LINE_LENGTH];
-        strcpy(temp_var, string_variable_pointer_ccc[var_num]);
+        snprintf(temp_var, sizeof(temp_var), "%s", string_variable_pointer_ccc[var_num]);
         // fprintf (stdout, "temp_var=%s\n", temp_var);
-        int string_count = 0;
+        long long string_count = 0;
         if (part2[0] == '$')
         {
           char var_name[MAX_VARIABLE_NAME_LENGTH];
@@ -2232,7 +2232,7 @@ long long math_ccc(char *raw_value)
           }
         }
 
-        if (string_count > MAX_LINE_LENGTH / 2)
+        if (string_count < 0 || string_count > MAX_LINE_LENGTH / 2)
         {
           fprintf(stderr, "\nError: string count \'%s\' too high (max=%d)\n", part2, MAX_LINE_LENGTH / 2);
           error_level_ccc = 1;
@@ -2240,10 +2240,12 @@ long long math_ccc(char *raw_value)
         }
 
         char string_result[MAX_LINE_LENGTH];
+        string_result[0] = '\0';
         int i;
         for (i = 0; i < string_count + 1; i++)
         {
           char leftover[MAX_LINE_LENGTH];
+          leftover[0] = '\0';
           int scanline = sscanf(temp_var, "%s %[^\n]", string_result, leftover);
           // fprintf (stdout, "string_result=%s scanline=%d\n", string_result, scanline);
           if (scanline < 2 && i + 1 == string_count)
@@ -2259,7 +2261,14 @@ long long math_ccc(char *raw_value)
             error_level_ccc = 2;
             return (0);
           }
-          strcpy(temp_var, leftover);
+          if (scanline < 2)
+          {
+            temp_var[0] = '\0';
+          }
+          else
+          {
+            snprintf(temp_var, sizeof(temp_var), "%s", leftover);
+          }
         }
 
         if (print_hex_ccc)
@@ -2434,7 +2443,7 @@ long long math_ccc(char *raw_value)
 long long get_number_variable_value_ccc(char *raw_variable)
 {
   int length = strlen(raw_variable);
-  char var_name[length];
+  char var_name[length + 1];
   int scanline = sscanf(raw_variable + 1, "%s [^\n]", var_name);
   if (scanline != 1)
   {
@@ -2471,7 +2480,7 @@ long long get_number_variable_value_ccc(char *raw_variable)
 char *get_string_variable_value_ccc(char *raw_variable)
 {
   int length = strlen(raw_variable);
-  char var_name[length];
+  char var_name[length + 1];
   int scanline = sscanf(raw_variable + 1, "%s [^\n]", var_name);
   if (scanline != 1)
   {
@@ -2512,7 +2521,7 @@ int set_number_variable_value_ccc(char *raw_variable, long long value)
     return 0;
   }
   int length = strlen(raw_variable);
-  char var_name[length];
+  char var_name[length + 1];
   char temp_var[32];
   int scanline = sscanf(raw_variable + 1, "%s [^\n]", var_name);
   if (scanline != 1)
@@ -2560,7 +2569,7 @@ int set_string_variable_value_ccc(char *raw_variable, char *value)
     return 0;
   }
   int length = strlen(raw_variable);
-  char var_name[length];
+  char var_name[length + 1];
   int scanline = sscanf(raw_variable + 1, "%s [^\n]", var_name);
   if (scanline != 1)
   {

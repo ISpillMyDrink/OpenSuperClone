@@ -625,7 +625,7 @@ int echo_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int i;
   int length = strlen(rest_of_line);
-  char var_name[length];
+  char var_name[length + 1];
   bool print = false;
   bool dquote;
   char *error_string = "Error processing ECHO command on line";
@@ -768,9 +768,9 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 
   if ((strncmp(value, "buffer", 6) == 0) || (strncmp(value, "BUFFER", 6) == 0))
   {
-    char raw_offset[length];
-    char raw_value_type[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char raw_value_type[length + 1];
+    char leftover[length + 1];
     int value_type = 1; // byte
     unsigned int offset;
     int scanline = sscanf(value + 6, "%s %s %[^\n]", raw_offset, raw_value_type, leftover);
@@ -861,9 +861,9 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 
   else if ((strncmp(value, "usbbuffer", 9) == 0) || (strncmp(value, "USBBUFFER", 9) == 0))
   {
-    char raw_offset[length];
-    char raw_value_type[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char raw_value_type[length + 1];
+    char leftover[length + 1];
     int value_type = 1; // byte
     unsigned int offset;
     int scanline = sscanf(value + 10, "%s %s %[^\n]", raw_offset, raw_value_type, leftover);
@@ -954,9 +954,9 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 
   else if ((strncmp(value, "scratchpad", 10) == 0) || (strncmp(value, "SCRATCHPAD", 10) == 0))
   {
-    char raw_offset[length];
-    char raw_value_type[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char raw_value_type[length + 1];
+    char leftover[length + 1];
     int value_type = 1; // byte
     unsigned int offset;
     int scanline = sscanf(value + 10, "%s %s %[^\n]", raw_offset, raw_value_type, leftover);
@@ -1046,8 +1046,8 @@ int seti_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   }
   else if ((strncmp(value, "sensebuffer", 11) == 0) || (strncmp(value, "SENSEBUFFER", 11) == 0))
   {
-    char raw_offset[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char leftover[length + 1];
     unsigned int offset;
     int scanline = sscanf(value + 11, "%s %[^\n]", raw_offset, leftover);
     if (scanline != 1)
@@ -1177,9 +1177,9 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 
   if ((strncmp(value, "buffer", 6) == 0) || (strncmp(value, "BUFFER", 6) == 0))
   {
-    char raw_offset[length];
-    char raw_size[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char raw_size[length + 1];
+    char leftover[length + 1];
     unsigned int offset;
     unsigned int size;
     int scanline = sscanf(value + 6, "%s %s %[^\n]", raw_offset, raw_size, leftover);
@@ -1259,9 +1259,9 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 
   else if ((strncmp(value, "scratchpad", 6) == 0) || (strncmp(value, "SCRATCHPAD", 6) == 0))
   {
-    char raw_offset[length];
-    char raw_size[length];
-    char leftover[length];
+    char raw_offset[length + 1];
+    char raw_size[length + 1];
+    char leftover[length + 1];
     unsigned int offset;
     unsigned int size;
     int scanline = sscanf(value + 10, "%s %s %[^\n]", raw_offset, raw_size, leftover);
@@ -1470,9 +1470,9 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing PRINTBUFFER command on line";
@@ -1566,7 +1566,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int setmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
+  char raw_offset[length + 1];
   char leftover[MAX_LINE_LENGTH];
   char *endptr;
   unsigned long long offset;
@@ -1738,8 +1738,8 @@ int endmainbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
 int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_size[length];
-  char leftover[length];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long size;
   bool size_is_variable = false;
@@ -1795,9 +1795,9 @@ int change_main_buffer_size_ccc(bool perform_check, unsigned int line_number, ch
 int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing PRINTSENSEBUFFER command on line";
@@ -1887,11 +1887,11 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
 int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned long long buffer_offset;
@@ -2032,11 +2032,11 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
 int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned int buffer_offset;
@@ -2189,8 +2189,8 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int set_direction_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing DIRECTION command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -2261,8 +2261,8 @@ int scsi_6_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
 {
   int cmd_length = 6;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing SCSI6CMD command on line";
 
@@ -2321,8 +2321,8 @@ int scsi_10_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 {
   int cmd_length = 10;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing SCSI10CMD command on line";
 
@@ -2382,8 +2382,8 @@ int scsi_12_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 {
   int cmd_length = 12;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing SCSI12CMD command on line";
 
@@ -2443,8 +2443,8 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 {
   int cmd_length = 16;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing SCSI16CMD command on line";
 
@@ -2504,8 +2504,8 @@ int scsi_16_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int set_protocol_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing PROTOCOL command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -2640,8 +2640,8 @@ int set_protocol_ccc(bool perform_check, unsigned int line_number, char *rest_of
 int set_tlength_field_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing TLENGTHFIELD command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -2704,8 +2704,8 @@ int set_tlength_field_ccc(bool perform_check, unsigned int line_number, char *re
 int set_byte_block_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing TRANSFERUNIT command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -2752,8 +2752,8 @@ int set_byte_block_ccc(bool perform_check, unsigned int line_number, char *rest_
 int set_check_condition_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing CHECKCONDITION command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -2800,8 +2800,8 @@ int ata_28_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
 {
   int cmd_length = 7;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing ATA28CMD command on line";
 
@@ -2860,8 +2860,8 @@ int ata_48_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
 {
   int cmd_length = 7;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing ATA48CMD command on line";
 
@@ -2937,11 +2937,11 @@ int ata_48_cmd_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
 int write_log_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_variable_name[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_variable_name[length + 1];
+  char leftover[length + 1];
   char *file_name;
-  char var_name[length];
+  char var_name[length + 1];
   char *error_string = "Error processing WRITELOG command on line";
   int scanline = sscanf(rest_of_line, "%s %s %[^\n]", raw_file_name, raw_variable_name, leftover);
   if (scanline != 2)
@@ -3066,7 +3066,7 @@ int get_time_ccc(bool perform_check, unsigned int line_number, char *rest_of_lin
 int exit_with_code_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_exitcode[length];
+  char raw_exitcode[length + 1];
   char leftover[MAX_LINE_LENGTH];
   unsigned char tempcode;
   char *endptr;
@@ -3109,10 +3109,10 @@ int exit_with_code_ccc(bool perform_check, unsigned int line_number, char *rest_
 int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   unsigned int length = strlen(rest_of_line);
-  char raw_buffer_offset[length];
-  char raw_variable_name[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_buffer_offset[length + 1];
+  char raw_variable_name[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int buffer_offset;
   char extracted_var[MAX_LINE_LENGTH];
@@ -3408,8 +3408,8 @@ int perform_hard_reset_ccc(bool perform_check, unsigned int line_number, char *r
 int u_sleep_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing SLEEP command on line";
@@ -3452,8 +3452,8 @@ int u_sleep_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
 int busytimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing BUSYTIMEOUT command on line";
@@ -3495,8 +3495,8 @@ int busytimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int resettimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing RESETTIMEOUT command on line";
@@ -3538,8 +3538,8 @@ int resettimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of
 int softtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing SOFTTIMEOUT command on line";
@@ -3581,8 +3581,8 @@ int softtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int hardtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing HARDTIMEOUT command on line";
@@ -3624,8 +3624,8 @@ int hardtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int generaltimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing GENERALTIMEOUT command on line";
@@ -3667,8 +3667,8 @@ int generaltimeout_ccc(bool perform_check, unsigned int line_number, char *rest_
 int load_script_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing LOADSCRIPT command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -3774,8 +3774,8 @@ int previous_script_file_ccc(bool perform_check, unsigned int line_number, char 
 int include_script_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_data[length];
-  char leftover[length];
+  char raw_data[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing INCLUDE command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_data, leftover);
   if (scanline != 1)
@@ -3804,10 +3804,10 @@ int include_script_ccc(bool perform_check, unsigned int line_number, char *rest_
 int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   unsigned int length = strlen(rest_of_line);
-  char raw_scratchpad_offset[length];
-  char raw_variable_name[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_scratchpad_offset[length + 1];
+  char raw_variable_name[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int scratchpad_offset;
   char extracted_var[MAX_LINE_LENGTH];
@@ -3994,9 +3994,9 @@ static int read_setbuffer_line_ccc(bool command_line, unsigned int current_line,
 int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing WORDFLIPBUFFER command on line";
@@ -4059,9 +4059,9 @@ int wordflip_buffer_ccc(bool perform_check, unsigned int line_number, char *rest
 int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing WORDFLIPSCRATCHPAD command on line";
@@ -4125,8 +4125,8 @@ int wordflip_scratchpad_ccc(bool perform_check, unsigned int line_number, char *
 int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char leftover[length + 1];
   char *file_name;
   char *error_string = "Error processing GETFILESIZE command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_file_name, leftover);
@@ -4203,11 +4203,11 @@ int get_file_size_ccc(bool perform_check, unsigned int line_number, char *rest_o
 int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned long long buffer_offset;
@@ -4348,11 +4348,11 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
 int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned int buffer_offset;
@@ -4505,8 +4505,8 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
 int delete_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char leftover[length + 1];
   char *file_name;
   char *error_string = "Error processing DELETEFILE command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_file_name, leftover);
@@ -4557,8 +4557,8 @@ int delete_file_ccc(bool perform_check, unsigned int line_number, char *rest_of_
 int call_command_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_command[length];
-  char leftover[length];
+  char raw_command[length + 1];
+  char leftover[length + 1];
   char *command;
   char *error_string = "Error processing CALLCOMMAND command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_command, leftover);
@@ -4608,8 +4608,8 @@ int call_command_ccc(bool perform_check, unsigned int line_number, char *rest_of
 int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_variable_name[length];
-  char leftover[length];
+  char raw_variable_name[length + 1];
+  char leftover[length + 1];
   char *error_string = "Error processing USERINPUT command on line";
   int scanline = sscanf(rest_of_line, "%s %[^\n]", raw_variable_name, leftover);
   if (scanline != 1)
@@ -4684,7 +4684,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
 int setmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
+  char raw_offset[length + 1];
   char leftover[MAX_LINE_LENGTH];
   char *endptr;
   unsigned long long offset;
@@ -4871,8 +4871,8 @@ int endmainscratchpad_ccc(bool perform_check, unsigned int line_number, char *re
 int change_main_scratchpad_size_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_size[length];
-  char leftover[length];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long size;
   bool size_is_variable = false;
@@ -4921,10 +4921,10 @@ int change_main_scratchpad_size_ccc(bool perform_check, unsigned int line_number
 int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_buffer_offset[length];
-  char raw_scratch_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_buffer_offset[length + 1];
+  char raw_scratch_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int buffer_offset;
   unsigned int scratch_offset;
@@ -5029,10 +5029,10 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
 int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_buffer_offset[length];
-  char raw_scratch_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_buffer_offset[length + 1];
+  char raw_scratch_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int buffer_offset;
   unsigned int scratch_offset;
@@ -5184,9 +5184,9 @@ int variable_check_ccc(bool perform_check, unsigned int line_number, char *rest_
 int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing PRINTSCRATCHPAD command on line";
@@ -5621,7 +5621,7 @@ int elsestate_ccc(bool perform_check, unsigned int line_number, char *rest_of_li
   char *error_string = "Error processing ELSE command on line";
   int length = strlen(rest_of_line);
   char temp[length + 1];
-  char leftover[length];
+  char leftover[length + 1];
   int scanline = sscanf(rest_of_line, "%s %[^\n]", temp, leftover);
   if (scanline > 0)
   {
@@ -5966,10 +5966,10 @@ int dobreak_ccc(bool perform_check, unsigned int line_number)
 int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   unsigned int length = strlen(rest_of_line);
-  char raw_usbbuffer_offset[length];
-  char raw_variable_name[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_usbbuffer_offset[length + 1];
+  char raw_variable_name[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int usbbuffer_offset;
   char extracted_var[MAX_LINE_LENGTH];
@@ -6085,9 +6085,9 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
 int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing WORDFLIPUSBBUFFER command on line";
@@ -6149,11 +6149,11 @@ int wordflip_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *r
 int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned long long buffer_offset;
@@ -6292,11 +6292,11 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
 int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_file_name[length];
-  char raw_buffer_offset[length];
-  char raw_file_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_file_name[length + 1];
+  char raw_buffer_offset[length + 1];
+  char raw_file_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *file_name;
   unsigned int buffer_offset;
@@ -6447,9 +6447,9 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
 int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   unsigned int offset;
   unsigned int size;
   char *error_string = "Error processing PRINTUSBBUFFER command on line";
@@ -6541,7 +6541,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
 int set_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_offset[length];
+  char raw_offset[length + 1];
   char leftover[MAX_LINE_LENGTH];
   char *endptr;
   unsigned long long offset;
@@ -6727,8 +6727,8 @@ int end_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_o
 int change_usbbuffer_size_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_size[length];
-  char leftover[length];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long size;
   bool size_is_variable = false;
@@ -6777,10 +6777,10 @@ int change_usbbuffer_size_ccc(bool perform_check, unsigned int line_number, char
 int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_buffer_offset[length];
-  char raw_usb_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_buffer_offset[length + 1];
+  char raw_usb_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int buffer_offset;
   unsigned int usb_offset;
@@ -6885,10 +6885,10 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
 int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_buffer_offset[length];
-  char raw_usb_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_buffer_offset[length + 1];
+  char raw_usb_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int buffer_offset;
   unsigned int usb_offset;
@@ -6992,10 +6992,10 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
 int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_usb_offset[length];
-  char raw_scratch_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_usb_offset[length + 1];
+  char raw_scratch_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int usb_offset;
   unsigned int scratch_offset;
@@ -7099,10 +7099,10 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
 int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_usb_offset[length];
-  char raw_scratch_offset[length];
-  char raw_size[length];
-  char leftover[length];
+  char raw_usb_offset[length + 1];
+  char raw_scratch_offset[length + 1];
+  char raw_size[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned int usb_offset;
   unsigned int scratch_offset;
@@ -7207,8 +7207,8 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
 int usbtimeout_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
 {
   int length = strlen(rest_of_line);
-  char raw_time[length];
-  char leftover[length];
+  char raw_time[length + 1];
+  char leftover[length + 1];
   char *endptr;
   unsigned long long time;
   char *error_string = "Error processing USBTIMEOUT command on line";
@@ -7250,8 +7250,8 @@ int send_usb_control_msg_ccc(bool perform_check, unsigned int line_number, char 
 {
   int cmd_length = 4;
   int length = strlen(rest_of_line);
-  char raw_b[cmd_length][length];
-  char leftover[length];
+  char raw_b[cmd_length][length + 1];
+  char leftover[length + 1];
   char *endptr;
   char *error_string = "Error processing SENDUSBCONTROLMSG command on line";
 
