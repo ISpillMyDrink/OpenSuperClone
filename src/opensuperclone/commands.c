@@ -11,6 +11,13 @@
 
 #include <limits.h>
 
+// Check that a transfer of size bytes starting at offset stays inside limit.
+// Written subtractively so that offset + size cannot wrap around.
+static bool buffer_range_valid_ccc(unsigned long long offset, unsigned long long size, unsigned long long limit)
+{
+  return offset <= limit && size <= limit - offset;
+}
+
 static int parse_unsigned_int_ccc(const char *text, unsigned int *value);
 static int parse_hex_offset_ccc(const char *text, unsigned int *value);
 static int read_setbuffer_line_ccc(bool command_line, unsigned int current_line, const char *prompt, char *line, int line_size,
@@ -1230,7 +1237,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
         return (-1);
       }
     }
-    if (!perform_check && size + offset > ccc_main_buffer_size_ccc)
+    if (!perform_check && !buffer_range_valid_ccc(offset, size, ccc_main_buffer_size_ccc))
     {
       fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1312,7 +1319,7 @@ int sets_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
         return (-1);
       }
     }
-    if (!perform_check && size + offset > ccc_main_scratchpad_size_ccc)
+    if (!perform_check && !buffer_range_valid_ccc(offset, size, ccc_main_scratchpad_size_ccc))
     {
       fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1523,7 +1530,7 @@ int printbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       return (-1);
     }
   }
-  if (!perform_check && size + offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to print past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1849,7 +1856,7 @@ int print_sense_buffer_ccc(bool perform_check, unsigned int line_number, char *r
       return (-1);
     }
   }
-  if (size + offset > sensebuffer_size_ccc)
+  if (!buffer_range_valid_ccc(offset, size, sensebuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to print past end of sensebuffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -1987,7 +1994,7 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -2132,7 +2139,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -2153,7 +2160,7 @@ int read_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       return (-1);
     }
     long long file_size = ftello(readfile);
-    if (size + buffer_offset > file_size)
+    if (!buffer_range_valid_ccc(buffer_offset, size, (unsigned long long)file_size))
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -3199,7 +3206,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
     return (-1);
   }
 
-  if (size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to write past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -3894,7 +3901,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
     return (-1);
   }
 
-  if (size + scratchpad_offset > ccc_main_scratchpad_size_ccc)
+  if (!buffer_range_valid_ccc(scratchpad_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to write past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4303,7 +4310,7 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4448,7 +4455,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4469,7 +4476,7 @@ int read_scratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
       return (-1);
     }
     long long file_size = ftello(readfile);
-    if (size + buffer_offset > file_size)
+    if (!buffer_range_valid_ccc(buffer_offset, size, (unsigned long long)file_size))
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -4997,13 +5004,13 @@ int copy_buffer_to_scratch_ccc(bool perform_check, unsigned int line_number, cha
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(scratch_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -5105,14 +5112,14 @@ int copy_scratch_to_buffer_ccc(bool perform_check, unsigned int line_number, cha
     }
   }
 
-  if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(scratch_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -5236,7 +5243,7 @@ int printscratchpad_ccc(bool perform_check, unsigned int line_number, char *rest
       return (-1);
     }
   }
-  if (!perform_check && size + offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to print past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6058,7 +6065,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
     return (-1);
   }
 
-  if (size + usbbuffer_offset > ccc_main_usbbuffer_size_ccc)
+  if (!buffer_range_valid_ccc(usbbuffer_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to write past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6251,7 +6258,7 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6394,7 +6401,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6415,7 +6422,7 @@ int read_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest_
       return (-1);
     }
     long long file_size = ftello(readfile);
-    if (size + buffer_offset > file_size)
+    if (!buffer_range_valid_ccc(buffer_offset, size, (unsigned long long)file_size))
     {
       fprintf(stderr, "ERROR: Attempt to read past end of file,\n");
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6502,7 +6509,7 @@ int print_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
       return (-1);
     }
   }
-  if (!perform_check && size + offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to print past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6856,14 +6863,14 @@ int copy_usbbuffer_to_buffer_ccc(bool perform_check, unsigned int line_number, c
     }
   }
 
-  if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(usb_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -6964,13 +6971,13 @@ int copy_buffer_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, c
     }
   }
 
-  if (!perform_check && size + buffer_offset > ccc_main_buffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(buffer_offset, size, ccc_main_buffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(usb_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -7071,13 +7078,13 @@ int copy_usbbuffer_to_scratch_ccc(bool perform_check, unsigned int line_number, 
     }
   }
 
-  if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(usb_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
-  if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(scratch_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
@@ -7178,14 +7185,14 @@ int copy_scratch_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, 
     }
   }
 
-  if (!perform_check && size + scratch_offset > ccc_main_scratchpad_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(scratch_offset, size, ccc_main_scratchpad_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of scratchpad,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
     return (-1);
   }
 
-  if (!perform_check && size + usb_offset > ccc_main_usbbuffer_size_ccc)
+  if (!perform_check && !buffer_range_valid_ccc(usb_offset, size, ccc_main_usbbuffer_size_ccc))
   {
     fprintf(stderr, "ERROR: Attempt to copy past end of usb buffer,\n");
     fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
