@@ -4656,6 +4656,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
     {
       fprintf(stdout, "> ");
       char input_text[MAX_VARIABLE_LENGTH];
+      input_text[0] = '\0';
       fflush(stdout);
       if (fgets(input_text, sizeof input_text, stdin) != NULL)
       {
@@ -4665,7 +4666,7 @@ int user_input_ccc(bool perform_check, unsigned int line_number, char *rest_of_l
           *newline = '\0'; // overwrite trailing newline
         }
       }
-      strcpy(string_variable_pointer_ccc[var_num], input_text);
+      snprintf(string_variable_pointer_ccc[var_num], MAX_VARIABLE_LENGTH, "%s", input_text);
       fprintf(stdout, "%s\n", input_text);
     }
   }
@@ -5317,16 +5318,16 @@ int gosub_ccc(bool perform_check, unsigned int line_number, char *rest_of_line)
   // if not checking then set the new line number
   if (!perform_check)
   {
-    ccc_subroutine_stack_ccc[subroutine_stack_counter_ccc] = line_number;
-    subroutine_while_stack_ccc[subroutine_stack_counter_ccc] = while_stack_counter_ccc;
-    subroutine_endif_stack_ccc[subroutine_stack_counter_ccc] = endif_stack_counter_ccc;
-    subroutine_stack_counter_ccc++;
-    if (subroutine_stack_counter_ccc > MAX_SUB_LEVEL)
+    if (subroutine_stack_counter_ccc >= MAX_SUB_LEVEL)
     {
       fprintf(stderr, "\nError: Subroutine level exceeded maximum of %d,\n", MAX_SUB_LEVEL);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    ccc_subroutine_stack_ccc[subroutine_stack_counter_ccc] = line_number;
+    subroutine_while_stack_ccc[subroutine_stack_counter_ccc] = while_stack_counter_ccc;
+    subroutine_endif_stack_ccc[subroutine_stack_counter_ccc] = endif_stack_counter_ccc;
+    subroutine_stack_counter_ccc++;
     return (new_line);
   }
 
@@ -5562,16 +5563,16 @@ int ifstate_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
 
   if (!perform_check)
   {
-    ccc_endif_stack_ccc[endif_stack_counter_ccc] = matching_endif;
-    // fprintf (stdout, "endifstack=%d counter=%d\n", ccc_endif_stack_ccc[endif_stack_counter_ccc], endif_stack_counter_ccc);
-    statement_condition_ccc[endif_stack_counter_ccc] = false;
-    endif_stack_counter_ccc++;
-    if (endif_stack_counter_ccc > MAX_ENDIF_LEVEL)
+    if (endif_stack_counter_ccc >= MAX_ENDIF_LEVEL)
     {
       fprintf(stderr, "\nError: IF statement level exceeded maximum of %d,\n", MAX_ENDIF_LEVEL);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    ccc_endif_stack_ccc[endif_stack_counter_ccc] = matching_endif;
+    // fprintf (stdout, "endifstack=%d counter=%d\n", ccc_endif_stack_ccc[endif_stack_counter_ccc], endif_stack_counter_ccc);
+    statement_condition_ccc[endif_stack_counter_ccc] = false;
+    endif_stack_counter_ccc++;
 
     if (statement == 0)
     {
@@ -5869,20 +5870,17 @@ int dowhile_ccc(bool perform_check, unsigned int line_number, char *rest_of_line
 
   if (!perform_check)
   {
-    done_stack_ccc[while_stack_counter_ccc] = matching_done;
-    ccc_while_stack_ccc[while_stack_counter_ccc] = line_number;
-    while_condition_ccc[while_stack_counter_ccc] = false;
-    while_endif_stack_ccc[while_stack_counter_ccc] = endif_stack_counter_ccc;
-    while_stack_counter_ccc++;
-
-    // fprintf (stdout, "while count=%d condition=%d whilestack=%d donestack=%d\n", while_stack_counter_ccc-1, while_condition_ccc[while_stack_counter_ccc-1], ccc_while_stack_ccc[while_stack_counter_ccc-1]+1, done_stack_ccc[while_stack_counter_ccc-1]+1);
-
-    if (while_stack_counter_ccc > MAX_WHILE_LEVEL)
+    if (while_stack_counter_ccc >= MAX_WHILE_LEVEL)
     {
       fprintf(stderr, "\nError: WHILE statement level exceeded maximum of %d,\n", MAX_WHILE_LEVEL);
       fprintf(stderr, "%s %u.\n", error_string, line_number - 1);
       return (-1);
     }
+    done_stack_ccc[while_stack_counter_ccc] = matching_done;
+    ccc_while_stack_ccc[while_stack_counter_ccc] = line_number;
+    while_condition_ccc[while_stack_counter_ccc] = false;
+    while_endif_stack_ccc[while_stack_counter_ccc] = endif_stack_counter_ccc;
+    while_stack_counter_ccc++;
 
     if (statement == 0)
     {
@@ -7455,7 +7453,7 @@ int serial_send_ccc(bool perform_check, unsigned int line_number, char *rest_of_
       int slen = len < 80 ? len : 80;
       char printable[128];
       int j = 0;
-      for (i = 0; i < slen && j < (int)sizeof(printable) - 1; i++)
+      for (i = 0; i < slen && j < (int)sizeof(printable) - 2; i++)
       {
         if (p[i] == '\n')
         {
