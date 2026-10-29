@@ -3542,6 +3542,12 @@ int hba_reset_ccc(void)
         return (-1);
       }
       FILE *hba_debug_reset_file = fopen("hba_reset_debug.log", "w");
+      if (hba_debug_reset_file == NULL)
+      {
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Cannot open hba_reset_debug.log for writing (%s).\n", strerror(errno));
+        message_error_ccc(tempmessage_ccc);
+        return (-1);
+      }
       fprintf(hba_debug_reset_file, "%s %s hba debug reset file created at ", title_ccc, version_number_ccc);
       time_t mytime;
       mytime = time(NULL);
@@ -4375,6 +4381,11 @@ int dump_hba_port_fis_command_data_ccc(unsigned long long hba_address, unsigned 
 int hba_test_ccc(void)
 {
   FILE *hba_debug_file = fopen("hba_debug.log", "w");
+  if (hba_debug_file == NULL)
+  {
+    fprintf(stderr, "Cannot open hba_debug.log for writing (%s).\n", strerror(errno));
+    return (-1);
+  }
   fprintf(hba_debug_file, "%s %s hba debug file created at ", title_ccc, version_number_ccc);
   time_t mytime;
   mytime = time(NULL);

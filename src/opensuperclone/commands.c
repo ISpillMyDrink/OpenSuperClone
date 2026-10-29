@@ -2004,6 +2004,11 @@ int write_buffer_ccc(bool perform_check, unsigned int line_number, char *rest_of
   if (!perform_check)
   {
     FILE *createfile = fopen(file_name, "ab");
+    if (createfile == NULL)
+    {
+      fprintf(stderr, "Cannot open %s for writing (%s).\nAborting...\n", file_name, strerror(errno));
+      return (-1);
+    }
     fclose(createfile);
     FILE *writefile = fopen(file_name, "rb+");
     if (writefile == NULL)
@@ -4320,6 +4325,11 @@ int write_scratchpad_ccc(bool perform_check, unsigned int line_number, char *res
   if (!perform_check)
   {
     FILE *createfile = fopen(file_name, "ab");
+    if (createfile == NULL)
+    {
+      fprintf(stderr, "Cannot open %s for writing (%s).\nAborting...\n", file_name, strerror(errno));
+      return (-1);
+    }
     fclose(createfile);
     FILE *writefile = fopen(file_name, "rb+");
     if (writefile == NULL)
@@ -6266,6 +6276,11 @@ int write_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *rest
   if (!perform_check)
   {
     FILE *createfile = fopen(file_name, "ab");
+    if (createfile == NULL)
+    {
+      fprintf(stderr, "Cannot open %s for writing (%s).\nAborting...\n", file_name, strerror(errno));
+      return (-1);
+    }
     fclose(createfile);
     FILE *writefile = fopen(file_name, "rb+");
     if (writefile == NULL)

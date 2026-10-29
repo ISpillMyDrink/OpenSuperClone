@@ -491,6 +491,11 @@ int main(int argc, char **argv)
   int argcount;
   for (argcount = 0; argcount < argc; argcount++)
   {
+    size_t used = strlen(full_command_line_ccc);
+    if (used + strlen(argv[argcount]) + 2 > sizeof(full_command_line_ccc))
+    {
+      break;
+    }
     strcat(full_command_line_ccc, argv[argcount]);
     strcat(full_command_line_ccc, " ");
   }
@@ -2065,9 +2070,12 @@ int read_log_file_ccc(char *log_file)
             message_now_ccc(tempmessage_ccc);
             found_error = 1;
           }
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
-                   lstatus_ccc[i]); // debug
-          message_debug_ccc(tempmessage_ccc, DEBUG14);
+          if (i < log_rows_ccc)
+          {
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                     lstatus_ccc[i]); // debug
+            message_debug_ccc(tempmessage_ccc, DEBUG14);
+          }
           i++;
         }
       }
@@ -2407,7 +2415,15 @@ int read_log_file_ccc(char *log_file)
             }
             else if (strcmp(raw_command, "sectorsize") == 0)
             {
-              sector_size_ccc = strtoll(raw_data, NULL, 0);
+              long long parsed_sector_size = strtoll(raw_data, NULL, 0);
+              if (parsed_sector_size > 0)
+              {
+                sector_size_ccc = parsed_sector_size;
+              }
+              else
+              {
+                fprintf(stderr, "Error: Invalid sector size in log file, ignoring\n");
+              }
             }
             else if (strcmp(raw_command, "blockoffset") == 0)
             {
@@ -2708,6 +2724,11 @@ int read_log_file_ccc(char *log_file)
             }
             else
             {
+              if (analyze_data_ccc.slowsections + 8 > MAXANALYZESLOW)
+              {
+                logfile_variance_line = 0;
+                continue;
+              }
               int raw_low_1 = 0;
               int raw_high_1 = 0;
               int raw_low_2 = 0;
@@ -2785,6 +2806,11 @@ int read_log_file_ccc(char *log_file)
             }
             else
             {
+              if (analyze_data_ccc.sections >= MAXANALYZESECTIONS)
+              {
+                logfile_zone_line = 0;
+                continue;
+              }
               int raw_zone = 0;
               int raw_total = 0;
               int raw_good = 0;
@@ -2867,7 +2893,10 @@ int read_log_file_ccc(char *log_file)
     // if used up allocated memory then increase it
     if (i >= log_rows_ccc)
     {
-      increase_log_memory_ccc(1000);
+      if (increase_log_memory_ccc(1000) != 0)
+      {
+        found_error = 1;
+      }
     }
 
     if (found_error)
@@ -3015,9 +3044,12 @@ int read_domain_file_ccc(char *domain_file)
             message_now_ccc(tempmessage_ccc);
             found_error = -1;
           }
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
-                   lstatus_ccc[i]); // debug
-          message_debug_ccc(tempmessage_ccc, DEBUG14);
+          if (i < log_rows_ccc)
+          {
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                     lstatus_ccc[i]); // debug
+            message_debug_ccc(tempmessage_ccc, DEBUG14);
+          }
           i++;
         }
 
@@ -3124,9 +3156,12 @@ int read_domain_file_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
-                   lstatus_ccc[i]); // debug
-          message_debug_ccc(tempmessage_ccc, DEBUG14);
+          if (i < log_rows_ccc)
+          {
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                     lstatus_ccc[i]); // debug
+            message_debug_ccc(tempmessage_ccc, DEBUG14);
+          }
           i++;
         }
 
@@ -3524,9 +3559,12 @@ int read_ddrescue_log_ccc(char *log_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
-                   lstatus_ccc[i]); // debug
-          message_debug_ccc(tempmessage_ccc, DEBUG14);
+          if (i < log_rows_ccc)
+          {
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                     lstatus_ccc[i]); // debug
+            message_debug_ccc(tempmessage_ccc, DEBUG14);
+          }
           i++;
         }
       }
@@ -3723,9 +3761,12 @@ int read_ddrescue_domain_ccc(char *domain_file)
             // if only size did not align then do nothing as it was already cut by the divide
           }
 
-          snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
-                   lstatus_ccc[i]); // debug
-          message_debug_ccc(tempmessage_ccc, DEBUG14);
+          if (i < log_rows_ccc)
+          {
+            snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "%d=  %d  0x%08llx  0x%08llx  0x%08llx\n", real_line_number, i, lposition_ccc[i], lsize_ccc[i],
+                     lstatus_ccc[i]); // debug
+            message_debug_ccc(tempmessage_ccc, DEBUG14);
+          }
           i++;
         }
         found_current = 1;
@@ -3874,8 +3915,13 @@ int write_logfile_ccc(char *log_file, int time_sec)
 
     // write a temp logfile so the original still exists if system crashes during log write
     char tmp_logfile[1024];
-    strcpy(tmp_logfile, log_file);
-    strcat(tmp_logfile, ".tmp");
+    if (strlen(log_file) + sizeof(".tmp") > sizeof(tmp_logfile))
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Log file name is too long.\n");
+      message_error_ccc(tempmessage_ccc);
+      return (1);
+    }
+    snprintf(tmp_logfile, sizeof(tmp_logfile), "%s.tmp", log_file);
     FILE *writefile;
     writefile = fopen(tmp_logfile, "w");
     if (writefile == NULL)
@@ -4099,8 +4145,13 @@ int write_logfile_ccc(char *log_file, int time_sec)
     if (!no_log_backup_ccc && !disable_log_backup_ccc && (access(log_file, F_OK) != -1))
     {
       char backup_logfile[1024];
-      strcpy(backup_logfile, log_file);
-      strcat(backup_logfile, ".bak");
+      if (strlen(log_file) + sizeof(".bak") > sizeof(backup_logfile))
+      {
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Log file name is too long.\n");
+        message_error_ccc(tempmessage_ccc);
+        return (1);
+      }
+      snprintf(backup_logfile, sizeof(backup_logfile), "%s.bak", log_file);
       if (rename(log_file, backup_logfile) != 0)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
@@ -4167,8 +4218,13 @@ int write_domainfile_ccc(char *log_file, int time_sec)
 
     // write a temp logfile so the original still exists if system crashes during log write
     char tmp_logfile[1024];
-    strcpy(tmp_logfile, log_file);
-    strcat(tmp_logfile, ".tmp");
+    if (strlen(log_file) + sizeof(".tmp") > sizeof(tmp_logfile))
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Log file name is too long.\n");
+      message_error_ccc(tempmessage_ccc);
+      return (1);
+    }
+    snprintf(tmp_logfile, sizeof(tmp_logfile), "%s.tmp", log_file);
     FILE *writefile;
     writefile = fopen(tmp_logfile, "w");
     if (writefile == NULL)
@@ -4220,8 +4276,13 @@ int write_domainfile_ccc(char *log_file, int time_sec)
     if (!no_log_backup_ccc && (access(log_file, F_OK) != -1))
     {
       char backup_logfile[1024];
-      strcpy(backup_logfile, log_file);
-      strcat(backup_logfile, ".bak");
+      if (strlen(log_file) + sizeof(".bak") > sizeof(backup_logfile))
+      {
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Log file name is too long.\n");
+        message_error_ccc(tempmessage_ccc);
+        return (1);
+      }
+      snprintf(backup_logfile, sizeof(backup_logfile), "%s.bak", log_file);
       if (rename(log_file, backup_logfile) != 0)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Renaming %s to %s failed (%s).\n", log_file, backup_logfile, strerror(errno));
@@ -4708,6 +4769,12 @@ int complete_log_reset_ccc(void)
 
 int set_initial_data_from_log_ccc(int newproject)
 {
+  if (total_lines_ccc < 1)
+  {
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Error: No valid log lines to load\n");
+    message_error_ccc(tempmessage_ccc);
+    return (-1);
+  }
   start_position_ccc = lposition_ccc[0];
   end_position_ccc = lposition_ccc[total_lines_ccc - 1] + lsize_ccc[total_lines_ccc - 1];
   source_total_size_ccc = end_position_ccc - start_position_ccc;
@@ -10801,6 +10868,19 @@ int write_chunk_ccc(long long position, int size)
     memcpy(temp_buffer, ccc_buffer_ccc, main_buffer_size_bak);
     sector_size_ccc = sector_size_ccc + output_sector_size_adjustment_ccc;
     ccc_main_buffer_size_ccc = (unsigned long long)size * sector_size_ccc;
+    if (ccc_main_buffer_size_ccc > (unsigned long long)main_buffer_size_bak || ccc_main_buffer_size_ccc > real_buffer_size_ccc)
+    {
+      free(temp_buffer);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Unable to write to destination"));
+      message_error_ccc(tempmessage_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "\nsector size adjustment is too large");
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      sector_size_ccc = sector_size_bak;
+      ccc_main_buffer_size_ccc = main_buffer_size_bak;
+      return OUTPUT_DEVICE_ERROR_RETURN_CODE;
+    }
     memset(ccc_buffer_ccc, 0, ccc_main_buffer_size_ccc);
     int copy_size = sector_size_bak;
     if (sector_size_ccc < sector_size_bak)
@@ -13229,11 +13309,19 @@ int open_target_destination_ccc(void)
       strcpy(command, "mount | grep ' / '|cut -d' ' -f 1");
       FILE *fp = popen(command, "r");
       char line[255];
-      while (fgets(line, sizeof line, fp))
+      line[0] = '\0';
+      if (fp != NULL)
       {
-        break;
+        while (fgets(line, sizeof line, fp))
+        {
+          break;
+        }
+        pclose(fp);
       }
-      pclose(fp);
+      else
+      {
+        fprintf(stderr, "Error running command '%s' (%s)\n", command, strerror(errno));
+      }
       if (strncmp(disk_2_ccc, line, 8) == 0)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Destination is detected to be the host OS drive"));
@@ -13361,11 +13449,19 @@ int open_source_disk_ccc(void)
       snprintf(command, sizeof(command), "mount | grep %s", disk_1_ccc);
       FILE *fp = popen(command, "r");
       char line[255];
-      while (fgets(line, sizeof line, fp))
+      line[0] = '\0';
+      if (fp != NULL)
       {
-        break;
+        while (fgets(line, sizeof line, fp))
+        {
+          break;
+        }
+        pclose(fp);
       }
-      pclose(fp);
+      else
+      {
+        fprintf(stderr, "Error running command '%s' (%s)\n", command, strerror(errno));
+      }
       if (strncmp(disk_1_ccc, line, 8) == 0)
       {
         snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Source is detected to be mounted"));
@@ -14084,11 +14180,19 @@ int process_source_ccc(void)
     FILE *fp = popen(command, "r");
     int cols = 255;
     char line[cols];
-    while (fgets(line, sizeof line, fp))
+    line[0] = '\0';
+    if (fp != NULL)
     {
-      break;
+      while (fgets(line, sizeof line, fp))
+      {
+        break;
+      }
+      pclose(fp);
     }
-    pclose(fp);
+    else
+    {
+      fprintf(stderr, "Error running command '%s' (%s)\n", command, strerror(errno));
+    }
     char name[cols];
     char model[cols];
     char raw_size[cols];
@@ -17161,6 +17265,13 @@ int rebuild_assist_map_heads_ccc(void)
     }
     fprintf(stdout, "working heads = %d\n", heads_in_pattern);
     fprintf(headmap_debug_file, "working heads = %d\n", heads_in_pattern);
+
+    if (heads_in_pattern < 1)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "unable to determine heads in pattern\n");
+      message_error_ccc(tempmessage_ccc);
+      return (-1);
+    }
 
     // check that the pattern repeats
     int pattern_fail = 0;
