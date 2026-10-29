@@ -2137,7 +2137,7 @@ long long math_ccc(char *raw_value)
     if (part1[0] == '$')
     {
       char var_name[MAX_VARIABLE_NAME_LENGTH];
-      sscanf(part1 + 1, "%s", var_name);
+      sscanf(part1 + 1, "%63s", var_name);
       return_value_ccc = check_variable_ccc(var_name);
       if (return_value_ccc < 1)
       {
@@ -2177,7 +2177,7 @@ long long math_ccc(char *raw_value)
     if (part1[0] == '$')
     {
       char var_name[MAX_VARIABLE_NAME_LENGTH];
-      sscanf(part1 + 1, "%s", var_name);
+      sscanf(part1 + 1, "%63s", var_name);
       return_value_ccc = check_variable_ccc(var_name);
       if (return_value_ccc < 1)
       {
@@ -2201,7 +2201,7 @@ long long math_ccc(char *raw_value)
         if (part2[0] == '$')
         {
           char var_name[MAX_VARIABLE_NAME_LENGTH];
-          sscanf(part2 + 1, "%s", var_name);
+          sscanf(part2 + 1, "%63s", var_name);
           return_value_ccc = check_variable_ccc(var_name);
           if (return_value_ccc < 1)
           {
@@ -2301,7 +2301,7 @@ long long math_ccc(char *raw_value)
     if (part1[0] == '$')
     {
       char var_name[MAX_VARIABLE_NAME_LENGTH];
-      sscanf(part1 + 1, "%s", var_name);
+      sscanf(part1 + 1, "%63s", var_name);
       return_value_ccc = check_variable_ccc(var_name);
       if (return_value_ccc < 1)
       {
@@ -2335,7 +2335,7 @@ long long math_ccc(char *raw_value)
     if (part3[0] == '$')
     {
       char var_name[MAX_VARIABLE_NAME_LENGTH];
-      sscanf(part3 + 1, "%s", var_name);
+      sscanf(part3 + 1, "%63s", var_name);
       return_value_ccc = check_variable_ccc(var_name);
       if (return_value_ccc < 1)
       {

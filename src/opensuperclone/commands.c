@@ -3177,7 +3177,7 @@ int string_to_buffer_ccc(bool perform_check, unsigned int line_number, char *res
   if (raw_variable_name[0] == '$')
   {
     char var_name[MAX_VARIABLE_NAME_LENGTH];
-    sscanf(raw_variable_name + 1, "%s", var_name);
+    sscanf(raw_variable_name + 1, "%63s", var_name);
     return_value_ccc = check_variable_ccc(var_name);
     if (return_value_ccc < 1)
     {
@@ -3872,7 +3872,7 @@ int string_to_scratchpad_ccc(bool perform_check, unsigned int line_number, char 
   if (raw_variable_name[0] == '$')
   {
     char var_name[MAX_VARIABLE_NAME_LENGTH];
-    sscanf(raw_variable_name + 1, "%s", var_name);
+    sscanf(raw_variable_name + 1, "%63s", var_name);
     return_value_ccc = check_variable_ccc(var_name);
     if (return_value_ccc < 1)
     {
@@ -6036,7 +6036,7 @@ int string_to_usbbuffer_ccc(bool perform_check, unsigned int line_number, char *
   if (raw_variable_name[0] == '$')
   {
     char var_name[MAX_VARIABLE_NAME_LENGTH];
-    sscanf(raw_variable_name + 1, "%s", var_name);
+    sscanf(raw_variable_name + 1, "%63s", var_name);
     return_value_ccc = check_variable_ccc(var_name);
     if (return_value_ccc < 1)
     {
