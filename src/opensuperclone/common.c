@@ -682,6 +682,7 @@ int get_table_physical_memory_location_ccc(void)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
+    fclose(pagemap_ccc);
     return -1;
   }
 
@@ -712,7 +713,7 @@ int get_table_physical_memory_location_ccc(void)
         fprintf(stdout, "table_physical_address=0x%llx\n", table_physical_address_ccc);
       }
 #endif
-      if (table_physical_address_ccc > 0xffffffff)
+      if (table_physical_address_ccc == 0 || table_physical_address_ccc > 0xffffffff)
       {
 #ifdef DEBUG
         if (debug_ccc & DEBUG34)
@@ -825,6 +826,7 @@ int get_command_list_physical_memory_location_ccc(void)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
+    fclose(pagemap_ccc);
     return -1;
   }
 
@@ -855,7 +857,7 @@ int get_command_list_physical_memory_location_ccc(void)
         fprintf(stdout, "command_list_physical_address=0x%llx\n", command_list_physical_address_ccc);
       }
 #endif
-      if (command_list_physical_address_ccc > 0xffffffff)
+      if (command_list_physical_address_ccc == 0 || command_list_physical_address_ccc > 0xffffffff)
       {
 #ifdef DEBUG
         if (debug_ccc & DEBUG34)
@@ -968,6 +970,7 @@ int get_fis_physical_memory_location_ccc(void)
   {
     snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
     message_now_ccc(tempmessage_ccc);
+    fclose(pagemap_ccc);
     return -1;
   }
 
@@ -998,7 +1001,7 @@ int get_fis_physical_memory_location_ccc(void)
         fprintf(stdout, "fis_physical_address=0x%llx\n", fis_physical_address_ccc);
       }
 #endif
-      if (fis_physical_address_ccc > 0xffffffff)
+      if (fis_physical_address_ccc == 0 || fis_physical_address_ccc > 0xffffffff)
       {
 #ifdef DEBUG
         if (debug_ccc & DEBUG34)
@@ -1091,6 +1094,7 @@ int get_buffer_physical_memory_locations_ccc(void)
     {
       snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, "Failed to do fseek! (%s)", strerror(errno));
       message_now_ccc(tempmessage_ccc);
+      fclose(pagemap_ccc);
       return -1;
     }
 
@@ -1124,7 +1128,8 @@ int get_buffer_physical_memory_locations_ccc(void)
           fprintf(stdout, "buffer_physical_address[%d]=0x%llx\n", count, buffer_physical_address_ccc[count]);
         }
 #endif
-        if (buffer_physical_address_ccc[count] > 0xffffffff && count < (int)(max_dma_size_ccc / pagesize_ccc))
+        if (buffer_physical_address_ccc[count] == 0 ||
+            (buffer_physical_address_ccc[count] > 0xffffffff && count < (int)(max_dma_size_ccc / pagesize_ccc)))
         {
 #ifdef DEBUG
           if (debug_ccc & DEBUG34)
