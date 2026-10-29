@@ -6413,6 +6413,11 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
     int fixed_method = 1;
     if (fixed_method)
     {
+      if (count < 6)
+      {
+        fprintf(stderr, "Not enough HBA resource entries for %s\n", bus);
+        return (0);
+      }
       potential_hba_start = start[5];
       potential_hba_end = end[5];
     }
@@ -6491,6 +6496,11 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
       int possible_device = ports_implemented & 1;
       if (possible_device)
       {
+        if (device_count_ccc >= MAX_DEVICES)
+        {
+          fprintf(stderr, "Maximum number of devices reached, ignoring remaining ports\n");
+          break;
+        }
         get_device_information_ccc(driver, bus, i, 0, device_count_ccc);
         strcpy(device_driver_ccc[device_count_ccc], driver);
         strcpy(device_bus_ccc[device_count_ccc], bus);
@@ -6542,6 +6552,11 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
     int fixed_method = 1;
     if (fixed_method)
     {
+      if (count < 5)
+      {
+        fprintf(stderr, "Not enough IDE resource entries for %s\n", bus);
+        return (0);
+      }
       potential_chan0_reg = start[0];
       potential_chan0_con = start[1];
       potential_chan1_reg = start[2];
@@ -6613,6 +6628,15 @@ int process_resources_ccc(unsigned long long *start, unsigned long long *end, un
       else
       {
         // fprintf (stdout, "fail5\n");
+        success = 0;
+      }
+    }
+
+    if (success)
+    {
+      if (device_count_ccc + 4 > MAX_DEVICES)
+      {
+        fprintf(stderr, "Maximum number of devices reached, ignoring IDE controller %s\n", bus);
         success = 0;
       }
     }
@@ -8435,6 +8459,11 @@ int choose_device_ccc(void)
     else
     {
       choice = new_source_ccc + 1;
+      if (choice < 1 || choice > device_count_ccc)
+      {
+        fprintf(stderr, "Error! Choice %d is out of range.\n", choice);
+        return (-1);
+      }
     }
 
     if (choice == -1)
@@ -8461,6 +8490,11 @@ int choose_device_ccc(void)
     strcpy(current_source_serial_ccc, serial_ccc[i]);
     current_device_type_ccc = device_type_ccc[i];
     disk_1_ccc = malloc(sizeof device_reference_ccc[i]);
+    if (disk_1_ccc == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return (-1);
+    }
     memcpy(disk_1_ccc, device_reference_ccc[i], sizeof device_reference_ccc[i]);
     if (drive_bytes_per_sector_ccc[i] > 0)
     {
@@ -8567,6 +8601,11 @@ int choose_device_ccc(void)
     else
     {
       choice = new_source_ccc + 1;
+      if (choice < 1 || choice > device_count_ccc)
+      {
+        fprintf(stderr, "Error! Choice %d is out of range.\n", choice);
+        return (-1);
+      }
     }
 
     if (choice == -1)
@@ -8592,6 +8631,11 @@ int choose_device_ccc(void)
     strcpy(current_source_serial_ccc, serial_ccc[i]);
     current_device_type_ccc = device_type_ccc[i];
     disk_1_ccc = malloc(sizeof device_reference_ccc[i]);
+    if (disk_1_ccc == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return (-1);
+    }
     memcpy(disk_1_ccc, device_reference_ccc[i], sizeof device_reference_ccc[i]);
     if (drive_bytes_per_sector_ccc[i] > 0)
     {
@@ -8669,6 +8713,11 @@ int choose_device_ccc(void)
     else
     {
       choice = new_source_ccc + 1;
+      if (choice < 1 || choice > device_count_ccc)
+      {
+        fprintf(stderr, "Error! Choice %d is out of range.\n", choice);
+        return (-1);
+      }
     }
 
     if (choice == -1)
@@ -8686,6 +8735,11 @@ int choose_device_ccc(void)
     check_choice = i;
     strcpy(check_serial, serial_ccc[i]);
     disk_1_ccc = malloc(sizeof drive_list_ccc[i]);
+    if (disk_1_ccc == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return (-1);
+    }
     memcpy(disk_1_ccc, drive_list_ccc[i], sizeof drive_list_ccc[i]);
     strcpy(current_source_model_ccc, model_ccc[i]);
     strcpy(current_source_serial_ccc, serial_ccc[i]);
@@ -8715,7 +8769,7 @@ int choose_device_ccc(void)
       // if odd
       if (device_select_ccc[check_choice])
       {
-        if (device_present_ccc[check_choice - 1] || device_visable_ccc[check_choice - 1])
+        if (check_choice > 0 && (device_present_ccc[check_choice - 1] || device_visable_ccc[check_choice - 1]))
         {
           same_controller = 1;
         }
@@ -8723,7 +8777,7 @@ int choose_device_ccc(void)
       // if even
       else
       {
-        if (device_present_ccc[check_choice + 1] || device_visable_ccc[check_choice + 1])
+        if (check_choice + 1 < MAX_DEVICES && (device_present_ccc[check_choice + 1] || device_visable_ccc[check_choice + 1]))
         {
           same_controller = 1;
         }
@@ -9169,6 +9223,7 @@ int choose_target_ccc(void)
   {
     while (keeptrying)
     {
+      choice = -1;
       strcpy(raw_value, "");
       int i;
       fprintf(stdout, "\nQ) Quit\n");
@@ -9205,7 +9260,14 @@ int choose_target_ccc(void)
         }
         else if (strcasecmp(raw_value, "N") == 0)
         {
-          disk_2_ccc = "/dev/null";
+          free(disk_2_ccc);
+          disk_2_ccc = malloc(sizeof input_text);
+          if (disk_2_ccc == NULL)
+          {
+            fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+            return (-1);
+          }
+          snprintf(disk_2_ccc, sizeof input_text, "/dev/null");
           break;
         }
         else if (strcasecmp(raw_value, "I") == 0)
@@ -9214,7 +9276,13 @@ int choose_target_ccc(void)
           fflush(stdout);
           if (fgets(input_text, sizeof input_text, stdin) != NULL)
           {
+            free(disk_2_ccc);
             disk_2_ccc = malloc(sizeof input_text);
+            if (disk_2_ccc == NULL)
+            {
+              fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+              return (-1);
+            }
             memset(disk_2_ccc, 0, sizeof input_text);
             sscanf(input_text, "%[^\n]", disk_2_ccc);
           }
@@ -9243,6 +9311,11 @@ int choose_target_ccc(void)
   else
   {
     choice = new_destination_ccc + 1;
+    if (choice < 1 || choice > device_count_ccc)
+    {
+      fprintf(stderr, "Error! Choice %d is out of range.\n", choice);
+      return (-1);
+    }
   }
 
   int i = choice - 1;
@@ -9255,6 +9328,11 @@ int choose_target_ccc(void)
   {
     free(disk_2_ccc);
     disk_2_ccc = malloc(sizeof drive_list_ccc[i]);
+    if (disk_2_ccc == NULL)
+    {
+      fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+      return (-1);
+    }
     memcpy(disk_2_ccc, drive_list_ccc[i], sizeof drive_list_ccc[i]);
     strcpy(current_destination_model_ccc, model_ccc[i]);
     strcpy(current_destination_serial_ccc, serial_ccc[i]);
@@ -10302,6 +10380,11 @@ int read_ncq_error_log_ccc(void)
 {
   void *temp_buffer;
   temp_buffer = malloc(ccc_main_buffer_size_ccc);
+  if (temp_buffer == NULL)
+  {
+    fprintf(stderr, "Error allocating memory (%s)\n", strerror(errno));
+    return (-1);
+  }
   memcpy(temp_buffer, ccc_buffer_ccc, ccc_main_buffer_size_ccc);
   unsigned long long ccc_main_buffer_size_bak = ccc_main_buffer_size_ccc;
   ccc_main_buffer_size_ccc = 512;
@@ -10445,8 +10528,14 @@ int read_rebuild_assist_log_ccc(void)
 
   unsigned char rebuild_assist_buffer[LOG_PAGE_SIZE];
   memcpy(&rebuild_assist_buffer, ccc_buffer_ccc, LOG_PAGE_SIZE);
+  unsigned int rebuild_assist_length = rebuild_assist_buffer[7];
+  if (rebuild_assist_length > REBUILD_ASSIST_FIELD_LENGTH)
+  {
+    fprintf(stderr, "Rebuild assist log length %u exceeds maximum, limiting to %u\n", rebuild_assist_length, REBUILD_ASSIST_FIELD_LENGTH);
+    rebuild_assist_length = REBUILD_ASSIST_FIELD_LENGTH;
+  }
   rebuild_assist_log_data_ccc.flags = rebuild_assist_buffer[0];
-  rebuild_assist_log_data_ccc.length = rebuild_assist_buffer[7];
+  rebuild_assist_log_data_ccc.length = rebuild_assist_length;
   memset(rebuild_assist_log_data_ccc.mask, 0, sizeof(rebuild_assist_log_data_ccc.mask));
   memset(rebuild_assist_log_data_ccc.disabled, 0, sizeof(rebuild_assist_log_data_ccc.disabled));
   int i;
