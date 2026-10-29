@@ -1284,7 +1284,7 @@ void get_data_dump_filename_ccc(void)
     char *filename;
     filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     fprintf(stdout, "%s\n", filename);
-    strcpy(data_dump_filename_ccc, filename);
+    snprintf(data_dump_filename_ccc, sizeof(data_dump_filename_ccc), "%s", filename);
     g_free(filename);
   }
   gtk_widget_destroy(dialog);
@@ -4433,10 +4433,10 @@ void open_advanced_settings_dialog_ccc(void)
     advanced_settings_ccc.driver_minimum_cluster_size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(driver_minimum_cluster_size_spinbutton_ccc));
     const gchar *entry_text;
     entry_text = gtk_entry_get_text(GTK_ENTRY(command_to_call_text_ccc));
-    strcpy(advanced_settings_ccc.command_to_call, entry_text);
+    snprintf(advanced_settings_ccc.command_to_call, sizeof(advanced_settings_ccc.command_to_call), "%s", entry_text);
     const gchar *entry_text2;
     entry_text2 = gtk_entry_get_text(GTK_ENTRY(virtual_disk_device_name_text_ccc));
-    strcpy(advanced_settings_ccc.virtual_disk_device_name, entry_text2);
+    snprintf(advanced_settings_ccc.virtual_disk_device_name, sizeof(advanced_settings_ccc.virtual_disk_device_name), "%s", entry_text2);
     update_advanced_settings_ccc();
     logfile_changed_ccc = true;
   }
@@ -4600,7 +4600,7 @@ void open_timer_settings_dialog_ccc(void)
 
     const gchar *entry_text;
     entry_text = gtk_entry_get_text(GTK_ENTRY(power_command_to_call_text_ccc));
-    strcpy(timer_settings_ccc.power_command_to_call, entry_text);
+    snprintf(timer_settings_ccc.power_command_to_call, sizeof(timer_settings_ccc.power_command_to_call), "%s", entry_text);
     update_timer_settings_ccc();
     logfile_changed_ccc = true;
   }
@@ -5136,7 +5136,7 @@ void update_primary_relay_settings_from_buttons_ccc(void)
   }
 
   const gchar *tty_entry_text = gtk_entry_get_text(GTK_ENTRY(asclepius_tty_device_text_ccc));
-  strcpy(primary_relay_settings_ccc.asclepius_tty_device, tty_entry_text);
+  snprintf(primary_relay_settings_ccc.asclepius_tty_device, sizeof(primary_relay_settings_ccc.asclepius_tty_device), "%s", tty_entry_text);
 
   if (asclepius_poll_interval_combobox_ccc)
   {
@@ -5436,13 +5436,14 @@ void update_ports_ccc(void)
   // fprintf (stdout, "%s\n", entry_text);    //debug
   char line[256];
   char rawport[16][256];
-  strncpy(line, entry_text, 255);
+  snprintf(line, sizeof(line), "%s", entry_text);
   strcpy(new_ports_ccc, "libata.force=");
   int first = 1;
   int count = 0;
   int scanline =
-    sscanf(line, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", rawport[0], rawport[1], rawport[2], rawport[3], rawport[4], rawport[5],
-           rawport[6], rawport[7], rawport[8], rawport[9], rawport[10], rawport[11], rawport[12], rawport[13], rawport[14], rawport[15]);
+    sscanf(line, "%255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s %255s", rawport[0], rawport[1],
+           rawport[2], rawport[3], rawport[4], rawport[5], rawport[6], rawport[7], rawport[8], rawport[9], rawport[10], rawport[11], rawport[12],
+           rawport[13], rawport[14], rawport[15]);
   while (scanline > 0)
   {
     unsigned int port = strtoull(rawport[count], NULL, 0);
@@ -6875,7 +6876,7 @@ void do_deactivate_primary_relay_ccc(void)
 void do_asclepius_connect_ccc(void)
 {
   const gchar *tty_device = gtk_entry_get_text(GTK_ENTRY(asclepius_tty_device_text_ccc));
-  strcpy(asclepius_tty_device_ccc, tty_device);
+  snprintf(asclepius_tty_device_ccc, sizeof(asclepius_tty_device_ccc), "%s", tty_device);
 
   // Both refreshes below read from primary_relay_settings_ccc, which still
   // holds whatever the dialog was opened with. Without syncing the selection
