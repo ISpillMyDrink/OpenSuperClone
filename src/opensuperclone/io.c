@@ -6381,6 +6381,12 @@ int get_device_resources_ccc(char *bus, char *driver)
     }
   }
 
+  if (i == 0)
+  {
+    pclose(fp);
+    return (0);
+  }
+
   unsigned long long real_start[i];
   unsigned long long real_end[i];
   unsigned long long real_flag[i];
@@ -6400,9 +6406,11 @@ int get_device_resources_ccc(char *bus, char *driver)
     }
   }
 
-  process_resources_ccc(real_start, real_end, real_flag, real_count, bus, driver);
-
   pclose(fp);
+  if (real_count > 0)
+  {
+    process_resources_ccc(real_start, real_end, real_flag, real_count, bus, driver);
+  }
   return (0);
 }
 
