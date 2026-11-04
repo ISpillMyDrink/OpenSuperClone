@@ -7285,6 +7285,20 @@ int identify_device_ahci_ccc(int count)
   strcpy(model_ccc[count], "");
   strcpy(serial_ccc[count], "");
 
+  // Never touch a port that the kernel driver is still using. Identifying a
+  // device means stopping the port and swapping its command list/FIS buffers,
+  // which pulls the drive out from under the running kernel. On a shared HBA
+  // this can freeze unrelated drives, including the boot disk, because the
+  // kernel has to abort and hard reset every outstanding command. The device
+  // is still listed (so the port is visible in the menu), but choose_device_ccc()
+  // refuses to select it. --force-stupid keeps the old override for experts.
+  if (device_visable_ccc[count] && !force_stupid_ccc)
+  {
+    strcpy(model_ccc[count], "visible to OS");
+    strcpy(serial_ccc[count], "---");
+    return (1);
+  }
+
   if (enable_data_dump_ccc) // TODO this is for hba debug testing
   {
     char temp_string[256];
