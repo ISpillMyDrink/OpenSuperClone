@@ -14054,6 +14054,17 @@ int process_source_ccc(void)
       block_offset_ccc = sector_offset;
     }
 
+    if (sector_size_ccc <= 0 || block_size_ccc <= 0)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Error: Device reported an invalid sector size or block size."));
+      message_error_ccc(tempmessage_ccc);
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, " sector size=%d block size=%d", sector_size_ccc, block_size_ccc);
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+      return INPUT_DEVICE_ERROR_RETURN_CODE;
+    }
+
     if (scsi_check_read_commands_ccc())
     {
       return INPUT_DEVICE_ERROR_RETURN_CODE;
