@@ -130,6 +130,7 @@ extern GtkWidget *filemi_ccc;
 extern GtkWidget *quitmi_ccc;
 extern GtkWidget *openmi_ccc;
 extern GtkWidget *newmi_ccc;
+extern GtkWidget *wizardmi_ccc;
 extern GtkWidget *sourcemi_ccc;
 extern GtkWidget *destinationmi_ccc;
 extern GtkWidget *drivesmi_ccc;
@@ -517,6 +518,8 @@ void select_ddrescue_file_ccc(void);
 void export_ddrescue_file_ccc(void);
 
 void new_file_ccc(void);
+
+void new_project_wizard_ccc(void);
 
 void save_file_ccc(void);
 

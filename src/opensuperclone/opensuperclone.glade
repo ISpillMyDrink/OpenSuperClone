@@ -43,6 +43,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="wizardmi">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">New Project Wizard</property>
+                        <property name="use-underline">True</property>
+                        <signal name="activate" handler="new_project_wizard_ccc" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="importddmi">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>

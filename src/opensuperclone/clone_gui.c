@@ -219,6 +219,7 @@ GtkWidget *filemi_ccc = NULL;
 GtkWidget *quitmi_ccc = NULL;
 GtkWidget *openmi_ccc = NULL;
 GtkWidget *newmi_ccc = NULL;
+GtkWidget *wizardmi_ccc = NULL;
 GtkWidget *sourcemi_ccc = NULL;
 GtkWidget *destinationmi_ccc = NULL;
 GtkWidget *drivesmi_ccc = NULL;
@@ -707,6 +708,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   quitmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "quitmi"));
   openmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "openmi"));
   newmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "newmi"));
+  wizardmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "wizardmi"));
   sourcemi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "sourcemi"));
   destinationmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "destinationmi"));
   drivesmi_ccc = GTK_WIDGET(gtk_builder_get_object(builder, "drivesmi"));
@@ -837,6 +839,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_menu_item_set_label(GTK_MENU_ITEM(filemi_ccc), _("File"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(openmi_ccc), _("Open Project"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(newmi_ccc), _("New Project"));
+  gtk_menu_item_set_label(GTK_MENU_ITEM(wizardmi_ccc), _("New Project Wizard"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(quitmi_ccc), _("Quit"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(sourcemi_ccc), _("Choose Source Drive"));
   gtk_menu_item_set_label(GTK_MENU_ITEM(destinationmi_ccc), _("Choose Destination"));
@@ -912,6 +915,7 @@ int start_gtk_ccc(int argc, char **argv, char *title, char *version)
   gtk_widget_add_accelerator(saveasmi_ccc, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(quitmi_ccc, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
   gtk_widget_add_accelerator(newmi_ccc, "activate", accel_group, GDK_KEY_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+  gtk_widget_add_accelerator(wizardmi_ccc, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
   // gtk_widget_add_accelerator(importddmi_ccc, "activate", accel_group, GDK_KEY_I, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
   // gtk_widget_add_accelerator(exportddmi_ccc, "activate", accel_group, GDK_KEY_E, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
@@ -1925,6 +1929,167 @@ static void new_log_file_ccc(char *log_file)
   set_initial_data_from_log_ccc(new_project_ccc);
   logfile_changed_ccc = true;
   update_display_ccc(0);
+}
+
+void new_project_wizard_ccc(void)
+{
+  if (connected_ccc)
+  {
+    snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("You must disconnect first."));
+    message_error_ccc(tempmessage_ccc);
+    print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+    clear_error_message_ccc();
+    return;
+  }
+
+  GtkWidget *dialog = gtk_file_chooser_dialog_new(_("New Project Wizard"), GTK_WINDOW(main_window_ccc), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, _("Create"), GTK_RESPONSE_ACCEPT, NULL);
+  GtkWidget *details_frame = gtk_frame_new(_("Project Details"));
+  GtkWidget *details_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
+  GtkWidget *grid = gtk_grid_new();
+  GtkWidget *name_entry = gtk_entry_new();
+  GtkWidget *mode_combo = gtk_combo_box_text_new();
+
+  gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 500);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+  gtk_file_chooser_set_create_folders(GTK_FILE_CHOOSER(dialog), TRUE);
+  gtk_widget_set_margin_top(details_box, 8);
+  gtk_widget_set_margin_bottom(details_box, 8);
+  gtk_widget_set_margin_start(details_box, 8);
+  gtk_widget_set_margin_end(details_box, 8);
+  gtk_grid_set_row_spacing(GTK_GRID(grid), 8);
+  gtk_grid_set_column_spacing(GTK_GRID(grid), 8);
+  gtk_widget_set_hexpand(name_entry, TRUE);
+  gtk_widget_set_hexpand(mode_combo, TRUE);
+  gtk_entry_set_activates_default(GTK_ENTRY(name_entry), TRUE);
+  gtk_entry_set_placeholder_text(GTK_ENTRY(name_entry), _("Project name"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "copy-image", _("Generic Source File"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "generic", _("Generic Source Device"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "passthrough-auto", _("Passthrough Auto-Detect"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "passthrough-scsi", _("Passthrough SCSI"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "passthrough-ata", _("Passthrough ATA"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "direct", _("Direct IDE"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "ahci", _("Direct AHCI"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "usb", _("Direct USB"));
+  gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(mode_combo), "usb-ata", _("Direct USB ATA"));
+  gtk_combo_box_set_active(GTK_COMBO_BOX(mode_combo), 2);
+
+  gtk_grid_attach(GTK_GRID(grid), gtk_label_new(_("Name:")), 0, 0, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid), name_entry, 1, 0, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid), gtk_label_new(_("Mode:")), 0, 1, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid), mode_combo, 1, 1, 1, 1);
+  gtk_container_add(GTK_CONTAINER(details_box), grid);
+  gtk_container_add(GTK_CONTAINER(details_frame), details_box);
+  gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), details_frame);
+  if (log_file_ccc != NULL)
+  {
+    char *default_path = g_path_get_dirname(log_file_ccc);
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), default_path);
+    g_free(default_path);
+  }
+  gtk_widget_show_all(dialog);
+  gtk_widget_grab_focus(name_entry);
+
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+  {
+    char *parent = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    const char *name = gtk_entry_get_text(GTK_ENTRY(name_entry));
+    char *project_path = NULL;
+    char *log_path = NULL;
+    char *destination_path = NULL;
+    gboolean valid = parent != NULL && name[0] != '\0' && strchr(name, '/') == NULL && strchr(name, G_DIR_SEPARATOR) == NULL;
+
+    if (valid)
+    {
+      project_path = g_build_filename(parent, name, NULL);
+      valid = !g_file_test(project_path, G_FILE_TEST_EXISTS);
+    }
+    if (valid && g_mkdir(project_path, 0777) != 0)
+    {
+      valid = FALSE;
+    }
+    if (!valid)
+    {
+      snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("The project name or location is invalid, or the project already exists."));
+      message_error_ccc(tempmessage_ccc);
+      print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+      clear_error_message_ccc();
+    }
+    else
+    {
+      log_path = g_strconcat(project_path, "/", name, ".log", NULL);
+      destination_path = g_strconcat(project_path, "/", name, ".dd", NULL);
+      FILE *log_file = fopen(log_path, "w");
+      if (log_file == NULL)
+      {
+        snprintf(tempmessage_ccc, TEMP_MESSAGE_SIZE, _("Unable to create the project log file."));
+        message_error_ccc(tempmessage_ccc);
+        print_gui_error_message_ccc(error_message_ccc, _("Error!"), 1);
+        clear_error_message_ccc();
+        g_rmdir(project_path);
+      }
+      else
+      {
+        fclose(log_file);
+        new_log_file_ccc(log_path);
+        free(disk_2_ccc);
+        disk_2_ccc = malloc(strlen(destination_path) + 1);
+        strcpy(disk_2_ccc, destination_path);
+        destination_chosen_ccc = 1;
+        destination_size_valid_ccc = 0;
+        logfile_changed_ccc = true;
+
+        const char *mode = gtk_combo_box_get_active_id(GTK_COMBO_BOX(mode_combo));
+        if (strcmp(mode, "copy-image") == 0)
+          set_mode_copy_image_ccc();
+        else if (strcmp(mode, "generic") == 0)
+          set_mode_generic_ccc();
+        else if (strcmp(mode, "passthrough-auto") == 0)
+          set_mode_auto_passthrough_ccc();
+        else if (strcmp(mode, "passthrough-scsi") == 0)
+          set_mode_scsi_passthrough_ccc();
+        else if (strcmp(mode, "passthrough-ata") == 0)
+          set_mode_ata_passthrough_ccc();
+        else if (strcmp(mode, "direct") == 0)
+          set_mode_direct_ccc();
+        else if (strcmp(mode, "ahci") == 0)
+          set_mode_ahci_ccc();
+        else if (strcmp(mode, "usb") == 0)
+          set_mode_usb_ccc();
+        else if (strcmp(mode, "usb-ata") == 0)
+          set_mode_usb_ata_ccc();
+
+        GtkWidget *selected_mode_item = NULL;
+        if (strcmp(mode, "copy-image") == 0)
+          selected_mode_item = copyimagemi_ccc;
+        else if (strcmp(mode, "generic") == 0)
+          selected_mode_item = genericmi_ccc;
+        else if (strcmp(mode, "passthrough-auto") == 0)
+          selected_mode_item = pass_automi_ccc;
+        else if (strcmp(mode, "passthrough-scsi") == 0)
+          selected_mode_item = pass_scsimi_ccc;
+        else if (strcmp(mode, "passthrough-ata") == 0)
+          selected_mode_item = pass_atrami_ccc;
+        else if (strcmp(mode, "direct") == 0)
+          selected_mode_item = directmi_ccc;
+        else if (strcmp(mode, "ahci") == 0)
+          selected_mode_item = ahcimi_ccc;
+        else if (strcmp(mode, "usb") == 0)
+          selected_mode_item = usbmi_ccc;
+        else if (strcmp(mode, "usb-ata") == 0)
+          selected_mode_item = usbatami_ccc;
+        if (selected_mode_item != NULL)
+          gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(selected_mode_item), TRUE);
+
+        choose_source_ccc();
+      }
+    }
+    g_free(parent);
+    g_free(project_path);
+    g_free(log_path);
+    g_free(destination_path);
+  }
+  gtk_widget_destroy(dialog);
 }
 
 static void new_domain_file_ccc(char *log_file)

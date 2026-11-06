@@ -382,6 +382,10 @@ void quit_and_exit_ccc(void);
 
 void clear_mode_ccc(void);
 
+void set_mode_copy_image_ccc(void);
+
+void set_mode_generic_ccc(void);
+
 void set_mode_auto_passthrough_ccc(void);
 
 void set_mode_scsi_passthrough_ccc(void);
@@ -391,6 +395,10 @@ void set_mode_ata_passthrough_ccc(void);
 void set_mode_direct_ccc(void);
 
 void set_mode_ahci_ccc(void);
+
+void set_mode_usb_ccc(void);
+
+void set_mode_usb_ata_ccc(void);
 
 void set_mode_fillzero_ccc(void);
 
